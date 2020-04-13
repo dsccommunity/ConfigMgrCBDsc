@@ -36,8 +36,8 @@ InModuleScope $script:moduleName {
     $moduleResourceName = 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper'
 
     # Import Stub function
-    $script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-    Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'Tests\ConfigMgrCBDscStub.psm1') -Force -WarningAction SilentlyContinue
+    #$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+    #Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'Tests\ConfigMgrCBDscStub.psm1') -Force -WarningAction SilentlyContinue
 
     $localizedInput  = @{
         ResourceName = 'DummyResource'
