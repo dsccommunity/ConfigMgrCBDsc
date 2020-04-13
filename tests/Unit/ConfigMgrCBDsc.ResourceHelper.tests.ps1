@@ -2,7 +2,7 @@
 param ()
 
 #Set-StrictMode -Version Latest
-#$script:moduleName = 'ConfigMgrCBDsc.ResourceHelper'
+
 #$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 
 #if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
@@ -29,6 +29,7 @@ $script:subModuleFile = Join-Path -Path $script:subModulesFolder -ChildPath "$($
 
 Import-Module $script:subModuleFile -Force -ErrorAction 'Stop'
 
+$script:moduleName = 'ConfigMgrCBDsc.ResourceHelper'
 
 InModuleScope $script:moduleName {
 
