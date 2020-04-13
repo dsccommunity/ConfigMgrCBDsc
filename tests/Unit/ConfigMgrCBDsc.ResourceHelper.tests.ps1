@@ -1,19 +1,6 @@
 [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
 
-#Set-StrictMode -Version Latest
-
-#$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-
-#if ( (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests'))) -or `
-#     (-not (Test-Path -Path (Join-Path -Path $script:moduleRoot -ChildPath 'DSCResource.Tests\TestHelper.psm1'))) )
-#{
-#    & git @('clone', 'https://github.com/PowerShell/DscResource.Tests.git', (Join-Path -Path $script:moduleRoot -ChildPath 'DscResource.Tests'), '-q')
-#}
-
-#Import-Module -Name (Join-Path -Path $script:moduleRoot -ChildPath (Join-Path -Path 'DSCResource.Tests' -ChildPath 'TestHelper.psm1')) -Force
-#Import-Module (Join-Path -Path (Split-Path -Path $PSScriptRoot -Parent | Split-Path -Parent) -ChildPath 'Modules\ConfigMgrCBDsc.ResourceHelper\ConfigMgrCBDsc.ResourceHelper.psm1') -Force
-
 $script:projectPath = "$PSScriptRoot\..\.." | Convert-Path
 $script:projectName = (Get-ChildItem -Path "$script:projectPath\*\*.psd1" | Where-Object -FilterScript {
         ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
@@ -29,15 +16,9 @@ $script:subModuleFile = Join-Path -Path $script:subModulesFolder -ChildPath "$($
 
 Import-Module $script:subModuleFile -Force -ErrorAction 'Stop'
 
-$script:moduleName = 'ConfigMgrCBDsc.ResourceHelper'
-
-InModuleScope $script:moduleName {
+InModuleScope $script:subModuleName {
 
     $moduleResourceName = 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper'
-
-    # Import Stub function
-    #$script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-    #Import-Module (Join-Path -Path $script:moduleRoot -ChildPath 'Tests\ConfigMgrCBDscStub.psm1') -Force -WarningAction SilentlyContinue
 
     $localizedInput  = @{
         ResourceName = 'DummyResource'
