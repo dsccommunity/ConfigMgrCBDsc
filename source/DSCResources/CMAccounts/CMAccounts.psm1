@@ -4,7 +4,7 @@ $modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot 
 Import-Module -Name (Join-Path -Path $modulePath -ChildPath (Join-Path -Path 'ConfigMgrCBDsc.ResourceHelper' -ChildPath 'ConfigMgrCBDsc.ResourceHelper.psm1'))
 
 # Import Localization Strings
-$localizedData = Get-LocalizedData -ResourceName 'CMAccounts' -ResourcePath (Split-Path -Parent $script:MyInvocation.MyCommand.Path)
+$script:localizedData = Get-LocalizedData -ResourceName 'CMAccounts' -ResourcePath (Split-Path -Parent $script:MyInvocation.MyCommand.Path)
 
 <#
     .SYNOPSIS
@@ -36,7 +36,7 @@ function Get-TargetResource
         $Ensure = 'Present'
     )
 
-    Write-Verbose -Message $localizedData.RetrieveSettingValue
+    Write-Verbose -Message $script:localizedData.RetrieveSettingValue
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
 
@@ -90,7 +90,7 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
-    Write-Verbose -Message $localizedData.RetrieveSettingValue
+    Write-Verbose -Message $script:localizedData.RetrieveSettingValue
     $currentState = (Get-CMAccount -SiteCode $SiteCode).Username
 
     try
@@ -110,7 +110,7 @@ function Set-TargetResource
                     SiteCode = $SiteCode
                 }
 
-                Write-Verbose -Message ($localizedData.AddingCMAccount -f $Account)
+                Write-Verbose -Message ($script:localizedData.AddingCMAccount -f $Account)
                 New-CMAccount @param
             }
         }
@@ -123,14 +123,14 @@ function Set-TargetResource
                     Force    = $true
                 }
 
-                Write-Verbose -Message ($localizedData.RemovingCMAccount -f $Account)
+                Write-Verbose -Message ($script:localizedData.RemovingCMAccount -f $Account)
                 Remove-CMAccount @param
             }
         }
 
         if ($null -eq $param)
         {
-            Write-Verbose -Message $localizedData.DesiredState
+            Write-Verbose -Message $script:localizedData.DesiredState
         }
     }
     catch
@@ -193,7 +193,7 @@ function Test-TargetResource
     {
         if (($currentState -notcontains $Account))
         {
-            Write-Verbose -Message ($localizedData.TestPresent -f $Account)
+            Write-Verbose -Message ($script:localizedData.TestPresent -f $Account)
             $result = $false
         }
     }
@@ -201,12 +201,12 @@ function Test-TargetResource
     {
         if (($currentState -contains $Account))
         {
-            Write-Verbose -Message ($localizedData.TestAbsent -f $Account)
+            Write-Verbose -Message ($script:localizedData.TestAbsent -f $Account)
             $result = $false
         }
     }
 
-    Write-Verbose -Message ($localizedData.TestState -f $result)
+    Write-Verbose -Message ($script:localizedData.TestState -f $result)
     return $result
 }
 

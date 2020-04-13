@@ -4,7 +4,7 @@ $modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $psScriptRoot 
 Import-Module -Name (Join-Path -Path $modulePath -ChildPath (Join-Path -Path 'ConfigMgrCBDsc.ResourceHelper' -ChildPath 'ConfigMgrCBDsc.ResourceHelper.psm1'))
 
 # Import Localization Strings
-$localizedData = Get-LocalizedData -ResourceName 'ClientSettings' -ResourcePath (Split-Path -Parent $script:MyInvocation.MyCommand.Path)
+$script:localizedData = Get-LocalizedData -ResourceName 'ClientSettings' -ResourcePath (Split-Path -Parent $script:MyInvocation.MyCommand.Path)
 
 <#
     .SYNOPSIS
@@ -56,7 +56,7 @@ function Get-TargetResource
         $SettingValue
     )
 
-    Write-Verbose -Message ($localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
+    Write-Verbose -Message ($script:localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
 
@@ -132,7 +132,7 @@ function Set-TargetResource
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
     Confirm-ClientSetting -DeviceSettingName $DeviceSettingName -Setting $Setting
-    Write-Verbose -Message ($localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
+    Write-Verbose -Message ($script:localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
 
     if ($DeviceSettingName -ne 'SoftwareCenter')
     {
@@ -143,7 +143,7 @@ function Set-TargetResource
         $settingVal = Get-ClientSettingsSoftwareCenter -Name $Name -Setting $Setting
     }
 
-    Write-Verbose -Message ($localizedData.SettingValues -f $Setting, $SettingValue, $settingVal)
+    Write-Verbose -Message ($script:localizedData.SettingValues -f $Setting, $SettingValue, $settingVal)
 
     if (($null -eq $settingVal) -or ($settingVal -ne $SettingValue))
     {
@@ -189,7 +189,7 @@ function Set-TargetResource
 
         try
         {
-            Write-Verbose -Message ($localizedData.Commandline -f $commandName, $params.Name, $convertSetting, $params.$($convertSetting))
+            Write-Verbose -Message ($script:localizedData.Commandline -f $commandName, $params.Name, $convertSetting, $params.$($convertSetting))
             Invoke-Command -ScriptBlock $setSettings
         }
         catch
@@ -262,7 +262,7 @@ function Test-TargetResource
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
     Confirm-ClientSetting -DeviceSettingName $DeviceSettingName -Setting $Setting
-    Write-Verbose -Message ($localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
+    Write-Verbose -Message ($script:localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
 
     if ($DeviceSettingName -ne 'SoftwareCenter')
     {
@@ -273,7 +273,7 @@ function Test-TargetResource
         $settingVal = Get-ClientSettingsSoftwareCenter -Name $Name -Setting $Setting
     }
 
-    Write-Verbose -Message ($localizedData.SettingValues -f $Setting, $SettingValue, $settingVal)
+    Write-Verbose -Message ($script:localizedData.SettingValues -f $Setting, $SettingValue, $settingVal)
     $result = $true
 
     if ($settingVal)
@@ -288,7 +288,7 @@ function Test-TargetResource
         $result = $false
     }
 
-    Write-Verbose -Message ($localizedData.TestState -f $result)
+    Write-Verbose -Message ($script:localizedData.TestState -f $result)
     return $result
 }
 
