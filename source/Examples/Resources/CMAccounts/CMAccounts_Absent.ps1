@@ -4,7 +4,7 @@
 #>
 Configuration Example
 {
-    Import-DscResource -ModuleName ConfigMgrCBDsc -ModuleVersion '1.0.0.0'
+    Import-DscResource -ModuleName ConfigMgrCBDsc
 
     Node localhost
     {
