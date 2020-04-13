@@ -1,0 +1,40 @@
+[ClassVersion("1.0.0"), FriendlyName("CMAccounts")]
+class CMAccounts : OMI_BaseResource
+{
+    [Key, Description("Specifies the ini file name.")] String IniFileName;
+    [Key, Description("Specifies the path of the ini file.')] String IniFilePath;
+    [Write, Description("Specifies whether the account is present or absent."), ValueMap{"InstallCAS","InstallPrimarySite"}, Values{"InstallCAS","InstallPrimarySite"}] String Action;
+    [Write, Description("")] String CDLatest;
+    [Write, Description("")] String ProductID;
+    [Write, Description("")] String SiteCode;
+    [Write, Description("")] String SiteName;
+    [Write, Description("")] String SMSInstallDir;
+    [Write, Description("")] String SDKServer;
+    [Write, Description("")] Boolean PreRequisiteComp;
+    [Write, Description("")] String PreRequisitePath;
+    [Write, Description("")] Boolean AdminConsole;
+    [Write, Description("")] Boolean JoinCeip;
+    [Write, Description("")] Boolean MobileDeviceLanguage;
+    [Write, Description(""), ValueMap{"EnforceHTTPS","HTTPorHTTPS"}, Values{"EnforceHTTPS","HTTPorHTTPS"}] String RoleCommunicationProtocol;
+    [Write, Description("")] Boolean ClientsUsePKICertificate;
+    [Write, Description("")] String ManagementPoint;
+    [Write, Description(""), ValueMap{"HTTPS","HTTP"}, Values{"HTTPS","HTTP"}] String ManagementPointProtocol;
+    [Write, Description("")] Boolean DistributionPoint;
+    [Write, Description(""), ValueMap{"HTTPS","HTTP"}, Values{"HTTPS","HTTP"}] String DistributionPointProtocol;
+    [Write, Description(""), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String AddServerLanguages;
+    [Write, Description(""), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String AddClientLanguages;
+    [Write, Description(""), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String DeleteServerLanguages;
+    [Write, Description(""), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String DeleteClientLanguages;
+    [Write, Description("")] String SQLServerName;
+    [Write, Description("")] String DatabaseName;
+    [Write, Description("")] String SqlSsbPort;
+    [Write, Description("")] String SQLDataFilePath;
+    [Write, Description("")] String SQLLogFilePath;
+    [Write, Description("")] Boolean CloudConnector;
+    [Write, Description("")] String CloudConnectorServer;
+    [Write, Description("")] Boolean UseProxy;
+    [Write, Description("")] String ProxyName;
+    [Write, Description("")] String ProxyPort;
+    [Write, Description("")] Boolean SAActive;
+    [Write, Description("")] Boolean CurrentBranch;
+};
