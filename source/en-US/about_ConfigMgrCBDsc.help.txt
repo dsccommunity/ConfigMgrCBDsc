@@ -1,0 +1,25 @@
+TOPIC
+    about_ConfigMgrCBDsc
+
+SHORT DESCRIPTION
+    DSC resources for the management and configuration of Windows System Center Configuration Manager.
+
+LONG DESCRIPTION
+    This module contains DSC resources for the management and configuration of Windows System Center Configuration Manager.
+
+EXAMPLES
+    PS C:\> Get-DscResource -Module ConfigMgrCBDsc
+
+NOTE:
+    Thank you to the DSC Community contributors who contributed to this module by
+    writing code, sharing opinions, and provided feedback.
+
+TROUBLESHOOTING NOTE:
+    Go to the Github repository for read about issues, submit a new issue, and read
+    about new releases. https://github.com/dsccommunity/ConfigMgrCBDsc
+
+SEE ALSO
+    - https://github.com/dsccommunity/ConfigMgrCBDsc
+
+KEYWORDS
+    DSC, DscResource, SCCM, Windows System Center Configuration Manager, System Center Configuration Manager

@@ -1,0 +1,9 @@
+[ClassVersion("1.0.0"), FriendlyName("CMAccounts")]
+class CMAccounts : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the Configuration Manager account name.")] String Account;
+    [Write, Description("Specifies a new password value for the account."), EmbeddedInstance("MSFT_Credential")] String AccountPassword;
+    [Write, Description("Specifies whether the account is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Read, Description("Lists all of the accounts in Configuration Manager.")] String CurrentAccounts[];
+};
