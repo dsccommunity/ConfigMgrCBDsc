@@ -622,8 +622,8 @@ function Set-TargetResource
     }
 
     $identification = @{
-        Title = '[Identification]'
-        Action = ''
+        Title    = '[Identification]'
+        Action   = ''
         CDLatest = ''
     }
     $options = @{
@@ -684,7 +684,7 @@ function Set-TargetResource
     {
         $outputIni += "$($configOption.Title) `n"
         $configOption.Remove('Title')
-        foreach($param in $configOption)
+        foreach ($param in $configOption)
         {
             foreach ($item in $param.GetEnumerator())
             {
@@ -984,7 +984,7 @@ function Test-TargetResource
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
     Write-Verbose "Getting file content of $IniFilePath\$IniFileName"
-    $iniContent = Get-Content -Path  "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
+    $iniContent = Get-Content -Path "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
     $result = $true
 
     if ($iniContent)
@@ -1001,7 +1001,7 @@ function Test-TargetResource
         $PSBoundParameters.Remove('IniFilePath') | Out-Null
         $PSBoundParameters.Remove('IniFileName') | Out-Null
 
-        foreach($param in $PSBoundParameters.GetEnumerator())
+        foreach ($param in $PSBoundParameters.GetEnumerator())
         {
             switch ($param.Value)
             {
