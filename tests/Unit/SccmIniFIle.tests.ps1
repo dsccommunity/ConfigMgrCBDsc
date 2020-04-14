@@ -217,6 +217,15 @@ try
                         Set-TargetResource @combined
                         Get-Item -LiteralPath "$IniFilePath/$IniFileName" | Should -Not -Be $null
                     }
+
+                    if ($test.iniFileName -eq 'InstallPrimary.ini')
+                    {
+                        It 'Should not throw with all optional parameters for the primary config ini' {
+                            $combined = $test + $optionalParamatersAll + $primaryInstallOptionalSettings
+                            Set-TargetResource @combined
+                            Get-Item -LiteralPath "$IniFilePath/$IniFileName" | Should -Not -Be $null
+                        }
+                    }
                 }
 
                 Context "When Set-TargetResource for $($test.IniFileName) has incorrect parameters" {
