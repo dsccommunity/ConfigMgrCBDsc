@@ -44,6 +44,7 @@
     DscResourcesToExport = @(
         'ClientSettings'
         'CMAccounts'
+        'SccmIniFile'
     )
 
     <#

@@ -297,7 +297,7 @@ function Get-TargetResource
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
     Write-Verbose "Getting file content of $IniFilePath\$IniFileName"
-    $iniContent = Get-Content -Path  "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
+    $iniContent = Get-Content -Path "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
 
     $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
     $Testparameters = (Get-Command -Name 'Get-TargetResource').Parameters.values | Select-Object -Property  Name,ParameterType
