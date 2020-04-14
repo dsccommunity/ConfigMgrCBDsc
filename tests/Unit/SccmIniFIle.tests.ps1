@@ -180,11 +180,11 @@ try
                         $result.GetEnumerator().Where({$_.Value -ne $null}).Count | Should -Be $(`
                             if ($test.iniFileName -eq 'InstallCas.ini')
                             {
-                                20
+                                20 # This is from the parameters that are in mock ini files line:102
                             }
                             if ($test.iniFileName -eq 'InstallPrimary.ini')
                             {
-                                22
+                                22 # This is from the parameters that are in mock ini files line:134
                             }
                         )
                     }
@@ -289,6 +289,7 @@ try
                     $mockCasIniFile | Out-File -LiteralPath $TestDrive\InstallCAS.ini
                     $mockPrimaryIniFile | Out-File -LiteralPath $TestDrive\InstallPrimary.ini
 
+                    # Change parameters so that they don't match.
                     $test.SiteCode = 'LAB'
                     $test.SMSInstallDir ='C:\Apps\Microsoft Configuration Manager'
 
