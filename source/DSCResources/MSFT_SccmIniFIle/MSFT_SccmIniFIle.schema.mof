@@ -30,6 +30,9 @@ class MSFT_SccmIniFile : OMI_BaseResource
     [Write, Description("Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.")] String SqlSsbPort;
     [Write, Description("Specifies an alternate location to create the database .mdb file.")] String SQLDataFilePath;
     [Write, Description("Specifies an alternate location to create the database .ldf file.")] String SQLLogFilePath;
+    [Write, Description("Specifies the CAS that a primary site attaches to when it joins the Configuration Manager hierarchy")] String CCARSiteServer;
+    [Write, Description("Specifies the retry interval in minutes to attempt a connection to the CAS after the connection fails.")] String CasRetryInterval;
+    [Write, Description("Specifies the maximum timeout value in minutes for a primary site to connect to the CAS.")] UInt16 WaitForCasTimeout;
     [Write, Description("Specifies whether to install a service connection point at this site.")] Boolean CloudConnector;
     [Write, Description("Specifies the FQDN of the server that will host the service connection point site system role.")] String CloudConnectorServer;
     [Write, Description("Specifies whether the service connection point uses a proxy server.")] Boolean UseProxy;

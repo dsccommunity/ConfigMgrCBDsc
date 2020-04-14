@@ -93,6 +93,15 @@ Import-Module -Name $script:configMgrResourcehelper
     .PARAMETER SQLLogFilePath
         Specifies an alternate location to create the database .ldf file.
 
+    .PARAMETER CCARSiteServer
+        Specifies the CAS that a primary site attaches to when it joins the Configuration Manager hierarchy.
+
+    .PARAMETER CasRetryInterval
+        Specifies the retry interval in minutes to attempt a connection to the CAS after the connection fails.
+
+    .PARAMETER WaitForCasTimeout
+        Specifies the maximum timeout value in minutes for a primary site to connect to the CAS.
+
     .PARAMETER CloudConnector
         Specifies whether to install a service connection point at this site.
 
@@ -243,6 +252,19 @@ function Get-TargetResource
         [Parameter()]
         [String]
         $SQLLogFilePath,
+
+        [Parameter()]
+        [String]
+        $CCARSiteServer,
+
+        [Parameter()]
+        [String]
+        $CasRetryInterval,
+
+        [Parameter()]
+        [ValidateRange(0, 100)]
+        [uint16]
+        $WaitForCasTimeout,
 
         [Parameter(Mandatory = $true)]
         [Boolean]
@@ -423,6 +445,15 @@ function Get-TargetResource
     .PARAMETER SQLLogFilePath
         Specifies an alternate location to create the database .ldf file.
 
+    .PARAMETER CCARSiteServer
+        Specifies the CAS that a primary site attaches to when it joins the Configuration Manager hierarchy.
+
+    .PARAMETER CasRetryInterval
+        Specifies the retry interval in minutes to attempt a connection to the CAS after the connection fails.
+
+    .PARAMETER WaitForCasTimeout
+        Specifies the maximum timeout value in minutes for a primary site to connect to the CAS.
+
     .PARAMETER CloudConnector
         Specifies whether to install a service connection point at this site.
 
@@ -572,6 +603,19 @@ function Set-TargetResource
         [Parameter()]
         [String]
         $SQLLogFilePath,
+
+        [Parameter()]
+        [String]
+        $CCARSiteServer,
+
+        [Parameter()]
+        [String]
+        $CasRetryInterval,
+
+        [Parameter()]
+        [ValidateRange(0, 100)]
+        [uint16]
+        $WaitForCasTimeout,
 
         [Parameter(Mandatory = $true)]
         [Boolean]
@@ -802,6 +846,15 @@ function Set-TargetResource
     .PARAMETER SQLLogFilePath
         Specifies an alternate location to create the database .ldf file.
 
+    .PARAMETER CCARSiteServer
+        Specifies the CAS that a primary site attaches to when it joins the Configuration Manager hierarchy.
+
+    .PARAMETER CasRetryInterval
+        Specifies the retry interval in minutes to attempt a connection to the CAS after the connection fails.
+
+    .PARAMETER WaitForCasTimeout
+        Specifies the maximum timeout value in minutes for a primary site to connect to the CAS.
+
     .PARAMETER CloudConnector
         Specifies whether to install a service connection point at this site.
 
@@ -952,6 +1005,19 @@ function Test-TargetResource
         [Parameter()]
         [String]
         $SQLLogFilePath,
+
+        [Parameter()]
+        [String]
+        $CCARSiteServer,
+
+        [Parameter()]
+        [String]
+        $CasRetryInterval,
+
+        [Parameter()]
+        [ValidateRange(0, 100)]
+        [uint16]
+        $WaitForCasTimeout,
 
         [Parameter(Mandatory = $true)]
         [Boolean]
