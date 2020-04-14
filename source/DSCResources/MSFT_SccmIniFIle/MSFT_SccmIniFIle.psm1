@@ -309,7 +309,7 @@ function Get-TargetResource
         {
             if ($line -match '=')
             {
-                $iniParameters += @{$line.split('=')[0] = $line.split('=')[1]}
+                $iniParameters += @{(($line.split('=')[0]).Trim(' ')) = $line.split('=')[1]}
             }
         }
 
@@ -320,10 +320,12 @@ function Get-TargetResource
             {
                 if ($($iniParameters.$($param.Name)))
                 {
+                    Write-Verbose -Message "Adding: $($param.Name) - $($iniParameters.$($param.Name))"
                     $getParameters.Add($($param.Name),$($iniParameters.$($param.Name)))
                 }
                 else
                 {
+                    Write-Verbose -Message "Adding: $($param.Name) - $null"
                     $getParameters.Add($($param.Name),$null)
                 }
             }
@@ -652,17 +654,17 @@ function Set-TargetResource
     if (($ManagementPoint -or $ManagementPointProtocol -or -$DistributionPoint -or $DistributionPointProtocol -or $RoleCommunicationProtocol -or
         $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
     {
-        Write-Error -Message "The parameters ManagementPoint, ManagementPointProtocol, DistributionPoint,
-                            DistributionPointProtocol, RoleCommunicationProtocol, ClientsUsePKICertificate,
-                            CCARSiteServer, CASRetryInterval, WaitForCASTimeout are used only with InstallPrimarySite."
+        throw "The parameters ManagementPoint, ManagementPointProtocol, DistributionPoint,",`
+            "DistributionPointProtocol, RoleCommunicationProtocol, ClientsUsePKICertificate,",`
+            "CCARSiteServer, CASRetryInterval, WaitForCASTimeout are used only with InstallPrimarySite."
     }
     elseif ($CloudConnector -eq $true -and ([string]::IsNullOrEmpty($CloudConnectorServer) -or ($UseProxy -or $UseProxy -eq $false)))
     {
-        Write-Error -Message "If CloudConnector is True you must provide CloudConnectorServer and UseProxy."
+        throw 'If CloudConnector is True you must provide CloudConnectorServer and UseProxy.'
     }
     elseif ($UseProxy -eq $true -and ([string]::IsNullOrEmpty($ProxyName) -or [string]::IsNullOrEmpty($ProxyPort)))
     {
-        Write-Error -Message "If Proxy is True,  you must provide ProxyName and ProxyPort."
+        throw 'If Proxy is True, you must provide ProxyName and ProxyPort.'
     }
 
     $identification = @{
@@ -1059,7 +1061,7 @@ function Test-TargetResource
         {
             if ($line -match '=')
             {
-                $iniParameters += @{$line.split('=')[0] = $line.split('=')[1]}
+                $iniParameters += @{(($line.split('=')[0]).Trim(' ')) = $line.split('=')[1]}
             }
         }
 
