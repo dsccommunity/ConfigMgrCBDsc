@@ -309,7 +309,7 @@ function Get-TargetResource
         {
             if ($line -match '=')
             {
-                $iniParameters += @{(($line.split('=')[0]).Trim(' ')) = $line.split('=')[1]}
+                $iniParameters += @{(($line.split('=')[0]).Trim(' ')) = (($line.split('=')[1]).Trim(' '))}
             }
         }
 
@@ -1061,7 +1061,7 @@ function Test-TargetResource
         {
             if ($line -match '=')
             {
-                $iniParameters += @{(($line.split('=')[0]).Trim(' ')) = $line.split('=')[1]}
+                $iniParameters += @{(($line.split('=')[0]).Trim(' ')) = (($line.split('=')[1]).Trim(' '))}
             }
         }
 
