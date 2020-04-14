@@ -288,7 +288,7 @@ function Set-TargetResource
                 }
             )
 
-            foreach($item in $itemsForEval)
+            foreach ($item in $itemsForEval)
             {
                 if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
                 {
@@ -540,7 +540,7 @@ function Test-TargetResource
                 }
             )
 
-            foreach($item in $itemsForEval)
+            foreach ($item in $itemsForEval)
             {
                 if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
                 {

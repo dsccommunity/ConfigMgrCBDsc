@@ -43,7 +43,7 @@ The following resources are available in this resource.
 
 #### ClientSettings Examples
 
-* [ProvisionedPackages_Present](Examples\Resources\ClientSettings\ClientSettings.ps1)
+* [ProvisionedPackages_Present](Source\Examples\Resources\ClientSettings\ClientSettings.ps1)
 
 ### CMAccounts
 
@@ -54,8 +54,8 @@ The following resources are available in this resource.
 
 #### CMAccounts Examples
 
-* [CMAccounts_Absent](Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
-* [CMAccounts_Present](Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
+* [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
+* [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
 
 ### Collections
 
@@ -72,6 +72,6 @@ The following resources are available in this resource.
 
 #### Collections Examples
 
-* [Collections_Absent](Examples\Resources\CMAccounts\Collection_Absent.ps1)
-* [DeviceCollection_Present](Examples\Resources\CMAccounts\DeviceCollection_Present.ps1)
-* [UserCollection_Present](Examples\Resources\CMAccounts\UserCollection_Present.ps1)
+* [Collections_Absent](Source\Examples\Resources\CMAccounts\Collection_Absent.ps1)
+* [DeviceCollection_Present](Source\Examples\Resources\CMAccounts\DeviceCollection_Present.ps1)
+* [UserCollection_Present](Source\Examples\Resources\CMAccounts\UserCollection_Present.ps1)

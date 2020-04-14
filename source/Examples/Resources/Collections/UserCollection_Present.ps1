@@ -15,13 +15,15 @@ Configuration Example
             CollectionType         = 'User'
             LimitingCollectionName = 'All Users'
             Comment                = 'This is a test user collection'
-            RefreshSchedule        = @{
+            RefreshSchedule        = MSFT_CollectionRefreshSchedule
+            {
                 RecurInterval = 'Days'
                 RecurCount    = '7'
             }
             RefreshType            = 'Both'
             QueryRules = @(
-                @{
+                MSFT_CollectionQueryRules
+                {
                     RuleName        = 'UserTestQuery'
                     QueryExpression = @(
                         'select SMS_R_USER.ResourceID,SMS_R_USER.ResourceType,'
@@ -30,7 +32,8 @@ Configuration Example
                         'where SMS_R_User.UserName = "Test4"'
                     ) -Join ''
                 }
-                @{
+                MSFT_CollectionQueryRules
+                {
                     RuleName        = 'UserTestQuery2'
                     QueryExpression = @(
                         'select SMS_R_USER.ResourceID,SMS_R_USER.ResourceType,'

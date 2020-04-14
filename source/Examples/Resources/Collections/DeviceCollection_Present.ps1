@@ -15,13 +15,15 @@ Configuration Example
             CollectionType         = 'Device'
             LimitingCollectionName = 'All Systems'
             Comment                = 'This is a test device collection'
-            RefreshSchedule        = @{
+            RefreshSchedule        = MSFT_CollectionRefreshSchedule
+            {
                 RecurInterval = 'Days'
                 RecurCount    = '7'
             }
             RefreshType            = 'Both'
             QueryRules = @(
-                @{
+                MSFT_CollectionQueryRules
+                {
                     RuleName        = 'Test1'
                     QueryExpression = @(
                         'select SMS_R_SYSTEM.ResourceID,SMS_R_SYSTEM.ResourceType,'
@@ -31,7 +33,8 @@ Configuration Example
                         'where SMS_G_System_COMPUTER_SYSTEM.Domain = "jeffo.lab"'
                     ) -Join ' '
                 }
-                @{
+                MSFT_CollectionQueryRules
+                {
                     RuleName        = 'Test2'
                     QueryExpression = @(
                         'Select SMS_R_SYSTEM.ResourceID,SMS_R_SYSTEM.ResourceType,SMS_R_SYSTEM.Name,SMS_R_SYSTEM.SMSUniqueIdentifier,'

@@ -9,6 +9,8 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 
 ### Added
 
+Collections Resource added.
+
 ### Changed
 
 ### Removed
