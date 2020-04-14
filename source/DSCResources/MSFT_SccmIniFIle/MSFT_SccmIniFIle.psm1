@@ -1,29 +1,118 @@
-$modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'Modules'
+$script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
 
-# Import the CRL Resource Helper Module
-Import-Module -Name (Join-Path -Path $modulePath -ChildPath (Join-Path -Path 'ConfigMgrCBDsc.ResourceHelper' -ChildPath 'ConfigMgrCBDsc.ResourceHelper.psm1'))
-
-# Import Localization Strings
-$script:localizedData = Get-LocalizedData -ResourceName 'CMAccounts' -ResourcePath (Split-Path -Parent $script:MyInvocation.MyCommand.Path)
+Import-Module -Name $script:configMgrResourcehelper
 
 <#
     .SYNOPSIS
-        This will return a hashtable of results.
+        This will return the current state of the resource.
+
+    .PARAMETER IniFileName
+        Specifies the ini file name.
+
+    .PARAMETER IniFilePath
+        Specifies the path of the ini file.
+
+    .PARAMETER Action
+        Specifies whether to install a CAS or Primary.
+
+    .PARAMETER CDLatest
+        This value informs setup that you're using media from CD.Latest.
+
+    .PARAMETER ProductID
+        Specifies the Configuration Manager installation product key, including the dashes.
 
     .PARAMETER SiteCode
-        Specifies the SiteCode for the Configuration Manager site.
+        Specifies three alphanumeric characters that uniquely identify the site in your hierarchy.
 
-    .PARAMETER Name
-        Specifies the display name of the client setting package.
+    .PARAMETER SiteName
+        Specifies the name for this site.
 
-    .PARAMETER DeviceSettingName
-        Specifies the parent setting category.
+    .PARAMETER SMSInstallDir
+        Specifies the installation folder for the Configuration Manager program files.
 
-    .PARAMETER Setting
-        Specifies the client setting to validate.
+    .PARAMETER SDKServer
+        Specifies the FQDN for the server that will host the SMS Provider.
 
-    .PARAMETER SettingValue
-        Specifies the value for the setting.
+    .PARAMETER PreRequisiteComp
+        Specifies whether setup prerequisite files have already been downloaded.
+
+    .PARAMETER PreRequisitePath
+        Specifies the path to the setup prerequisite files.
+
+    .PARAMETER AdminConsole
+        Specifies whether to install the Configuration Manager console.
+
+    .PARAMETER JoinCeip
+        Specifies whether to join the Customer Experience Improvement Program (CEIP).
+
+    .PARAMETER MobileDeviceLanguage
+        Specifies whether the mobile device client languages are installed.
+
+    .PARAMETER RoleCommunicationProtocol
+        Specifies whether to configure all site systems to accept only HTTPS communication from clients, or to configure the communication method for each site system role.
+
+    .PARAMETER ClientsUsePKICertificate
+        Specifies whether clients will use a client PKI certificate to communicate with site system roles.
+
+    .PARAMETER ManagementPoint
+        Specifies the FQDN of the server that will host the management point site system role.
+
+    .PARAMETER ManagementPointProtocol
+        Specifies the protocol to use for the management point.
+
+    .PARAMETER DistributionPoint
+        Specifies the FQDN of the server that will host the distribution point site system role.
+
+    .PARAMETER DistributionPointProtocol
+        Specifies the protocol to use for the distribution point.
+
+    .PARAMETER AddServerLanguages
+        Specifies the server languages that will be available for the Configuration Manager console, reports, and Configuration Manager objects.
+
+    .PARAMETER AddClientLanguages
+        Specifies the languages that will be available to client computers.
+
+    .PARAMETER DeleteServerLanguages
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available for the Configuration Manager console, reports, and Configuration Manager objects.
+
+    .PARAMETER DeleteClientLanguages
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers.
+
+    .PARAMETER SQLServerName
+        Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
+
+    .PARAMETER DatabaseName
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.
+
+    .PARAMETER SqlSsbPort
+        Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
+
+    .PARAMETER SQLDataFilePath
+        Specifies an alternate location to create the database .mdb file.
+
+    .PARAMETER SQLLogFilePath
+        Specifies an alternate location to create the database .ldf file.
+
+    .PARAMETER CloudConnector
+        Specifies whether to install a service connection point at this site.
+
+    .PARAMETER CloudConnectorServer
+        Specifies the FQDN of the server that will host the service connection point site system role.
+
+    .PARAMETER UseProxy
+        Specifies whether the service connection point uses a proxy server.
+
+    .PARAMETER ProxyName
+        Specifies the FQDN of the proxy server that the service connection point uses.
+
+    .PARAMETER ProxyPort
+        Specifies the port number to use for the proxy port.
+
+    .PARAMETER SAActive
+        Specify if you have active Software Assurance.
+
+    .PARAMETER CurrentBranch
+        Specify whether to use Configuration Manager current branch or long-term servicing branch (LTSB).
 #>
 function Get-TargetResource
 {
@@ -40,6 +129,7 @@ function Get-TargetResource
         $IniFilePath,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet('InstallCAS', 'InstallPrimarySite')]
         [String]
         $Action,
 
@@ -88,6 +178,7 @@ function Get-TargetResource
         $MobileDeviceLanguage,
 
         [Parameter()]
+        [ValidateSet('EnforceHTTPS','HTTPorHTTPS')]
         [String]
         $RoleCommunicationProtocol,
 
@@ -100,6 +191,7 @@ function Get-TargetResource
         $ManagementPoint,
 
         [Parameter()]
+        [ValidateSet('HTTPS','HTTP')]
         [String]
         $ManagementPointProtocol,
 
@@ -108,22 +200,27 @@ function Get-TargetResource
         $DistributionPoint,
 
         [Parameter()]
+        [ValidateSet('HTTPS','HTTP')]
         [String]
         $DistributionPointProtocol,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddServerLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddClientLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $DeleteServerLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $DeleteClientLanguages,
 
@@ -176,6 +273,7 @@ function Get-TargetResource
         $CurrentBranch
     )
 
+    $IniFilePath = $IniFilePath.TrimEnd('\')
     Write-Verbose "Getting file content of $IniFilePath\$IniFileName"
     $iniContent = Get-Content -Path  "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
 
@@ -208,12 +306,11 @@ function Get-TargetResource
                 }
             }
         }
-
-        $getParameters.Add($($param.Name),'Present')
     }
     else
     {
         Write-Verbose "Could not find $IniFilePath\$IniFileName. "
+        Write-Verbose 'Results will contain parameters passed to configuration.'
 
         $getParameters = @{}
         foreach ($param in $testParameters)
@@ -222,6 +319,7 @@ function Get-TargetResource
             {
                 if ($($PSBoundParameters.$($param.Name)))
                 {
+                    Write-Verbose -Message "$($param.Name) - $($PSBoundParameters.$($param.Name))"
                     $getParameters.Add($($param.Name),$($PSBoundParameters.$($param.Name)))
                 }
                 else
@@ -230,12 +328,122 @@ function Get-TargetResource
                 }
             }
         }
-
-        $getParameters.Add($($param.Name),'Absent')
     }
    return $getParameters
-}
+} #end function Get-TargetResource
 
+<#
+    .SYNOPSIS
+        This will set the resource to desired state.
+
+    .PARAMETER IniFileName
+        Specifies the ini file name.
+
+    .PARAMETER IniFilePath
+        Specifies the path of the ini file.
+
+    .PARAMETER Action
+        Specifies whether to install a CAS or Primary.
+
+    .PARAMETER CDLatest
+        This value informs setup that you're using media from CD.Latest.
+
+    .PARAMETER ProductID
+        Specifies the Configuration Manager installation product key, including the dashes.
+
+    .PARAMETER SiteCode
+        Specifies three alphanumeric characters that uniquely identify the site in your hierarchy.
+
+    .PARAMETER SiteName
+        Specifies the name for this site.
+
+    .PARAMETER SMSInstallDir
+        Specifies the installation folder for the Configuration Manager program files.
+
+    .PARAMETER SDKServer
+        Specifies the FQDN for the server that will host the SMS Provider.
+
+    .PARAMETER PreRequisiteComp
+        Specifies whether setup prerequisite files have already been downloaded.
+
+    .PARAMETER PreRequisitePath
+        Specifies the path to the setup prerequisite files.
+
+    .PARAMETER AdminConsole
+        Specifies whether to install the Configuration Manager console.
+
+    .PARAMETER JoinCeip
+        Specifies whether to join the Customer Experience Improvement Program (CEIP).
+
+    .PARAMETER MobileDeviceLanguage
+        Specifies whether the mobile device client languages are installed.
+
+    .PARAMETER RoleCommunicationProtocol
+        Specifies whether to configure all site systems to accept only HTTPS communication from clients, or to configure the communication method for each site system role.
+
+    .PARAMETER ClientsUsePKICertificate
+        Specifies whether clients will use a client PKI certificate to communicate with site system roles.
+
+    .PARAMETER ManagementPoint
+        Specifies the FQDN of the server that will host the management point site system role.
+
+    .PARAMETER ManagementPointProtocol
+        Specifies the protocol to use for the management point.
+
+    .PARAMETER DistributionPoint
+        Specifies the FQDN of the server that will host the distribution point site system role.
+
+    .PARAMETER DistributionPointProtocol
+        Specifies the protocol to use for the distribution point.
+
+    .PARAMETER AddServerLanguages
+        Specifies the server languages that will be available for the Configuration Manager console, reports, and Configuration Manager objects.
+
+    .PARAMETER AddClientLanguages
+        Specifies the languages that will be available to client computers.
+
+    .PARAMETER DeleteServerLanguages
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available for the Configuration Manager console, reports, and Configuration Manager objects.
+
+    .PARAMETER DeleteClientLanguages
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers.
+
+    .PARAMETER SQLServerName
+        Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
+
+    .PARAMETER DatabaseName
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.
+
+    .PARAMETER SqlSsbPort
+        Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
+
+    .PARAMETER SQLDataFilePath
+        Specifies an alternate location to create the database .mdb file.
+
+    .PARAMETER SQLLogFilePath
+        Specifies an alternate location to create the database .ldf file.
+
+    .PARAMETER CloudConnector
+        Specifies whether to install a service connection point at this site.
+
+    .PARAMETER CloudConnectorServer
+        Specifies the FQDN of the server that will host the service connection point site system role.
+
+    .PARAMETER UseProxy
+        Specifies whether the service connection point uses a proxy server.
+
+    .PARAMETER ProxyName
+        Specifies the FQDN of the proxy server that the service connection point uses.
+
+    .PARAMETER ProxyPort
+        Specifies the port number to use for the proxy port.
+
+    .PARAMETER SAActive
+        Specify if you have active Software Assurance.
+
+    .PARAMETER CurrentBranch
+        Specify whether to use Configuration Manager current branch or long-term servicing branch (LTSB).
+#>
 function Set-TargetResource
 {
     [CmdletBinding()]
@@ -250,6 +458,7 @@ function Set-TargetResource
         $IniFilePath,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet('InstallCAS', 'InstallPrimarySite')]
         [String]
         $Action,
 
@@ -298,6 +507,7 @@ function Set-TargetResource
         $MobileDeviceLanguage,
 
         [Parameter()]
+        [ValidateSet('EnforceHTTPS','HTTPorHTTPS')]
         [String]
         $RoleCommunicationProtocol,
 
@@ -310,6 +520,7 @@ function Set-TargetResource
         $ManagementPoint,
 
         [Parameter()]
+        [ValidateSet('HTTPS','HTTP')]
         [String]
         $ManagementPointProtocol,
 
@@ -318,22 +529,27 @@ function Set-TargetResource
         $DistributionPoint,
 
         [Parameter()]
+        [ValidateSet('HTTPS','HTTP')]
         [String]
         $DistributionPointProtocol,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddServerLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddClientLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $DeleteServerLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $DeleteClientLanguages,
 
@@ -385,6 +601,8 @@ function Set-TargetResource
         [Boolean]
         $CurrentBranch
     )
+
+    $IniFilePath = $IniFilePath.TrimEnd('\')
 
     $identification = @{
         Title = '[Identification]'
@@ -442,8 +660,9 @@ function Set-TargetResource
         CurrentBranch = ''
     }
 
-    $configOptions = @($options,$sqlConfigOptions,$hierarchyExpansionOption,$cloudConnectorOptions,$saBranchOptions)
+    $configOptions = @($Identification,$options,$sqlConfigOptions,$hierarchyExpansionOption,$cloudConnectorOptions,$saBranchOptions)
 
+    Write-Verbose -Message 'Writing all configuration options to ini file.'
     foreach ($configOption in $configOptions)
     {
         $outputIni += "$($configOption.Title) `n"
@@ -459,20 +678,134 @@ function Set-TargetResource
                         $true  {$newValue = 1}
                         $false {$newValue = 0}
                     }
+                    Write-Verbose -Message "Adding $($item.Key)=$newValue."
                     $outputIni += "$($item.Key)=$newValue`n"
                 }
                 elseif ($PSBoundParameters.$($item.Name))
                 {
+                    Write-Verbose -Message "Adding $($item.Key)=$($PSBoundParameters.$($item.Name))."
                     $outputIni += "$($item.Key)=$($PSBoundParameters.$($item.Name))`n"
                 }
             }
         }
         $outputIni += "`n"
     }
-
+    Write-Verbose -Message "Exporting ini file to $IniFilePath\$IniFileName."
     $outputIni | Out-File -FilePath "$IniFilePath\$IniFileName" -Force
-}
+} #end function Set-TargetResource
 
+<#
+    .SYNOPSIS
+        This will return whether the resource is in desired state.
+
+    .PARAMETER IniFileName
+        Specifies the ini file name.
+
+    .PARAMETER IniFilePath
+        Specifies the path of the ini file.
+
+    .PARAMETER Action
+        Specifies whether to install a CAS or Primary.
+
+    .PARAMETER CDLatest
+        This value informs setup that you're using media from CD.Latest.
+
+    .PARAMETER ProductID
+        Specifies the Configuration Manager installation product key, including the dashes.
+
+    .PARAMETER SiteCode
+        Specifies three alphanumeric characters that uniquely identify the site in your hierarchy.
+
+    .PARAMETER SiteName
+        Specifies the name for this site.
+
+    .PARAMETER SMSInstallDir
+        Specifies the installation folder for the Configuration Manager program files.
+
+    .PARAMETER SDKServer
+        Specifies the FQDN for the server that will host the SMS Provider.
+
+    .PARAMETER PreRequisiteComp
+        Specifies whether setup prerequisite files have already been downloaded.
+
+    .PARAMETER PreRequisitePath
+        Specifies the path to the setup prerequisite files.
+
+    .PARAMETER AdminConsole
+        Specifies whether to install the Configuration Manager console.
+
+    .PARAMETER JoinCeip
+        Specifies whether to join the Customer Experience Improvement Program (CEIP).
+
+    .PARAMETER MobileDeviceLanguage
+        Specifies whether the mobile device client languages are installed.
+
+    .PARAMETER RoleCommunicationProtocol
+        Specifies whether to configure all site systems to accept only HTTPS communication from clients, or to configure the communication method for each site system role.
+
+    .PARAMETER ClientsUsePKICertificate
+        Specifies whether clients will use a client PKI certificate to communicate with site system roles.
+
+    .PARAMETER ManagementPoint
+        Specifies the FQDN of the server that will host the management point site system role.
+
+    .PARAMETER ManagementPointProtocol
+        Specifies the protocol to use for the management point.
+
+    .PARAMETER DistributionPoint
+        Specifies the FQDN of the server that will host the distribution point site system role.
+
+    .PARAMETER DistributionPointProtocol
+        Specifies the protocol to use for the distribution point.
+
+    .PARAMETER AddServerLanguages
+        Specifies the server languages that will be available for the Configuration Manager console, reports, and Configuration Manager objects.
+
+    .PARAMETER AddClientLanguages
+        Specifies the languages that will be available to client computers.
+
+    .PARAMETER DeleteServerLanguages
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available for the Configuration Manager console, reports, and Configuration Manager objects.
+
+    .PARAMETER DeleteClientLanguages
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers.
+
+    .PARAMETER SQLServerName
+        Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
+
+    .PARAMETER DatabaseName
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.
+
+    .PARAMETER SqlSsbPort
+        Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
+
+    .PARAMETER SQLDataFilePath
+        Specifies an alternate location to create the database .mdb file.
+
+    .PARAMETER SQLLogFilePath
+        Specifies an alternate location to create the database .ldf file.
+
+    .PARAMETER CloudConnector
+        Specifies whether to install a service connection point at this site.
+
+    .PARAMETER CloudConnectorServer
+        Specifies the FQDN of the server that will host the service connection point site system role.
+
+    .PARAMETER UseProxy
+        Specifies whether the service connection point uses a proxy server.
+
+    .PARAMETER ProxyName
+        Specifies the FQDN of the proxy server that the service connection point uses.
+
+    .PARAMETER ProxyPort
+        Specifies the port number to use for the proxy port.
+
+    .PARAMETER SAActive
+        Specify if you have active Software Assurance.
+
+    .PARAMETER CurrentBranch
+        Specify whether to use Configuration Manager current branch or long-term servicing branch (LTSB).
+#>
 function Test-TargetResource
 {
     [CmdletBinding()]
@@ -488,6 +821,7 @@ function Test-TargetResource
         $IniFilePath,
 
         [Parameter(Mandatory = $true)]
+        [ValidateSet('InstallCAS', 'InstallPrimarySite')]
         [String]
         $Action,
 
@@ -536,6 +870,7 @@ function Test-TargetResource
         $MobileDeviceLanguage,
 
         [Parameter()]
+        [ValidateSet('EnforceHTTPS','HTTPorHTTPS')]
         [String]
         $RoleCommunicationProtocol,
 
@@ -548,6 +883,7 @@ function Test-TargetResource
         $ManagementPoint,
 
         [Parameter()]
+        [ValidateSet('HTTPS','HTTP')]
         [String]
         $ManagementPointProtocol,
 
@@ -556,22 +892,27 @@ function Test-TargetResource
         $DistributionPoint,
 
         [Parameter()]
+        [ValidateSet('HTTPS','HTTP')]
         [String]
         $DistributionPointProtocol,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddServerLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddClientLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $DeleteServerLanguages,
 
         [Parameter()]
+        [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $DeleteClientLanguages,
 
@@ -624,6 +965,7 @@ function Test-TargetResource
         $CurrentBranch
     )
 
+    $IniFilePath = $IniFilePath.TrimEnd('\')
     Write-Verbose "Getting file content of $IniFilePath\$IniFileName"
     $iniContent = Get-Content -Path  "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
     $result = $true
@@ -636,20 +978,33 @@ function Test-TargetResource
             {
                 $iniParameters += @{$line.split('=')[0] = $line.split('=')[1]}
             }
+        }
 
-            $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
+        $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
+        $PSBoundParameters.Remove('IniFilePath') | Out-Null
+        $PSBoundParameters.Remove('IniFileName') | Out-Null
 
-            foreach($param in $PSBoundParameters)
+        foreach($param in $PSBoundParameters.GetEnumerator())
+        {
+            switch ($param.Value)
             {
-                #$($PSBoundParameters.$($param.Name))
-                if ($iniParameters.$($param.Name) -and $iniParameters.$($param.Name) -ne $param.Value)
-                {
-                    $result = $false
-                }
-                elseif (-not iniParameters.$($param.Name))
-                {
-                    $result = $false
-                }
+                $true   {$newValue = 1}
+                $false  {$newValue = 0}
+                default {$newValue = $param.Value}
+            }
+            if ($iniParameters.$($param.Key) -and $iniParameters.$($param.Key) -ne $newValue)
+            {
+                Write-Verbose -Message "NOTMATCH: $($param.Key) - Current Value: $($iniParameters.$($param.Key)) Target Value: $newValue"
+                $result = $false
+            }
+            elseif (-not $iniParameters.$($param.Key) -and $systemParameters -notcontains $param.Key)
+            {
+                Write-Verbose -Message "NOTMATCH: $($param.Key) - Current Value: `$null Target Value: $newValue"
+                $result = $false
+            }
+            elseif ($iniParameters.$($param.Key) -and $iniParameters.$($param.Key) -eq $newValue)
+            {
+                Write-Verbose -Message "Match: $($param.Key) - Current Value: $($iniParameters.$($param.Key)) Target Value: $newValue"
             }
         }
 
@@ -658,5 +1013,6 @@ function Test-TargetResource
         $result = $false
     }
 
+    Write-Verbose -Message "Test returned: $result."
     return $result
-}
+} #end function Test-TargetResource
