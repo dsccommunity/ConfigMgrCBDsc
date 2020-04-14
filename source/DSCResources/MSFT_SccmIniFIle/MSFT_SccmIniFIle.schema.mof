@@ -4,7 +4,7 @@ class MSFT_SccmIniFile : OMI_BaseResource
     [Key, Description("Specifies the ini file name.")] String IniFileName;
     [Key, Description("Specifies the path of the ini file.")] String IniFilePath;
     [Write, Description("Specifies whether to install a CAS or Primary."), ValueMap{"InstallCAS","InstallPrimarySite"}, Values{"InstallCAS","InstallPrimarySite"}] String Action;
-    [Write, Description("This value informs setup that you're using media from CD.Latest.")] String CDLatest;
+    [Write, Description("This value informs setup that you're using media from CD.Latest.")] Boolean CDLatest;
     [Write, Description("Specifies the Configuration Manager installation product key, including the dashes.")] String ProductID;
     [Write, Description("Specifies three alphanumeric characters that uniquely identify the site in your hierarchy.")] String SiteCode;
     [Write, Description("Specifies the name for this site.")] String SiteName;

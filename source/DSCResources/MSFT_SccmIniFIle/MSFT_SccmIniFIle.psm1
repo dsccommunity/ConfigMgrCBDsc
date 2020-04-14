@@ -134,7 +134,7 @@ function Get-TargetResource
         $Action,
 
         [Parameter()]
-        [String]
+        [Boolean]
         $CDLatest,
 
         [Parameter(Mandatory = $true)]
@@ -463,7 +463,7 @@ function Set-TargetResource
         $Action,
 
         [Parameter()]
-        [String]
+        [Boolean]
         $CDLatest,
 
         [Parameter(Mandatory = $true)]
@@ -604,12 +604,21 @@ function Set-TargetResource
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
 
+    # Check for mandatory parameters for specific scenarios
     if (($ManagementPoint -or $ManagementPointProtocol -or -$DistributionPoint -or $DistributionPointProtocol -or $RoleCommunicationProtocol -or
         $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
     {
         Write-Error -Message "The parameters ManagementPoint, ManagementPointProtocol, DistributionPoint,
                             DistributionPointProtocol, RoleCommunicationProtocol, ClientsUsePKICertificate,
                             CCARSiteServer, CASRetryInterval, WaitForCASTimeout are used only with InstallPrimarySite."
+    }
+    elseif ($CloudConnector -eq $true -and ([string]::IsNullOrEmpty($CloudConnectorServer) -or ($UseProxy -or $UseProxy -eq $false)))
+    {
+        Write-Error -Message "If CloudConnector is True you must provide CloudConnectorServer and UseProxy."
+    }
+    elseif ($UseProxy -eq $true -and ([string]::IsNullOrEmpty($ProxyName) -or [string]::IsNullOrEmpty($ProxyPort)))
+    {
+        Write-Error -Message "If Proxy is True,  you must provide ProxyName and ProxyPort."
     }
 
     $identification = @{
@@ -834,7 +843,7 @@ function Test-TargetResource
         $Action,
 
         [Parameter()]
-        [String]
+        [Boolean]
         $CDLatest,
 
         [Parameter(Mandatory = $true)]
