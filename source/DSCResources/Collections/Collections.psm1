@@ -98,7 +98,7 @@ function Get-TargetResource
         $Ensure = 'Present'
     )
 
-    Write-Verbose -Message $localizedData.RetrieveSettingValue
+    Write-Verbose -Message $script:localizedData.RetrieveSettingValue
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
 
@@ -269,7 +269,7 @@ function Set-TargetResource
         {
             if ($null -eq $cn)
             {
-                Write-Verbose -Message ($localizedData.CollectionAbsent -f $CollectionName)
+                Write-Verbose -Message ($script:localizedData.CollectionAbsent -f $CollectionName)
                 New-CMCollection -Name $CollectionName -CollectionType $CollectionType -LimitingCollectionName $LimitingCollectionName
             }
 
@@ -340,7 +340,7 @@ function Set-TargetResource
                 {
                     if (($null -eq $state.ExcludeMembership) -or ($state.ExcludeMembership -notcontains $member))
                     {
-                        Write-Verbose -Message ($localizedData.ExcludeMemberRule -f $CollectionName, $member)
+                        Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
                         if ($CollectionType -eq 'User')
                         {
                             Add-CMUserCollectionExcludeMembershipRule -CollectionName $CollectionName -ExcludeCollectionName $member
@@ -359,7 +359,7 @@ function Set-TargetResource
                 {
                     if (($null -eq $state.DirectMembership) -or ($state.DirectMembership -notcontains $member))
                     {
-                        Write-Verbose -Message ($localizedData.DirectMemberRule -f $CollectionName, $member)
+                        Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
                         if ($CollectionType -eq 'User')
                         {
                             Add-CMUserCollectionDirectMembershipRule -CollectionName $CollectionName -ResourceId $member
@@ -389,7 +389,7 @@ function Set-TargetResource
                 {
                     if (($null -eq $state.QueryRules) -or ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
                     {
-                        Write-Verbose -Message ($localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
+                        Write-Verbose -Message ($script:localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
 
                         if ($CollectionType -eq 'User')
                         {
@@ -407,7 +407,7 @@ function Set-TargetResource
         {
             if ($null -ne $cn)
             {
-                Write-Verbose -Message ($localizedData.RemoveCollection -f $CollectionName)
+                Write-Verbose -Message ($script:localizedData.RemoveCollection -f $CollectionName)
                 Remove-CMCollection -Name $CollectionName
             }
         }
@@ -524,7 +524,7 @@ function Test-TargetResource
     {
         if ($null -eq $cn)
         {
-            Write-Verbose -Message ($localizedData.CollectionAbsent -f $CollectionName)
+            Write-Verbose -Message ($script:localizedData.CollectionAbsent -f $CollectionName)
             $result = $false
         }
         else
@@ -544,7 +544,7 @@ function Test-TargetResource
             {
                 if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
                 {
-                    Write-Verbose -Message ($localizedData.CollectionSetting -f $CollectionName, $($item.name), $($item.Value), $($state[$item.Name]))
+                    Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, $($item.name), $($item.Value), $($state[$item.Name]))
                     $result = $false
                 }
             }
@@ -559,7 +559,7 @@ function Test-TargetResource
                 {
                     if (($desiredRefreshSchedule).$($item) -ne ($state.RefreshSchedule).$($item))
                     {
-                        Write-Verbose -Message ($localizedData.scheduleItem -f $item, $($desiredRefreshSchedule.$($item)), $(($state.RefreshSchedule).$($item)))
+                        Write-Verbose -Message ($script:localizedData.ScheduleItem -f $item, $($desiredRefreshSchedule.$($item)), $(($state.RefreshSchedule).$($item)))
                         $result = $false
                     }
                 }
@@ -571,7 +571,7 @@ function Test-TargetResource
                 {
                     if (([string]::IsNullOrEmpty($state.ExcludeMembership)) -or ($state.ExcludeMembership -notcontains $member))
                     {
-                        Write-Verbose -Message ($localizedData.ExcludeMemberRule -f $CollectionName, $member)
+                        Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
                         $result = $false
                     }
                 }
@@ -583,7 +583,7 @@ function Test-TargetResource
                 {
                     if (($null -eq $state.DirectMembership) -or ($state.DirectMembership -notcontains $member))
                     {
-                        Write-Verbose -Message ($localizedData.DirectMemberRule -f $CollectionName, $member)
+                        Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
                         $result = $false
                     }
                 }
@@ -607,7 +607,7 @@ function Test-TargetResource
                     if (([string]::IsNullOrEmpty($state.QueryRules.QueryExpression)) -or
                        ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
                     {
-                        Write-Verbose -Message ($localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
+                        Write-Verbose -Message ($script:localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
                         $result = $false
                     }
                 }
@@ -618,12 +618,12 @@ function Test-TargetResource
     {
         if ($null -ne $cn)
         {
-            Write-Verbose -Message ($localizedData.RemoveCollection -f $CollectionName)
+            Write-Verbose -Message ($script:localizedData.RemoveCollection -f $CollectionName)
             $result = $false
         }
     }
 
-    Write-Verbose -Message ($localizedData.TestState -f $result)
+    Write-Verbose -Message ($script:localizedData.TestState -f $result)
     Set-Location -Path "$env:temp"
     return $result
 }

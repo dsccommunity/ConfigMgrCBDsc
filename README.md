@@ -72,6 +72,6 @@ The following resources are available in this resource.
 
 #### Collections Examples
 
-* [Collections_Absent](Source\Examples\Resources\CMAccounts\Collection_Absent.ps1)
-* [DeviceCollection_Present](Source\Examples\Resources\CMAccounts\DeviceCollection_Present.ps1)
-* [UserCollection_Present](Source\Examples\Resources\CMAccounts\UserCollection_Present.ps1)
+* [Collections_Absent](Source\Examples\Resources\Collections\Collection_Absent.ps1)
+* [DeviceCollection_Present](Source\Examples\Resources\Collections\DeviceCollection_Present.ps1)
+* [UserCollection_Present](Source\Examples\Resources\Collections\UserCollection_Present.ps1)
