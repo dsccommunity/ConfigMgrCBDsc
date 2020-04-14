@@ -247,8 +247,9 @@ try
                     }
 
                     It '"Should throw because missing proxy parameters' {
-                        $test.Add('UseProxy', $true)
-                        { Set-TargetResource @test } | Should -Throw -ExpectedMessage 'If Proxy is True, you must provide ProxyName and ProxyPort.'
+                        $proxyTest = $test.Clone()
+                        $proxyTest.Add('UseProxy', $true)
+                        { Set-TargetResource @proxyTest } | Should -Throw -ExpectedMessage 'If Proxy is True, you must provide ProxyName and ProxyPort.'
                     }
                 }
             }
