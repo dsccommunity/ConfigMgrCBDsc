@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to remove an account from Configuration Manager.
+        A DSC configuration script to create a CAS ini file for Configuration Manager.
 #>
 Configuration Example
 {
