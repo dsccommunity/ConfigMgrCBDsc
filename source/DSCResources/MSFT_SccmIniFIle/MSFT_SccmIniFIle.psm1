@@ -604,6 +604,14 @@ function Set-TargetResource
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
 
+    if (($ManagementPoint -or $ManagementPointProtocol -or -$DistributionPoint -or $DistributionPointProtocol -or $RoleCommunicationProtocol -or
+        $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
+    {
+        Write-Error -Message "The parameters ManagementPoint, ManagementPointProtocol, DistributionPoint,
+                            DistributionPointProtocol, RoleCommunicationProtocol, ClientsUsePKICertificate,
+                            CCARSiteServer, CASRetryInterval, WaitForCASTimeout are used only with InstallPrimarySite."
+    }
+
     $identification = @{
         Title = '[Identification]'
         Action = ''
