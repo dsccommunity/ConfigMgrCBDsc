@@ -45,72 +45,78 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **SiteName** _(Required)_: Specifies the name for this site.
 - **SMSInstallDir** _(Required)_: Specifies the installation folder for the Configuration
   Manager program files.
-- **SDKServer** _(Required)_: Specifies the FQDN for the server that will host the SMS
-  Provider.
-- **PreRequisiteComp** _(Required)_: Specifies whether setup prerequisite files have already
-  been downloaded.
-- **PreRequisitePath** _(Required)_: Specifies the path to the setup prerequisite files.
-- **AdminConsole** _(Required)_: Specifies whether to install the Configuration Manager console.
+- **SDKServer** _(Required)_: Specifies the FQDN for the server that will host
+  the SMS Provider.
+- **PreRequisiteComp** _(Required)_: Specifies whether setup prerequisite files
+  have already been downloaded.
+- **PreRequisitePath** _(Required)_: Specifies the path to the setup
+  prerequisite files.
+- **AdminConsole** _(Required)_: Specifies whether to install the Configuration
+  Manager console.
 - **JoinCeip** _(Required)_: Specifies whether to join the Customer Experience Improvement
   Program (CEIP).
-- **MobileDeviceLanguage** _(Required)_: Specifies whether the mobile device client languages
-  are installed.
-- **RoleCommunicationProtocol** _(Write)_: Specifies whether to configure all site systems to
-  accept only HTTPS communication from clients, or to configure the communication
-  method for each site system role.
+- **MobileDeviceLanguage** _(Required)_: Specifies whether the mobile device
+  client languages are installed.
+- **RoleCommunicationProtocol** _(Write)_: Specifies whether to configure all
+  site systems to accept only HTTPS communication from clients, or to configure
+  the communication method for each site system role.
   - Values include: { EnforceHTTPS | HTTPorHTTPS }
-- **ClientsUsePKICertificate** _(Write)_: Specifies whether clients will use a client PKI
-  certificate to communicate with site system roles.
-- **ManagementPoint** _(Write)_: Specifies the FQDN of the server that will host the management
-  point site system role.
-- **ManagementPointProtocol** _(Write)_: Specifies the protocol to use for the management point.
+- **ClientsUsePKICertificate** _(Write)_: Specifies whether clients will use a
+  client PKI certificate to communicate with site system roles.
+- **ManagementPoint** _(Write)_: Specifies the FQDN of the server that will
+  host the management point site system role.
+- **ManagementPointProtocol** _(Write)_: Specifies the protocol to use for the
+  management point.
   - Values include: { HTTPS | HTTP }
-- **DistributionPoint** _(Write)_: Specifies the FQDN of the server that will host the
-  distribution point site system role.
+- **DistributionPoint** _(Write)_: Specifies the FQDN of the server that will
+  host the distribution point site system role.
 - **DistributionPointProtocol** _(Write)_: Specifies the protocol to use for the
   distribution point.
   - Values include: { HTTPS | HTTP }
-- **AddServerLanguages** _(Write)_: Specifies the server languages that will be available
-  for the Configuration Manager console, reports, and Configuration Manager objects.
+- **AddServerLanguages** _(Write)_: Specifies the server languages that will be
+  available for the Configuration Manager console, reports, and Configuration
+    Manager objects.
   - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
     KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
-- **AddClientLanguages** _(Write)_: Specifies the languages that will be available to
-  client computers.
+- **AddClientLanguages** _(Write)_: Specifies the languages that will be
+  available to client computers.
   - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
     KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
-- **DeleteServerLanguages** _(Write)_: Modifies a site after it's installed. Specifies
-  the languages to remove, and which will no longer be available for the
+- **DeleteServerLanguages** _(Write)_: Modifies a site after it's installed.
+  Specifies the languages to remove, and which will no longer be available for the
   Configuration Manager console, reports, and Configuration Manager objects.
   - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
     KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
-- **DeleteClientLanguages** _(Write)_: Modifies a site after it's installed. Specifies the
-  languages to remove, and which will no longer be available to client computers.
+- **DeleteClientLanguages** _(Write)_: Modifies a site after it's installed.
+  Specifies the languages to remove, and which will no longer be available to
+  client computers.
   - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
     KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
-- **SQLServerName** _(Required)_: Specifies the name of the server or clustered instance
-  that's running SQL Server to host the site database.
-- **DatabaseName** _(Required)_: Specifies the name of the SQL Server database to create, or
-  the SQL Server database to use, when setup installs the CAS database. This
-  can also include the instance, instance\<databasename>.
-- **SqlSsbPort** _(Write)_: Specifies the SQL Server Service Broker (SSB) port that SQL
-  Server uses.
-- **SQLDataFilePath** _(Write)_: Specifies an alternate location to create the database
-  .mdb file.
-- **SQLLogFilePath** _(Write)_: Specifies an alternate location to create the database
-  .ldf file.
-- **CCARSiteServer** _(Write)_: Specifies the CAS that a primary site attaches to when it
-  joins the Configuration Manager hierarchy.
-- **CasRetryInterval** _(Write)_: Specifies the retry interval in minutes to attempt a
-  connection to the CAS after the connection fails.
-- **WaitForCasTimeout** _(Write)_: Specifies the maximum timeout value in minutes for a
-  primary site to connect to the CAS.
-- **CloudConnector** _(Required)_: Specifies the FQDN of the server that will host the
-  service connection point site system role.
-- **CloudConnectorServer** _(Write)_: Specifies the FQDN of the server that will host the
-  service connection point site system role.
-- **UseProxy** _(Write)_: Specifies whether the service connection point uses a proxy server.
-- **ProxyName** _(Write)_: Specifies the FQDN of the proxy server that the service
-  connection point uses.
+- **SQLServerName** _(Required)_: Specifies the name of the server or clustered
+  instance that's running SQL Server to host the site database.
+- **DatabaseName** _(Required)_: Specifies the name of the SQL Server database
+  to create, or the SQL Server database to use, when setup installs the CAS
+  database. This can also include the instance, instance\<databasename>.
+- **SqlSsbPort** _(Write)_: Specifies the SQL Server Service Broker (SSB) port
+  that SQL Server uses.
+- **SQLDataFilePath** _(Write)_: Specifies an alternate location to create the
+  database .mdb file.
+- **SQLLogFilePath** _(Write)_: Specifies an alternate location to create the
+  database .ldf file.
+- **CCARSiteServer** _(Write)_: Specifies the CAS that a primary site attaches
+  to when it joins the Configuration Manager hierarchy.
+- **CasRetryInterval** _(Write)_: Specifies the retry interval in minutes to
+  attempt a connection to the CAS after the connection fails.
+- **WaitForCasTimeout** _(Write)_: Specifies the maximum timeout value in
+  minutes for a primary site to connect to the CAS.
+- **CloudConnector** _(Required)_: Specifies the FQDN of the server that will
+  host the service connection point site system role.
+- **CloudConnectorServer** _(Write)_: Specifies the FQDN of the server that will
+  host the service connection point site system role.
+- **UseProxy** _(Write)_: Specifies whether the service connection point uses a
+  proxy server.
+- **ProxyName** _(Write)_: Specifies the FQDN of the proxy server that the
+  service connection point uses.
 - **ProxyPort** _(Write)_: Specifies the port number to use for the proxy port.
 - **SAActive** _(Write)_: Specify if you have active Software Assurance.
 - **CurrentBranch** _(Write)_: Specify whether to use Configuration Manager current
