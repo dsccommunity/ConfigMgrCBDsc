@@ -343,7 +343,7 @@ function Get-TargetResource
     else
     {
         Write-Verbose -Message ($script:localizedData.MissingFileContent -f $IniFilePath, $IniFileName)
-        Write-Verbose -Message ($script:localizedData.GetPassParameters)
+        Write-Verbose -Message ($script:localizedData.GetPassParameters -f)
 
         $getParameters = @{}
         foreach ($param in $testParameters)
@@ -737,7 +737,7 @@ function Set-TargetResource
 
     $configOptions = @($Identification,$options,$sqlConfigOptions,$hierarchyExpansionOption,$cloudConnectorOptions,$saBranchOptions)
 
-    Write-Verbose -Message ($script:localizedData.WritingParameter)
+    Write-Verbose -Message ($script:localizedData.WritingParameter -f)
     foreach ($configOption in $configOptions)
     {
         $outputIni += "$($configOption.Title) `n"
@@ -1117,13 +1117,13 @@ function Test-TargetResource
         $result = $false
     }
 
-    if($result)
+    if ($result)
     {
-        Write-Verbose -Message ($script:localizedData.InDesiredStateMessage)
+        Write-Verbose -Message ($script:localizedData.InDesiredStateMessage -f)
     }
     else
     {
-        Write-Verbose -Message ($script:localizedData.NotInDesiredStateMessage)
+        Write-Verbose -Message ($script:localizedData.NotInDesiredStateMessage -f)
     }
 
     return $result
