@@ -32,72 +32,91 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ### SCCMIniFile
 
-- **IniFileName**: Specifies the ini file name.
-- **IniFilePath**: Specifies the path of the ini file.
-- **Action**: Specifies whether to install a CAS or Primary.
-- **CDLatest**: This value informs setup that you're using media from
+- **IniFileName** _(Key)_: Specifies the ini file name.
+- **IniFilePath** _(Key)_: Specifies the path of the ini file.
+- **Action** _(Required)_: Specifies whether to install a CAS or Primary.
+  - Values include: { InstallCAS | InstallPrimarySite }
+- **CDLatest** _(Write)_: This value informs setup that you're using media from
   CD.Latest.
-- **ProductID**: Specifies the Configuration Manager installation product
+- **ProductID** _(Required)_: Specifies the Configuration Manager installation product
   key, including the dashes.
-- **SiteCode**: Specifies three alphanumeric characters that uniquely
+- **SiteCode** _(Required)_: Specifies three alphanumeric characters that uniquely
   identify the site in your hierarchy.
-- **SiteName**: Specifies the name for this site.
-- **SMSInstallDir**: Specifies the installation folder for the Configuration
+- **SiteName** _(Required)_: Specifies the name for this site.
+- **SMSInstallDir** _(Required)_: Specifies the installation folder for the Configuration
   Manager program files.
-- **SDKServer**: Specifies the FQDN for the server that will host the SMS
+- **SDKServer** _(Required)_: Specifies the FQDN for the server that will host the SMS
   Provider.
-- **PreRequisiteComp**: Specifies whether setup prerequisite files have already
+- **PreRequisiteComp** _(Required)_: Specifies whether setup prerequisite files have already
   been downloaded.
-- **PreRequisitePath**: Specifies the path to the setup prerequisite files.
-- **AdminConsole**: Specifies whether to install the Configuration Manager console.
-- **JoinCeip**: Specifies whether to join the Customer Experience Improvement
+- **PreRequisitePath** _(Required)_: Specifies the path to the setup prerequisite files.
+- **AdminConsole** _(Required)_: Specifies whether to install the Configuration Manager console.
+- **JoinCeip** _(Required)_: Specifies whether to join the Customer Experience Improvement
   Program (CEIP).
-- **MobileDeviceLanguage**: Specifies whether the mobile device client languages
+- **MobileDeviceLanguage** _(Required)_: Specifies whether the mobile device client languages
   are installed.
-- **RoleCommunicationProtocol**: Specifies whether to configure all site systems to
+- **RoleCommunicationProtocol** _(Write)_: Specifies whether to configure all site systems to
   accept only HTTPS communication from clients, or to configure the communication
   method for each site system role.
-- **ClientsUsePKICertificate**: Specifies whether clients will use a client PKI
+  - Values include: { EnforceHTTPS | HTTPorHTTPS }
+- **ClientsUsePKICertificate** _(Write)_: Specifies whether clients will use a client PKI
   certificate to communicate with site system roles.
-- **ManagementPoint**: Specifies the FQDN of the server that will host the management
+- **ManagementPoint** _(Write)_: Specifies the FQDN of the server that will host the management
   point site system role.
-- **ManagementPointProtocol**: Specifies the protocol to use for the management point.
-- **DistributionPoint**: Specifies the FQDN of the server that will host the
+- **ManagementPointProtocol** _(Write)_: Specifies the protocol to use for the management point.
+  - Values include: { HTTPS | HTTP }
+- **DistributionPoint** _(Write)_: Specifies the FQDN of the server that will host the
   distribution point site system role.
-- **DistributionPointProtocol**: Specifies the protocol to use for the
+- **DistributionPointProtocol** _(Write)_: Specifies the protocol to use for the
   distribution point.
-- **AddServerLanguages**: Specifies the server languages that will be available
+  - Values include: { HTTPS | HTTP }
+- **AddServerLanguages** _(Write)_: Specifies the server languages that will be available
   for the Configuration Manager console, reports, and Configuration Manager objects.
-- **AddClientLanguages**: Specifies the languages that will be available to
+  - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
+    KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
+- **AddClientLanguages** _(Write)_: Specifies the languages that will be available to
   client computers.
-- **DeleteServerLanguages**: Modifies a site after it's installed. Specifies
+  - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
+    KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
+- **DeleteServerLanguages** _(Write)_: Modifies a site after it's installed. Specifies
   the languages to remove, and which will no longer be available for the
   Configuration Manager console, reports, and Configuration Manager objects.
-- **SQLServerName**: Specifies the name of the server or clustered instance
+  - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
+    KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
+- **DeleteClientLanguages** _(Write)_: Modifies a site after it's installed. Specifies the
+  languages to remove, and which will no longer be available to client computers.
+  - Values include: { DEU | FRA | RUS | CHS | JPN | CHT | CSY | ESN | HUN | ITA |
+    KOR | NLD | PLK | PTB | PTG | SVE | TRK | ZHH }
+- **SQLServerName** _(Required)_: Specifies the name of the server or clustered instance
   that's running SQL Server to host the site database.
-- **DatabaseName**: Specifies the name of the SQL Server database to create, or
+- **DatabaseName** _(Required)_: Specifies the name of the SQL Server database to create, or
   the SQL Server database to use, when setup installs the CAS database. This
   can also include the instance, instance\<databasename>.
-- **SqlSsbPort**: Specifies the SQL Server Service Broker (SSB) port that SQL
+- **SqlSsbPort** _(Write)_: Specifies the SQL Server Service Broker (SSB) port that SQL
   Server uses.
-- **SQLDataFilePath**: Specifies an alternate location to create the database
+- **SQLDataFilePath** _(Write)_: Specifies an alternate location to create the database
   .mdb file.
-- **SQLLogFilePath**: Specifies an alternate location to create the database
+- **SQLLogFilePath** _(Write)_: Specifies an alternate location to create the database
   .ldf file.
-- **CCARSiteServer**: Specifies the CAS that a primary site attaches to when it
+- **CCARSiteServer** _(Write)_: Specifies the CAS that a primary site attaches to when it
   joins the Configuration Manager hierarchy.
-- **CasRetryInterval**: Specifies the retry interval in minutes to attempt a
+- **CasRetryInterval** _(Write)_: Specifies the retry interval in minutes to attempt a
   connection to the CAS after the connection fails.
-- **WaitForCasTimeout**: Specifies the maximum timeout value in minutes for a
+- **WaitForCasTimeout** _(Write)_: Specifies the maximum timeout value in minutes for a
   primary site to connect to the CAS.
-- **CloudConnector**: Specifies the FQDN of the server that will host the
+- **CloudConnector** _(Required)_: Specifies the FQDN of the server that will host the
   service connection point site system role.
-- **CloudConnectorServer**: Specifies the FQDN of the server that will host the
+- **CloudConnectorServer** _(Write)_: Specifies the FQDN of the server that will host the
   service connection point site system role.
-- **UseProxy**: Specifies whether the service connection point uses a proxy server.
-- **ProxyName**: Specifies the FQDN of the proxy server that the service
+- **UseProxy** _(Write)_: Specifies whether the service connection point uses a proxy server.
+- **ProxyName** _(Write)_: Specifies the FQDN of the proxy server that the service
   connection point uses.
-- **ProxyPort**: Specifies the port number to use for the proxy port.
-- **SAActive**: Specify if you have active Software Assurance.
-- **CurrentBranch**: Specify whether to use Configuration Manager current
+- **ProxyPort** _(Write)_: Specifies the port number to use for the proxy port.
+- **SAActive** _(Write)_: Specify if you have active Software Assurance.
+- **CurrentBranch** _(Write)_: Specify whether to use Configuration Manager current
   branch or long-term servicing branch (LTSB).
+
+#### SccmIniFile Examples
+
+* [CMAccounts_Absent](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
+* [CMAccounts_Present](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
