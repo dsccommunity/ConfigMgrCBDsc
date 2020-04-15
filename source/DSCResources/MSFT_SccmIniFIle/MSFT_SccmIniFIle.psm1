@@ -1,5 +1,7 @@
+$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 $script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
 
+Import-Module -Name $script:dscResourceCommonPath
 Import-Module -Name $script:configMgrResourcehelper
 
 <#
@@ -49,7 +51,8 @@ Import-Module -Name $script:configMgrResourcehelper
         Specifies whether the mobile device client languages are installed.
 
     .PARAMETER RoleCommunicationProtocol
-        Specifies whether to configure all site systems to accept only HTTPS communication from clients, or to configure the communication method for each site system role.
+        Specifies whether to configure all site systems to accept only HTTPS communication from clients,
+        or to configure the communication method for each site system role.
 
     .PARAMETER ClientsUsePKICertificate
         Specifies whether clients will use a client PKI certificate to communicate with site system roles.
@@ -67,22 +70,26 @@ Import-Module -Name $script:configMgrResourcehelper
         Specifies the protocol to use for the distribution point.
 
     .PARAMETER AddServerLanguages
-        Specifies the server languages that will be available for the Configuration Manager console, reports, and Configuration Manager objects.
+        Specifies the server languages that will be available for the Configuration Manager console, reports,
+        and Configuration Manager objects.
 
     .PARAMETER AddClientLanguages
         Specifies the languages that will be available to client computers.
 
     .PARAMETER DeleteServerLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available for the Configuration Manager console, reports, and Configuration Manager objects.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
+         for the Configuration Manager console, reports, and Configuration Manager objects.
 
     .PARAMETER DeleteClientLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
+         to client computers.
 
     .PARAMETER SQLServerName
         Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
 
     .PARAMETER DatabaseName
-        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs
+         the CAS database. This can also include the instance, instance\<databasename>.
 
     .PARAMETER SqlSsbPort
         Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
@@ -242,7 +249,7 @@ function Get-TargetResource
         $DatabaseName,
 
         [Parameter()]
-        [String]
+        [UInt16]
         $SqlSsbPort,
 
         [Parameter()]
@@ -283,7 +290,7 @@ function Get-TargetResource
         $ProxyName,
 
         [Parameter()]
-        [String]
+        [UInt16]
         $ProxyPort,
 
         [Parameter()]
@@ -300,7 +307,7 @@ function Get-TargetResource
     $iniContent = Get-Content -Path "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
 
     $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
-    $Testparameters = (Get-Command -Name 'Get-TargetResource').Parameters.values | Select-Object -Property  Name,ParameterType
+    $testparameters = (Get-Command -Name 'Get-TargetResource').Parameters.values | Select-Object -Property  Name,ParameterType
 
     if ($iniContent)
     {
@@ -360,7 +367,7 @@ function Get-TargetResource
 
 <#
     .SYNOPSIS
-        This will set the resource to desired state.
+        This will return the current state of the resource.
 
     .PARAMETER IniFileName
         Specifies the ini file name.
@@ -405,7 +412,8 @@ function Get-TargetResource
         Specifies whether the mobile device client languages are installed.
 
     .PARAMETER RoleCommunicationProtocol
-        Specifies whether to configure all site systems to accept only HTTPS communication from clients, or to configure the communication method for each site system role.
+        Specifies whether to configure all site systems to accept only HTTPS communication from clients,
+        or to configure the communication method for each site system role.
 
     .PARAMETER ClientsUsePKICertificate
         Specifies whether clients will use a client PKI certificate to communicate with site system roles.
@@ -423,22 +431,26 @@ function Get-TargetResource
         Specifies the protocol to use for the distribution point.
 
     .PARAMETER AddServerLanguages
-        Specifies the server languages that will be available for the Configuration Manager console, reports, and Configuration Manager objects.
+        Specifies the server languages that will be available for the Configuration Manager console, reports,
+        and Configuration Manager objects.
 
     .PARAMETER AddClientLanguages
         Specifies the languages that will be available to client computers.
 
     .PARAMETER DeleteServerLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available for the Configuration Manager console, reports, and Configuration Manager objects.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
+         for the Configuration Manager console, reports, and Configuration Manager objects.
 
     .PARAMETER DeleteClientLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
+         to client computers.
 
     .PARAMETER SQLServerName
         Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
 
     .PARAMETER DatabaseName
-        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs
+         the CAS database. This can also include the instance, instance\<databasename>.
 
     .PARAMETER SqlSsbPort
         Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
@@ -597,7 +609,7 @@ function Set-TargetResource
         $DatabaseName,
 
         [Parameter()]
-        [String]
+        [UInt16]
         $SqlSsbPort,
 
         [Parameter()]
@@ -638,7 +650,7 @@ function Set-TargetResource
         $ProxyName,
 
         [Parameter()]
-        [String]
+        [UInt16]
         $ProxyPort,
 
         [Parameter()]
@@ -761,7 +773,7 @@ function Set-TargetResource
 
 <#
     .SYNOPSIS
-        This will return whether the resource is in desired state.
+        This will return the current state of the resource.
 
     .PARAMETER IniFileName
         Specifies the ini file name.
@@ -806,7 +818,8 @@ function Set-TargetResource
         Specifies whether the mobile device client languages are installed.
 
     .PARAMETER RoleCommunicationProtocol
-        Specifies whether to configure all site systems to accept only HTTPS communication from clients, or to configure the communication method for each site system role.
+        Specifies whether to configure all site systems to accept only HTTPS communication from clients,
+        or to configure the communication method for each site system role.
 
     .PARAMETER ClientsUsePKICertificate
         Specifies whether clients will use a client PKI certificate to communicate with site system roles.
@@ -824,22 +837,26 @@ function Set-TargetResource
         Specifies the protocol to use for the distribution point.
 
     .PARAMETER AddServerLanguages
-        Specifies the server languages that will be available for the Configuration Manager console, reports, and Configuration Manager objects.
+        Specifies the server languages that will be available for the Configuration Manager console, reports,
+        and Configuration Manager objects.
 
     .PARAMETER AddClientLanguages
         Specifies the languages that will be available to client computers.
 
     .PARAMETER DeleteServerLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available for the Configuration Manager console, reports, and Configuration Manager objects.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
+         for the Configuration Manager console, reports, and Configuration Manager objects.
 
     .PARAMETER DeleteClientLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
+         to client computers.
 
     .PARAMETER SQLServerName
         Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
 
     .PARAMETER DatabaseName
-        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs
+         the CAS database. This can also include the instance, instance\<databasename>.
 
     .PARAMETER SqlSsbPort
         Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
@@ -999,7 +1016,7 @@ function Test-TargetResource
         $DatabaseName,
 
         [Parameter()]
-        [String]
+        [UInt16]
         $SqlSsbPort,
 
         [Parameter()]
@@ -1040,7 +1057,7 @@ function Test-TargetResource
         $ProxyName,
 
         [Parameter()]
-        [String]
+        [UInt16]
         $ProxyPort,
 
         [Parameter()]
@@ -1096,12 +1113,14 @@ function Test-TargetResource
                 Write-Verbose -Message "Match: $($param.Key) - Current Value: $($iniParameters.$($param.Key)) Target Value: $newValue"
             }
         }
-
     }
-    else {
+    else
+    {
         $result = $false
     }
 
     Write-Verbose -Message "Test returned: $result."
     return $result
 } #end function Test-TargetResource
+
+Export-ModuleMember -Function *-TargetResource

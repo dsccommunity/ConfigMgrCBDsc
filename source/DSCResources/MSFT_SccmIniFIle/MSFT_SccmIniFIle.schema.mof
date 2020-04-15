@@ -27,7 +27,7 @@ class MSFT_SccmIniFile : OMI_BaseResource
     [Write, Description("Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers."), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String DeleteClientLanguages;
     [Required, Description("Specifies the name of the server or clustered instance that's running SQL Server to host the site database.")] String SQLServerName;
     [Required, Description("Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.")] String DatabaseName;
-    [Write, Description("Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.")] String SqlSsbPort;
+    [Write, Description("Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.")] UInt16 SqlSsbPort;
     [Write, Description("Specifies an alternate location to create the database .mdb file.")] String SQLDataFilePath;
     [Write, Description("Specifies an alternate location to create the database .ldf file.")] String SQLLogFilePath;
     [Write, Description("Specifies the CAS that a primary site attaches to when it joins the Configuration Manager hierarchy")] String CCARSiteServer;
@@ -37,7 +37,7 @@ class MSFT_SccmIniFile : OMI_BaseResource
     [Write, Description("Specifies the FQDN of the server that will host the service connection point site system role.")] String CloudConnectorServer;
     [Write, Description("Specifies whether the service connection point uses a proxy server.")] Boolean UseProxy;
     [Write, Description("Specifies the FQDN of the proxy server that the service connection point uses.")] String ProxyName;
-    [Write, Description("Specifies the port number to use for the proxy port.")] String ProxyPort;
+    [Write, Description("Specifies the port number to use for the proxy port.")] UInt16 ProxyPort;
     [Write, Description("Specify if you have active Software Assurance.")] Boolean SAActive;
     [Write, Description("Specify whether to use Configuration Manager current branch or long-term servicing branch (LTSB).")] Boolean CurrentBranch;
 };
