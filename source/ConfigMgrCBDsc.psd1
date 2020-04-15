@@ -45,6 +45,7 @@
         'ClientSettings'
         'CMAccounts'
         'SccmIniFile'
+        'XSccmInstall'
     )
 
     <#
