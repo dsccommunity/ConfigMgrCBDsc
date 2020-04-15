@@ -46,6 +46,7 @@
         'CMAccounts'
         'SccmIniFile'
         'XSccmInstall'
+        'xSccmPreReqs'
     )
 
     <#
