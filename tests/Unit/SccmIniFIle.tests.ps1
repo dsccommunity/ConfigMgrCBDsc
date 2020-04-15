@@ -233,8 +233,8 @@ try
                     {
                         $wrongParameters = $test.clone()
                         $wrongParameters.Add('ManagementPoint','PRI.contoso.com')
-                        $message = 'The parameters ManagementPoint, ManagementPointProtocol, DistributionPoint,',
-                            'DistributionPointProtocol, RoleCommunicationProtocol, ClientsUsePKICertificate,',
+                        $message = 'The parameters ManagementPoint, ManagementPointProtocol, DistributionPoint, ',
+                            'DistributionPointProtocol, RoleCommunicationProtocol, ClientsUsePKICertificate, ',
                         'CCARSiteServer, CASRetryInterval, WaitForCASTimeout are used only with InstallPrimarySite.'
                         $throwreason = 'Wrong parameter for CAS'
 

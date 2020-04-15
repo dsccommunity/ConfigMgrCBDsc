@@ -303,7 +303,7 @@ function Get-TargetResource
     )
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
-    Write-Verbose "Getting file content of $IniFilePath\$IniFileName"
+    Write-Verbose -Message ($script:localizedData.GettingFileContent -f $IniFilePath, $IniFileName)
     $iniContent = Get-Content -Path "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
 
     $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
@@ -329,12 +329,12 @@ function Get-TargetResource
             {
                 if ($($iniParameters.$($param.Name)))
                 {
-                    Write-Verbose -Message "Adding: $($param.Name) - $($iniParameters.$($param.Name))"
+                    Write-Verbose -Message ($script:localizedData.AddingParameter -f $($param.Name), $($iniParameters.$($param.Name)))
                     $getParameters.Add($($param.Name),$($iniParameters.$($param.Name)))
                 }
                 else
                 {
-                    Write-Verbose -Message "Adding: $($param.Name) - $null"
+                    Write-Verbose -Message ($script:localizedData.AddingParameter -f $($param.Name),$('$null'))
                     $getParameters.Add($($param.Name),$null)
                 }
             }
@@ -342,8 +342,8 @@ function Get-TargetResource
     }
     else
     {
-        Write-Verbose "Could not find $IniFilePath\$IniFileName. "
-        Write-Verbose 'Results will contain parameters passed to configuration.'
+        Write-Verbose -Message ($script:localizedData.MissingFileContent -f $IniFilePath, $IniFileName)
+        Write-Verbose -Message ($script:localizedData.GetPassParameters)
 
         $getParameters = @{}
         foreach ($param in $testParameters)
@@ -352,7 +352,7 @@ function Get-TargetResource
             {
                 if ($($PSBoundParameters.$($param.Name)))
                 {
-                    Write-Verbose -Message "$($param.Name) - $($PSBoundParameters.$($param.Name))"
+                    Write-Verbose -Message ($script:localizedData.GetParameterPrint -f $($param.Name), $($PSBoundParameters.$($param.Name)))
                     $getParameters.Add($($param.Name),$($PSBoundParameters.$($param.Name)))
                 }
                 else
@@ -668,17 +668,15 @@ function Set-TargetResource
     if (($ManagementPoint -or $ManagementPointProtocol -or -$DistributionPoint -or $DistributionPointProtocol -or $RoleCommunicationProtocol -or
         $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
     {
-        throw "The parameters ManagementPoint, ManagementPointProtocol, DistributionPoint,",`
-            "DistributionPointProtocol, RoleCommunicationProtocol, ClientsUsePKICertificate,",`
-            "CCARSiteServer, CASRetryInterval, WaitForCASTimeout are used only with InstallPrimarySite."
+        throw ($script:localizedData.PrimaryParameterError)
     }
     elseif ($CloudConnector -eq $true -and ([string]::IsNullOrEmpty($CloudConnectorServer) -or ($UseProxy -or $UseProxy -eq $false)))
     {
-        throw 'If CloudConnector is True you must provide CloudConnectorServer and UseProxy.'
+        throw ($script:localizedData.CloudConnectorError)
     }
     elseif ($UseProxy -eq $true -and ([string]::IsNullOrEmpty($ProxyName) -or [string]::IsNullOrEmpty($ProxyPort)))
     {
-        throw 'If Proxy is True, you must provide ProxyName and ProxyPort.'
+        throw ($script:localizedData.ProxyError)
     }
 
     $identification = @{
@@ -739,7 +737,7 @@ function Set-TargetResource
 
     $configOptions = @($Identification,$options,$sqlConfigOptions,$hierarchyExpansionOption,$cloudConnectorOptions,$saBranchOptions)
 
-    Write-Verbose -Message 'Writing all configuration options to ini file.'
+    Write-Verbose -Message ($script:localizedData.WritingParameter)
     foreach ($configOption in $configOptions)
     {
         $outputIni += "$($configOption.Title) `n"
@@ -755,19 +753,19 @@ function Set-TargetResource
                         $true  {$newValue = 1}
                         $false {$newValue = 0}
                     }
-                    Write-Verbose -Message "Adding $($item.Key)=$newValue."
+                    Write-Verbose -Message ($script:localizedData.AddingParameter -f $($item.Key), $newValue)
                     $outputIni += "$($item.Key)=$newValue`n"
                 }
                 elseif ($PSBoundParameters.$($item.Name))
                 {
-                    Write-Verbose -Message "Adding $($item.Key)=$($PSBoundParameters.$($item.Name))."
+                    Write-Verbose -Message ($script:localizedData.AddingParameter -f $($item.Key), $($PSBoundParameters.$($item.Name)))
                     $outputIni += "$($item.Key)=$($PSBoundParameters.$($item.Name))`n"
                 }
             }
         }
         $outputIni += "`n"
     }
-    Write-Verbose -Message "Exporting ini file to $IniFilePath\$IniFileName."
+    Write-Verbose -Message ($script:localizedData.ExportingFile -f $IniFilePath, $IniFileName)
     $outputIni | Out-File -FilePath "$IniFilePath\$IniFileName" -Force
 } #end function Set-TargetResource
 
@@ -1070,7 +1068,7 @@ function Test-TargetResource
     )
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
-    Write-Verbose "Getting file content of $IniFilePath\$IniFileName"
+    Write-Verbose -Message ($script:localizedData.InDesiredStateMessage -f $IniFilePath,$IniFileName)
     $iniContent = Get-Content -Path "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
     $result = $true
 
@@ -1100,17 +1098,17 @@ function Test-TargetResource
             }
             if ($iniParameters.$($param.Key) -and $iniParameters.$($param.Key) -ne $newValue)
             {
-                Write-Verbose -Message "NOTMATCH: $($param.Key) - Current Value: $($iniParameters.$($param.Key)) Target Value: $newValue"
+                Write-Verbose -Message ($script:localizedData.TestNoMatch -f $($param.Key), $($iniParameters.$($param.Key)), $newValue)
                 $result = $false
             }
             elseif (-not $iniParameters.$($param.Key) -and $systemParameters -notcontains $param.Key)
             {
-                Write-Verbose -Message "NOTMATCH: $($param.Key) - Current Value: `$null Target Value: $newValue"
+                Write-Verbose -Message ($script:localizedData.TestNoMatch -f $($param.Key), $('$null'), $newValue)
                 $result = $false
             }
             elseif ($iniParameters.$($param.Key) -and $iniParameters.$($param.Key) -eq $newValue)
             {
-                Write-Verbose -Message "Match: $($param.Key) - Current Value: $($iniParameters.$($param.Key)) Target Value: $newValue"
+                Write-Verbose -Message ($script:localizedData.TestMatch -f $($param.Key), $($iniParameters.$($param.Key)), $newValue)
             }
         }
     }
@@ -1119,7 +1117,15 @@ function Test-TargetResource
         $result = $false
     }
 
-    Write-Verbose -Message "Test returned: $result."
+    if($result)
+    {
+        Write-Verbose -Message ($script:localizedData.InDesiredStateMessage)
+    }
+    else
+    {
+        Write-Verbose -Message ($script:localizedData.NotInDesiredStateMessage)
+    }
+
     return $result
 } #end function Test-TargetResource
 
