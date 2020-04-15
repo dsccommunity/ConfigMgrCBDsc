@@ -27,8 +27,47 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ## Resources
 
+- **ClientSettings**: Provides a resource to perform configuration of client settings.
+- **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
 - **SccmIniFile** This resource allows for the creation of the ini file
   used during the SCCM install, for CAS and Primary.
+
+### ClientSettings
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Name** _(Key)_: Specifies the display name of the client setting.
+  package.
+- **[String] DeviceSettingName** _(Key)_: Specifies the parent setting category.
+  - Values include: { BackgroundIntelligentTransfer |ClientCache |
+    ClientPolicy | Cloud | ComplianceSettings | ComputerAgent |
+    ComputerRestart | DeliveryOptimization | EndpointProtection |
+    HardwareInventory | MeteredNetwork | MobileDevice |
+    NetworkAccessProtection | PowerManagement | RemoteTools | SoftwareCenter |
+    SoftwareDeployment | SoftwareInventory | SoftwareMetering| SoftwareUpdates |
+    StateMessaging | UserAndDeviceAffinity | WindowsAnalytics }
+- **[String] Setting** _(Key)_: Specifies the client setting to validate.
+- **[String] SettingValue** _(Required)_: Specifies the value for the setting.
+
+#### ClientSettings Examples
+
+- [ProvisionedPackages_Present](Source\Examples\Resources\ClientSettings\ClientSettings.ps1)
+
+### CMAccounts
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Account** _(Key)_: Specifies the Configuration Manager account name.
+- **[PSCredential] AccountPassword** _(Write)_: Specifies the password of the
+  account being added to Configuration Manager.
+- **[String] Ensure** _(Write)_: Specifies whether the account is present or
+  absent.
+  - Values include: { Present | Absent }
+
+#### CMAccounts Examples
+
+- [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
+- [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
 
 ### SCCMIniFile
 
@@ -38,13 +77,13 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   - Values include: { InstallCAS | InstallPrimarySite }
 - **CDLatest** _(Write)_: This value informs setup that you're using media from
   CD.Latest.
-- **ProductID** _(Required)_: Specifies the Configuration Manager installation product
-  key, including the dashes.
-- **SiteCode** _(Required)_: Specifies three alphanumeric characters that uniquely
-  identify the site in your hierarchy.
+- **ProductID** _(Required)_: Specifies the Configuration Manager installation
+  product key, including the dashes.
+- **SiteCode** _(Required)_: Specifies three alphanumeric characters that
+  uniquely identify the site in your hierarchy.
 - **SiteName** _(Required)_: Specifies the name for this site.
-- **SMSInstallDir** _(Required)_: Specifies the installation folder for the Configuration
-  Manager program files.
+- **SMSInstallDir** _(Required)_: Specifies the installation folder for the
+  Configuration Manager program files.
 - **SDKServer** _(Required)_: Specifies the FQDN for the server that will host
   the SMS Provider.
 - **PreRequisiteComp** _(Required)_: Specifies whether setup prerequisite files
@@ -53,8 +92,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   prerequisite files.
 - **AdminConsole** _(Required)_: Specifies whether to install the Configuration
   Manager console.
-- **JoinCeip** _(Required)_: Specifies whether to join the Customer Experience Improvement
-  Program (CEIP).
+- **JoinCeip** _(Required)_: Specifies whether to join the Customer Experience
+  Improvement Program (CEIP).
 - **MobileDeviceLanguage** _(Required)_: Specifies whether the mobile device
   client languages are installed.
 - **RoleCommunicationProtocol** _(Write)_: Specifies whether to configure all
@@ -96,7 +135,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   instance that's running SQL Server to host the site database.
 - **DatabaseName** _(Required)_: Specifies the name of the SQL Server database
   to create, or the SQL Server database to use, when setup installs the CAS
-  database. This can also include the instance, instance\<databasename>.
+  database. This can also include the instance, instance\<DatabaseName>.
 - **SqlSsbPort** _(Write)_: Specifies the SQL Server Service Broker (SSB) port
   that SQL Server uses.
 - **SQLDataFilePath** _(Write)_: Specifies an alternate location to create the
@@ -124,5 +163,5 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### SccmIniFile Examples
 
-* [CMAccounts_Absent](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
-* [CMAccounts_Present](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
+- [CMAccounts_Absent](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
+- [CMAccounts_Present](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
