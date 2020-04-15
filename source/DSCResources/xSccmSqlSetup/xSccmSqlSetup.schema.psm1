@@ -6,6 +6,11 @@ Configuration xSccmSqlSetup
         [Parameter(Mandatory = $true)]
         [ValidateNotNullorEmpty()]
         [String]
+        $SqlInstallPath,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullorEmpty()]
+        [String]
         $InstanceName,
 
         [Parameter(Mandatory = $true)]
@@ -53,6 +58,11 @@ Configuration xSccmSqlSetup
         [ValidateNotNullorEmpty()]
         [String]
         $AgtSvcStartupType = 'Automatic',
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $RSInstallMode = 'DefaultNativeMode',
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
@@ -122,9 +132,9 @@ Configuration xSccmSqlSetup
         #InstanceDir         = $newInstanceDir
         SQLSvcAccount       = $SqlServiceCredential
         AgtSvcAccount       = $SqlAgentServiceCredential
-        RSInstallMode       = 'DefaultNativeMode'
-        RSSVCStartUpType    = 'Automatic'
-        AgtSvcStartupType   = 'Automatic'
+        RSInstallMode       = $RSInstallMode
+        RSSVCStartUpType    = $RSSVCStartUpType
+        AgtSvcStartupType   = $AgtSvcStartupType
         SQLCollation        = $SqlCollation
         SQLSysAdminAccounts = $SqlSysAdminAccounts
         InstallSQLDataDir   = $InstallSqlDataDir
