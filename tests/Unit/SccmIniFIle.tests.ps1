@@ -270,8 +270,7 @@ try
                 # Order of the Context blocks matter since some attributes are being changed in different Context.
                 Context "When ini file does not exist for $($test.IniFileName)" {
                     It 'Should return false' {
-                        $result = Test-TargetResource @test
-                        $result | Should -Be $false
+                        Test-TargetResource @test | Should -Be $false
                     }
                 }
 
@@ -280,8 +279,7 @@ try
                     $mockPrimaryIniFile | Out-File -LiteralPath $TestDrive\InstallPrimary.ini
 
                     It 'Should return true' {
-                        $result = Test-TargetResource @test
-                        $result | Should -Be $true
+                        Test-TargetResource @test | Should -Be $true
                     }
                 }
 
@@ -294,8 +292,7 @@ try
                     $test.SMSInstallDir ='C:\Apps\Microsoft Configuration Manager'
 
                     It 'Should return false' {
-                        $result = Test-TargetResource @test
-                        $result | Should -Be $false
+                        Test-TargetResource @test | Should -Be $false
                     }
                 }
 
@@ -307,8 +304,7 @@ try
                     $test.Add('SAActive',$true)
 
                     It 'Should return false' {
-                        $result = Test-TargetResource @test
-                        $result | Should -Be $false
+                        Test-TargetResource @test | Should -Be $false
                     }
                 }
             }
