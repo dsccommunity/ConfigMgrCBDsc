@@ -4,6 +4,8 @@ $script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\.
 Import-Module -Name $script:dscResourceCommonPath
 Import-Module -Name $script:configMgrResourcehelper
 
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+
 <#
     .SYNOPSIS
         This will return the current state of the resource.
