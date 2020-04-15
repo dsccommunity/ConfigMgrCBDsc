@@ -21,7 +21,7 @@ Configuration Example
                 RecurCount    = '7'
             }
             RefreshType            = 'Both'
-            QueryRules = @(
+            QueryRules             = @(
                 MSFT_CollectionQueryRules
                 {
                     RuleName        = 'UserTestQuery'
@@ -42,7 +42,7 @@ Configuration Example
                     ) -Join ''
                 }
             )
-            Excludemembership      = 'TestUserGroup1','TestUserGroup2'
+            ExcludeMembership      = 'TestUserGroup1','TestUserGroup2'
             DirectMembership       = @('2063597577','2063597582')
             Ensure                 = 'Present'
         }

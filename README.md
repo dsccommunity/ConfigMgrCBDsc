@@ -35,9 +35,11 @@ The following resources are available in this resource.
 
 ### ClientSettings
 
-* **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration Manager site.
+* **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+Manager site.
 * **[String] Name** _(Key)_: Specifies the display name of the client setting package.
-* **[String] DeviceSettingName** _(Key)_: Specifies the parent setting category. {BackgroundIntelligentTransfer|ClientCache|ClientPolicy|Cloud|ComplianceSettings|ComputerAgent|ComputerRestart|DeliveryOptimization|EndpointProtection|HardwareInventory|MeteredNetwork|MobileDevice|NetworkAccessProtection|PowerManagement|RemoteTools|SoftwareCenter|SoftwareDeployment|SoftwareInventory|SoftwareMetering|SoftwareUpdates|StateMessaging|UserAndDeviceAffinity|WindowsAnalytics}.
+* **[String] DeviceSettingName** _(Key)_: Specifies the parent setting category.
+{BackgroundIntelligentTransfer|ClientCache|ClientPolicy|Cloud|ComplianceSettings|ComputerAgent|ComputerRestart|DeliveryOptimization|EndpointProtection|HardwareInventory|MeteredNetwork|MobileDevice|NetworkAccessProtection|PowerManagement|RemoteTools|SoftwareCenter|SoftwareDeployment|SoftwareInventory|SoftwareMetering|SoftwareUpdates|StateMessaging|UserAndDeviceAffinity|WindowsAnalytics}.
 * **[String] Setting** _(Key)_: Specifies the client setting to validate.
 * **[String] SettingValue** _(Required)_: Specifies the value for the setting.
 
@@ -47,10 +49,13 @@ The following resources are available in this resource.
 
 ### CMAccounts
 
-* **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration Manager site.
+* **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+Manager site.
 * **[String] Account** _(Key)_: Specifies the Configuration Manager account name.
-* **[PSCredential] AccountPassword** _(Write)_: Specifies the password of the account being added to Configuration Manager.
-* **[String] Ensure** _(Write)_: Specifies whether the account is present or absent. { *Present* | Absent }.
+* **[PSCredential] AccountPassword** _(Write)_: Specifies the password of the
+account being added to Configuration Manager.
+* **[String] Ensure** _(Write)_: Specifies whether the account is present or
+absent. { *Present* | Absent }.
 
 #### CMAccounts Examples
 
@@ -59,16 +64,24 @@ The following resources are available in this resource.
 
 ### Collections
 
-* **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration Manager site.
+* **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+Manager site.
 * **[String] CollectionName** _(Key)_: Specifies the name of the collection.
-* **[String] CollectionType** _(Key)_: Specifies the type of collection. { User | Device }.
-* **[String] LimitingCollectionName** _(Write)_: Specifies the name of a collection to use as the default scope for this collection.
+* **[String] CollectionType** _(Key)_: Specifies the type of collection.
+{ User | Device }.
+* **[String] LimitingCollectionName** _(Write)_: Specifies the name of a
+collection to use as the default scope for this collection.
 * **[String] Comment** _(Write)_: Specifies a comment for the collection.
-* **[EmbeddedInstance] RefreshSchedule** _(Write)_: Specifies containing refresh schedule for Configuration Manager (RecurInterval, RecurCount).
-* **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.
-* **[String] ExcludeMembership[]** _(Write)_: Specifies the collection name to exclude members from.
-* **[String] DirectMembership[]** _(Write)_: Specifies the resource id for the direct membership rule.
-* **[String] Ensure** _(Write)_: Specifies if the collection is to be present or absent. { *Present* | Absent }.
+* **[EmbeddedInstance] RefreshSchedule** _(Write)_: Specifies containing refresh
+schedule for Configuration Manager (RecurInterval, RecurCount).
+* **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the Rule
+and the query expression that Configuration Manager uses to update collections.
+* **[String] ExcludeMembership[]** _(Write)_: Specifies the collection name to
+exclude members from.
+* **[String] DirectMembership[]** _(Write)_: Specifies the resource id for the
+direct membership rule.
+* **[String] Ensure** _(Write)_: Specifies if the collection is to be present or
+absent. { *Present* | Absent }.
 
 #### Collections Examples
 

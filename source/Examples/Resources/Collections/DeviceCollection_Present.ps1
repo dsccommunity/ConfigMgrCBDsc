@@ -21,7 +21,7 @@ Configuration Example
                 RecurCount    = '7'
             }
             RefreshType            = 'Both'
-            QueryRules = @(
+            QueryRules             = @(
                 MSFT_CollectionQueryRules
                 {
                     RuleName        = 'Test1'
@@ -30,7 +30,7 @@ Configuration Example
                         'SMS_R_SYSTEM.Name,SMS_R_SYSTEM.SMSUniqueIdentifier,'
                         'SMS_R_SYSTEM.ResourceDomainORWorkgroup,SMS_R_SYSTEM.Client from SMS_R_System' 
                         'inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId' 
-                        'where SMS_G_System_COMPUTER_SYSTEM.Domain = "jeffo.lab"'
+                        'where SMS_G_System_COMPUTER_SYSTEM.Domain = "Contoso.com"'
                     ) -Join ' '
                 }
                 MSFT_CollectionQueryRules
@@ -44,7 +44,7 @@ Configuration Example
                     ) -Join ''
                 }
             )
-            Excludemembership      = 'TestDeviceCollection1','TestDeviceCollection2'
+            ExcludeMembership      = 'TestDeviceCollection1','TestDeviceCollection2'
             DirectMembership       = @('2063597577','2063597582')
             Ensure                 = 'Present'
         }
