@@ -309,7 +309,7 @@ function Get-TargetResource
     $iniContent = Get-Content -Path "$IniFilePath\$IniFilename" -ErrorAction SilentlyContinue
 
     $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
-    $testparameters = (Get-Command -Name 'Get-TargetResource').Parameters.values | Select-Object -Property  Name,ParameterType
+    $testParameters = (Get-Command -Name 'Get-TargetResource').Parameters.values | Select-Object -Property  Name,ParameterType
 
     if ($iniContent)
     {
