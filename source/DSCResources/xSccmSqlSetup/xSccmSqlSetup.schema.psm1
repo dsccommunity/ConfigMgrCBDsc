@@ -11,7 +11,7 @@ Configuration xSccmSqlSetup
         [Parameter(Mandatory = $true)]
         [ValidateNotNullorEmpty()]
         [String]
-        $InstanceName,
+        $SqlInstanceName,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullorEmpty()]
@@ -116,7 +116,7 @@ Configuration xSccmSqlSetup
 
     if ([string]::IsNullOrEmpty($InstanceDir))
     {
-        $newInstanceDir = "$InstallSharedDir\MSSQL$version.$InstanceName"
+        $newInstanceDir = "$InstallSharedDir\MSSQL$version.$SqlInstanceName"
     }
     else
     {
@@ -128,7 +128,7 @@ Configuration xSccmSqlSetup
         Features            = 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS'
         InstallSharedDir    = $InstallSharedDir
         InstallSharedWowDir = $InstallSharedWowDir
-        InstanceName        = $InstanceName
+        InstanceName        = $SqlInstanceName
         #InstanceDir         = $newInstanceDir
         SQLSvcAccount       = $SqlServiceCredential
         AgtSvcAccount       = $SqlAgentServiceCredential
@@ -148,7 +148,7 @@ Configuration xSccmSqlSetup
 
     SqlServerNetwork EnableTcpIp
     {
-        InstanceName    = $InstanceName
+        InstanceName    = $SqlInstanceName
         ProtocolName    = 'Tcp'
         IsEnabled       = $true
         TcpPort         = 1433
