@@ -52,45 +52,6 @@ InModuleScope $script:subModuleName {
         Setting           = 'Setting3'
     }
 
-    Describe "$moduleResourceName\Get-LocalizedData" {
-
-        Context 'When loading localized data for English' {
-            Mock -CommandName Join-Path -MockWith { return 'en-US' } -Verifiable
-
-            It 'Should call Import-LocalizedData with en-US language' {
-                Mock -CommandName Test-Path -MockWith { return $true } -Verifiable
-                Mock -CommandName Import-LocalizedData -MockWith { return 'en-Us' } -Verifiable
-
-                { Get-LocalizedData @localizedInput } | Should -Not -Throw
-            }
-
-            It 'Should call Import-LocalizedData and fallback to en-US if sv-SE language does not exist' {
-                Mock -CommandName Test-Path -MockWith { return $false } -Verifiable
-                Mock -CommandName Import-LocalizedData -MockWith { return 'sv-SE' } -Verifiable
-                Mock -CommandName Join-Path -MockWith { return $ChildPath } -Verifiable
-
-                { Get-LocalizedData @localizedInput } | Should -Not -Throw
-                Assert-MockCalled -CommandName Join-Path -Exactly -Times 2 -Scope It
-                Assert-MockCalled -CommandName Test-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled -CommandName Import-LocalizedData -Exactly -Times 1 -Scope It
-            }
-        }
-        Assert-VerifiableMock
-    }
-
-    Describe "$moduleResourceName\New-InvalidArgumentException" {
-
-        Context 'When calling with both the Message and ArgumentName parameter' {
-
-            It 'Should throw the correct error' {
-                $mockErrorMessage = 'Mocked error'
-                $mockArgumentName = 'MockArgument'
-
-                { New-InvalidArgumentException -Message $mockErrorMessage -ArgumentName $mockArgumentName } | Should -Throw ('Parameter name: {0}' -f $mockArgumentName)
-            }
-        }
-    }
-
     Describe "$moduleResourceName\Import-ConfigMgrPowerShellModule" {
 
         Context 'When importing the module' {
