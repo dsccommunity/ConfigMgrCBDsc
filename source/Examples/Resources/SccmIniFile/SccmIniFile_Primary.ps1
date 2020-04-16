@@ -35,7 +35,7 @@ Configuration Example
             SQLSSBPort                = 4022
             SQLDataFilePath           = 'E:\MSSQL12.CASINST01\MSSQL\Data\App\'
             SQLLogFilePath            = 'E:\MSSQL12.CASINST01\MSSQL\Log\App\'
-            CloudConnector            = $true
+            CloudConnector            = $false
             SAActive                  = $true
             CurrentBranch             = $true
         }
