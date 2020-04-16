@@ -14,7 +14,7 @@ Configuration Example
             IniFilePath               = 'C:\windows\temp\'
             Action                    = 'InstallCAS'
             CDLatest                  = $true
-            ProductID                 = 'BXH69-M62YX-QQD6R-3GPWX-8WMFY'
+            ProductID                 = 'Eval'
             SiteCode                  = 'LAB'
             SiteName                  = 'Contoso - Central Administration Site'
             SMSInstallDir             = 'C:\Program Files\Microsoft Configuration Manager'

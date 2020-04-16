@@ -14,7 +14,7 @@ Configuration Example
             IniFilePath               = 'C:\windows\temp\'
             Action                    = 'InstallPrimarySite'
             CDLatest                  = $true
-            ProductID                 = 'BXH69-M62YX-QQD6R-3GPWX-8WMFY'
+            ProductID                 = 'Eval'
             SiteCode                  = 'PRI'
             SiteName                  = 'Contoso - Primary Site'
             SMSInstallDir             = 'C:\Program Files\Microsoft Configuration Manager'
