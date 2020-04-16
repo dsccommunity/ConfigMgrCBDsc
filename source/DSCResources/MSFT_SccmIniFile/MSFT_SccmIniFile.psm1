@@ -79,19 +79,19 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Specifies the languages that will be available to client computers.
 
     .PARAMETER DeleteServerLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
-         for the Configuration Manager console, reports, and Configuration Manager objects.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be
+        available for the Configuration Manager console, reports, and Configuration Manager objects.
 
     .PARAMETER DeleteClientLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
-         to client computers.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be
+        available to client computers.
 
     .PARAMETER SQLServerName
         Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
 
     .PARAMETER DatabaseName
-        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs
-         the CAS database. This can also include the instance, instance\<databasename>.
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup
+        installs the CAS database. This can also include the instance, instance\<databasename>.
 
     .PARAMETER SqlSsbPort
         Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
@@ -308,7 +308,8 @@ function Get-TargetResource
     Write-Verbose -Message ($script:localizedData.GettingFileContent -f $IniFilePath, $IniFilename)
     $iniContent = Get-Content -Path "$IniFilePath\$IniFilename" -ErrorAction SilentlyContinue
 
-    $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
+    $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable',
+        'WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
     $testParameters = (Get-Command -Name 'Get-TargetResource').Parameters.values | Select-Object -Property  Name,ParameterType
 
     if ($iniContent)
@@ -440,19 +441,19 @@ function Get-TargetResource
         Specifies the languages that will be available to client computers.
 
     .PARAMETER DeleteServerLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
-         for the Configuration Manager console, reports, and Configuration Manager objects.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be
+        available for the Configuration Manager console, reports, and Configuration Manager objects.
 
     .PARAMETER DeleteClientLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
-         to client computers.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be
+        available to client computers.
 
     .PARAMETER SQLServerName
         Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
 
     .PARAMETER DatabaseName
-        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs
-         the CAS database. This can also include the instance, instance\<databasename>.
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup
+        installs the CAS database. This can also include the instance, instance\<databasename>.
 
     .PARAMETER SqlSsbPort
         Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
@@ -667,8 +668,9 @@ function Set-TargetResource
     $IniFilePath = $IniFilePath.TrimEnd('\')
 
     # Check for mandatory parameters for specific scenarios
-    if (($ManagementPoint -or $ManagementPointProtocol -or -$DistributionPoint -or $DistributionPointProtocol -or $RoleCommunicationProtocol -or
-        $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
+    if (($ManagementPoint -or $ManagementPointProtocol -or -$DistributionPoint -or $DistributionPointProtocol -or
+        $RoleCommunicationProtocol -or $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or
+        $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
     {
         throw ($script:localizedData.PrimaryParameterError)
     }
@@ -737,7 +739,8 @@ function Set-TargetResource
         CurrentBranch = ''
     }
 
-    $configOptions = @($Identification,$options,$sqlConfigOptions,$hierarchyExpansionOption,$cloudConnectorOptions,$saBranchOptions)
+    $configOptions = @($Identification,$options,$sqlConfigOptions,$hierarchyExpansionOption,
+        $cloudConnectorOptions,$saBranchOptions)
 
     Write-Verbose -Message $script:localizedData.WritingParameter
     foreach ($configOption in $configOptions)
@@ -844,19 +847,19 @@ function Set-TargetResource
         Specifies the languages that will be available to client computers.
 
     .PARAMETER DeleteServerLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
-         for the Configuration Manager console, reports, and Configuration Manager objects.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be
+        available for the Configuration Manager console, reports, and Configuration Manager objects.
 
     .PARAMETER DeleteClientLanguages
-        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available
-         to client computers.
+        Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be
+        available to client computers.
 
     .PARAMETER SQLServerName
         Specifies the name of the server or clustered instance that's running SQL Server to host the site database.
 
     .PARAMETER DatabaseName
-        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs
-         the CAS database. This can also include the instance, instance\<databasename>.
+        Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup
+        installs the CAS database. This can also include the instance, instance\<databasename>.
 
     .PARAMETER SqlSsbPort
         Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.
@@ -1086,7 +1089,9 @@ function Test-TargetResource
             }
         }
 
-        $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
+        $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable',
+            'WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable'
+        )
         $PSBoundParameters.Remove('IniFilePath') | Out-Null
         $PSBoundParameters.Remove('IniFilename') | Out-Null
 
