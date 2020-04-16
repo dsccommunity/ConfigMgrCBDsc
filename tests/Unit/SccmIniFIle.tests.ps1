@@ -33,7 +33,7 @@ try
 
         $tests = @(
             @{
-                IniFileName          = 'InstallCas.ini'
+                IniFilename          = 'InstallCas.ini'
                 IniFilePath          = 'TestDrive:\'
                 Action               = 'InstallCAS'
                 ProductID            = 'Eval'
@@ -51,7 +51,7 @@ try
                 CloudConnector       = $false
             }
             @{
-                IniFileName               = 'InstallPrimary.ini'
+                IniFilename               = 'InstallPrimary.ini'
                 IniFilePath               = 'TestDrive:\'
                 Action                    = 'InstallPrimarySite'
                 ProductID                 = 'Eval'
@@ -169,7 +169,7 @@ try
         Describe "$moduleResourceName\Get-TargetResource" {
             foreach ($test in $tests)
             {
-                Context "When retrieving ini file settings for $($test.IniFileName)" {
+                Context "When retrieving ini file settings for $($test.IniFilename)" {
                     $mockCasIniFile | Out-File -LiteralPath $TestDrive\InstallCAS.ini
                     $mockPrimaryIniFile | Out-File -LiteralPath $TestDrive\InstallPrimary.ini
 
@@ -178,11 +178,11 @@ try
                         $result | Should -BeOfType System.Collections.HashTable
                         Write-Host -Object $result.Value
                         $result.GetEnumerator().Where({$_.Value -ne $null}).Count | Should -Be $(`
-                            if ($test.iniFileName -eq 'InstallCas.ini')
+                            if ($test.iniFilename -eq 'InstallCas.ini')
                             {
                                 20 # This is from the parameters that are in mock ini files line:102
                             }
-                            if ($test.iniFileName -eq 'InstallPrimary.ini')
+                            if ($test.iniFilename -eq 'InstallPrimary.ini')
                             {
                                 22 # This is from the parameters that are in mock ini files line:134
                             }
@@ -206,30 +206,30 @@ try
         Describe "$moduleResourceName\Set-TargetResource" {
             foreach ($test in $tests)
             {
-                Context "When Set-TargetResource runs successfully with $($test.IniFileName)" {
+                Context "When Set-TargetResource runs successfully with $($test.IniFilename)" {
                     It 'Should not throw with minmual parameters' {
                         Set-TargetResource @test
-                        Get-Item -LiteralPath "$IniFilePath/$IniFileName" | Should -Not -Be $null
+                        Get-Item -LiteralPath "$IniFilePath/$IniFilename" | Should -Not -Be $null
                     }
 
                     It 'Should not throw with optional parameters' {
                         $combined = $test + $optionalParamatersAll
                         Set-TargetResource @combined
-                        Get-Item -LiteralPath "$IniFilePath/$IniFileName" | Should -Not -Be $null
+                        Get-Item -LiteralPath "$IniFilePath/$IniFilename" | Should -Not -Be $null
                     }
 
-                    if ($test.iniFileName -eq 'InstallPrimary.ini')
+                    if ($test.iniFilename -eq 'InstallPrimary.ini')
                     {
                         It 'Should not throw with all optional parameters for the primary config ini' {
                             $combined = $test + $optionalParamatersAll + $primaryInstallOptionalSettings
                             Set-TargetResource @combined
-                            Get-Item -LiteralPath "$IniFilePath/$IniFileName" | Should -Not -Be $null
+                            Get-Item -LiteralPath "$IniFilePath/$IniFilename" | Should -Not -Be $null
                         }
                     }
                 }
 
-                Context "When Set-TargetResource for $($test.IniFileName) has incorrect parameters" {
-                    if ($test.iniFileName -eq 'InstallCas.ini')
+                Context "When Set-TargetResource for $($test.IniFilename) has incorrect parameters" {
+                    if ($test.iniFilename -eq 'InstallCas.ini')
                     {
                         $wrongParameters = $test.clone()
                         $wrongParameters.Add('ManagementPoint','PRI.contoso.com')
@@ -242,7 +242,7 @@ try
                             { Set-TargetResource @wrongParameters } | Should -Throw -ExpectedMessage $message
                         }
                     }
-                    if ($test.iniFileName -eq 'InstallPrimary.ini')
+                    if ($test.iniFilename -eq 'InstallPrimary.ini')
                     {
                         $wrongParameters = $test.Clone()
                         $wrongParameters.CloudConnector = $true
@@ -255,7 +255,7 @@ try
                         }
                     }
 
-                    It '"Should throw because missing proxy parameters' {
+                    It 'Should throw because missing proxy parameters' {
                         $proxyTest = $test.Clone()
                         $proxyTest.Add('UseProxy', $true)
                         { Set-TargetResource @proxyTest } | Should -Throw -ExpectedMessage 'If Proxy is True, you must provide ProxyName and ProxyPort.'
@@ -268,13 +268,13 @@ try
             foreach ($test in $tests)
             {
                 # Order of the Context blocks matter since some attributes are being changed in different Context.
-                Context "When ini file does not exist for $($test.IniFileName)" {
+                Context "When ini file does not exist for $($test.IniFilename)" {
                     It 'Should return false' {
                         Test-TargetResource @test | Should -Be $false
                     }
                 }
 
-                Context "When ini file exists and is not missing any parameters for $($test.IniFileName)" {
+                Context "When ini file exists and is not missing any parameters for $($test.IniFilename)" {
                     $mockCasIniFile | Out-File -LiteralPath $TestDrive\InstallCAS.ini
                     $mockPrimaryIniFile | Out-File -LiteralPath $TestDrive\InstallPrimary.ini
 
@@ -283,7 +283,7 @@ try
                     }
                 }
 
-                Context "When ini file exists and parameters don't match for $($test.IniFileName)" {
+                Context "When ini file exists and parameters don't match for $($test.IniFilename)" {
                     $mockCasIniFile | Out-File -LiteralPath $TestDrive\InstallCAS.ini
                     $mockPrimaryIniFile | Out-File -LiteralPath $TestDrive\InstallPrimary.ini
 
@@ -296,7 +296,7 @@ try
                     }
                 }
 
-                Context "When ini file exists and is missing parameters for $($test.IniFileName)" {
+                Context "When ini file exists and is missing parameters for $($test.IniFilename)" {
                     $mockCasIniFile | Out-File -LiteralPath $TestDrive\InstallCAS.ini
                     $mockPrimaryIniFile | Out-File -LiteralPath $TestDrive\InstallPrimary.ini
 

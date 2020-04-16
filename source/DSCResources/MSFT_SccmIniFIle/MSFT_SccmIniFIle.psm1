@@ -10,7 +10,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
     .SYNOPSIS
         This will return the current state of the resource.
 
-    .PARAMETER IniFileName
+    .PARAMETER IniFilename
         Specifies the ini file name.
 
     .PARAMETER IniFilePath
@@ -140,7 +140,7 @@ function Get-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [String]
-        $IniFileName,
+        $IniFilename,
 
         [Parameter(Mandatory = $true)]
         [String]
@@ -305,8 +305,8 @@ function Get-TargetResource
     )
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
-    Write-Verbose -Message ($script:localizedData.GettingFileContent -f $IniFilePath, $IniFileName)
-    $iniContent = Get-Content -Path "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
+    Write-Verbose -Message ($script:localizedData.GettingFileContent -f $IniFilePath, $IniFilename)
+    $iniContent = Get-Content -Path "$IniFilePath\$IniFilename" -ErrorAction SilentlyContinue
 
     $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
     $testparameters = (Get-Command -Name 'Get-TargetResource').Parameters.values | Select-Object -Property  Name,ParameterType
@@ -344,7 +344,7 @@ function Get-TargetResource
     }
     else
     {
-        Write-Verbose -Message ($script:localizedData.MissingFileContent -f $IniFilePath, $IniFileName)
+        Write-Verbose -Message ($script:localizedData.MissingFileContent -f $IniFilePath, $IniFilename)
         Write-Verbose -Message $script:localizedData.GetPassParameters
 
         $getParameters = @{}
@@ -371,7 +371,7 @@ function Get-TargetResource
     .SYNOPSIS
         This will return the current state of the resource.
 
-    .PARAMETER IniFileName
+    .PARAMETER IniFilename
         Specifies the ini file name.
 
     .PARAMETER IniFilePath
@@ -500,7 +500,7 @@ function Set-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [String]
-        $IniFileName,
+        $IniFilename,
 
         [Parameter(Mandatory = $true)]
         [String]
@@ -767,15 +767,15 @@ function Set-TargetResource
         }
         $outputIni += "`n"
     }
-    Write-Verbose -Message ($script:localizedData.ExportingFile -f $IniFilePath, $IniFileName)
-    $outputIni | Out-File -FilePath "$IniFilePath\$IniFileName" -Force
+    Write-Verbose -Message ($script:localizedData.ExportingFile -f $IniFilePath, $IniFilename)
+    $outputIni | Out-File -FilePath "$IniFilePath\$IniFilename" -Force
 } #end function Set-TargetResource
 
 <#
     .SYNOPSIS
         This will return the current state of the resource.
 
-    .PARAMETER IniFileName
+    .PARAMETER IniFilename
         Specifies the ini file name.
 
     .PARAMETER IniFilePath
@@ -905,7 +905,7 @@ function Test-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [String]
-        $IniFileName,
+        $IniFilename,
 
         [Parameter(Mandatory = $true)]
         [String]
@@ -1070,8 +1070,8 @@ function Test-TargetResource
     )
 
     $IniFilePath = $IniFilePath.TrimEnd('\')
-    Write-Verbose -Message ($script:localizedData.InDesiredStateMessage -f $IniFilePath,$IniFileName)
-    $iniContent = Get-Content -Path "$IniFilePath\$IniFileName" -ErrorAction SilentlyContinue
+    Write-Verbose -Message ($script:localizedData.InDesiredStateMessage -f $IniFilePath,$IniFilename)
+    $iniContent = Get-Content -Path "$IniFilePath\$IniFilename" -ErrorAction SilentlyContinue
     $result = $true
 
     if ($iniContent)
@@ -1088,7 +1088,7 @@ function Test-TargetResource
 
         $systemParameters = @('Verbose','Debug','ErrorAction','WarningAction','InformationAction','ErrorVariable','WarningVariable','InformationVariable','OutVariable','OutBuffer','PipelineVariable')
         $PSBoundParameters.Remove('IniFilePath') | Out-Null
-        $PSBoundParameters.Remove('IniFileName') | Out-Null
+        $PSBoundParameters.Remove('IniFilename') | Out-Null
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
