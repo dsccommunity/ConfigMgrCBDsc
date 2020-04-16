@@ -47,6 +47,7 @@
         'SccmIniFile'
         'XSccmInstall'
         'xSccmPreReqs'
+        'xSccmSqlSetup'
     )
 
     <#

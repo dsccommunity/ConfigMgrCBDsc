@@ -148,7 +148,7 @@ Configuration xSccmSqlSetup
 
     SqlServerNetwork EnableTcpIp
     {
-        InstanceName    = $SqlInstanceName
+        InstanceName    = $InstanceName
         ProtocolName    = 'Tcp'
         IsEnabled       = $true
         TcpPort         = 1433
