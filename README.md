@@ -31,7 +31,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
 - **SccmIniFile** This resource allows for the creation of the ini file
   used during the SCCM install, for CAS and Primary.
-- **Collections**: Provides a resource for creating collections and collection
+- **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
 
 ### ClientSettings
@@ -168,7 +168,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [SccmIniFile_CAS](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
 - [SccmIniFile_Primary](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
 
-### Collections
+### CMCollections
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
 Manager site.
@@ -189,8 +189,8 @@ direct membership rule.
 - **[String] Ensure** _(Write)_: Specifies if the collection is to be present or
 absent. { *Present* | Absent }.
 
-#### Collections Examples
+#### CMCollections Examples
 
-- [Collections_Absent](Source\Examples\Resources\Collections\Collection_Absent.ps1)
-- [DeviceCollection_Present](Source\Examples\Resources\Collections\DeviceCollection_Present.ps1)
-- [UserCollection_Present](Source\Examples\Resources\Collections\UserCollection_Present.ps1)
+- [CMCollections_Absent](Source\Examples\Resources\CMCollections\Collection_Absent.ps1)
+- [CMDeviceCollection_Present](Source\Examples\Resources\CMCollections\DeviceCollection_Present.ps1)
+- [CMUserCollection_Present](Source\Examples\Resources\CMCollections\UserCollection_Present.ps1)

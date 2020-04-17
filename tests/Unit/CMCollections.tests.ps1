@@ -2,7 +2,7 @@
 param ()
 
 $script:dscModuleName   = 'ConfigMgrCBDsc'
-$script:dscResourceName = 'Collections'
+$script:dscResourceName = 'DSC_CMCollections'
 
 function Invoke-TestSetup
 {
@@ -37,10 +37,10 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - Collections'
+        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMCollections'
 
         $mockCimDeviceQuery = @(
-            (New-CimInstance -ClassName MSFT_CollectionQueryRules `
+            (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
                     'RuleName'        = 'QueryDevice1'
@@ -48,7 +48,7 @@ try
                 } `
                 -ClientOnly
             ),
-            (New-CimInstance -ClassName MSFT_CollectionQueryRules `
+            (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
                     'RuleName'        = 'QueryDevice2'
@@ -59,7 +59,7 @@ try
         )
 
         $mockCimUserQuery = @(
-            (New-CimInstance -ClassName MSFT_CollectionQueryRules `
+            (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
                     'RuleName'        = 'QueryUser1'
@@ -67,7 +67,7 @@ try
                 } `
                 -ClientOnly
             ),
-            (New-CimInstance -ClassName MSFT_CollectionQueryRules `
+            (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
                     'RuleName'        = 'QueryUser2'
@@ -77,7 +77,7 @@ try
             )
         )
 
-        $mockCimRefreshSchedule = (New-CimInstance -ClassName MSFT_CollectionRefreshSchedule `
+        $mockCimRefreshSchedule = (New-CimInstance -ClassName DSC_CMCollectionRefreshSchedule `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
                     'RecurInterval' = 'Days'

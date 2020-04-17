@@ -8,7 +8,7 @@ Configuration Example
 
     Node localhost
     {
-        Collections ExampleSettings
+        CMCollections ExampleSettings
         {
             SiteCode       = 'Lab'
             CollectionName = 'Test'

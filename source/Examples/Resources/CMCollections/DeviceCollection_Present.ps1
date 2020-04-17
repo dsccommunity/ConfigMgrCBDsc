@@ -8,21 +8,21 @@ Configuration Example
 
     Node localhost
     {
-        Collections ExampleSettings
+        CMCollections ExampleSettings
         {
             SiteCode               = 'Lab'
             CollectionName         = 'TestDevice'
             CollectionType         = 'Device'
             LimitingCollectionName = 'All Systems'
             Comment                = 'This is a test device collection'
-            RefreshSchedule        = MSFT_CollectionRefreshSchedule
+            RefreshSchedule        = DSC_CMCollectionRefreshSchedule
             {
                 RecurInterval = 'Days'
                 RecurCount    = '7'
             }
             RefreshType            = 'Both'
             QueryRules             = @(
-                MSFT_CollectionQueryRules
+                DSC_CMCollectionQueryRules
                 {
                     RuleName        = 'Test1'
                     QueryExpression = @(
@@ -33,7 +33,7 @@ Configuration Example
                         'where SMS_G_System_COMPUTER_SYSTEM.Domain = "Contoso.com"'
                     ) -Join ' '
                 }
-                MSFT_CollectionQueryRules
+                DSC_CMCollectionQueryRules
                 {
                     RuleName        = 'Test2'
                     QueryExpression = @(

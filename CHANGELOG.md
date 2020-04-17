@@ -10,7 +10,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 ### Added
 
 - Added SccmIniFile resource
-- Added Collections Resource
+- Added CMCollections Resource
 
 ### Changed
 

@@ -8,21 +8,21 @@ Configuration Example
 
     Node localhost
     {
-        Collections ExampleSettings
+        CMCollections ExampleSettings
         {
             SiteCode               = 'Lab'
             CollectionName         = 'TestUser'
             CollectionType         = 'User'
             LimitingCollectionName = 'All Users'
             Comment                = 'This is a test user collection'
-            RefreshSchedule        = MSFT_CollectionRefreshSchedule
+            RefreshSchedule        = DSC_CMCollectionRefreshSchedule
             {
                 RecurInterval = 'Days'
                 RecurCount    = '7'
             }
             RefreshType            = 'Both'
             QueryRules             = @(
-                MSFT_CollectionQueryRules
+                DSC_CMCollectionQueryRules
                 {
                     RuleName        = 'UserTestQuery'
                     QueryExpression = @(
@@ -32,7 +32,7 @@ Configuration Example
                         'where SMS_R_User.UserName = "Test4"'
                     ) -Join ''
                 }
-                MSFT_CollectionQueryRules
+                DSC_CMCollectionQueryRules
                 {
                     RuleName        = 'UserTestQuery2'
                     QueryExpression = @(
