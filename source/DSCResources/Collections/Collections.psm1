@@ -369,11 +369,11 @@ function Set-TargetResource
                         Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
 
                         if ($CollectionType -eq 'User')
-                        {   
+                        {
                             Add-CMUserCollectionExcludeMembershipRule @excludeRule
                         }
                         else
-                        {   
+                        {
                             Add-CMDeviceCollectionExcludeMembershipRule @excludeRule
                         }
                     }
