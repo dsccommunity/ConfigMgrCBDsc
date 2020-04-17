@@ -367,6 +367,7 @@ function Set-TargetResource
                         }
                         
                         Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
+
                         if ($CollectionType -eq 'User')
                         {   
                             Add-CMUserCollectionExcludeMembershipRule @excludeRule
@@ -393,6 +394,7 @@ function Set-TargetResource
                         }
                         
                         Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
+
                         if ($CollectionType -eq 'User')
                         {
                             Add-CMUserCollectionDirectMembershipRule @directRule
@@ -443,7 +445,7 @@ function Set-TargetResource
                         }
                     }
                 }
-            }#>
+            }
         }
         else
         {
