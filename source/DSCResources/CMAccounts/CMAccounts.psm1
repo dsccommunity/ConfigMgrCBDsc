@@ -1,10 +1,10 @@
-$modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $PSScriptRoot -Parent) -Parent) -ChildPath 'Modules'
+$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+$script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
 
-# Import the CRL Resource Helper Module
-Import-Module -Name (Join-Path -Path $modulePath -ChildPath (Join-Path -Path 'ConfigMgrCBDsc.ResourceHelper' -ChildPath 'ConfigMgrCBDsc.ResourceHelper.psm1'))
+Import-Module -Name $script:dscResourceCommonPath
+Import-Module -Name $script:configMgrResourcehelper
 
-# Import Localization Strings
-$script:localizedData = Get-LocalizedData -ResourceName 'CMAccounts' -ResourcePath (Split-Path -Parent $script:MyInvocation.MyCommand.Path)
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 <#
     .SYNOPSIS

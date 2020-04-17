@@ -1,10 +1,10 @@
-$modulePath = Join-Path -Path (Split-Path -Path (Split-Path -Path $psScriptRoot -Parent) -Parent) -ChildPath 'Modules'
+$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+$script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
 
-# Import the CRL Resource Helper Module
-Import-Module -Name (Join-Path -Path $modulePath -ChildPath (Join-Path -Path 'ConfigMgrCBDsc.ResourceHelper' -ChildPath 'ConfigMgrCBDsc.ResourceHelper.psm1'))
+Import-Module -Name $script:dscResourceCommonPath
+Import-Module -Name $script:configMgrResourcehelper
 
-# Import Localization Strings
-$script:localizedData = Get-LocalizedData -ResourceName 'Collections' -ResourcePath (Split-Path -Parent $script:MyInvocation.MyCommand.Path)
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
 <#
     .SYNOPSIS
@@ -20,7 +20,8 @@ $script:localizedData = Get-LocalizedData -ResourceName 'Collections' -ResourceP
         Specifies the type of collection. Valid values are User and Device.
 
     .PARAMETER LimitingCollectionName
-        Specifies the name of a collection to use as the default scope for this collection.  Limiting collection is not evaluated in Test and is only used
+        Specifies the name of a collection to use as the default scope for this collection.
+        Limiting collection is not evaluated in Test and is only used
         if the collection needs created.
 
     .PARAMETER Comment
@@ -30,13 +31,15 @@ $script:localizedData = Get-LocalizedData -ResourceName 'Collections' -ResourceP
         Specifies a schedule that determines when Configuration Manager refreshes the collection.
 
     .PARAMETER RefreshType
-        Specifies how Configuration Manager refreshes the collection. Valid values are: Manual, Periodic, Continuous, and Both.
+        Specifies how Configuration Manager refreshes the collection.
+        Valid values are: Manual, Periodic, Continuous, and Both.
 
     .PARAMETER QueryRules
         Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.
 
     .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude members from. If clients are in the excluded collection they will not be added to the collection.
+        Specifies the collection name to exclude members from. If clients are in the excluded collection they will
+        not be added to the collection.
 
     .PARAMETER DirectMembership
         Specifies the resourceid for the direct membership rule.
@@ -180,7 +183,8 @@ function Get-TargetResource
         Specifies the type of collection. Valid values are User and Device.
 
     .PARAMETER LimitingCollectionName
-        Specifies the name of a collection to use as the default scope for this collection.  Limiting collection is not evaluated in Test and is only used
+        Specifies the name of a collection to use as the default scope for this collection.
+        Limiting collection is not evaluated in Test and is only used
         if the collection needs created.
 
     .PARAMETER Comment
@@ -190,13 +194,15 @@ function Get-TargetResource
         Specifies a schedule that determines when Configuration Manager refreshes the collection.
 
     .PARAMETER RefreshType
-        Specifies how Configuration Manager refreshes the collection. Valid values are: Manual, Periodic, Continuous, and Both.
+        Specifies how Configuration Manager refreshes the collection.
+        Valid values are: Manual, Periodic, Continuous, and Both.
 
     .PARAMETER QueryRules
         Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.
 
     .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude members from. If clients are in the excluded collection they will not be added to the collection.
+        Specifies the collection name to exclude members from. If clients are in the excluded collection they will
+        not be added to the collection.
 
     .PARAMETER DirectMembership
         Specifies the resourceid for the direct membership rule.
@@ -270,7 +276,14 @@ function Set-TargetResource
             if ($null -eq $cn)
             {
                 Write-Verbose -Message ($script:localizedData.CollectionAbsent -f $CollectionName)
-                New-CMCollection -Name $CollectionName -CollectionType $CollectionType -LimitingCollectionName $LimitingCollectionName
+
+                $newCollection = @{
+                    Name                   = $CollectionName
+                    CollectionType         = $CollectionType
+                    LimitingCollectionName = $LimitingCollectionName
+                }
+
+                New-CMCollection @newCollection
             }
 
             $buildingParams = @{
@@ -292,7 +305,8 @@ function Set-TargetResource
             {
                 if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
                 {
-                    Write-Verbose -Message "$($item.Name) expected $($item.Value) returned $($state[$item.Name])"
+                    Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, `
+                        $($item.name), $($item.Value), $($state[$item.Name]))
 
                     $buildingParams += @{
                         $($item.Name) = $($item.Value)
@@ -302,7 +316,12 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($RefreshSchedule))
             {
-                $desiredRefreshSchedule = New-CMSchedule -RecurInterval $RefreshSchedule.RecurInterval -RecurCount $RefreshSchedule.RecurCount
+                $newSchedule = @{
+                    RecurInterval = $RefreshSchedule.RecurInterval
+                    RecurCount    = $RefreshSchedule.RecurCount
+                }
+                
+                $desiredRefreshSchedule = New-CMSchedule @newSchedule
 
                 if ($state.RefreshSchedule)
                 {
@@ -338,16 +357,23 @@ function Set-TargetResource
             {
                 foreach ($member in $ExcludeMembership)
                 {
+                    $excludeRule = @{}
+
                     if (($null -eq $state.ExcludeMembership) -or ($state.ExcludeMembership -notcontains $member))
                     {
+                        $excludeRule = @{
+                            CollectionName = $CollectionName
+                            ExcludeCollectionName = $member
+                        }
+                        
                         Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
                         if ($CollectionType -eq 'User')
-                        {
-                            Add-CMUserCollectionExcludeMembershipRule -CollectionName $CollectionName -ExcludeCollectionName $member
+                        {   
+                            Add-CMUserCollectionExcludeMembershipRule @excludeRule
                         }
                         else
-                        {
-                            Add-CMDeviceCollectionExcludeMembershipRule -CollectionName $CollectionName -ExcludeCollectionName $member
+                        {   
+                            Add-CMDeviceCollectionExcludeMembershipRule @excludeRule
                         }
                     }
                 }
@@ -357,16 +383,23 @@ function Set-TargetResource
             {
                 foreach ($member in $DirectMembership)
                 {
+                    $directRule = @{}
+
                     if (($null -eq $state.DirectMembership) -or ($state.DirectMembership -notcontains $member))
                     {
+                        $directRule = @{
+                            CollectionName = $CollectionName
+                            ResourceId     = $member
+                        }
+                        
                         Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
                         if ($CollectionType -eq 'User')
                         {
-                            Add-CMUserCollectionDirectMembershipRule -CollectionName $CollectionName -ResourceId $member
+                            Add-CMUserCollectionDirectMembershipRule @directRule
                         }
                         else
                         {
-                            Add-CMDeviceCollectionDirectMembershipRule -CollectionName $CollectionName -ResourceId $member
+                            Add-CMDeviceCollectionDirectMembershipRule @directRule
                         }
                     }
                 }
@@ -387,21 +420,30 @@ function Set-TargetResource
 
                 foreach ($rule in $rules)
                 {
-                    if (($null -eq $state.QueryRules) -or ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
+                    $queryRule = @{}
+
+                    if (($null -eq $state.QueryRules) -or
+                       ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
                     {
                         Write-Verbose -Message ($script:localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
 
+                        $queryRule = @{
+                            CollectionName  = $CollectionName
+                            RuleName        = $rule.RuleName
+                            QueryExpression = $rule.QueryExpression
+                        }
+
                         if ($CollectionType -eq 'User')
                         {
-                            Add-CMUserCollectionQueryMembershipRule -CollectionName $CollectionName -RuleName $rule.RuleName -QueryExpression $rule.QueryExpression
+                            Add-CMUserCollectionQueryMembershipRule @queryRule
                         }
                         else
                         {
-                            Add-CMDeviceCollectionQueryMembershipRule -CollectionName $CollectionName -RuleName $rule.RuleName -QueryExpression $rule.QueryExpression
+                            Add-CMDeviceCollectionQueryMembershipRule @queryRule
                         }
                     }
                 }
-            }
+            }#>
         }
         else
         {
@@ -436,7 +478,8 @@ function Set-TargetResource
         Specifies the type of collection. Valid values are User and Device.
 
     .PARAMETER LimitingCollectionName
-        Specifies the name of a collection to use as the default scope for this collection.  Limiting collection is not evaluated in Test and is only used
+        Specifies the name of a collection to use as the default scope for this collection.
+        Limiting collection is not evaluated in Test and is only used
         if the collection needs created.
 
     .PARAMETER Comment
@@ -446,13 +489,15 @@ function Set-TargetResource
         Specifies a schedule that determines when Configuration Manager refreshes the collection.
 
     .PARAMETER RefreshType
-        Specifies how Configuration Manager refreshes the collection. Valid values are: Manual, Periodic, Continuous, and Both.
+        Specifies how Configuration Manager refreshes the collection.
+        Valid values are: Manual, Periodic, Continuous, and Both.
 
     .PARAMETER QueryRules
         Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.
 
     .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude members from. If clients are in the excluded collection they will not be added to the collection.
+        Specifies the collection name to exclude members from. If clients are in the excluded collection they will
+        not be added to the collection.
 
     .PARAMETER DirectMembership
         Specifies the resourceid for the direct membership rule.
@@ -544,14 +589,20 @@ function Test-TargetResource
             {
                 if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
                 {
-                    Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, $($item.name), $($item.Value), $($state[$item.Name]))
+                    Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, `
+                        $($item.name), $($item.Value), $($state[$item.Name]))
                     $result = $false
                 }
             }
 
             if (-not [string]::IsNullOrEmpty($RefreshSchedule))
             {
-                $desiredRefreshSchedule = New-CMSchedule -RecurInterval $RefreshSchedule.RecurInterval -RecurCount $RefreshSchedule.RecurCount
+                $newSchedule = @{
+                    RecurInterval = $RefreshSchedule.RecurInterval
+                    RecurCount    = $RefreshSchedule.RecurCount
+                }
+
+                $desiredRefreshSchedule = New-CMSchedule @newSchedule
 
                 $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
 
@@ -559,7 +610,8 @@ function Test-TargetResource
                 {
                     if (($desiredRefreshSchedule).$($item) -ne ($state.RefreshSchedule).$($item))
                     {
-                        Write-Verbose -Message ($script:localizedData.ScheduleItem -f $item, $($desiredRefreshSchedule.$($item)), $(($state.RefreshSchedule).$($item)))
+                        Write-Verbose -Message ($script:localizedData.ScheduleItem `
+                            -f $item, $($desiredRefreshSchedule.$($item)), $(($state.RefreshSchedule).$($item)))
                         $result = $false
                     }
                 }
