@@ -30,9 +30,28 @@ Configuration xSccmSqlSetup
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullorEmpty()]
-        [ValidateSet('2008','2008R2','2012','2014','2016','2017','2019')]
         [String]
-        $SqlVersion,
+        $SqlUserDBDir,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlUserDBLogDir,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlTempDBDir,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlTempDBLogDir,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullorEmpty()]
+        [Uint16]
+        $SqlPort,
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
@@ -43,11 +62,6 @@ Configuration xSccmSqlSetup
         [ValidateNotNullorEmpty()]
         [String]
         $InstallSharedWowDir = 'C:\Program Files (x86)\Microsoft SQL Server',
-
-        #[Parameter()]
-        #[ValidateNotNullorEmpty()]
-        #[String]
-        #$InstanceDir,
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
@@ -74,26 +88,6 @@ Configuration xSccmSqlSetup
         [String]
         $InstallSqlDataDir = 'C:\',
 
-        #[Parameter(Mandatory = $true)]
-        #[ValidateNotNullorEmpty()]
-        #[String]
-        #$SqlUserDBDir,
-
-        #[Parameter(Mandatory = $true)]
-        #[ValidateNotNullorEmpty()]
-        #[String]
-        #$SqlUserDBLogDir,
-
-        #[Parameter(Mandatory = $true)]
-        #[ValidateNotNullorEmpty()]
-        #[String]
-        #$SqlTempDBDir,
-
-        #[Parameter(Mandatory = $true)]
-        #[ValidateNotNullorEmpty()]
-        #[String]
-        #$SqlTempDBLogDir,
-
         [Parameter()]
         [ValidateNotNullorEmpty()]
         [String]
@@ -103,25 +97,7 @@ Configuration xSccmSqlSetup
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 13.5.0
 
-    switch ($SqlVersion)
-    {
-        '2008'   { $version = '10' }
-        '2008R2' { $version = '10' }
-        '2012'   { $version = '11' }
-        '2014'   { $version = '12' }
-        '2016'   { $version = '13' }
-        '2017'   { $version = '14' }
-        '2019'   { $version = '15' }
-    }
-
-    if ([string]::IsNullOrEmpty($InstanceDir))
-    {
-        $newInstanceDir = "$InstallSharedDir\MSSQL$version.$SqlInstanceName"
-    }
-    else
-    {
-        $newInstanceDir = $InstanceDir
-    }
+    # Check SQl 2016 2014
 
     SqlSetup InstallSql
     {
@@ -129,7 +105,6 @@ Configuration xSccmSqlSetup
         InstallSharedDir    = $InstallSharedDir
         InstallSharedWowDir = $InstallSharedWowDir
         InstanceName        = $SqlInstanceName
-        #InstanceDir         = $newInstanceDir
         SQLSvcAccount       = $SqlServiceCredential
         AgtSvcAccount       = $SqlAgentServiceCredential
         RSInstallMode       = $RSInstallMode
@@ -138,10 +113,10 @@ Configuration xSccmSqlSetup
         SQLCollation        = $SqlCollation
         SQLSysAdminAccounts = $SqlSysAdminAccounts
         InstallSQLDataDir   = $InstallSqlDataDir
-        #SQLUserDBDir        = $SqlUserDBDir
-        #SQLUserDBLogDir     = $SqlUserDBLogDir
-        #SQLTempDBDir        = $SqlTempDBDir
-        #SQLTempDBLogDir     = $SqlTempDBLogDir
+        SQLUserDBDir        = $SqlUserDBDir
+        SQLUserDBLogDir     = $SqlUserDBLogDir
+        SQLTempDBDir        = $SqlTempDBDir
+        SQLTempDBLogDir     = $SqlTempDBLogDir
         SourcePath          = $SqlInstallPath
         UpdateEnabled       = $UpdateEnabled
     }
@@ -151,7 +126,7 @@ Configuration xSccmSqlSetup
         InstanceName    = $SqlInstanceName
         ProtocolName    = 'Tcp'
         IsEnabled       = $true
-        TcpPort         = 1433
+        TcpPort         = $SqlPort
         RestartService  = $true
         DependsOn       = '[SqlSetup]InstallSql'
     }

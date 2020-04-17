@@ -62,26 +62,27 @@ Configuration xSCCMPreReqs
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
 
-    WindowsFeature NET-Framework-Core
+    WindowsFeature WindowsFeature-NET-Framework-Core
     {
         Name   = 'Net-Framework-Core'
         Ensure = 'Present'
     }
 
-    WindowsFeature NET-Framework-45-Core
+    WindowsFeature WindowsFeature-NET-Framework-45-Core
     {
         Name   = 'Net-Framework-45-Core'
         Ensure = 'Present'
     }
 
-    WindowsFeature RDC
+    WindowsFeature WindowsFeature-RDC
     {
         Name   = 'RDC'
         Ensure = 'Present'
     }
 
-    $Localadministrators | Where-Object -FilterScript {$_ -like '*\*' -and $_ -notlike 'BUILTIN\*' -and $_ -notlike '.\*'}
+    $Localadministrators | Where-Object -FilterScript {$_ -like '*\*' -and $_ -notlike 'BUILTIN\*' -and $_ -notlike '.\*' -and $_ -notlike '*@*'}
 
+    # Does this still run if MembersToInclude is blank
     if ($LocalAdministrators -gt 0)
     {
         Group LocalAdministrators
@@ -124,14 +125,14 @@ Configuration xSCCMPreReqs
     {
         Ensure    = 'Present'
         Path      = $MdtMsiPath
-        Name      = $MdtName
+        Name      = $MdtProductName
         ProductId = $MdtProductID
         Arguments = "INSTALLDIR=$($MdtInstallPath) /qn /norestart"
     }
 
     foreach ($drive in $NoSmsOnDrives)
     {
-        File $drive
+        File $drive-NoSmsOnDrive
         {
             DestinationPath = "$($drive):\no_sms_on_drive.sms"
             Ensure          = 'Present'
