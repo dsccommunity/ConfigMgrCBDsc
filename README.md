@@ -165,3 +165,20 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMAccounts_Absent](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
 - [CMAccounts_Present](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
+
+### DSC_CMBoundaries
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Value** _(Key)_: Specifies the value for the boundary.
+- **[String] DisplayName** _(Required)_: Specifies the display name of the boundary.
+- **[String] Type** _(Required)_: Specifies the type of boundary.
+  - Values include: { ADSite | IPSubnet | IPRan
+- **[String] Ensure** _(Write)_: Specifies whether the account is present or
+  absent.
+  - Values include: { Present | Absent }
+
+#### DSC_CMBoundaries Examples
+
+- [CMBoundaries_Absent](Source\Examples\Resources\CMBoundaries\CMBoundaries_Absent.ps1)
+- [CMBoundaries_Present](Source\Examples\Resources\CMBoundaries\CMBoundaries_Present.ps1)
