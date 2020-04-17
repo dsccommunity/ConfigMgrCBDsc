@@ -83,7 +83,7 @@ function Get-TargetResource
         $state = 'Absent'
     }
 
-    Return @{
+    return @{
         SiteCode    = $SiteCode
         DisplayName = $cValue.DisplayName
         Type        = $boundaryType
