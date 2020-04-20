@@ -45,7 +45,7 @@ Configuration xSCCMPreReqs
 
         [Parameter()]
         [System.String]
-        $AdkInstallPath ='',
+        $AdkInstallPath ='C:\Program Files (x86)\Windows Kits\10',
 
         [Parameter()]
         [System.String]
@@ -57,7 +57,7 @@ Configuration xSCCMPreReqs
 
         [Parameter()]
         [System.String]
-        $MdtInstallPath = ''
+        $MdtInstallPath = 'C:\Program Files\Microsoft Deployment Toolkit'
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
@@ -82,9 +82,13 @@ Configuration xSCCMPreReqs
 
     $Localadministrators | Where-Object -FilterScript {$_ -like '*\*' -and $_ -notlike 'BUILTIN\*' -and $_ -notlike '.\*' -and $_ -notlike '*@*'}
 
-    # Does this still run if MembersToInclude is blank
     if ($LocalAdministrators -gt 0)
     {
+        if ($null -eq $DomainCredential)
+        {
+            Write-Error -Message "When adding domain users/groups to the Local Administrator group, domain credentials are needed."
+        }
+
         Group LocalAdministrators
         {
             GroupName        = 'Administrators'
@@ -92,7 +96,7 @@ Configuration xSCCMPreReqs
             Credential       = $DomainCredential
         }
     }
-    else
+    elseif($LocalAdministrators)
     {
         Group LocalAdministrators
         {
