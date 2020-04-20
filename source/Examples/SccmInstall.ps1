@@ -1,3 +1,10 @@
+#Requires -Module ConfigMgrCBDsc
+
+<#
+    .DESCRIPTION
+        This configuration will install the prerequistes that are need for SCCM, install SQL, create the ini file
+        needed for the SCCM install, and install SCCM.
+#>
 Configuration SCCMInstall
 {
     [CmdletBinding()]
