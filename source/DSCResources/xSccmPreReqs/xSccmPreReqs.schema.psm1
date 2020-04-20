@@ -96,7 +96,7 @@ Configuration xSCCMPreReqs
             Credential       = $DomainCredential
         }
     }
-    elseif($LocalAdministrators)
+    elseif ($LocalAdministrators)
     {
         Group LocalAdministrators
         {
