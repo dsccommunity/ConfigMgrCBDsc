@@ -4,7 +4,7 @@
     .DESCRIPTION
         This configuration Install Microsoft System Center Configuration Manager.
 #>
-Configuration SCCMInstall
+Configuration Example
 {
     [CmdletBinding()]
     param
@@ -25,7 +25,6 @@ Configuration SCCMInstall
             IniFile            = 'C:\temp\Lab-CAS-Test.ini'
             SccmServerType     = 'CAS'
             SccmInstallAccount = $SccmInstallAccount
-            DependsOn          = '[xSccmPreReqs]SCCMPreReqs','[xSccmSqlSetup]SccmSqlSetup','[SccmIniFile]CreateSCCMIniFile'
         }
     }
 }

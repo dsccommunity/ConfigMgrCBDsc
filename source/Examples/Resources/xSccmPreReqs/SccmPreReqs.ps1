@@ -5,7 +5,7 @@
         This configuration will install: ADK, ADK WinPE and MDT, add users/groups to the Local Administrators group,
         and put nosms files on specified drives.
 #>
-Configuration SCCMPreReqs
+Configuration Example
 {
     [CmdletBinding()]
     param

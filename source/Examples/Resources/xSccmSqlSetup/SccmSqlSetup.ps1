@@ -5,7 +5,7 @@
         This configuration Install SQL for an SCCM install. The DSC resource module, SqlServerDsc, can be used to
         create a more sophisticated install.
 #>
-Configuration SCCMSQLInstall
+Configuration Example
 {
     [CmdletBinding()]
     param

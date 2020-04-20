@@ -136,7 +136,7 @@ Configuration xSCCMPreReqs
 
     foreach ($drive in $NoSmsOnDrives)
     {
-        File $drive-NoSmsOnDrive
+        File "$drive-NoSmsOnDrive"
         {
             DestinationPath = "$($drive):\no_sms_on_drive.sms"
             Ensure          = 'Present'
