@@ -130,6 +130,12 @@ try
             SiteCode       = 'Lab'
             CollectionName = 'Test'
             CollectionType = 'Device'
+        }
+
+        $testDeviceInputAbsent = @{
+            SiteCode       = 'Lab'
+            CollectionName = 'Test'
+            CollectionType = 'Device'
             Ensure         = 'Absent'
         }
 
@@ -284,6 +290,7 @@ try
             ExcludeMembership      = @('TestUser1','TestUser2')
             DirectMembership       = @('2097152000','2097152001')
             QueryRules             = $mockCimUserQuery
+            Ensure                 = 'Present'
         }
 
         $deviceGetCollectionResult = @{
@@ -305,6 +312,7 @@ try
             ExcludeMembership      = @('Test1','Test2')
             DirectMembership       = @('2097152000','2097152001')
             QueryRules             = $deviceQueryResults
+            Ensure                 = 'Present'
         }
 
         $deviceGetCollectionResultSchedule = @{
@@ -326,6 +334,7 @@ try
             ExcludeMembership      = @('Test1','Test2')
             DirectMembership       = @('2097152000','2097152001')
             QueryRules             = $deviceQueryResults
+            Ensure                 = 'Present'
         }
 
         $deviceGetCollectionEmpty = @{
@@ -339,6 +348,7 @@ try
             ExcludeMembership      = $null
             DirectMembership       = $null
             QueryRules             = $null
+            Ensure                 = 'Absent'
         }
 
         $deviceMatchCollectionParams = @{
@@ -404,6 +414,7 @@ try
             ExcludeMembership      = @('Test1','Test2')
             DirectMembership       = @('2097152000','2097152001')
             QueryRules             = $mockCimUserQuery
+            Ensure                 = 'Present'
         }
 
         Describe "$moduleResourceName\Get-TargetResource" {
@@ -430,6 +441,7 @@ try
                     $result.QueryRules             | Should -Match $deviceQueryResults
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result for device collections with no collection updates' {
@@ -450,6 +462,7 @@ try
                     $result.QueryRules             | Should -Match $deviceQueryResults
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result for device collections with periodic updates' {
@@ -470,6 +483,7 @@ try
                     $result.QueryRules             | Should -Match $deviceQueryResults
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result for device collections with no collection updates' {
@@ -490,6 +504,7 @@ try
                     $result.QueryRules             | Should -Match $deviceQueryResults
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result for user collections' {
@@ -510,34 +525,55 @@ try
                     $result.QueryRules             | Should -Match $userQueryResults
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('TestUser1','TestUser2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
+                }
+
+                It 'Should return desired result for user collections' {
+                    Mock -CommandName Get-CMCollection
+                    Mock -CommandName Get-CMUserCollectionDirectMembershipRule
+                    Mock -CommandName Get-CMUserCollectionExcludeMembershipRule
+                    Mock -CommandName Get-CMUserCollectionQueryMembershipRule
+
+                    $result = Get-TargetResource @getUserInput
+                    $result                        | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
+                    $result.CollectionName         | Should -Be -ExpectedValue 'User1'
+                    $result.Comment                | Should -Be -ExpectedValue $null
+                    $result.CollectionType         | Should -Be -ExpectedValue $null
+                    $result.LimitingCollectionName | Should -Be -ExpectedValue $null
+                    $result.RefreshSchedule        | Should -Be -ExpectedValue $null
+                    $result.RefreshType            | Should -Be -ExpectedValue $null
+                    $result.QueryRules             | Should -Be -ExpectedValue $null
+                    $result.ExcludeMembership      | Should -Be -ExpectedValue $null
+                    $result.DirectMembership       | Should -Be -ExpectedValue $null
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Absent'
                 }
             }
         }
 
         Describe "$moduleResourceName\Set-TargetResource" {
+            Mock -CommandName Import-ConfigMgrPowerShellModule
+            Mock -CommandName Set-Location
+            Mock -CommandName New-CMCollection
+            Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
+            Mock -CommandName Set-CMCollection
+            Mock -CommandName Add-CMUserCollectionExcludeMembershipRule
+            Mock -CommandName Add-CMUserCollectionDirectMembershipRule
+            Mock -CommandName Add-CMUserCollectionQueryMembershipRule
+            Mock -CommandName Add-CMDeviceCollectionExcludeMembershipRule
+            Mock -CommandName Add-CMDeviceCollectionDirectMembershipRule
+            Mock -CommandName Add-CMDeviceCollectionQueryMembershipRule
+            Mock -CommandName Remove-CMCollection
+
             Context 'When Set-TargetResource runs successfully' {
-                Mock -CommandName Import-ConfigMgrPowerShellModule
-                Mock -CommandName Set-Location
-                Mock -CommandName New-CMCollection
-                Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
-                Mock -CommandName Set-CMCollection
-                Mock -CommandName Add-CMUserCollectionExcludeMembershipRule
-                Mock -CommandName Add-CMUserCollectionDirectMembershipRule
-                Mock -CommandName Add-CMUserCollectionQueryMembershipRule
-                Mock -CommandName Add-CMDeviceCollectionExcludeMembershipRule
-                Mock -CommandName Add-CMDeviceCollectionDirectMembershipRule
-                Mock -CommandName Add-CMDeviceCollectionQueryMembershipRule
-                Mock -CommandName Remove-CMCollection
 
                 It 'Should call expected commands for creating new device collection' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
 
                     Set-TargetResource @deviceDirectMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -551,14 +587,12 @@ try
                 }
 
                 It 'Should call expected commands for creating new user collection' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
 
                     Set-TargetResource @userDirectMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -572,14 +606,12 @@ try
                 }
 
                 It 'Should call expected commands for setting schedule and direct membership rule' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResult  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResultSchedule }
 
                     Set-TargetResource @deviceDirectMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -593,14 +625,12 @@ try
                 }
 
                 It 'Should call expected commands for setting eval schedule mismatch' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResult  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResultSchedule }
 
                     Set-TargetResource @deviceEvalItemsMisMatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -614,14 +644,12 @@ try
                 }
 
                 It 'Should call expected commands for removing collection' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResult  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResultSchedule }
 
-                    Set-TargetResource @getDeviceInput
+                    Set-TargetResource @testDeviceInputAbsent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 0 -Scope It
@@ -636,21 +664,8 @@ try
             }
 
             Context 'When running Set-TargetResource should throw' {
-                Mock -CommandName Import-ConfigMgrPowerShellModule
-                Mock -CommandName Set-Location
-                Mock -CommandName New-CMCollection
-                Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
-                Mock -CommandName Set-CMCollection
-                Mock -CommandName Add-CMUserCollectionExcludeMembershipRule
-                Mock -CommandName Add-CMUserCollectionDirectMembershipRule
-                Mock -CommandName Add-CMUserCollectionQueryMembershipRule
-                Mock -CommandName Add-CMDeviceCollectionExcludeMembershipRule
-                Mock -CommandName Add-CMDeviceCollectionDirectMembershipRule
-                Mock -CommandName Add-CMDeviceCollectionQueryMembershipRule
-                Mock -CommandName Remove-CMCollection
 
                 It 'Should call expected commands and throw if query membership throws' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
                     Mock -CommandName Add-CMDeviceCollectionQueryMembershipRule -MockWith { throw }
 
@@ -658,7 +673,6 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -672,7 +686,6 @@ try
                 }
 
                 It 'Should call expected commands and throw if direct membership throws' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
                     Mock -CommandName Add-CMDeviceCollectionDirectMembershipRule -MockWith { throw }
 
@@ -680,7 +693,6 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -694,7 +706,6 @@ try
                 }
 
                 It 'Should call expected commands and throw if exclude membership throws' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
                     Mock -CommandName Add-CMDeviceCollectionExcludeMembershipRule -MockWith { throw }
 
@@ -702,7 +713,6 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -716,7 +726,6 @@ try
                 }
 
                 It 'Should call expected commands and throw if set collection throws' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
                     Mock -CommandName Set-CMCollection -MockWith { throw }
 
@@ -724,7 +733,6 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
@@ -738,7 +746,6 @@ try
                 }
 
                 It 'Should call expected commands and throw if new schedule throws' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
                     Mock -CommandName New-CMSchedule -MockWith { throw }
 
@@ -746,7 +753,6 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 0 -Scope It
@@ -760,7 +766,6 @@ try
                 }
 
                 It 'Should call expected commands and throw if new collection throws' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null  }
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
                     Mock -CommandName New-CMCollection -MockWith { throw }
 
@@ -768,7 +773,6 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 0 -Scope It
@@ -782,15 +786,13 @@ try
                 }
 
                 It 'Should call expected commands and throw if remove collection throws' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResult }
-                    Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
+                    Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResultSchedule }
                     Mock -CommandName Remove-CMCollection -MockWith { throw }
 
-                    { Set-TargetResource @getDeviceInput } | Should -Throw
+                    { Set-TargetResource @testDeviceInputAbsent } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 0 -Scope It
@@ -812,84 +814,67 @@ try
             Context 'When running Test-TargetResource device settings' {
                 Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResult }
                 
-                It 'Should return desired result true Ensure is Absent and collection is null' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null }
-
-                    Test-TargetResource @getDeviceInput | Should -Be $true
-                }
-
-                It 'Should return desired result true Ensure is Absent and collection is returned' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
-
-                    Test-TargetResource @getDeviceInput | Should -Be $false
-                }
-                
                 It 'Should return desired result true Ensure is present and collection is returned' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
                     Test-TargetResource @deviceMatchCollectionParams | Should -Be $true
                 }
 
                 It 'Should return desired result false Ensure is present and schedule days does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysNotMatch }
 
                     Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and schedule hours does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleHours }
 
                     Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
                 }
                 
                 It 'Should return desired result false Ensure is present and schedule minutes does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
-                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleMinutes }
-
-                    Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
-                }
-
-                It 'Should return desired result false Ensure is present and schedule minutes does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleMinutes }
 
                     Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and comment and refreshtype does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
                     Test-TargetResource @deviceEvalItemsMisMatch | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and excluded collections does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
                     Test-TargetResource @deviceExcludeMismatch | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and direct membership does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
                     Test-TargetResource @deviceDirectMismatch | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and collection query does not match' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceGetCollectionResult }
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
                     Test-TargetResource @deviceQueryMismatch | Should -Be $false
                 }
 
+                It 'Should return desired result false Ensure is Absent and collection is returned' {
+                    Test-TargetResource @testDeviceInputAbsent | Should -Be $false
+                }
+            }
+
+            Context 'When running Test-TargetResource collection is absent in Get-TargetResource' {
+                Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
+                
+                It 'Should return desired result true Ensure is Absent and collection is null' {
+                    Test-TargetResource @testDeviceInputAbsent | Should -Be $true
+                }
+
                 It 'Should return desired result false when Ensure is Present and the collection does not exist' {
-                    Mock -CommandName Get-CMCollection -MockWith { $null }
-                    
                     Test-TargetResource @deviceQueryMismatch | Should -Be $false
                 }
             }

@@ -18,34 +18,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .PARAMETER CollectionType
         Specifies the type of collection. Valid values are User and Device.
-
-    .PARAMETER LimitingCollectionName
-        Specifies the name of a collection to use as the default scope for this collection.
-        Limiting collection is not evaluated in Test and is only used
-        if the collection needs created.
-
-    .PARAMETER Comment
-        Specifies a comment for the collection.
-
-    .PARAMETER RefreshSchedule
-        Specifies a schedule that determines when Configuration Manager refreshes the collection.
-
-    .PARAMETER RefreshType
-        Specifies how Configuration Manager refreshes the collection.
-        Valid values are: Manual, Periodic, Continuous, and Both.
-
-    .PARAMETER QueryRules
-        Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.
-
-    .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude members from. If clients are in the excluded collection they will
-        not be added to the collection.
-
-    .PARAMETER DirectMembership
-        Specifies the resourceid for the direct membership rule.
-
-    .PARAMETER Ensure
-        Specifies if the collection is to be present or absent.
+        Not used in Get-TargetResource.
 #>
 function Get-TargetResource
 {
@@ -64,41 +37,7 @@ function Get-TargetResource
         [Parameter(Mandatory = $true)]
         [ValidateSet('User','Device')]
         [String]
-        $CollectionType,
-
-        [Parameter()]
-        [String]
-        $LimitingCollectionName,
-
-        [Parameter()]
-        [String]
-        $Comment,
-
-        [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance]
-        $RefreshSchedule,
-
-        [Parameter()]
-        [ValidateSet('None','Periodic','Continuous','Both')]
-        [String]
-        $RefreshType,
-
-        [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance[]]
-        $QueryRules,
-
-        [Parameter()]
-        [String[]]
-        $ExcludeMembership,
-
-        [Parameter()]
-        [String[]]
-        $DirectMembership,
-
-        [Parameter()]
-        [ValidateSet('Present','Absent')]
-        [String]
-        $Ensure = 'Present'
+        $CollectionType
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
@@ -126,33 +65,29 @@ function Get-TargetResource
         if ($type -eq 'User')
         {
             $rules = Get-CMUserCollectionQueryMembershipRule -CollectionName $collection.Name
-
-            if ($rules)
-            {
-                foreach ($rule in $rules)
-                {
-                    [array]$qRules += ($rule |Select-Object QueryExpression, RuleName)
-                }
-            }
-
             $excludes = (Get-CMUserCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
             $directMember = (Get-CMUserCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
         }
         else
         {
             $rules = Get-CMDeviceCollectionQueryMembershipRule -CollectionName $collection.Name
-
-            if ($rules)
-            {
-                foreach ($rule in $rules)
-                {
-                    [array]$qRules += ($rule |Select-Object QueryExpression, RuleName)
-                }
-            }
-
             $excludes = (Get-CMDeviceCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
             $directMember = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
         }
+
+        if ($rules)
+        {
+            foreach ($rule in $rules)
+            {
+                [array]$qRules += ($rule | Select-Object QueryExpression, RuleName)
+            }
+        }
+
+        $status = 'Present'
+    }
+    else
+    {
+        $status = 'Absent'
     }
 
     return @{
@@ -166,6 +101,7 @@ function Get-TargetResource
         QueryRules             = $qRules
         ExcludeMembership      = $excludes
         DirectMembership       = $directMember
+        Ensure                 = $status
     }
 }
 
@@ -198,7 +134,7 @@ function Get-TargetResource
         Valid values are: Manual, Periodic, Continuous, and Both.
 
     .PARAMETER QueryRules
-        Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.
+        Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.
 
     .PARAMETER ExcludeMembership
         Specifies the collection name to exclude members from. If clients are in the excluded collection they will
@@ -269,11 +205,10 @@ function Set-TargetResource
     try
     {
         $state = Get-TargetResource -SiteCode $SiteCode -CollectionName $CollectionName -CollectionType $CollectionType
-        $cn = Get-CMCollection -Name $CollectionName
 
         if ($Ensure -eq 'Present')
         {
-            if ($null -eq $cn)
+            if ($state.Ensure -eq 'Absent')
             {
                 Write-Verbose -Message ($script:localizedData.CollectionAbsent -f $CollectionName)
 
@@ -365,7 +300,7 @@ function Set-TargetResource
                             CollectionName = $CollectionName
                             ExcludeCollectionName = $member
                         }
-                        
+
                         Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
 
                         if ($CollectionType -eq 'User')
@@ -392,7 +327,7 @@ function Set-TargetResource
                             CollectionName = $CollectionName
                             ResourceId     = $member
                         }
-                        
+
                         Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
 
                         if ($CollectionType -eq 'User')
@@ -449,7 +384,7 @@ function Set-TargetResource
         }
         else
         {
-            if ($null -ne $cn)
+            if ($state.Ensure -eq 'Present')
             {
                 Write-Verbose -Message ($script:localizedData.RemoveCollection -f $CollectionName)
                 Remove-CMCollection -Name $CollectionName
@@ -495,7 +430,7 @@ function Set-TargetResource
         Valid values are: Manual, Periodic, Continuous, and Both.
 
     .PARAMETER QueryRules
-        Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.
+        Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.
 
     .PARAMETER ExcludeMembership
         Specifies the collection name to exclude members from. If clients are in the excluded collection they will
@@ -564,12 +499,11 @@ function Test-TargetResource
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -CollectionName $CollectionName -CollectionType $CollectionType
-    $cn = Get-CMCollection -Name $CollectionName
     $result = $true
 
     if ($Ensure -eq 'Present')
     {
-        if ($null -eq $cn)
+        if ($state.Ensure -eq 'Absent')
         {
             Write-Verbose -Message ($script:localizedData.CollectionAbsent -f $CollectionName)
             $result = $false
@@ -670,7 +604,7 @@ function Test-TargetResource
     }
     else
     {
-        if ($null -ne $cn)
+        if ($state.Ensure -eq 'Present')
         {
             Write-Verbose -Message ($script:localizedData.RemoveCollection -f $CollectionName)
             $result = $false
