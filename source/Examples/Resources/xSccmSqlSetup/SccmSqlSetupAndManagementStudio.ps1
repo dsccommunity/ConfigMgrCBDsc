@@ -5,7 +5,7 @@
         This configuration Install SQL for an SCCM install. The DSC resource module, SqlServerDsc, can be used to
         create a more sophisticated install.
 #>
-Configuration SccmSqlSetupAndManagementStudio
+Configuration Example
 {
     [CmdletBinding()]
     param
@@ -27,7 +27,7 @@ Configuration SccmSqlSetupAndManagementStudio
 
     Node localhost
     {
-        xSccmSqlSetup SccmSqlSetup
+        xSccmSqlSetup SccmSqlSetupAndManagementStudio
         {
             SqlInstanceName            = 'CA12INST01'
             SqlServiceCredential       = $SqlServiceCredential
