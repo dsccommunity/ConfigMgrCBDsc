@@ -91,7 +91,27 @@ Configuration xSccmSqlSetup
         [Parameter()]
         [ValidateNotNullorEmpty()]
         [String]
-        $UpdateEnabled = $false
+        $UpdateEnabled = $false,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [Boolean]
+        $InstallManagementStudio = $false,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlManagementStudioExePath,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlManagementStudioName = 'SQL Server Management Studio',
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlManagemenStudioProductId = 'E3FD687D-6757-474B-8D83-5AA944B02C58'
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
@@ -129,5 +149,24 @@ Configuration xSccmSqlSetup
         TcpPort         = $SqlPort
         RestartService  = $true
         DependsOn       = '[SqlSetup]InstallSql'
+    }
+
+    if ($InstallManagementStudio)
+    {
+        if ($null -eq $SqlManagementStudioExePath)
+        {
+            Write-Error -Message $('When specifying to Install SQL Management Studio, you need to provide ' +
+                'SqlManagementStudioExePath.')
+        }
+
+        Package InstallSqlManagementStudio
+        {
+            Ensure      = 'Present'
+            Path        = $SqlManagementStudioExePath
+            Name        = $SqlManagementStudioName
+            Arguments   = '/install /quiet /norestart'
+            ProductId   = $SqlManagemenStudioProductId
+            DependsOn   = '[SqlServerNetwork]EnableTcpIp'
+        }
     }
 }
