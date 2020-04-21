@@ -44,7 +44,7 @@ function Import-ConfigMgrPowerShellModule
         }
 
         foreach ($value in $values.GetEnumerator())
-        {   
+        {
             if ($($regProperties.$($value.Name)) -ne $value.Value)
             {
                 Set-ItemProperty -Path $regKeyPath -Name $value.Name -Value $value.Value | Out-Null
@@ -75,7 +75,7 @@ function Import-ConfigMgrPowerShellModule
 #>
 function Set-ConfigMgrCert
 {
-    param()
+    param ()
 
     $configCert = Get-AuthenticodeSignature -FilePath (Join-Path $(Split-Path $ENV:SMS_ADMIN_UI_PATH) ConfigurationManager.psd1)
 
