@@ -16,10 +16,6 @@ Configuration Example
 
         [Parameter()]
         [System.Management.Automation.PSCredential]
-        $SqlAgentServiceCredential,
-
-        [Parameter()]
-        [System.Management.Automation.PSCredential]
         $SqlAgentServiceCredential
     )
 
