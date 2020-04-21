@@ -41,7 +41,7 @@ function Get-TargetResource
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
     $collection = Get-CMCollection -Name $CollectionName
@@ -199,7 +199,7 @@ function Set-TargetResource
         $Ensure = 'Present'
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
     try
@@ -496,7 +496,7 @@ function Test-TargetResource
         $Ensure = 'Present'
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -CollectionName $CollectionName -CollectionType $CollectionType
     $result = $true

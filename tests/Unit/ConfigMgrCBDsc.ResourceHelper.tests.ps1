@@ -20,11 +20,6 @@ InModuleScope $script:subModuleName {
 
     $moduleResourceName = 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper'
 
-    $localizedInput  = @{
-        ResourceName = 'DummyResource'
-        ResourcePath = 'TestDrive:\DummyResource'
-    }
-
     $moduleVersionGood = @{
         Name    = 'ConfgurationManager'
         Version = '5.1902'
@@ -52,41 +47,76 @@ InModuleScope $script:subModuleName {
         Setting           = 'Setting3'
     }
 
+    $siteCim = @{
+        ServerName = 'Test.contoso.com'
+        SiteCode   = 'Lab'
+        SiteName   = 'Lab'
+        Version    = '5.00.8790.1000'
+    }
+
     Describe "$moduleResourceName\Import-ConfigMgrPowerShellModule" {
 
         Context 'When importing the module' {
             Mock -CommandName Join-Path -MockWith { 'C:\' }
             Mock -CommandName Split-Path -MockWith { 'C:\' }
             Mock -CommandName Import-Module
+            Mock -CommandName Get-CimInstance -MockWith { $siteCim }
+            Mock -CommandName Set-ItemProperty
+            Mock -CommandName New-Item
+            Mock -CommandName Set-ConfigMgrCert
+            Mock -CommandName Get-ItemProperty
+            Mock -CommandName Test-Path
 
             It 'Should call expected commands' {
                 Mock -CommandName Get-Module -MockWith { $moduleVersionGood }
+                Mock -CommandName Test-Path -MockWith { $false }
+                Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
 
-                Import-ConfigMgrPowerShellModule
+                Import-ConfigMgrPowerShellModule -SiteCode 'Lab'
                 Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
                 Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
                 Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
+                Assert-MockCalled New-Item -Exactly -Times 1 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 2 -Scope It
+                Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
+                Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 1 -Scope It
             }
 
             It 'Should throw when module version is lower than expected' {
                 Mock -CommandName Get-Module -MockWith { $moduleVersionBad }
+                Mock -CommandName Test-Path -MockWith { $true } -ParameterFilter { $Path -eq 'Lab:\' }
 
-                { Import-ConfigMgrPowerShellModule } | Should -Throw
-                Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
-                Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
+                { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
+                Assert-MockCalled Import-Module -Exactly -Times 0 -Scope It
+                Assert-MockCalled Join-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Split-Path -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CimInstance -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-ItemProperty -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
+                Assert-MockCalled Set-ItemProperty -Exactly -Times 0 -Scope It
+                Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 0 -Scope It
             }
 
             It 'Should throw on Module import' {
                 Mock -CommandName Import-Module -MockWith { throw 'bad' }
+                Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
 
-                { Import-ConfigMgrPowerShellModule } | Should -Throw
+                { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
                 Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
                 Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
                 Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-Module -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
+                Assert-MockCalled New-Item -Exactly -Times 1 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 2 -Scope It
+                Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
+                Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 1 -Scope It
             }
         }
     }
