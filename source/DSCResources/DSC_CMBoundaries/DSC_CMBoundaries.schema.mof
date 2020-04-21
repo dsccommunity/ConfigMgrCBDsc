@@ -6,4 +6,5 @@ class DSC_CMBoundaries : OMI_BaseResource
     [Required, Description("Specifies the type of boundary"), ValueMap {"ADSite","IPSubnet","IPRange"}, Values {"ADSite","IPSubnet","IPRange"}] String Type;
     [Required, Description("Specifies the display name of the boundary")] String DisplayName;
     [Write, Description("Specifies whether the boundary is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Read, Description("Specifies the SiteCode for the Configuration Manager site.")] String BoundaryID;
 };

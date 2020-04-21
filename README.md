@@ -177,6 +177,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] Ensure** _(Write)_: Specifies whether the account is present or
   absent.
   - Values include: { Present | Absent }
+- **[String] Ensure** _(Read)_: Specifies the boundary id.
 
 #### DSC_CMBoundaries Examples
 

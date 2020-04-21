@@ -44,7 +44,6 @@ try
             DisplayName = 'Subnet 1'
             Type        = 'IPSubnet'
             Value       = '10.1.1.1/24'
-            Ensure      = 'Present'
         }
 
         $inputSubnetAbsent = @{
@@ -60,7 +59,6 @@ try
             DisplayName = 'Range 1'
             Type        = 'IPRange'
             Value       = '10.1.1.1-10.1.1.255'
-            Ensure      = 'Present'
         }
 
         $inputAdSitePresent = @{
@@ -68,7 +66,6 @@ try
             DisplayName = 'Site 1'
             Type        = 'ADSite'
             Value       = 'Default-First-Site'
-            Ensure      = 'Present'
         }
 
         $inputAdSiteAbsent = @{
@@ -112,6 +109,7 @@ try
             Value       = '10.1.1.1'
             Type        = 'IPSubnet'
             Ensure      = 'Present'
+            BoundaryId  = '1677726'
         }
 
         $getSubnetReturnName = @{
@@ -120,6 +118,7 @@ try
             Value       = '10.1.1.1'
             Type        = 'IPSubnet'
             Ensure      = 'Present'
+            BoundaryId  = '1677726'
         }
 
         $getAdSiteReturnName = @{
@@ -128,6 +127,7 @@ try
             Value       = '10.1.1.1'
             Type        = 'IPSubnet'
             Ensure      = 'Present'
+            BoundaryID  = '1677726'
         }
 
         $getSubnetReturnAbsent = @{
@@ -136,6 +136,7 @@ try
             Value       = $null
             Type        = $null
             Ensure      = 'Absent'
+            BoundaryId  = $null
         }
 
         Describe "$moduleResourceName\Get-TargetResource" {
@@ -154,6 +155,7 @@ try
                     $result.Value       | Should -Be -ExpectedValue '10.1.1.1'
                     $result.Type        | Should -Be -ExpectedValue 'IPSubnet'
                     $result.Ensure      | Should -Be -ExpectedValue 'Present'
+                    $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
                 }
 
                 It 'Should return desired result for IPRange return' {
@@ -166,6 +168,7 @@ try
                     $result.Value       | Should -Be -ExpectedValue '10.1.1.1-10.1.1.255'
                     $result.Type        | Should -Be -ExpectedValue 'IPRange'
                     $result.Ensure      | Should -Be -ExpectedValue 'Present'
+                    $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
                 }
 
                 It 'Should return desired result for AdSite return' {
@@ -178,6 +181,7 @@ try
                     $result.Value       | Should -Be -ExpectedValue 'Default-First-Site'
                     $result.Type        | Should -Be -ExpectedValue 'ADSite'
                     $result.Ensure      | Should -Be -ExpectedValue 'Present'
+                    $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
                 }
 
                 It 'Should return desired result when boundary not found' {
@@ -190,6 +194,7 @@ try
                     $result.Value       | Should -Be -ExpectedValue $null
                     $result.Type        | Should -Be -ExpectedValue $null
                     $result.Ensure      | Should -Be -ExpectedValue 'Absent'
+                    $result.BoundaryId  | Should -Be -ExpectedValue $null
                 }
             }
         }
@@ -204,13 +209,11 @@ try
 
                 It 'Should call expected commands for adding a new boundary' {
                     Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnAbsent }
-                    Mock -CommandName Get-CMBoundary -MockWith { $null }
 
                     Set-TargetResource @inputSubnetPresent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMBoundary -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMBoundary -Exactly -Times 0 -Scope It
@@ -218,13 +221,11 @@ try
 
                 It 'Should call expected commands for changing boundary name' {
                     Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName }
-                    Mock -CommandName Get-CMBoundary -MockWith { $boundarySubnetReturn }
 
                     Set-TargetResource @inputSubnetPresent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMBoundary -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMBoundary -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMBoundary -Exactly -Times 0 -Scope It
@@ -232,13 +233,11 @@ try
 
                 It 'Should call expected commands for removing a boundary' {
                     Mock -CommandName Get-TargetResource -MockWith { $getAdSiteReturnName }
-                    Mock -CommandName Get-CMBoundary -MockWith { $boundaryAdSiteReturn }
 
                     Set-TargetResource @inputAdSiteAbsent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMBoundary -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMBoundary -Exactly -Times 1 -Scope It
@@ -254,14 +253,12 @@ try
 
                 It 'Should call expected commands when Remove-CMBoundary throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getAdSiteReturnName }
-                    Mock -CommandName Get-CMBoundary -MockWith { $boundaryAdSiteReturn }
                     Mock -CommandName Remove-CMBoundary -MockWith { throw }
 
                     { Set-TargetResource @inputAdSiteAbsent } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMBoundary -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMBoundary -Exactly -Times 1 -Scope It
@@ -269,30 +266,14 @@ try
 
                 It 'Should call expected commands when present and Set-CMBoundary throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName }
-                    Mock -CommandName Get-CMBoundary -MockWith { $boundarySubnetReturn }
                     Mock -CommandName Set-CMBoundary -MockWith { throw }
 
                     { Set-TargetResource @inputSubnetPresent } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMBoundary -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMBoundary -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Remove-CMBoundary -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands when present and Get-CMBoundary throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName }
-                    Mock -CommandName Get-CMBoundary -MockWith { throw }
-
-                    { Set-TargetResource @inputSubnetPresent } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMBoundary -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMBoundary -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMBoundary -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMBoundary -Exactly -Times 0 -Scope It
                 }
             }

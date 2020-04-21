@@ -15,15 +15,13 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .PARAMETER DisplayName
         Specifies the display name of the boundary.
+        Not used in Get-TargetResource.
 
     .Parameter Type
         Specifies the type of boundary ADSite, IPSubnet, or IPRange.
 
     .Parameter Value
         Specifies the value for the boundary.
-
-    .Parameter Ensure
-        Specifies if the boundary is to be absent or present.
 #>
 function Get-TargetResource
 {
@@ -46,12 +44,7 @@ function Get-TargetResource
 
         [Parameter(Mandatory = $true)]
         [String]
-        $Value,
-
-        [Parameter()]
-        [ValidateSet('Present','Absent')]
-        [String]
-        $Ensure = 'Present'
+        $Value
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
@@ -89,6 +82,7 @@ function Get-TargetResource
         Type        = $boundaryType
         Value       = $cValue.Value
         Ensure      = $state
+        BoundaryId  = $cValue.BoundaryID
     }
 }
 
@@ -141,25 +135,13 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource @PSBoundParameters
-    
+    $state = Get-TargetResource -SiteCode $SiteCode -DisplayName $DisplayName -Type $Type -Value $Value
+
     try
     {
-        if ($state.Ensure -eq 'Present')
-        {
-            if ($Type -eq 'IPSubnet')
-            {
-                $id = (Get-CMBoundary | Where-Object -FilterScript { $_.Value -eq $Value.Split('/')[0] }).BoundaryID
-            }
-            else
-            {
-                $id = (Get-CMBoundary | Where-Object -FilterScript { $_.Value -eq $Value }).BoundaryID
-            }
-        }
-
         if ($Ensure -eq 'Present')
         {
-            if ($null -eq $id)
+            if ($null -eq $state.BoundaryId)
             {
                 Write-Verbose -Message ($script:localizedData.CreateBoundary -f $DisplayName, $Type, $Value)
                 New-CMBoundary -Type $Type -Name $DisplayName -Value $Value
@@ -169,16 +151,16 @@ function Set-TargetResource
                 if ($DisplayName -ne $state.DisplayName)
                 {
                     Write-Verbose -Message ($script:localizedData.ChangeDisplayName -f $state.DisplayName, $DisplayName)
-                    Set-CMBoundary -Id $id -NewName $DisplayName
+                    Set-CMBoundary -Id $state.BoundaryId -NewName $DisplayName
                 }
             }
         }
         else
         {
-            if ($id)
+            if ($state.BoundaryId)
             {
                 Write-Verbose -Message ($script:localizedData.BoundaryRemove -f $DisplayName)
-                Remove-CMBoundary -Id $id
+                Remove-CMBoundary -Id $state.BoundaryId
             }
         }
     }
@@ -242,7 +224,7 @@ function Test-TargetResource
 
     Import-ConfigMgrPowerShellModule
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource @PSBoundParameters
+    $state = Get-TargetResource -SiteCode $SiteCode -DisplayName $DisplayName -Type $Type -Value $Value
     $result = $true
 
     if ($Ensure -eq 'Present')
