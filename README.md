@@ -27,10 +27,83 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ## Resources
 
+- **xSccmPreReqs**: Provides a composite resource to install ADK, ADK WinPE, MDT,
+  required Windows Features, modify Local Administrators group, and create the
+  no_sms_on_drive files.
+- **xSccmSqlSetup**: Provides a composite resource to install SQL for SCCM.
+- **xSccmInstall**: Provides a composite reosurce to install SCCM.
 - **ClientSettings**: Provides a resource to perform configuration of client settings.
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
 - **SccmIniFile** This resource allows for the creation of the ini file
   used during the SCCM install, for CAS and Primary.
+
+### xSccmPreReqs
+
+- **[String] AdkSetupExePath** _(Required)_: Specifies the path and filename to
+  the ADK Setup.
+- **[String] AdkWinPeSetupPath** _(Required)_: Specifies the path and filename
+  to the ADK WinPE Setup.
+- **[String] MdtMsiPath** _(Required)_: Specifies the path and filename to the
+  MDT Setup.
+- **[String] LocalAdministrators** : Specifies the accounts and/or groups you
+  want to add to the local administrators group.
+- **[String] NoSmsOnDrives** : Specifies the drive letters of the drive you
+  don't want SCCM to install on.
+- **[PSCredential] DomainCredential** : Specifies credentials that have domain
+  read permissions to add domain users or groups to the local administrators group.
+- **[String] AdkProductName** : Specifies the Product Name for ADK.
+  Default Value: 'Windows Assessment and Deployment Kit - Windows 10'
+- **[String] AdkProductID** : Specifies the Product ID for ADK.
+  Default Value: 'fb450356-9879-4b2e-8dc9-282709286661'
+- **[String] AdkWinPeProductName** : Specifies the Product Name for  ADK WinPE.
+  Default Value: 'Windows Assessment and Deployment Kit Windows Preinstallation
+  Environment Add-ons - Windows 10'
+- **[String] AdkWinPeProductID** : Specifies the Product ID for ADK WinPE.
+  Default Value: 'd8369a05-1f4a-4735-9558-6e131201b1a2'
+- **[String] AdkInstallPath** : Specifies the path to install ADK and ADK WinPE.
+  Default Value: 'C:\Program Files (x86)\Windows Kits\10'
+- **[String] MdtProductName** : Specifies the Product Name for MDT.
+  Default Value: 'Microsoft Deployment Toolkit (6.3.8456.1000)'
+- **[String] MdtProductID** : Specifies the Product ID for MDT.
+  Default Value: '2E6CD7B9-9D00-4B04-882F-E6971BC9A763'
+- **[String] MdtInstallPath** : Specifies the path to install MDT.
+  Default Value: 'C:\Program Files\Microsoft Deployment Toolkit'
+
+#### xSccmPreReqs Examples
+
+- [SccmPreReqs](Source\Examples\Resources\xSccmPreReqs\SccmPreReqs.ps1)
+
+### CMAccounts
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Account** _(Key)_: Specifies the Configuration Manager account name.
+- **[PSCredential] AccountPassword** _(Write)_: Specifies the password of the
+  account being added to Configuration Manager.
+- **[String] Ensure** _(Write)_: Specifies whether the account is present or
+  absent.
+  - Values include: { Present | Absent }
+
+#### CMAccounts Examples
+
+- [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
+- [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
+
+### CMAccounts
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Account** _(Key)_: Specifies the Configuration Manager account name.
+- **[PSCredential] AccountPassword** _(Write)_: Specifies the password of the
+  account being added to Configuration Manager.
+- **[String] Ensure** _(Write)_: Specifies whether the account is present or
+  absent.
+  - Values include: { Present | Absent }
+
+#### CMAccounts Examples
+
+- [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
+- [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
 
 ### ClientSettings
 
