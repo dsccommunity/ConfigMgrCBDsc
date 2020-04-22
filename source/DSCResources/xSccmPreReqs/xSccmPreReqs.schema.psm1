@@ -20,7 +20,7 @@
         Specifies the path and filename to the MDT Setup.
 
     .PARAMETER LocalAdministrators
-        Specifies the accounts and/or groups you want to add to the local adinistrators group.
+        Specifies the accounts and/or groups you want to add to the local administrators group.
 
     .PARAMETER NoSmsOnDrives
         Specifies the drive letters of the drive you don't want SCCM to install on.
@@ -46,7 +46,7 @@
         Default: d8369a05-1f4a-4735-9558-6e131201b1a2
 
     .PARAMETER AdkInstallPath
-        Specifies the path to install ADK and ADK WinPE
+        Specifies the path to install ADK and ADK WinPE.
         Default: C:\Program Files (x86)\Windows Kits\10
 
     .PARAMETER MdtProductName

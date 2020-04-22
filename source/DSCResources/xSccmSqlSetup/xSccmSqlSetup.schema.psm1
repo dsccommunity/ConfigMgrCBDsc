@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC  composite resource to configure a basic installation of Microsoft SQL Server for 2014 SCCM Servers.
+        A DSC composite resource to configure a basic installation of Microsoft SQL Server for 2014 SCCM Servers.
 
     .PARAMETER SqlInstallPath
         Specifies the path to the setup.exe file for SQL.
