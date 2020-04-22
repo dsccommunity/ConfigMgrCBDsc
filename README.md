@@ -45,6 +45,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   to the ADK WinPE Setup.
 - **[String] MdtMsiPath** _(Required)_: Specifies the path and filename to the
   MDT Setup.
+- **[String] InstallWindowsFeatures** : Specifies to install Windows Features
+  needed for the SCCM install.
 - **[String] LocalAdministrators** : Specifies the accounts and/or groups you
   want to add to the local administrators group.
 - **[String] NoSmsOnDrives** : Specifies the drive letters of the drive you

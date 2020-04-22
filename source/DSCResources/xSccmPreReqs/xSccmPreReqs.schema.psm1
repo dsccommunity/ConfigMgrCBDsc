@@ -79,6 +79,10 @@ Configuration xSCCMPreReqs
         $MdtMsiPath,
 
         [Parameter()]
+        [Boolean]
+        $InstallWindowsFeatures = $true,
+
+        [Parameter()]
         [System.String[]]
         $LocalAdministrators,
 
@@ -125,22 +129,25 @@ Configuration xSCCMPreReqs
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
 
-    WindowsFeature WindowsFeature-NET-Framework-Core
+    if ($InstallWindowsFeatures)
     {
-        Name   = 'Net-Framework-Core'
-        Ensure = 'Present'
-    }
+        WindowsFeature WindowsFeature-NET-Framework-Core
+        {
+            Name   = 'Net-Framework-Core'
+            Ensure = 'Present'
+        }
 
-    WindowsFeature WindowsFeature-NET-Framework-45-Core
-    {
-        Name   = 'Net-Framework-45-Core'
-        Ensure = 'Present'
-    }
+        WindowsFeature WindowsFeature-NET-Framework-45-Core
+        {
+            Name   = 'Net-Framework-45-Core'
+            Ensure = 'Present'
+        }
 
-    WindowsFeature WindowsFeature-RDC
-    {
-        Name   = 'RDC'
-        Ensure = 'Present'
+        WindowsFeature WindowsFeature-RDC
+        {
+            Name   = 'RDC'
+            Ensure = 'Present'
+        }
     }
 
     $Localadministrators | Where-Object -FilterScript {$_ -like '*\*' -and $_ -notlike 'BUILTIN\*' -and $_ -notlike '.\*' -and $_ -notlike '*@*'}
