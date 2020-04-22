@@ -14,7 +14,7 @@ Configuration Example
             IniFilePath               = 'C:\windows\temp\'
             Action                    = 'InstallPrimarySite'
             CDLatest                  = $true
-            ProductID                 = 'BXH69-M62YX-QQD6R-3GPWX-8WMFY'
+            ProductID                 = 'Eval'
             SiteCode                  = 'PRI'
             SiteName                  = 'Contoso - Primary Site'
             SMSInstallDir             = 'C:\Program Files\Microsoft Configuration Manager'
@@ -33,8 +33,8 @@ Configuration Example
             SQLServerName             = 'PRI.contoso.com'
             DatabaseName              = 'PRIINST01\CM_PRI'
             SQLSSBPort                = 4022
-            SQLDataFilePath           = 'E:\MSSQL12.CASINST01\MSSQL\Data\App\'
-            SQLLogFilePath            = 'E:\MSSQL12.CASINST01\MSSQL\Log\App\'
+            SQLDataFilePath           = 'C:\MSSQL12.CASINST01\MSSQL\Data\App\'
+            SQLLogFilePath            = 'C:\MSSQL12.CASINST01\MSSQL\Log\App\'
             CloudConnector            = $true
             SAActive                  = $true
             CurrentBranch             = $true

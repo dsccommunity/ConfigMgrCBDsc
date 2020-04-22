@@ -25,11 +25,9 @@ Configuration Example
             AdkSetupExePath     = 'C:\temp\ADKInstall\adksetup.exe'
             AdkWinPeSetupPath   = 'C:\temp\ADKInstall\adkwinpesetup.exe'
             MdtMsiPath          = 'C:\temp\MDTInstall\MicrosoftDeploymentToolkit_x64_1809.msi'
-            LocalAdministrators = @('contoso\steadmin','contoso\C-FE-CM Servers-GS','contoso\svc.FE.cminstall')
-            NoSmsOnDrives       = 'c','d'
+            LocalAdministrators = @('contoso\administrator','contoso\AdminGroup','contoso\svc.installaccount')
+            NoSmsOnDrives       = 'd'
             DomainCredential    = $DomainCredential
-            AdkInstallPath      = 'E:\Apps\ADK'
-            MdtInstallPath      = 'E:\Apps\MDT'
         }
     }
 }

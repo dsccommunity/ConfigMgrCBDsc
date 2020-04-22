@@ -4,6 +4,10 @@
     .DESCRIPTION
         This configuration will install the prerequistes that are need for SCCM, install SQL, create the ini file
         needed for the SCCM install, and install SCCM.
+
+    .NOTES
+        Ensure the SCCM install is not on a drive that is specified for xSccmPreReqs NoSmsOnDrives.
+        Ensure the SQLInstall SqlPort is not the same as SQLSSBPort in the SCCM ini file.
 #>
 Configuration SCCMInstall
 {
@@ -70,7 +74,7 @@ Configuration SCCMInstall
             ProductID                 = 'BXH69-M62YX-QQD6R-3GPWX-8WMFY'
             SiteCode                  = 'LAB'
             SiteName                  = 'Contoso - Central Administration Site'
-            SMSInstallDir             = 'C:\Program Files\Microsoft Configuration Manager'
+            SMSInstallDir             = 'E:\Program Files\Microsoft Configuration Manager'
             SDKServer                 = 'CA01.contoso.com'
             PreRequisiteComp          = $true
             PreRequisitePath          = 'C:\Temp\SCCMInstall\Downloads'
@@ -79,7 +83,7 @@ Configuration SCCMInstall
             MobileDeviceLanguage      = $false
             SQLServerName             = 'CA01.contoso.com'
             DatabaseName              = 'CA12INST01\CM_LAB'
-            SQLSSBPort                = 1433
+            SQLSSBPort                = 4022
             SQLDataFilePath           = 'E:\MSSQL12.CA12INST01\MSSQL\Data\'
             SQLLogFilePath            = 'E:\MSSQL12.CA12INST01\MSSQL\Log\'
             CloudConnector            = $false
@@ -97,22 +101,3 @@ Configuration SCCMInstall
         }
     }
 }
-
-$configData = @{
-    AllNodes = @(
-        @{
-            NodeName             = 'localhost'
-            PSDscAllowDomainUser = $true
-            PSDscAllowPlainTextPassword  = $true
-        }
-    )
-}
-
-$params = @{
-    DomainCredential          = New-Object System.Management.Automation.PSCredential('contoso\steadmin', $(Convertto-SecureString -AsPlainText -String '!A@S3d4f5g6h7j8k' -Force))
-    SqlServiceCredential      = New-Object System.Management.Automation.PSCredential('contoso\svc.fe.cmdb-svc', $(ConvertTo-SecureString -AsPlainText -String '!A@S3d4f5g6h7j8k' -Force))
-    SqlAgentServiceCredential = New-Object System.Management.Automation.PSCredential('contoso\svc.fe.cmdb-agt', $(Convertto-SecureString -AsPlainText -String '!A@S3d4f5g6h7j8k' -Force))
-    SccmInstallAccount        = New-Object System.Management.Automation.PSCredential('contoso\svc.fe.cminstall', $(Convertto-SecureString -AsPlainText -String '!A@S3d4f5g6h7j8k' -Force))
-}
-
-SCCMInstall -ConfigurationData $configData -OutputPath C:\temp @params

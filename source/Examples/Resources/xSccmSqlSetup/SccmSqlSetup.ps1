@@ -25,18 +25,16 @@ Configuration Example
     {
         xSccmSqlSetup SccmSqlSetup
         {
-            SqlInstanceName           = 'CA12INST01'
+            SqlInstanceName           = 'CASINST01'
             SqlServiceCredential      = $SqlServiceCredential
             SqlAgentServiceCredential = $SqlAgentServiceCredential
             SqlSysAdminAccounts       = @('contoso\SqlAdmin01','contoso\SqlAdmin02','contoso\SqlAdminGroup')
-            InstallSharedDir          = 'E:\Apps\Microsoft SQL Server'
-            InstallSharedWowDir       = 'E:\Apps (x86)\Microsoft SQL Server'
-            InstallSqlDataDir         = 'E:'
+            InstallSqlDataDir         = 'C:'
             SqlInstallPath            = 'C:\Windows\Temp\SQL\MSSQL2014wSP3'
-            SqlUserDBDir              = 'E:\MSSQL12.CA12INST01\MSSQL\Data\App'
-            SqlUserDBLogDir           = 'E:\MSSQL12.CA12INST01\MSSQL\Log\App'
-            SqlTempDBDir              = 'E:\MSSQL12.CA12INST01\MSSQL\Data\System'
-            SqlTempDBLogDir           = 'E:\MSSQL12.CA12INST01\MSSQL\Log\System'
+            SqlUserDBDir              = 'C:\MSSQL12.CASINST01\MSSQL\Data\App'
+            SqlUserDBLogDir           = 'C:\MSSQL12.CASINST01\MSSQL\Log\App'
+            SqlTempDBDir              = 'C:\MSSQL12.CASINST01\MSSQL\Data\System'
+            SqlTempDBLogDir           = 'C:\MSSQL12.CASINST01\MSSQL\Log\System'
             SqlPort                   = 4022
         }
     }

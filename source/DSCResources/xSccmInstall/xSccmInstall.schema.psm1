@@ -1,3 +1,19 @@
+<#
+    .SYNOPSIS
+        A DSC  composite resource to install SCCM.
+
+    .PARAMETER SetupExePath
+        Specifies the path to the setup.exe for SCCM.
+
+    .PARAMETER IniFile
+        Specifies the path of the ini file, to include the filename.
+
+    .PARAMETER SccmServerType
+        Specifies the SCCM Server type install, CAS or Primary.
+
+    .PARAMETER SccmInstallAccount
+        Specifies the credentials to use for the SCCM install.
+#>
 Configuration xSCCMInstall
 {
     [CmdletBinding()]
@@ -34,12 +50,12 @@ Configuration xSCCMInstall
 
     Package SCCM
     {
-        Ensure    = 'Present'
-        Path      = "$SetupExePath\Setup.exe"
-        Name      = $productName
-        ProductId = ''
-        Arguments = "/SCRIPT $IniFile"
-        DependsOn = $dependsOnChain
+        Ensure               = 'Present'
+        Path                 = "$SetupExePath\Setup.exe"
+        Name                 = $productName
+        ProductId            = ''
+        Arguments            = "/SCRIPT $IniFile"
+        DependsOn            = $dependsOnChain
         PsDscRunAsCredential = $SccmInstallAccount
     }
 }
