@@ -236,5 +236,5 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### SccmIniFile Examples
 
-- [CMAccounts_Absent](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
-- [CMAccounts_Present](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
+- [SccmIniFile_CAS](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
+- [SccmIniFile_Primary](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
