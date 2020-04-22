@@ -73,37 +73,85 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [SccmPreReqs](Source\Examples\Resources\xSccmPreReqs\SccmPreReqs.ps1)
 
-### CMAccounts
+### xSccmInstall
 
-- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
-  Manager site.
-- **[String] Account** _(Key)_: Specifies the Configuration Manager account name.
-- **[PSCredential] AccountPassword** _(Write)_: Specifies the password of the
-  account being added to Configuration Manager.
-- **[String] Ensure** _(Write)_: Specifies whether the account is present or
-  absent.
-  - Values include: { Present | Absent }
+- **[String] SetupExePath** _(Required)_: Specifies the path to the setup.exe
+  for SCCM.
+- **[String] IniFile** _(Required)_: Specifies the path of the ini file, to include
+  the filename.
+- **[String] SccmServerType** _(Required)_: Specifies the SCCM Server type install,
+  CAS or Primary.
+  - Values: { CAS | Primary }
+- **[PSCredential] SccmInstallAccount** _(Required)_: Specifies the credentials to
+  use for the SCCM install.
 
-#### CMAccounts Examples
+#### xSccmInstall Examples
 
-- [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
-- [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
+- [SccmInstall](Source\Examples\Resources\CMAccounts\SccmInstall.ps1)
 
-### CMAccounts
+### xSccmSqlSetup
 
-- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
-  Manager site.
-- **[String] Account** _(Key)_: Specifies the Configuration Manager account name.
-- **[PSCredential] AccountPassword** _(Write)_: Specifies the password of the
-  account being added to Configuration Manager.
-- **[String] Ensure** _(Write)_: Specifies whether the account is present or
-  absent.
-  - Values include: { Present | Absent }
+- **[String] SqlVersion** _(Required)_: Specify the version of SQL to be installed.
+  - Values: { 2008 | 2008R2 | 2012 | 2014 | 2016 | 2017 | 2019 }
+- **[String] SqlInstallPath** _(Required)_: Specifies the path to the setup.exe
+  file for SQL.
+- **[String] SqlInstanceName** _(Required)_: Specifies a SQL Server instance name.
+- **[PSCredential] SqlServiceCredential** _(Required)_: Specifies the credential
+  for the service account used to run the SQL Service.
+- **[PSCredential] SqlAgentServiceCredential** _(Required)_: Specifies the
+  credential for the service account used to run the SQL Agent Service.
+- **[String] SqlSysAdminAccounts** _(Required)_: Use this parameter to provision
+  logins to be members of the sysadmin role.
+- **[String] InstallSharedDir** : Specifies the installation directory for
+  64-bit shared components.
+  Default Value: 'C:\Program Files\Microsoft SQL Server'
+- **[String] InstallSharedWowDir** : Specifies the installation directory for
+  32-bit shared components. Supported only on a 64-bit system.
+  Default Value: 'C:\Program Files (x86)\Microsoft SQL Server'
+- **[String] RSSvcStartupType** : Specifies the startup mode for Reporting Services.
+  Default Value: 'Automatic'
+- **[String] AgtSvcStartupType** : Specifies the startup mode for the SQL Server
+  Agent service.
+  Default Value: 'Automatic'
+- **[String] RSInstallMode** : Specifies the Install mode for Reporting Services.
+  Default Value: 'DefaultNativeMode'
+- **[String] SqlCollation** : Specifies the collation settings for SQL Server.
+  Default Value: 'SQL_Latin1_General_CP1_CI_AS'
+- **[String] InstallSqlDataDir** : Specifies the data directory for SQL Server
+  data files.
+  Default Value: 'C:\'
+- **[String] SqlUserDBDir** : Specifies the directory for the data
+  files for user databases.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] SqlUserDBLogDir** : Specifies the directory for the log
+  files for user databases.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] SqlTempDBDir** : Specifies the directory for the data
+  files for tempdb.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] SqlTempDBLogDir** : Specifies the directory for the log
+  files for tempdb.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] UpdateEnabled** : Specify whether SQL Server setup should discover
+  and include product updates.
+  Default Value: $false
+- **[String] SqlPort** : Specifies the port SQL listens on.
+  Default Value: 1433
+- **[String] InstallManagementStudio** : Specify whether to install SQL
+  Management Studio.
+  Default Value: $false
+- **[String] SqlManagementStudioExePath** : Specify that path and filename to
+  the exe for Management Studio instal.
+- **[String] SqlManagementStudioName** : Specify the name of SQL Server
+  Management Studio.
+  Default Value: 'SQL Server Management Studio'
+- **[String] SqlManagementStudioProductId** : Specify the product if of the SQL
+  Management Studio install being performed.
+  Default Value: 'E3FD687D-6757-474B-8D83-5AA944B02C58'
 
-#### CMAccounts Examples
+#### xSccmSqlSetup Examples
 
-- [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
-- [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
+- [SccmSqlSetup](Source\Examples\Resources\CMAccounts\SccmSqlSetup.ps1)
 
 ### ClientSettings
 
