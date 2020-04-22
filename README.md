@@ -87,7 +87,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### xSccmInstall Examples
 
-- [SccmInstall](Source\Examples\Resources\CMAccounts\SccmInstall.ps1)
+- [SccmInstall](Source\Examples\Resources\xSccmInstall\SccmInstall.ps1)
 
 ### xSccmSqlSetup
 
@@ -151,7 +151,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### xSccmSqlSetup Examples
 
-- [SccmSqlSetup](Source\Examples\Resources\CMAccounts\SccmSqlSetup.ps1)
+- [SccmSqlSetup](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetup.ps1)
 
 ### ClientSettings
 
