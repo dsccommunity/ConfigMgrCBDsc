@@ -50,10 +50,11 @@ Configuration SCCMInstall
 
         xSccmSqlSetup SccmSqlSetup
         {
+            SqlVersion                = '2014'
             SqlInstanceName           = 'CA12INST01'
             SqlServiceCredential      = $SqlServiceCredential
             SqlAgentServiceCredential = $SqlAgentServiceCredential
-            SqlSysAdminAccounts       = @('contoso\W-YO-SQLAdmins-LS','contoso\steadmin','contoso\svc.FE.cminstall')
+            SqlSysAdminAccounts       = @('contoso\W-YO-SQLAdmins-LS','contoso\steadmin','contoso\svc.cminstall')
             InstallSharedDir          = 'E:\Apps\Microsoft SQL Server'
             InstallSharedWowDir       = 'E:\Apps (x86)\Microsoft SQL Server'
             InstallSqlDataDir         = 'E:'

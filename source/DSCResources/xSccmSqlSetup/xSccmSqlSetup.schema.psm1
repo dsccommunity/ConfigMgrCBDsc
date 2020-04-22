@@ -2,6 +2,9 @@
     .SYNOPSIS
         A DSC composite resource to configure a basic installation of Microsoft SQL Server for 2014 SCCM Servers.
 
+    .PARAMETER SqlVersion
+        Specify the version of SQL to be installed.
+
     .PARAMETER SqlInstallPath
         Specifies the path to the setup.exe file for SQL.
 
@@ -16,21 +19,6 @@
 
     .PARAMETER SqlSysAdminAccounts
         Use this parameter to provision logins to be members of the sysadmin role.
-
-    .PARAMETER SqlUserDBDir
-        Specifies the directory for the data files for user databases.
-
-    .PARAMETER SqlUserDBLogDir
-        Specifies the directory for the log files for user databases.
-
-    .PARAMETER SqlTempDBDir
-        Specifies the directory for the data files for tempdb.
-
-    .PARAMETER SqlTempDBLogDir
-        Specifies the directory for the log files for tempdb.
-
-    .PARAMETER SqlPort
-        Specifies the port SQL listens on.
 
     .PARAMETER InstallSharedDir
         Specifies the installation directory for 64-bit shared components.
@@ -62,14 +50,29 @@
     .PARAMETER InstallSqlDataDir
         Specifies the data directory for SQL Server data files.
 
+    .PARAMETER SqlUserDBDir
+        Specifies the directory for the data files for user databases.
+
+    .PARAMETER SqlUserDBLogDir
+        Specifies the directory for the log files for user databases.
+
+    .PARAMETER SqlTempDBDir
+        Specifies the directory for the data files for tempdb.
+
+    .PARAMETER SqlTempDBLogDir
+        Specifies the directory for the log files for tempdb.
+
     .PARAMETER UpdateEnabled
         Specify whether SQL Server setup should discover and include product updates.
+
+    .PARAMETER SqlPort
+        Specifies the port SQL listens on.
 
     .PARAMETER InstallManagementStudio
         Specify whether to install SQL Management Studio.
 
     .PARAMETER SqlManagementStudioExePath
-        Specify that path and filename to the exe for Management Studio instal..
+        Specify that path and filename to the exe for Management Studio instal.
 
     .PARAMETER SqlManagementStudioName
         Specify the name of SQL Server Management Studio.
@@ -84,6 +87,12 @@ Configuration xSccmSqlSetup
     [CmdletBinding()]
     param
     (
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullorEmpty()]
+        [ValidateSet('2008', '2008R2','2012','2014','2016','2017','2019')]
+        [String]
+        $SqlVersion,
+
         [Parameter(Mandatory = $true)]
         [ValidateNotNullorEmpty()]
         [String]
@@ -108,31 +117,6 @@ Configuration xSccmSqlSetup
         [ValidateNotNullorEmpty()]
         [String[]]
         $SqlSysAdminAccounts,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullorEmpty()]
-        [String]
-        $SqlUserDBDir,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullorEmpty()]
-        [String]
-        $SqlUserDBLogDir,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullorEmpty()]
-        [String]
-        $SqlTempDBDir,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullorEmpty()]
-        [String]
-        $SqlTempDBLogDir,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateNotNullorEmpty()]
-        [Uint16]
-        $SqlPort,
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
@@ -172,7 +156,32 @@ Configuration xSccmSqlSetup
         [Parameter()]
         [ValidateNotNullorEmpty()]
         [String]
+        $SqlUserDBDir,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlUserDBLogDir,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlTempDBDir,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $SqlTempDBLogDir,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
         $UpdateEnabled = $false,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [Uint16]
+        $SqlPort = 1433,
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
@@ -198,7 +207,52 @@ Configuration xSccmSqlSetup
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName SqlServerDsc
 
-    # Check SQl 2016 2014
+    switch ($SqlVersion)
+    {
+        '2008'   { $version = '10' }
+        '2008R2' { $version = '10' }
+        '2012'   { $version = '11' }
+        '2014'   { $version = '12' }
+        '2016'   { $version = '13' }
+        '2017'   { $version = '14' }
+        '2019'   { $version = '15' }
+    }
+
+    if ($SqlTempDBDir)
+    {
+        $finalSqlTempDBDir = $SqlTempDBDir
+    }
+    else
+    {
+        $finalSqlTempDBDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+    }
+
+    if ($SqlTempDBLogDir)
+    {
+        $finalSqlTempDBLogDir = $SqlTempDBLogDir
+    }
+    else
+    {
+        $finalSqlTempDBLogDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+    }
+
+    if ($SqlUserDBDir)
+    {
+        $finalSqlUserDBDir = $SqlUserDBDir
+    }
+    else
+    {
+        $finalSqlUserDBDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+    }
+
+    if ($SqlUserDBLogDir)
+    {
+        $finalSqlUserDBLogDir = $SqlUserDBLogDir
+    }
+    else
+    {
+        $finalSqlUserDBLogDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+    }
 
     SqlSetup InstallSql
     {
@@ -214,10 +268,10 @@ Configuration xSccmSqlSetup
         SQLCollation        = $SqlCollation
         SQLSysAdminAccounts = $SqlSysAdminAccounts
         InstallSQLDataDir   = $InstallSqlDataDir
-        SQLUserDBDir        = $SqlUserDBDir
-        SQLUserDBLogDir     = $SqlUserDBLogDir
-        SQLTempDBDir        = $SqlTempDBDir
-        SQLTempDBLogDir     = $SqlTempDBLogDir
+        SQLUserDBDir        = $finalSqlUserDBDir
+        SQLUserDBLogDir     = $finalSqlUserDBLogDir
+        SQLTempDBDir        = $finalSqlTempDBDir
+        SQLTempDBLogDir     = $finalSqlTempDBLogDir
         SourcePath          = $SqlInstallPath
         UpdateEnabled       = $UpdateEnabled
     }
