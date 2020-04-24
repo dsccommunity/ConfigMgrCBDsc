@@ -28,31 +28,37 @@ function Import-ConfigMgrPowerShellModule
     {
         $siteInfo = Get-CimInstance -ClassName SMS_Site -Namespace root\sms\site_$SiteCode
         $sid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
-        $regKeyPath = "Registry::HKEY_Users\$sid\Software\Microsoft\ConfigMgr10\AdminUI\MRU\1"
-        $regProperties = (Get-ItemProperty -Path $regKeyPath -ErrorAction SilentlyContinue)
+        $baseRegKeyPath = "Registry::HKEY_Users\$sid\Software\Microsoft"
+        $createKeys = @('ConfigMgr10','AdminUI','MRU','1')
 
-        if ((Test-Path -Path $regKeyPath) -eq $false)
+        foreach ($key in $createKeys)
         {
-            New-Item -Path $regKeyPath.Substring(0, $regKeyPath.LastIndexOf('\')) -Name $regKeyPath.Split('\')[-1] | Out-Null
+            if (-not (Test-Path -Path "$baseRegKeyPath\$key"))
+            {
+                New-Item -Path $baseRegKeyPath -Name $key |Out-Null
+                $baseRegKeyPath += "\$key"
+            }
         }
 
+        $regProperties = (Get-ItemProperty -Path $baseRegKeyPath -ErrorAction SilentlyContinue)
+
         $values = @{
-            ServerName = $siteInfo.ServerName
-            SiteName   = $siteInfo.SiteName
-            SiteCode   = $siteInfo.SiteCode
-            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))
+            ServerName = $siteInfo.ServerName[0]
+            SiteName   = $siteInfo.SiteName[0]
+            SiteCode   = $siteInfo.SiteCode[0]
+            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))[0]
         }
 
         foreach ($value in $values.GetEnumerator())
         {
             if ($($regProperties.$($value.Name)) -ne $value.Value)
             {
-                Set-ItemProperty -Path $regKeyPath -Name $value.Name -Value $value.Value | Out-Null
+                Set-ItemProperty -Path $baseRegKeyPath -Name $value.Name -Value $value.Value | Out-Null
             }
         }
 
         Set-ConfigmgrCert
-    
+
         try
         {
             Import-Module -Name (Join-Path $(Split-Path $ENV:SMS_ADMIN_UI_PATH) ConfigurationManager.psd1) -Global

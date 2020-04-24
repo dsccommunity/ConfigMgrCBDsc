@@ -364,6 +364,19 @@ try
             QueryRules             = $mockCimDeviceQuery
         }
 
+        $deviceCommentItemsMisMatch = @{
+            SiteCode               = 'Lab'
+            CollectionName         = 'Test'
+            LimitingCollectionName = 'All Devices'
+            CollectionType         = 'Device'
+            RefreshType            = 'None'
+            Comment                = 'collection mismatch'
+            RefreshSchedule        = $mockCimRefreshSchedule
+            ExcludeMembership      = @('Test1','Test2')
+            DirectMembership       = @('2097152000','2097152001')
+            QueryRules             = $mockCimDeviceQuery
+        }
+
         $deviceEvalItemsMisMatch = @{
             SiteCode               = 'Lab'
             CollectionName         = 'Test'
@@ -528,7 +541,7 @@ try
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
 
-                It 'Should return desired result for user collections' {
+                It 'Should return desired result for user collections does not exist' {
                     Mock -CommandName Get-CMCollection
                     Mock -CommandName Get-CMUserCollectionDirectMembershipRule
                     Mock -CommandName Get-CMUserCollectionExcludeMembershipRule
@@ -813,7 +826,7 @@ try
 
             Context 'When running Test-TargetResource device settings' {
                 Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResult }
-                
+
                 It 'Should return desired result true Ensure is present and collection is returned' {
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
@@ -831,14 +844,20 @@ try
 
                     Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
                 }
-                
+
                 It 'Should return desired result false Ensure is present and schedule minutes does not match' {
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleMinutes }
 
                     Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
                 }
 
-                It 'Should return desired result false Ensure is present and comment and refreshtype does not match' {
+                It 'Should return desired result false Ensure is present and refreshtype does not match' {
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
+
+                    Test-TargetResource @deviceCommentItemsMisMatch | Should -Be $false
+                }
+
+                It 'Should return desired result false Ensure is present and refreshtype does not match' {
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
                     Test-TargetResource @deviceEvalItemsMisMatch | Should -Be $false
@@ -869,7 +888,7 @@ try
 
             Context 'When running Test-TargetResource collection is absent in Get-TargetResource' {
                 Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionEmpty }
-                
+
                 It 'Should return desired result true Ensure is Absent and collection is null' {
                     Test-TargetResource @testDeviceInputAbsent | Should -Be $true
                 }

@@ -79,8 +79,8 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
-                Assert-MockCalled New-Item -Exactly -Times 1 -Scope It
-                Assert-MockCalled Test-Path -Exactly -Times 2 -Scope It
+                Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
                 Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
                 Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 1 -Scope It
             }
@@ -113,8 +113,8 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-Module -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
-                Assert-MockCalled New-Item -Exactly -Times 1 -Scope It
-                Assert-MockCalled Test-Path -Exactly -Times 2 -Scope It
+                Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
                 Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
                 Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 1 -Scope It
             }

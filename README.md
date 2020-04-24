@@ -171,23 +171,24 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 ### CMCollections
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
-Manager site.
+  Manager site.
 - **[String] CollectionName** _(Key)_: Specifies the name of the collection.
 - **[String] CollectionType** _(Key)_: Specifies the type of collection.
-{ User | Device }.
+  { User | Device }.
 - **[String] LimitingCollectionName** _(Write)_: Specifies the name of a
-collection to use as the default scope for this collection.
+  collection to use as the default scope for this collection.
 - **[String] Comment** _(Write)_: Specifies a comment for the collection.
 - **[EmbeddedInstance] RefreshSchedule** _(Write)_: Specifies containing refresh
-schedule for Configuration Manager (RecurInterval, RecurCount).
-- **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the Rule
-and the query expression that Configuration Manager uses to update collections.
+  schedule for Configuration Manager (RecurInterval, RecurCount).
+- **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the rule
+  and the query expression that Configuration Manager uses to update collections.
 - **[String] ExcludeMembership[]** _(Write)_: Specifies the collection name to
-exclude members from.
+  exclude members from.
 - **[String] DirectMembership[]** _(Write)_: Specifies the resource id for the
-direct membership rule.
-- **[String] Ensure** _(Write)_: Specifies if the collection is to be present or
-absent. { *Present* | Absent }.
+  direct membership rule.
+- **[String] Ensure** _(Write)_: Specifies status of the collection is to be
+  present or absent.
+  - Values include: { Present | Absent }
 
 #### CMCollections Examples
 

@@ -30,7 +30,7 @@ Configuration Example
                         'SMS_R_USER.Name,SMS_R_USER.UniqueUserName,'
                         'SMS_R_USER.WindowsNTDomain from SMS_R_User'
                         'where SMS_R_User.UserName = "Test4"'
-                    ) -Join ''
+                    ) -Join ' '
                 }
                 DSC_CMCollectionQueryRules
                 {
@@ -39,7 +39,7 @@ Configuration Example
                         'select SMS_R_USER.ResourceID,SMS_R_USER.ResourceType,'
                         'SMS_R_USER.Name,SMS_R_USER.UniqueUserName,SMS_R_USER.WindowsNTDomain'
                         ' from SMS_R_User where SMS_R_User.NetworkOperatingSystem = "Windows NT"'
-                    ) -Join ''
+                    ) -Join ' '
                 }
             )
             ExcludeMembership      = 'TestUserGroup1','TestUserGroup2'

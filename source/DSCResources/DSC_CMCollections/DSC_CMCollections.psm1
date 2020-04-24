@@ -48,7 +48,7 @@ function Get-TargetResource
 
     if ($collection)
     {
-        $refresh = switch ($($collection.RefreshType))
+        $refresh = switch ($collection.RefreshType)
         {
             '1' { 'None' }
             '2' { 'Periodic' }
@@ -56,7 +56,7 @@ function Get-TargetResource
             '6' { 'Both' }
         }
 
-        $type = switch ($($collection.CollectionType))
+        $type = switch ($collection.CollectionType)
         {
             '1' { 'User' }
             '2' { 'Device' }
@@ -64,23 +64,15 @@ function Get-TargetResource
 
         if ($type -eq 'User')
         {
-            $rules = Get-CMUserCollectionQueryMembershipRule -CollectionName $collection.Name
+            $rules = Get-CMUserCollectionQueryMembershipRule -CollectionName $collection.Name | Select-Object QueryExpression, RuleName
             $excludes = (Get-CMUserCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
             $directMember = (Get-CMUserCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
         }
         else
         {
-            $rules = Get-CMDeviceCollectionQueryMembershipRule -CollectionName $collection.Name
+            $rules = Get-CMDeviceCollectionQueryMembershipRule -CollectionName $collection.Name | Select-Object QueryExpression, RuleName
             $excludes = (Get-CMDeviceCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
             $directMember = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
-        }
-
-        if ($rules)
-        {
-            foreach ($rule in $rules)
-            {
-                [array]$qRules += ($rule | Select-Object QueryExpression, RuleName)
-            }
         }
 
         $status = 'Present'
@@ -98,7 +90,7 @@ function Get-TargetResource
         LimitingCollectionName = $collection.LimitToCollectionName
         RefreshSchedule        = $collection.RefreshSchedule
         RefreshType            = $refresh
-        QueryRules             = $qRules
+        QueryRules             = $rules
         ExcludeMembership      = $excludes
         DirectMembership       = $directMember
         Ensure                 = $status
@@ -210,7 +202,7 @@ function Set-TargetResource
         {
             if ($state.Ensure -eq 'Absent')
             {
-                Write-Verbose -Message ($script:localizedData.CollectionAbsent -f $CollectionName)
+                Write-Verbose -Message ($script:localizedData.CollectionCreate -f $CollectionName)
 
                 $newCollection = @{
                     Name                   = $CollectionName
@@ -241,10 +233,10 @@ function Set-TargetResource
                 if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
                 {
                     Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, `
-                        $($item.name), $($item.Value), $($state[$item.Name]))
+                        $item.name, $item.Value, $($state[$item.Name]))
 
                     $buildingParams += @{
-                        $($item.Name) = $($item.Value)
+                        $item.Name = $item.Value
                     }
                 }
             }
@@ -357,14 +349,14 @@ function Set-TargetResource
 
                 foreach ($rule in $rules)
                 {
-                    $queryRule = @{}
+                    $importRule = @{}
 
                     if (($null -eq $state.QueryRules) -or
                        ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
                     {
                         Write-Verbose -Message ($script:localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
 
-                        $queryRule = @{
+                        $importRule = @{
                             CollectionName  = $CollectionName
                             RuleName        = $rule.RuleName
                             QueryExpression = $rule.QueryExpression
@@ -372,11 +364,11 @@ function Set-TargetResource
 
                         if ($CollectionType -eq 'User')
                         {
-                            Add-CMUserCollectionQueryMembershipRule @queryRule
+                            Add-CMUserCollectionQueryMembershipRule @importRule
                         }
                         else
                         {
-                            Add-CMDeviceCollectionQueryMembershipRule @queryRule
+                            Add-CMDeviceCollectionQueryMembershipRule @importRule
                         }
                     }
                 }
@@ -526,7 +518,7 @@ function Test-TargetResource
                 if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
                 {
                     Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, `
-                        $($item.name), $($item.Value), $($state[$item.Name]))
+                    $item.name, $item.Value, $($state[$item.Name]))
                     $result = $false
                 }
             }
@@ -595,7 +587,7 @@ function Test-TargetResource
                     if (([string]::IsNullOrEmpty($state.QueryRules.QueryExpression)) -or
                        ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
                     {
-                        Write-Verbose -Message ($script:localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
+                        Write-Verbose -Message ($script:localizedData.QueryRule -f $CollectionName, $rule.QueryExpression)
                         $result = $false
                     }
                 }

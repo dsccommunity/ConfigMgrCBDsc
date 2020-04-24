@@ -28,8 +28,8 @@ Configuration Example
                     QueryExpression = @(
                         'select SMS_R_SYSTEM.ResourceID,SMS_R_SYSTEM.ResourceType,'
                         'SMS_R_SYSTEM.Name,SMS_R_SYSTEM.SMSUniqueIdentifier,'
-                        'SMS_R_SYSTEM.ResourceDomainORWorkgroup,SMS_R_SYSTEM.Client from SMS_R_System' 
-                        'inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId' 
+                        'SMS_R_SYSTEM.ResourceDomainORWorkgroup,SMS_R_SYSTEM.Client from SMS_R_System'
+                        'inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId'
                         'where SMS_G_System_COMPUTER_SYSTEM.Domain = "Contoso.com"'
                     ) -Join ' '
                 }
@@ -39,9 +39,9 @@ Configuration Example
                     QueryExpression = @(
                         'Select SMS_R_SYSTEM.ResourceID,SMS_R_SYSTEM.ResourceType,SMS_R_SYSTEM.Name,SMS_R_SYSTEM.SMSUniqueIdentifier,'
                         'SMS_R_SYSTEM.ResourceDomainORWorkgroup,SMS_R_SYSTEM.Client from SMS_R_System'
-                        'inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId' 
+                        'inner join SMS_G_System_COMPUTER_SYSTEM on SMS_G_System_COMPUTER_SYSTEM.ResourceId = SMS_R_System.ResourceId'
                         'where SMS_G_System_COMPUTER_SYSTEM.Manufacturer = "Microsoft Corporation"'
-                    ) -Join ''
+                    ) -Join ' '
                 }
             )
             ExcludeMembership      = 'TestDeviceCollection1','TestDeviceCollection2'

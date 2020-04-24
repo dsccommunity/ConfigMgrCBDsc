@@ -8,7 +8,7 @@ class DSC_CMCollections : OMI_BaseResource
     [Write, Description("Specifies a comment for the collection.")] String Comment;
     [Write, EmbeddedInstance("DSC_CMCollectionRefreshSchedule"), Description("Hashtable containing refresh schedule for Configuration Manager (RecurInterval, RecurCount)")] String RefreshSchedule;
     [Write, Description("Specifies how Configuration Manager refreshes the collection."),ValueMap{"None","Periodic","Continuous","Both"},Values{"None","Periodic","Continuous","Both"}] String RefreshType;
-    [Write, EmbeddedInstance("DSC_CMCollectionQueryRules"), Description("Specifies the name of the Rule and the query expression that Configuration Manager uses to update collections.")] String QueryRules[];
+    [Write, EmbeddedInstance("DSC_CMCollectionQueryRules"), Description("Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.")] String QueryRules[];
     [Write, Description("Specifies the collection name to exclude members from. If clients are in the excluded collection they will not be added to the collection.")] String ExcludeMembership[];
     [Write, Description("Specifies the resourceid for the direct membership rule.")] String DirectMembership[];
     [Write, Description("Specifies if the collection is to be present or absent."),ValueMap{"Present","Absent"},Values{"Present","Absent"}] String Ensure;
