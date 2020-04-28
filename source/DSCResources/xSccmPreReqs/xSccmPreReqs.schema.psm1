@@ -83,6 +83,22 @@ Configuration xSCCMPreReqs
         $InstallWindowsFeatures = $true,
 
         [Parameter()]
+        [Boolean]
+        $AddWindowsFirewallRule = $false,
+
+        [Parameter()]
+        [System.String[]]
+        $FirewallProfile,
+
+        [Parameter()]
+        [System.String[]]
+        $FirewallTcpLocalPort,
+
+        [Parameter()]
+        [System.String[]]
+        $FirewallUdpLocalPort,
+
+        [Parameter()]
         [System.String[]]
         $LocalAdministrators,
 
@@ -128,6 +144,7 @@ Configuration xSCCMPreReqs
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
+    Import-DscResource -ModuleName NetworkingDsc
 
     if ($InstallWindowsFeatures)
     {
@@ -147,6 +164,40 @@ Configuration xSCCMPreReqs
         {
             Name   = 'RDC'
             Ensure = 'Present'
+        }
+    }
+
+    if ($AddWindowsFirewallRule)
+    {
+        if ($null -eq $FirewallProfile -or $null -eq $FirewallTcpLocalPort -or $null -eq $FirewallUdpLocalPort)
+        {
+            throw 'When specifying AddWindowsFirewallRule you need to provide FirewallProfile, FirewallTcpLocalPort, and FirewallUdpLocalPort.'
+        }
+
+        Firewall AddSccmTCPFirewallRule
+        {
+            Name                  = 'SCCMServerTCP'
+            DisplayName           = 'SCCM to SCCM communication - TCP'
+            Ensure                = 'Present'
+            Enabled               = 'True'
+            Profile               = $FirewallProfile
+            Direction             = 'Inbound'
+            LocalPort             = $FirewallTcpLocalPort
+            Protocol              = 'TCP'
+            Description           = 'Firewall Rule SCCM to SCCM communication - TCP'
+        }
+
+        Firewall AddSccmUdpFirewallRule
+        {
+            Name                  = 'SCCMServerUDP'
+            DisplayName           = 'SCCM to SCCM communication - UDP'
+            Ensure                = 'Present'
+            Enabled               = 'True'
+            Profile               = $FirewallProfile
+            Direction             = 'Inbound'
+            LocalPort             = $FirewallUdpLocalPort
+            Protocol              = 'TCP'
+            Description           = 'Firewall Rule SCCM to SCCM communication - UDP'
         }
     }
 
