@@ -75,6 +75,45 @@ function Get-TargetResource
             $directMember = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
         }
 
+        $cSchedule = $collection.RefreshSchedule
+
+        if ($cSchedule.DaySpan -gt 0)
+        {
+            $rInterval = 'Days'
+            $rCount = $cSchedule.DaySpan
+        }
+        elseif ($cSchedule.HourSpan -gt 0) 
+        {
+            $rInterval = 'Hours'
+            $rCount = $cSchedule.HourSpan
+        }
+        elseif ($cSchedule.MinuteSpan -gt 0)
+        {
+            $rInterval = 'Minutes'
+            $rCount = $cSchedule.MinuteSpan
+        }
+
+        if ($rInterval)
+        {
+            $schedule = New-CimInstance -ClassName DSC_CMCollectionRefreshSchedule -Property @{
+                RecurInterval = $rInterval
+                RecurCount    = $rCount
+            } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration'
+        }
+
+        if ($rules)
+        {
+            $cimCollection = New-Object -TypeName 'System.Collections.ObjectModel.Collection`1[Microsoft.Management.Infrastructure.CimInstance]'
+
+            foreach ($rule in $rules)
+            {
+                $cimcollection += (New-CimInstance -ClassName DSC_CMCollectionQueryRules -Property @{
+                    QueryExpression = $rule.QueryExpression
+                    RuleName        = $rule.RuleName
+                } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration')
+            }
+        }
+
         $status = 'Present'
     }
     else
@@ -88,9 +127,9 @@ function Get-TargetResource
         Comment                = $collection.Comment
         CollectionType         = $type
         LimitingCollectionName = $collection.LimitToCollectionName
-        RefreshSchedule        = $collection.RefreshSchedule
+        RefreshSchedule        = $schedule
         RefreshType            = $refresh
-        QueryRules             = $rules
+        QueryRules             = $cimcollection
         ExcludeMembership      = $excludes
         DirectMembership       = $directMember
         Ensure                 = $status
@@ -252,12 +291,20 @@ function Set-TargetResource
 
                 if ($state.RefreshSchedule)
                 {
+                    $cSchedule = @{
+                        RecurInterval = $state.RefreshSchedule.RecurInterval
+                        RecurCount    = $state.RefreshSchedule.RecurCount
+                    }
+
+                    $currentSchedule = New-CMSchedule @cSchedule
                     $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
 
                     foreach ($item in $array)
                     {
-                        if (($desiredRefreshSchedule).$($item) -ne ($state.RefreshSchedule).$($item))
+                        if (($desiredRefreshSchedule).$($item) -ne ($currentSchedule).$($item))
                         {
+                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
+                                -f $item, $($desiredRefreshSchedule).$($item), $($currentSchedule).$($item))
                             $setSchedule = $true
                         }
                     }
@@ -525,23 +572,36 @@ function Test-TargetResource
 
             if (-not [string]::IsNullOrEmpty($RefreshSchedule))
             {
-                $newSchedule = @{
-                    RecurInterval = $RefreshSchedule.RecurInterval
-                    RecurCount    = $RefreshSchedule.RecurCount
-                }
-
-                $desiredRefreshSchedule = New-CMSchedule @newSchedule
-
-                $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
-
-                foreach ($item in $array)
+                if ($state.RefreshSchedule)
                 {
-                    if (($desiredRefreshSchedule).$($item) -ne ($state.RefreshSchedule).$($item))
-                    {
-                        Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                            -f $item, $($desiredRefreshSchedule.$($item)), $(($state.RefreshSchedule).$($item)))
-                        $result = $false
+                    $newSchedule = @{
+                        RecurInterval = $RefreshSchedule.RecurInterval
+                        RecurCount    = $RefreshSchedule.RecurCount
                     }
+
+                    $desiredRefreshSchedule = New-CMSchedule @newSchedule
+
+                    $cSchedule = @{
+                        RecurInterval = $state.RefreshSchedule.RecurInterval
+                        RecurCount    = $state.RefreshSchedule.RecurCount
+                    }
+
+                    $currentSchedule = New-CMSchedule @cSchedule 
+                    $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
+
+                    foreach ($item in $array)
+                    {
+                        if (($desiredRefreshSchedule).$($item) -ne ($currentSchedule).$($item))
+                        {
+                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
+                                -f $item, $($desiredRefreshSchedule).$($item), $($currentSchedule).$($item))
+                            $result = $false
+                        }
+                    }
+                }
+                else
+                {
+                    $result = $false
                 }
             }
 

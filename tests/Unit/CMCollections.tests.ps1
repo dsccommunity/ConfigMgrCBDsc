@@ -86,6 +86,33 @@ try
                 -ClientOnly
         )
 
+        $mockCimRefreshScheduleDayMismatch = (New-CimInstance -ClassName DSC_CMCollectionRefreshSchedule `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'RecurInterval' = 'Days'
+                    'RecurCount'    = 6
+                } `
+                -ClientOnly
+        )
+
+        $mockCimRefreshScheduleHours = (New-CimInstance -ClassName DSC_CMCollectionRefreshSchedule `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'RecurInterval' = 'Hours'
+                    'RecurCount'    = 7
+                } `
+                -ClientOnly
+        )
+
+        $mockCimRefreshScheduleMin = (New-CimInstance -ClassName DSC_CMCollectionRefreshSchedule `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'RecurInterval' = 'Minutes'
+                    'RecurCount'    = 50
+                } `
+                -ClientOnly
+        )
+
         $newCMScheduleDaysMatch = @{
             DayDuration    = 0
             DaySpan        = 7
@@ -150,6 +177,38 @@ try
                 DaySpan        = 7
                 HourDuration   = 0
                 HourSpan       = 0
+                MinuteDuration = 0
+                MinuteSpan     = 0
+            }
+        }
+
+        $deviceCollectionResultMin = @{
+            Name                  = 'Test'
+            LimitToCollectionName = 'All Systems'
+            CollectionType        = 2
+            RefreshType           = 6
+            Comment               = 'Test device collection'
+            RefreshSchedule       = @{
+                DayDuration    = 0
+                DaySpan        = 0
+                HourDuration   = 0
+                HourSpan       = 0
+                MinuteDuration = 0
+                MinuteSpan     = 50
+            }
+        }
+
+        $deviceCollectionResultHour = @{
+            Name                  = 'Test'
+            LimitToCollectionName = 'All Systems'
+            CollectionType        = 2
+            RefreshType           = 6
+            Comment               = 'Test device collection'
+            RefreshSchedule       = @{
+                DayDuration    = 0
+                DaySpan        = 0
+                HourDuration   = 0
+                HourSpan       = 10
                 MinuteDuration = 0
                 MinuteSpan     = 0
             }
@@ -300,15 +359,21 @@ try
             CollectionType         = 'Device'
             RefreshType            = 'Both'
             Comment                = 'Test device collection'
-            RefreshSchedule        = @{
-                DayDuration    = 0
-                DaySpan        = 7
-                IsGMT          = $false
-                HourDuration   = 0
-                HourSpan       = 0
-                MinuteDuration = 0
-                MinuteSpan     = 0
-            }
+            RefreshSchedule        = $mockCimRefreshSchedule
+            ExcludeMembership      = @('Test1','Test2')
+            DirectMembership       = @('2097152000','2097152001')
+            QueryRules             = $deviceQueryResults
+            Ensure                 = 'Present'
+        }
+
+        $deviceGetCollectionNullSchedule = @{
+            SiteCode               = 'Lab'
+            CollectionName         = 'Test'
+            LimitingCollectionName = 'All Systems'
+            CollectionType         = 'Device'
+            RefreshType            = 'Both'
+            Comment                = 'Test device collection'
+            RefreshSchedule        = $null
             ExcludeMembership      = @('Test1','Test2')
             DirectMembership       = @('2097152000','2097152001')
             QueryRules             = $deviceQueryResults
@@ -323,13 +388,8 @@ try
             RefreshType            = 'Both'
             Comment                = 'Test device collection'
             RefreshSchedule        = @{
-                DayDuration    = 0
-                DaySpan        = 0
-                IsGMT          = $false
-                HourDuration   = 0
-                HourSpan       = 5
-                MinuteDuration = 0
-                MinuteSpan     = 0
+                RecurInterval = 'Hours'
+                RecurCount    = 5
             }
             ExcludeMembership      = @('Test1','Test2')
             DirectMembership       = @('2097152000','2097152001')
@@ -362,6 +422,30 @@ try
             ExcludeMembership      = @('Test1','Test2')
             DirectMembership       = @('2097152000','2097152001')
             QueryRules             = $mockCimDeviceQuery
+        }
+
+        $deviceScheduleDay = @{
+            SiteCode               = 'Lab'
+            CollectionName         = 'Test'
+            LimitingCollectionName = 'All Systems'
+            CollectionType         = 'Device'
+            RefreshSchedule        = $mockCimRefreshScheduleDayMismatch 
+        }
+
+        $deviceScheduleHours = @{
+            SiteCode               = 'Lab'
+            CollectionName         = 'Test'
+            LimitingCollectionName = 'All Systems'
+            CollectionType         = 'Device'
+            RefreshSchedule        = $mockCimRefreshScheduleHours 
+        }
+
+        $deviceScheduleMin = @{
+            SiteCode               = 'Lab'
+            CollectionName         = 'Test'
+            LimitingCollectionName = 'All Systems'
+            CollectionType         = 'Device'
+            RefreshSchedule        = $mockCimRefreshScheduleMin
         }
 
         $deviceCommentItemsMisMatch = @{
@@ -436,27 +520,6 @@ try
 
             Context 'When retrieving Collection settings' {
 
-                It 'Should return desired result for device collections' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResult }
-                    Mock -CommandName Get-CMDeviceCollectionDirectMembershipRule -MockWith { $deviceDirectResult }
-                    Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
-                    Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
-
-                    $result = Get-TargetResource @getDeviceInput
-                    $result                        | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
-                    $result.CollectionName         | Should -Be -ExpectedValue 'Test'
-                    $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
-                    $result.CollectionType         | Should -Be -ExpectedValue 'Device'
-                    $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.RefreshSchedule        | Should -Be -ExpectedValue $deviceCollectionResult.RefreshSchedule
-                    $result.RefreshType            | Should -Be -ExpectedValue 'Both'
-                    $result.QueryRules             | Should -Match $deviceQueryResults
-                    $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
-                    $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
-                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
-                }
-
                 It 'Should return desired result for device collections with no collection updates' {
                     Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResultRefreshNone  }
                     Mock -CommandName Get-CMDeviceCollectionDirectMembershipRule -MockWith { $deviceDirectResult }
@@ -470,13 +533,38 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.RefreshSchedule        | Should -Be -ExpectedValue $null
+                    $result.RefreshSchedule        | Should -be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'None'
-                    $result.QueryRules             | Should -Match $deviceQueryResults
+                    $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.QueryRules.Count       | Should -Be -ExpectedValue 2
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
+                
+                It 'Should return desired result for device collections' {
+                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResult }
+                    Mock -CommandName Get-CMDeviceCollectionDirectMembershipRule -MockWith { $deviceDirectResult }
+                    Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
+                    Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
+
+                    $result = Get-TargetResource @getDeviceInput
+                    $result                        | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
+                    $result.CollectionName         | Should -Be -ExpectedValue 'Test'
+                    $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
+                    $result.CollectionType         | Should -Be -ExpectedValue 'Device'
+                    $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
+                    $result.RefreshSchedule        | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.RefreshType            | Should -Be -ExpectedValue 'Both'
+                    $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.QueryRules.Count       | Should -Be -ExpectedValue 2
+                    $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
+                    $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
+                }
+
+                
 
                 It 'Should return desired result for device collections with periodic updates' {
                     Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResultRefreshPeriodic  }
@@ -491,9 +579,10 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.RefreshSchedule        | Should -Be -ExpectedValue $deviceCollectionResultRefreshPeriodic.RefreshSchedule
+                    $result.RefreshSchedule        | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.RefreshType            | Should -Be -ExpectedValue 'Periodic'
-                    $result.QueryRules             | Should -Match $deviceQueryResults
+                    $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.QueryRules.Count       | Should -Be -ExpectedValue 2
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
@@ -514,7 +603,52 @@ try
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
                     $result.RefreshSchedule        | Should -Be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'Continuous'
-                    $result.QueryRules             | Should -Match $deviceQueryResults
+                    $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.QueryRules.Count       | Should -Be -ExpectedValue 2
+                    $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
+                    $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
+                }
+
+                It 'Should return desired result for device collections with minutes schedule' {
+                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResultMin  }
+                    Mock -CommandName Get-CMDeviceCollectionDirectMembershipRule -MockWith { $deviceDirectResult }
+                    Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
+                    Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
+
+                    $result = Get-TargetResource @getDeviceInput
+                    $result                        | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
+                    $result.CollectionName         | Should -Be -ExpectedValue 'Test'
+                    $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
+                    $result.CollectionType         | Should -Be -ExpectedValue 'Device'
+                    $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
+                    $result.RefreshSchedule        | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.RefreshType            | Should -Be -ExpectedValue 'Both'
+                    $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.QueryRules.Count       | Should -Be -ExpectedValue 2
+                    $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
+                    $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
+                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
+                }
+
+                It 'Should return desired result for device collections with hours schedule' {
+                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResultHour  }
+                    Mock -CommandName Get-CMDeviceCollectionDirectMembershipRule -MockWith { $deviceDirectResult }
+                    Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
+                    Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
+
+                    $result = Get-TargetResource @getDeviceInput
+                    $result                        | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
+                    $result.CollectionName         | Should -Be -ExpectedValue 'Test'
+                    $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
+                    $result.CollectionType         | Should -Be -ExpectedValue 'Device'
+                    $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
+                    $result.RefreshSchedule        | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.RefreshType            | Should -Be -ExpectedValue 'Both'
+                    $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.QueryRules.Count       | Should -Be -ExpectedValue 2
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
@@ -533,9 +667,10 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test user collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'User'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Users'
-                    $result.RefreshSchedule        | Should -Be -ExpectedValue $userCollectionResult.RefreshSchedule
+                    $result.RefreshSchedule        | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.RefreshType            | Should -Be -ExpectedValue 'Both'
-                    $result.QueryRules             | Should -Match $userQueryResults
+                    $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.QueryRules.Count       | Should -Be -ExpectedValue 2
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('TestUser1','TestUser2')
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
@@ -626,8 +761,8 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Set-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMUserCollectionExcludeMembershipRule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDeviceCollectionExcludeMembershipRule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMUserCollectionDirectMembershipRule -Exactly -Times 0 -Scope It
@@ -645,7 +780,7 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 2 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMUserCollectionExcludeMembershipRule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDeviceCollectionExcludeMembershipRule -Exactly -Times 0 -Scope It
@@ -673,6 +808,27 @@ try
                     Assert-MockCalled Add-CMUserCollectionQueryMembershipRule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDeviceCollectionQueryMembershipRule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMCollection -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when changing the schedule' {
+                    Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResultSchedule }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleHours } -ParameterFilter { $RecurInterval -eq 'Hours' }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch } -ParameterFilter { $RecurInterval -eq 'Days' }
+
+                    Set-TargetResource @deviceScheduleDay
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-CMUserCollectionExcludeMembershipRule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDeviceCollectionExcludeMembershipRule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMUserCollectionDirectMembershipRule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDeviceCollectionDirectMembershipRule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMUserCollectionQueryMembershipRule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDeviceCollectionQueryMembershipRule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollection -Exactly -Times 0 -Scope It
                 }
             }
 
@@ -834,21 +990,24 @@ try
                 }
 
                 It 'Should return desired result false Ensure is present and schedule days does not match' {
-                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysNotMatch }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysNotMatch } -ParameterFilter { $RecurCount -eq 6 }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch } -ParameterFilter { $RecurCount -eq 7 }
 
-                    Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
+                    Test-TargetResource @deviceScheduleDay | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and schedule hours does not match' {
-                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleHours }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleHours } -ParameterFilter { $RecurInterval -eq 'Hours' }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch } -ParameterFilter { $RecurInterval -eq 'Days' }
 
-                    Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
+                    Test-TargetResource @deviceScheduleHours | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and schedule minutes does not match' {
-                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleMinutes }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleMinutes } -ParameterFilter { $RecurInterval -eq 'Minutes' }
+                    Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch } -ParameterFilter { $RecurInterval -eq 'Days' }
 
-                    Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
+                    Test-TargetResource @deviceScheduleMin | Should -Be $false
                 }
 
                 It 'Should return desired result false Ensure is present and refreshtype does not match' {
@@ -883,6 +1042,14 @@ try
 
                 It 'Should return desired result false Ensure is Absent and collection is returned' {
                     Test-TargetResource @testDeviceInputAbsent | Should -Be $false
+                }
+            }
+
+            Context 'When running Test-TargetResource collection and Get-TargetResource returns Null schedule' {
+                Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionNullSchedule }
+
+                It 'Should return desired result true Ensure is Absent and collection is null' {
+                    Test-TargetResource @deviceMatchCollectionParams | Should -Be $false
                 }
             }
 
