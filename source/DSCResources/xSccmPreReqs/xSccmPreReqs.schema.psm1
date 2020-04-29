@@ -83,6 +83,11 @@ Configuration xSCCMPreReqs
         $InstallWindowsFeatures = $true,
 
         [Parameter()]
+        [ValidateSet('CASorSiteServer','CertificateRegistration','DP','EndpointProtection','Enrollment','EnrollmentProxy','FallbackStatus','MP','StateMigration','SoftwareUpdate')]
+        [System.String[]]
+        $SccmRole = 'CASorPrimary',
+
+        [Parameter()]
         [Boolean]
         $AddWindowsFirewallRule = $false,
 
