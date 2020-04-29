@@ -429,7 +429,7 @@ try
             CollectionName         = 'Test'
             LimitingCollectionName = 'All Systems'
             CollectionType         = 'Device'
-            RefreshSchedule        = $mockCimRefreshScheduleDayMismatch 
+            RefreshSchedule        = $mockCimRefreshScheduleDayMismatch
         }
 
         $deviceScheduleHours = @{
@@ -437,7 +437,7 @@ try
             CollectionName         = 'Test'
             LimitingCollectionName = 'All Systems'
             CollectionType         = 'Device'
-            RefreshSchedule        = $mockCimRefreshScheduleHours 
+            RefreshSchedule        = $mockCimRefreshScheduleHours
         }
 
         $deviceScheduleMin = @{
@@ -541,7 +541,7 @@ try
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
-                
+
                 It 'Should return desired result for device collections' {
                     Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResult }
                     Mock -CommandName Get-CMDeviceCollectionDirectMembershipRule -MockWith { $deviceDirectResult }
@@ -563,8 +563,6 @@ try
                     $result.DirectMembership       | Should -Be -ExpectedValue @('2097152000','2097152001')
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
-
-                
 
                 It 'Should return desired result for device collections with periodic updates' {
                     Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResultRefreshPeriodic  }

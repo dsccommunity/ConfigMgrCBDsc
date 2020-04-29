@@ -82,7 +82,7 @@ function Get-TargetResource
             $rInterval = 'Days'
             $rCount = $cSchedule.DaySpan
         }
-        elseif ($cSchedule.HourSpan -gt 0) 
+        elseif ($cSchedule.HourSpan -gt 0)
         {
             $rInterval = 'Hours'
             $rCount = $cSchedule.HourSpan
@@ -286,7 +286,7 @@ function Set-TargetResource
                     RecurInterval = $RefreshSchedule.RecurInterval
                     RecurCount    = $RefreshSchedule.RecurCount
                 }
-                
+
                 $desiredRefreshSchedule = New-CMSchedule @newSchedule
 
                 if ($state.RefreshSchedule)
@@ -383,18 +383,7 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($QueryRules))
             {
-                $rules = @()
-                foreach ($queryRule in $QueryRules)
-                {
-                    $rules += (
-                        @{
-                            QueryExpression = $queryRule.QueryExpression
-                            RuleName        = $queryRule.RuleName
-                        }
-                    )
-                }
-
-                foreach ($rule in $rules)
+                foreach ($rule in $QueryRules)
                 {
                     $importRule = @{}
 
@@ -586,7 +575,7 @@ function Test-TargetResource
                         RecurCount    = $state.RefreshSchedule.RecurCount
                     }
 
-                    $currentSchedule = New-CMSchedule @cSchedule 
+                    $currentSchedule = New-CMSchedule @cSchedule
                     $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
 
                     foreach ($item in $array)
@@ -631,18 +620,7 @@ function Test-TargetResource
 
             if (-not [string]::IsNullOrEmpty($QueryRules))
             {
-                $rules = @()
-                foreach ($queryRule in $QueryRules)
-                {
-                    $rules += (
-                        @{
-                            QueryExpression = $queryRule.QueryExpression
-                            RuleName        = $queryRule.RuleName
-                        }
-                    )
-                }
-
-                foreach ($rule in $rules)
+                foreach ($rule in $QueryRules)
                 {
                     if (([string]::IsNullOrEmpty($state.QueryRules.QueryExpression)) -or
                        ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))

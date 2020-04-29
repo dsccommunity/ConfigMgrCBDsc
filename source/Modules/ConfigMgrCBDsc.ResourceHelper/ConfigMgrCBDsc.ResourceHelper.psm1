@@ -17,7 +17,7 @@ data LocalizedData
 function Import-ConfigMgrPowerShellModule
 {
     [CmdletBinding()]
-    param 
+    param
     (
         [Parameter(Mandatory = $true)]
         [String]
