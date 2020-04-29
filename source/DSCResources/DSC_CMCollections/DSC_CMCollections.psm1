@@ -336,7 +336,7 @@ function Set-TargetResource
                     if (($null -eq $state.ExcludeMembership) -or ($state.ExcludeMembership -notcontains $member))
                     {
                         $excludeRule = @{
-                            CollectionName = $CollectionName
+                            CollectionName        = $CollectionName
                             ExcludeCollectionName = $member
                         }
 

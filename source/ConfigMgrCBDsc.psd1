@@ -45,7 +45,7 @@
         'ClientSettings'
         'CMAccounts'
         'SccmIniFile'
-        'Collections'
+        'CMCollections'
     )
 
     <#
