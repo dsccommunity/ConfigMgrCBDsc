@@ -65,14 +65,14 @@ function Get-TargetResource
         if ($type -eq 'User')
         {
             $rules = Get-CMUserCollectionQueryMembershipRule -CollectionName $collection.Name | Select-Object QueryExpression, RuleName
-            $excludes = (Get-CMUserCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
-            $directMember = (Get-CMUserCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
+            [array]$excludes = (Get-CMUserCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
+            [array]$directMember = (Get-CMUserCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
         }
         else
         {
             $rules = Get-CMDeviceCollectionQueryMembershipRule -CollectionName $collection.Name | Select-Object QueryExpression, RuleName
-            $excludes = (Get-CMDeviceCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
-            $directMember = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
+            [array]$excludes = (Get-CMDeviceCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
+            [array]$directMember = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
         }
 
         $cSchedule = $collection.RefreshSchedule
