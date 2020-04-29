@@ -18,7 +18,7 @@ class DSC_CMCollections : OMI_BaseResource
 class DSC_CMCollectionRefreshSchedule
 {
      [Required, Description("Specifies the recur interval of days, hours, or minutes."),ValueMap{"Days","Hours","Minutes"},Values{"Days","Hours","Minutes"}] String RecurInterval;
-     [Required, Description("Specifies how often the recur interval is run.")] UInt16 RecurCount;
+     [Required, Description("Specifies how often the recur interval is run.")] UInt32 RecurCount;
 };
 
 [ClassVersion("1.0.0")]
