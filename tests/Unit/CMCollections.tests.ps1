@@ -453,7 +453,7 @@ try
             CollectionName         = 'Test'
             LimitingCollectionName = 'All Devices'
             CollectionType         = 'Device'
-            RefreshType            = 'None'
+            RefreshType            = 'Manual'
             Comment                = 'collection mismatch'
             RefreshSchedule        = $mockCimRefreshSchedule
             ExcludeMembership      = @('Test1','Test2')
@@ -466,7 +466,7 @@ try
             CollectionName         = 'Test'
             LimitingCollectionName = 'All Devices'
             CollectionType         = 'Device'
-            RefreshType            = 'None'
+            RefreshType            = 'Manual'
             Comment                = 'Test device collections'
             RefreshSchedule        = $mockCimRefreshSchedule
             ExcludeMembership      = @('Test1','Test2')
@@ -534,7 +534,7 @@ try
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
                     $result.RefreshSchedule        | Should -be -ExpectedValue $null
-                    $result.RefreshType            | Should -Be -ExpectedValue 'None'
+                    $result.RefreshType            | Should -Be -ExpectedValue 'Manual'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.QueryRules.Count       | Should -Be -ExpectedValue 2
                     $result.ExcludeMembership      | Should -Be -ExpectedValue @('Test1','Test2')
@@ -1008,7 +1008,7 @@ try
                     Test-TargetResource @deviceScheduleMin | Should -Be $false
                 }
 
-                It 'Should return desired result false Ensure is present and refreshtype does not match' {
+                It 'Should return desired result false Ensure is present and comment does not match' {
                     Mock -CommandName New-CMSchedule -MockWith { $newCMScheduleDaysMatch }
 
                     Test-TargetResource @deviceCommentItemsMisMatch | Should -Be $false

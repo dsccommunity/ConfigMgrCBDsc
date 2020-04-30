@@ -180,6 +180,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] Comment** _(Write)_: Specifies a comment for the collection.
 - **[EmbeddedInstance] RefreshSchedule** _(Write)_: Specifies containing refresh
   schedule for Configuration Manager (RecurInterval, RecurCount).
+- **[String] RefreshType** _(Key)_: Specifies how the collection is refreshed.
+  { Manual | Periodic | Continuous | Both }.
 - **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the rule
   and the query expression that Configuration Manager uses to update collections.
 - **[String] ExcludeMembership[]** _(Write)_: Specifies the collection name to

@@ -50,7 +50,7 @@ function Get-TargetResource
     {
         $refresh = switch ($collection.RefreshType)
         {
-            '1' { 'None' }
+            '1' { 'Manual' }
             '2' { 'Periodic' }
             '4' { 'Continuous' }
             '6' { 'Both' }
@@ -208,7 +208,7 @@ function Set-TargetResource
         $RefreshSchedule,
 
         [Parameter()]
-        [ValidateSet('None','Periodic','Continuous','Both')]
+        [ValidateSet('Manual','Periodic','Continuous','Both')]
         [String]
         $RefreshType,
 
@@ -502,7 +502,7 @@ function Test-TargetResource
         $RefreshSchedule,
 
         [Parameter()]
-        [ValidateSet('None','Periodic','Continuous','Both')]
+        [ValidateSet('Manual','Periodic','Continuous','Both')]
         [String]
         $RefreshType,
 
