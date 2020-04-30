@@ -48,7 +48,7 @@ function Get-TargetResource
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
     if ($Type -eq 'IPSubnet')
@@ -133,7 +133,7 @@ function Set-TargetResource
         $Ensure = 'Present'
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -DisplayName $DisplayName -Type $Type -Value $Value
 
@@ -222,7 +222,7 @@ function Test-TargetResource
         $Ensure = 'Present'
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -DisplayName $DisplayName -Type $Type -Value $Value
     $result = $true

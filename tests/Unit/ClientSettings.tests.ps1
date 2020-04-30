@@ -404,13 +404,6 @@ try
 
             Context 'When running Test-TargetResource should throw' {
 
-                It 'Should throw when configmgr module does not import' {
-                    Mock -CommandName Get-ClientSettingsSoftwareCenter -MockWith { return '1' }
-                    Mock -CommandName Import-Module -MockWith { throw }
-
-                    { Test-TargetResource @getClientSettingsSC } | Should -Throw -ExpectedMessage "Failure to import SCCM Cmdlets."
-                }
-
                 It 'Should throw when SoftwareCenter setting does not exist' {
                     Mock -CommandName Get-ClientSettingsSoftwareCenter -MockWith { return '1' }
                     Mock -CommandName Import-ConfigMgrPowerShellModule

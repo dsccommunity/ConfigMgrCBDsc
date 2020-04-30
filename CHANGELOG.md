@@ -10,9 +10,16 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 ### Added
 
 - Added SccmIniFile resource
+- Added CMCollections Resource
+- Added Set-ConfigMgrCert to the ResourceHelper
 - Added CMBoundaries resource
 
 ### Changed
+
+- Update ConfigMgrCBDsc.ResourceHelper Import-ConfigMgrPowerShellModule
+
+- Updated current DSCResources in module that use Import-ConfigMgrPowerShellModule
+  adding SiteCode
 
 ### Removed
 

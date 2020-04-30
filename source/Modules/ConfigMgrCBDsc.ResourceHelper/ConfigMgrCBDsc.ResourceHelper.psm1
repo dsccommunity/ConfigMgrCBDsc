@@ -11,27 +11,89 @@ data LocalizedData
     .SYNOPSIS
         Import Configuration Manager module commands.
 
-    .PARAMETER VersionCheck
-        Specifies if the module version should be checked to validate if greater than 5.1902.
+    .PARAMTER SiteCode
+        Specifies the site code for configuration manager.
 #>
 function Import-ConfigMgrPowerShellModule
 {
     [CmdletBinding()]
-    param ()
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $SiteCode
+    )
 
-    try
+    if ((Test-Path -Path "$($SiteCode):\") -eq $false)
     {
-        Import-Module -Name (Join-Path $(Split-Path $ENV:SMS_ADMIN_UI_PATH) ConfigurationManager.psd1) -Global
-    }
-    catch
-    {
-        throw "Failure to import SCCM Cmdlets."
+        $siteInfo = Get-CimInstance -ClassName SMS_Site -Namespace root\sms\site_$SiteCode
+        $sid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+        $baseRegKeyPath = "Registry::HKEY_Users\$sid\Software\Microsoft"
+        $createKeys = @('ConfigMgr10','AdminUI','MRU','1')
+
+        foreach ($key in $createKeys)
+        {
+            if (-not (Test-Path -Path "$baseRegKeyPath\$key"))
+            {
+                New-Item -Path $baseRegKeyPath -Name $key |Out-Null
+                $baseRegKeyPath += "\$key"
+            }
+        }
+
+        $regProperties = (Get-ItemProperty -Path $baseRegKeyPath -ErrorAction SilentlyContinue)
+
+        $values = @{
+            ServerName = $siteInfo.ServerName[0]
+            SiteName   = $siteInfo.SiteName[0]
+            SiteCode   = $siteInfo.SiteCode[0]
+            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))[0]
+        }
+
+        foreach ($value in $values.GetEnumerator())
+        {
+            if ($($regProperties.$($value.Name)) -ne $value.Value)
+            {
+                Set-ItemProperty -Path $baseRegKeyPath -Name $value.Name -Value $value.Value | Out-Null
+            }
+        }
+
+        Set-ConfigmgrCert
+
+        try
+        {
+            Import-Module -Name (Join-Path $(Split-Path $ENV:SMS_ADMIN_UI_PATH) ConfigurationManager.psd1) -Global
+        }
+        catch
+        {
+            throw "Failure to import SCCM Cmdlets."
+        }
     }
 
     if ((Get-Module -Name ConfigurationManager).Version -lt '5.1902')
     {
         throw "Incorrect version of Configuration Manager Powershell to use this module"
     }
+}
+
+<#
+    .SYNOPSIS
+        Imports the configuration manager powershell certificate to Trusted Publisher.
+#>
+function Set-ConfigMgrCert
+{
+    param ()
+
+    $configCert = Get-AuthenticodeSignature -FilePath (Join-Path $(Split-Path $ENV:SMS_ADMIN_UI_PATH) ConfigurationManager.psd1)
+
+    $store = Get-Item -Path Cert:\LocalMachine\TrustedPublisher
+    $store.Open('ReadWrite')
+
+    if ($store.Certificates -notcontains $configCert.SignerCertificate)
+    {
+        $store.Add($configCert.SignerCertificate)
+    }
+
+    $store.Close()
 }
 
 <#

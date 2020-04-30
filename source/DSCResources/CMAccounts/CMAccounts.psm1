@@ -37,7 +37,7 @@ function Get-TargetResource
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
     return @{
@@ -88,7 +88,7 @@ function Set-TargetResource
         $Ensure = 'Present'
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
     $currentState = (Get-CMAccount -SiteCode $SiteCode).Username
@@ -184,7 +184,7 @@ function Test-TargetResource
         $Ensure = 'Present'
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     $currentState = (Get-CMAccount -SiteCode $SiteCode).Username
     $result = $true

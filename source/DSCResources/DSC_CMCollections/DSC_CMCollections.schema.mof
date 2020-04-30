@@ -1,0 +1,29 @@
+[ClassVersion("1.0.0"), FriendlyName("CMCollections")]
+class DSC_CMCollections : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies a name for the collection.")] String CollectionName;
+    [Key, Description("Specifies the type of collection."),ValueMap{"User","Device"},Values{"User","Device"}] String CollectionType;
+    [Write, Description("Specifies the name of a collection to use as the default scope for this collection.")] String LimitingCollectionName;
+    [Write, Description("Specifies a comment for the collection.")] String Comment;
+    [Write, EmbeddedInstance("DSC_CMCollectionRefreshSchedule"), Description("Hashtable containing refresh schedule for Configuration Manager (RecurInterval, RecurCount)")] String RefreshSchedule;
+    [Write, Description("Specifies how Configuration Manager refreshes the collection."),ValueMap{"Manual","Periodic","Continuous","Both"},Values{"Manual","Periodic","Continuous","Both"}] String RefreshType;
+    [Write, EmbeddedInstance("DSC_CMCollectionQueryRules"), Description("Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.")] String QueryRules[];
+    [Write, Description("Specifies the collection name to exclude members from. If clients are in the excluded collection they will not be added to the collection.")] String ExcludeMembership[];
+    [Write, Description("Specifies the resourceid for the direct membership rule.")] String DirectMembership[];
+    [Write, Description("Specifies if the collection is to be present or absent."),ValueMap{"Present","Absent"},Values{"Present","Absent"}] String Ensure;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMCollectionRefreshSchedule
+{
+     [Required, Description("Specifies the recur interval of days, hours, or minutes."),ValueMap{"Days","Hours","Minutes"},Values{"Days","Hours","Minutes"}] String RecurInterval;
+     [Required, Description("Specifies how often the recur interval is run.")] UInt32 RecurCount;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMCollectionQueryRules
+{
+     [Required, Description("Specifies the name of the rule.")] String RuleName;
+     [Required, Description("Specifies the query expression to be used by the rule.")] String QueryExpression;
+};
