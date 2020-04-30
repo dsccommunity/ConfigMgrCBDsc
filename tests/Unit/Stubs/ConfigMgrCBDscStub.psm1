@@ -37273,7 +37273,6 @@ function Set-CMCollection
         ${LimitingCollection},
 
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${RefreshSchedule},
 
@@ -65016,4 +65015,162 @@ function Update-CMDistributionPoint
     throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
 }
 
+function Add-CMUserCollectionExcludeMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
 
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${ExcludeCollectionName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
+
+function Add-CMDeviceCollectionExcludeMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${ExcludeCollectionName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
+
+function Get-CMDeviceCollectionDirectMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${RuleName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
+
+function Get-CMUserCollectionDirectMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${RuleName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
+
+function Get-CMDeviceCollectionExcludeMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${ExcludeCollectionName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
+
+function Get-CMUserCollectionExcludeMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${ExcludeCollectionName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
+
+function Get-CMDeviceCollectionQueryMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${RuleName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
+
+function Get-CMUserCollectionQueryMembershipRule
+{
+    [CmdletBinding(ConfirmImpact='Low')]
+    param
+    (
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${CollectionName},
+
+        [ValidateNotNullOrEmpty()]
+        [string]
+        ${RuleName},
+
+        [switch]
+        ${ForceWildcardHandling}
+    )
+
+    throw '{0}: StubNotImplemented' -f $MyInvocation.MyCommand
+}
