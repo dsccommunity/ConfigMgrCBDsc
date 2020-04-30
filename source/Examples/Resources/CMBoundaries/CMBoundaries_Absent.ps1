@@ -13,7 +13,7 @@ Configuration Example
             SiteCode    = 'Lab'
             DisplayName = 'Subnet 1'
             Type        = 'IPSubnet'
-            Value       = '10.1.1.1/24'
+            Value       = '10.1.1.0/24'
             Ensure      = 'Absent'
         }
     }
