@@ -94,32 +94,32 @@ function Set-TargetResource
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $ClientPolicyDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $HeartbeatDiscoveryDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $SoftwareInventoryDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $HardwareInventoryDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $StatusMessageDays,
 
         [Parameter()]
         [ValidateRange(0,90)]
-        [Nullable[UInt32]]
+        [UInt32]
         $HistoryCleanupDays
     )
 
@@ -146,7 +146,7 @@ function Set-TargetResource
             }
         }
 
-        if($buildingParmas)
+        if ($buildingParmas)
         {
             Set-CMClientStatusSetting @buildingParmas
         }
@@ -208,32 +208,32 @@ function Test-TargetResource
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $ClientPolicyDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $HeartbeatDiscoveryDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $SoftwareInventoryDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $HardwareInventoryDays,
 
         [Parameter()]
         [ValidateRange(1,30)]
-        [Nullable[UInt32]]
+        [UInt32]
         $StatusMessageDays,
 
         [Parameter()]
         [ValidateRange(0,90)]
-        [Nullable[UInt32]]
+        [UInt32]
         $HistoryCleanupDays
     )
 
