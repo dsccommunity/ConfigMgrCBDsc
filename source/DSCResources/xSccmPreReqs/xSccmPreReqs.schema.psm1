@@ -185,7 +185,7 @@ Configuration xSCCMPreReqs
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName NetworkingDsc
+    Import-DscResource -ModuleName NetworkingDsc -ModuleVersion 7.4.0.0
 
     $features = @()
     foreach ($role in $SccmRole)
