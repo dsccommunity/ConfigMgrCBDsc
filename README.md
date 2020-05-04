@@ -197,3 +197,27 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMCollections_Absent](Source\Examples\Resources\CMCollections\Collection_Absent.ps1)
 - [CMDeviceCollection_Present](Source\Examples\Resources\CMCollections\DeviceCollection_Present.ps1)
 - [CMUserCollection_Present](Source\Examples\Resources\CMCollections\UserCollection_Present.ps1)
+
+### CMClientStatusSettings
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
+  instance, the value must be 'Yes'.
+  { Yes }.
+- **[UInt32] ClientPolicyDays** _(Write)_: Specifies the data collection
+  intervals for client policy client monitoring activities.
+- **[UInt32] HeartbeatDiscoveryDays** _(Write)_: Specifies the data collection
+  intervals for heartbeat discovery client monitoring activities.
+- **[UInt32] SoftwareInventoryDays** _(Write)_: Specifies the data collection
+  intervals for software inventory client monitoring activities.
+- **[UInt32] HardwareInventoryDays** _(Write)_: Specifies the data collection
+  intervals for hardware inventory client monitoring activities.
+- **[UInt32] StatusMessageDays** _(Write)_: Specifies the data collection
+  intervals for status message client monitoring activities.
+- **[UInt32] HistoryCleanupDays** _(Write)_: Specifies the data collection
+  intervals for status history cleanup client monitoring activities.
+
+#### CMClientStatusSettings Examples
+
+- [CMClientStatusSettings](Source\Examples\Resources\CMClientStatusSettings\CMClientStatusSettings.ps1)

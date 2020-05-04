@@ -12,6 +12,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added SccmIniFile resource
 - Added CMCollections Resource
 - Added Set-ConfigMgrCert to the ResourceHelper
+- Added CMClientStatusSettings Resource
 
 ### Changed
 
