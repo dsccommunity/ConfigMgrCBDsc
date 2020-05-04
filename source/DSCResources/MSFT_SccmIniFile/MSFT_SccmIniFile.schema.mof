@@ -1,0 +1,43 @@
+[ClassVersion("1.0.0"), FriendlyName("SccmIniFile")]
+class MSFT_SccmIniFile : OMI_BaseResource
+{
+    [Key, Description("Specifies the ini file name.")] String IniFileName;
+    [Key, Description("Specifies the path of the ini file.")] String IniFilePath;
+    [Required, Description("Specifies whether to install a CAS or Primary."), ValueMap{"InstallCAS","InstallPrimarySite"}, Values{"InstallCAS","InstallPrimarySite"}] String Action;
+    [Write, Description("This value informs setup that you're using media from CD.Latest.")] Boolean CDLatest;
+    [Required, Description("Specifies the Configuration Manager installation product key, including the dashes.")] String ProductID;
+    [Required, Description("Specifies three alphanumeric characters that uniquely identify the site in your hierarchy.")] String SiteCode;
+    [Required, Description("Specifies the name for this site.")] String SiteName;
+    [Required, Description("Specifies the installation folder for the Configuration Manager program files.")] String SMSInstallDir;
+    [Required, Description("Specifies the FQDN for the server that will host the SMS Provider.")] String SDKServer;
+    [Required, Description("Specifies whether setup prerequisite files have already been downloaded.")] Boolean PreRequisiteComp;
+    [Required, Description("Specifies the path to the setup prerequisite files.")] String PreRequisitePath;
+    [Required, Description("Specifies whether to install the Configuration Manager console.")] Boolean AdminConsole;
+    [Required, Description("Specifies whether to join the Customer Experience Improvement Program (CEIP).")] Boolean JoinCeip;
+    [Required, Description("Specifies whether the mobile device client languages are installed.")] Boolean MobileDeviceLanguage;
+    [Write, Description("Specifies whether to configure all site systems to accept only HTTPS communication from clients, or to configure the communication method for each site system role."), ValueMap{"EnforceHTTPS","HTTPorHTTPS"}, Values{"EnforceHTTPS","HTTPorHTTPS"}] String RoleCommunicationProtocol;
+    [Write, Description("Specifies whether clients will use a client PKI certificate to communicate with site system roles.")] Boolean ClientsUsePKICertificate;
+    [Write, Description("Specifies the FQDN of the server that will host the management point site system role.")] String ManagementPoint;
+    [Write, Description("Specifies the protocol to use for the management point."), ValueMap{"HTTPS","HTTP"}, Values{"HTTPS","HTTP"}] String ManagementPointProtocol;
+    [Write, Description("Specifies the FQDN of the server that will host the distribution point site system role.")] String DistributionPoint;
+    [Write, Description("Specifies the protocol to use for the distribution point."), ValueMap{"HTTPS","HTTP"}, Values{"HTTPS","HTTP"}] String DistributionPointProtocol;
+    [Write, Description("Specifies the server languages that will be available for the Configuration Manager console, reports, and Configuration Manager objects."), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String AddServerLanguages;
+    [Write, Description("Specifies the languages that will be available to client computers."), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String AddClientLanguages;
+    [Write, Description("Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available for the Configuration Manager console, reports, and Configuration Manager objects."), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String DeleteServerLanguages;
+    [Write, Description("Modifies a site after it's installed. Specifies the languages to remove, and which will no longer be available to client computers."), ValueMap{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}, Values{"DEU","FRA","RUS","CHS","JPN","CHT","CSY","ESN","HUN","ITA","KOR","NLD","PLK","PTB","PTG","SVE","TRK","ZHH"}] String DeleteClientLanguages;
+    [Required, Description("Specifies the name of the server or clustered instance that's running SQL Server to host the site database.")] String SQLServerName;
+    [Required, Description("Specifies the name of the SQL Server database to create, or the SQL Server database to use, when setup installs the CAS database.")] String DatabaseName;
+    [Write, Description("Specifies the SQL Server Service Broker (SSB) port that SQL Server uses.")] UInt16 SqlSsbPort;
+    [Write, Description("Specifies an alternate location to create the database .mdb file.")] String SQLDataFilePath;
+    [Write, Description("Specifies an alternate location to create the database .ldf file.")] String SQLLogFilePath;
+    [Write, Description("Specifies the CAS that a primary site attaches to when it joins the Configuration Manager hierarchy")] String CCARSiteServer;
+    [Write, Description("Specifies the retry interval in minutes to attempt a connection to the CAS after the connection fails.")] String CasRetryInterval;
+    [Write, Description("Specifies the maximum timeout value in minutes for a primary site to connect to the CAS.")] UInt16 WaitForCasTimeout;
+    [Required, Description("Specifies whether to install a service connection point at this site.")] Boolean CloudConnector;
+    [Write, Description("Specifies the FQDN of the server that will host the service connection point site system role.")] String CloudConnectorServer;
+    [Write, Description("Specifies whether the service connection point uses a proxy server.")] Boolean UseProxy;
+    [Write, Description("Specifies the FQDN of the proxy server that the service connection point uses.")] String ProxyName;
+    [Write, Description("Specifies the port number to use for the proxy port.")] UInt16 ProxyPort;
+    [Write, Description("Specify if you have active Software Assurance.")] Boolean SAActive;
+    [Write, Description("Specify whether to use Configuration Manager current branch or long-term servicing branch (LTSB).")] Boolean CurrentBranch;
+};

@@ -20,7 +20,7 @@
     CompanyName = 'DSC Community'
 
     # Copyright statement for this module
-    Copyright         = 'Copyright the DSC Community contributors. All rights reserved.'
+    Copyright = 'Copyright the DSC Community contributors. All rights reserved.'
 
     # Description of the functionality provided by this module
     Description = 'This module includes DSC resources that simplify administration of Configuration Manager CB'
@@ -48,6 +48,7 @@
         'XSccmInstall'
         'xSccmPreReqs'
         'xSccmSqlSetup'
+        'CMCollections'
     )
 
     <#
@@ -61,7 +62,7 @@
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc', 'ClientSettings','CMAccounts','SCCMPreReqs',
-            'SccmSqlSetup','SCCMInstall','SCCMIniFile')
+            'SccmSqlSetup','SCCMInstall','SCCMIniFile','Collections')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

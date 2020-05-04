@@ -56,7 +56,7 @@ function Get-TargetResource
     )
 
     Write-Verbose -Message ($script:localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
     if ($DeviceSettingName -ne 'SoftwareCenter')
@@ -128,7 +128,7 @@ function Set-TargetResource
         $SettingValue
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     Confirm-ClientSetting -DeviceSettingName $DeviceSettingName -Setting $Setting
     Write-Verbose -Message ($script:localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
@@ -258,7 +258,7 @@ function Test-TargetResource
         $SettingValue
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     Confirm-ClientSetting -DeviceSettingName $DeviceSettingName -Setting $Setting
     Write-Verbose -Message ($script:localizedData.RetrieveSettingValue -f $Name, $DeviceSettingName, $Setting)
