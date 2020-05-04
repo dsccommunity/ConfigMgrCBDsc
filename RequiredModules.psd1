@@ -22,6 +22,7 @@
 
     # Build dependent modules
     'DscResource.Common'        = 'latest'
-    'SqlServerDSC'              = 'latest'
+    'SqlServerDsc'              = 'latest'
+    'NetworkingDsc'             = 'latest'
 }
 
