@@ -351,7 +351,7 @@ function Test-TargetResource
     {
         if ($state.Ensure -eq 'Present')
         {
-            Write-Verbose -Message ($script:localizedDate.BoundaryGroupRemove -f $BoundaryGroup)
+            Write-Verbose -Message ($script:localizedData.BoundaryGroupRemove -f $BoundaryGroup)
             $result = $false
         }
     }
