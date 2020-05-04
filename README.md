@@ -39,14 +39,35 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ### xSccmPreReqs
 
-- **[String] AdkSetupExePath** _(Required)_: Specifies the path and filename to
+- **[Boolean] InstallADK** : Specifies whether to install ADK.
+  Default Value: $true
+- **[Boolean] InstallMDT** : Specifies whether to install MDT.
+- **[String] AdkSetupExePath** : Specifies the path and filename to
   the ADK Setup.
-- **[String] AdkWinPeSetupPath** _(Required)_: Specifies the path and filename
+- **[String] AdkWinPeSetupPath** : Specifies the path and filename
   to the ADK WinPE Setup.
-- **[String] MdtMsiPath** _(Required)_: Specifies the path and filename to the
+- **[String] MdtMsiPath** : Specifies the path and filename to the
   MDT Setup.
 - **[String] InstallWindowsFeatures** : Specifies to install Windows Features
   needed for the SCCM install.
+- **[String[]] SccmRole** : Specifies the SCCM Roles that will be on the server.
+  Default Value: CASorSiteServer
+  - Values{CASorSiteServer | AssetIntelligenceSynchronizationPoint |
+    CertificateRegistrationPoint | DistributionPoint | EndpointProtectionPoint |
+    EnrollmentPoint | EnrollmentProxyPoint | FallbackServicePoint |
+    ManagementPoint | ReportingServicesPoint | ServiceConnectionPoint |
+    StateMigrationPoint | SoftwareUpdatePoint}
+- **[Boolean] AddWindowsFirewallRule** : Specifies whether to add the Windows
+  Firewall Rules needed for the install.
+  Default Value: $false
+- **[String[]] FirewallProfile** : Specifies the Windows Firewall profile for
+  the rules to be added.
+- **[String[]] FirewallTcpLocalPort** : Specifies the TCP ports to be added to
+  the windows firewall as allowed.
+  Default Value: @('1433','1434','4022','445','135','139','49154-49157')
+- **[String[]] FirewallUdpLocalPort** : Specifies the TCP ports to be added to
+  the windows firewall as allowed.
+  Default Value: @('137-138','5355')
 - **[String] LocalAdministrators** : Specifies the accounts and/or groups you
   want to add to the local administrators group.
 - **[String] NoSmsOnDrives** : Specifies the drive letters of the drive you

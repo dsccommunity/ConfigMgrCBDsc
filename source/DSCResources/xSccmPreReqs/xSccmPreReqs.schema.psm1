@@ -10,6 +10,12 @@
         - Local Administrators
         - Add no_sms_on_drive files
 
+    .PARAMETER InstallAdk
+        Specify whether to install ADK.
+
+    .PARAMETER InstallMDT
+        Specify wheter to install MDT.
+
     .PARAMETER AdkSetupExePath
         Specifies the path and filename to the ADK Setup.
 
@@ -18,6 +24,24 @@
 
     .PARAMETER MdtMsiPath
         Specifies the path and filename to the MDT Setup.
+
+    .PARAMETER InstallWindowsFeatures
+        Specifiy to Install Windows Features needed for the SCCM install.
+
+    .PARAMETER SccmRole
+        Specify the SCCM Roles that will be on the server.
+
+    .PARAMETER AddWindowsFirewallRule
+        Specify whether to add the Windows Firewall Rules needed for the install.
+
+    .PARAMETER FirewallProfile
+        Specify the Windows Firewall profile for the rules to be added.
+
+    .PARAMETER FirewallTcpLocalPort
+        Specify the TCP ports to be added to the windows firewall as allowed.
+
+    .PARAMETER FirewallUdpLocalPort
+        Specify the UDP ports to be added to the windows firewall as allowed.
 
     .PARAMETER LocalAdministrators
         Specifies the accounts and/or groups you want to add to the local administrators group.
@@ -60,21 +84,33 @@
     .PARAMETER MdtInstallPath
         Specifies the path to install MDT.
         Default: C:\Program Files\Microsoft Deployment Toolkit
+
+    .NOTES
+        SCCM Roles based one the following documentation:
+        https://docs.microsoft.com/en-us/mem/configmgr/core/plan-design/configs/site-and-site-system-prerequisites
 #>
 Configuration xSCCMPreReqs
 {
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
+        [Boolean]
+        $InstallADK = $true,
+
+        [Parameter()]
+        [Boolean]
+        $InstallMdt,
+
+        [Parameter()]
         [System.String]
         $AdkSetupExePath,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [System.String]
         $AdkWinPeSetupPath,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [System.String]
         $MdtMsiPath,
 
@@ -83,9 +119,9 @@ Configuration xSCCMPreReqs
         $InstallWindowsFeatures = $true,
 
         [Parameter()]
-        [ValidateSet('CASorSiteServer','CertificateRegistration','DP','EndpointProtection','Enrollment','EnrollmentProxy','FallbackStatus','MP','StateMigration','SoftwareUpdate')]
+        [ValidateSet('CASorSiteServer','AssetIntelligenceSynchronizationPoint','CertificateRegistrationPoint','DistributionPoint','EndpointProtectionPoint','EnrollmentPoint','EnrollmentProxyPoint','FallbackServicePoint','ManagementPoint','ReportingServicesPoint','ServiceConnectionPoint','StateMigrationPoint','SoftwareUpdatePoint')]
         [System.String[]]
-        $SccmRole = 'CASorPrimary',
+        $SccmRole = 'CASorSiteServer',
 
         [Parameter()]
         [Boolean]
@@ -97,11 +133,11 @@ Configuration xSCCMPreReqs
 
         [Parameter()]
         [System.String[]]
-        $FirewallTcpLocalPort,
+        $FirewallTcpLocalPort = @('1433','1434','4022','445','135','139','49154-49157'),
 
         [Parameter()]
         [System.String[]]
-        $FirewallUdpLocalPort,
+        $FirewallUdpLocalPort = @('137-138','5355'),
 
         [Parameter()]
         [System.String[]]
@@ -151,30 +187,70 @@ Configuration xSCCMPreReqs
     Import-DscResource -ModuleName PSDesiredStateConfiguration
     Import-DscResource -ModuleName NetworkingDsc
 
+    $features = @()
+    foreach ($role in $SccmRole)
+    {
+        switch ($role)
+        {
+            'CASorSiteServer' {$features += 'Net-Framework-Core','Net-Framework-45-Core','RDC'}
+            'AssetIntelligenceSynchronizationPoint' {$features += 'Net-Framework-45-Core'}
+            'CertificateRegistrationPoint' {$features += 'Net-Framework-Core','NET-HTTP-Activation',
+                'Net-Framework-45-Core','NET-WCF-HTTP-Activation45','Web-Default-Doc','Web-Asp-Net','Web-Asp-Net45',
+                'Web-ISAPI-Ext','Web-ISAPI-Filter','Web-Net-Ext','Web-Net-Ext45','Web-Mgmt-Console','Web-Metabase',
+                'Web-WMI','Web-Filtering','WAS-Process-Model','WAS-NET-Environment','WAS-Config-APIs'
+            }
+            'DistributionPoint' {$features += 'RDC','Web-ISAPI-Ext','Web-Windows-Auth','Web-Mgmt-Console',
+                'Web-Metabase','Web-WMI','Web-Filtering'
+            }
+            'EndpointProtectionPoint' {'Net-Framework-Core'}
+            'EnrollmentPoint' {$features += 'Net-Framework-Core','NET-HTTP-Activation',
+                'Net-Framework-45-Core','NET-WCF-HTTP-Activation45','Web-Default-Doc','Web-Asp-Net','Web-Asp-Net45',
+                'Web-Net-Ext','Web-Net-Ext45','Web-Mgmt-Console','Web-Metabase'
+            }
+            'EnrollmentProxyPoint' {$features += 'Net-Framework-Core','Net-Framework-45-Core','Web-Default-Doc',
+                'Web-Static-Content','Web-Asp-Net','Web-Asp-Net45','Web-ISAPI-Ext','Web-ISAPI-Filter',
+                'Web-Net-Ext','Web-Net-Ext45','Web-Filtering','Web-Windows-Auth','Web-Mgmt-Console','Web-Metabase'
+            }
+            'FallbackServicePoint' {$features += 'BITS','BITS-IIS-Ext','RSAT-Bits-Server','Web-ISAPI-Ext',
+            'Web-Http-Redirect','Web-Default-Doc','Web-Dir-Browsing','Web-Http-Errors','Web-Static-Content',
+            'Web-Http-Logging','Web-Stat-Compression','Web-Filtering','Web-Metabase','Web-Mgmt-Console',
+            'Web-Http-Tracing','Web-Log-Libraries','Web-Request-Monitor'
+            }
+            'ManagementPoint' {$features += 'Net-Framework-45-Core','BITS','BITS-IIS-Ext','RSAT-Bits-Server',
+                'Web-ISAPI-Ext','Web-Http-Redirect','Web-Default-Doc','Web-Dir-Browsing','Web-Http-Errors',
+                'Web-Static-Content','Web-Windows-Auth','Web-Mgmt-Console','Web-Metabase','Web-WMI',
+                'Web-Http-Logging','Web-Http-Tracing','Web-Log-Libraries','Web-Request-Monitor','Web-Stat-Compression'
+            }
+            'ReportingServicesPoint' {$features += 'Net-Framework-45-Core'}
+            'ServiceConnectionPoint' {$features += 'Net-Framework-45-Core','Net-Framework-Core'}
+            'SoftwareUpdatePoint' {$features += 'Net-Framework-45-Core','Net-Framework-Core','UpdateServices',
+                'NET-Framework-45-ASPNET','UpdateServices-RSAT','UpdateServices-API','UpdateServices-UI',
+                'Web-Asp-Net45','Web-ISAPI-Ext','Web-ISAPI-Filter','Web-Net-Ext45','Web-Default-Doc',
+                'Web-Static-Content','Web-Dyn-Compression','Web-Filtering','Web-Windows-Auth','Web-Mgmt-Console',
+                'Web-Metabase','UpdateServices-Services','UpdateServices-DB','WAS-Config-APIs'
+            }
+            'StateMigrationPoint' {$features += 'Net-Framework-45-Core','Net-Framework-Core','NET-HTTP-Activation',
+                'NET-WCF-HTTP-Activation45','NET-Framework-45-ASPNET','Web-Default-Doc','Web-Asp-Net','Web-Asp-Net45',
+                'Web-ISAPI-Ext','Web-ISAPI-Filter','Web-Net-Ext','Web-Net-Ext45','Web-Filtering','Web-Metabase',
+                'Web-Mgmt-Console','WAS-NET-Environment','WAS-Config-APIs','WAS-Process-Model'
+            }
+        }
+    }
+
     if ($InstallWindowsFeatures)
     {
-        WindowsFeature WindowsFeature-NET-Framework-Core
-        {
-            Name   = 'Net-Framework-Core'
-            Ensure = 'Present'
-        }
+        $uniqueFeatures = $features | Select-Object -Unique
 
-        WindowsFeature WindowsFeature-NET-Framework-45-Core
+        WindowsFeatureSet "$SccmRole"
         {
-            Name   = 'Net-Framework-45-Core'
-            Ensure = 'Present'
-        }
-
-        WindowsFeature WindowsFeature-RDC
-        {
-            Name   = 'RDC'
+            Name   = $uniqueFeatures
             Ensure = 'Present'
         }
     }
 
     if ($AddWindowsFirewallRule)
     {
-        if ($null -eq $FirewallProfile -or $null -eq $FirewallTcpLocalPort -or $null -eq $FirewallUdpLocalPort)
+        if ($null -eq $FirewallProfile)
         {
             throw 'When specifying AddWindowsFirewallRule you need to provide FirewallProfile, FirewallTcpLocalPort, and FirewallUdpLocalPort.'
         }
@@ -231,33 +307,47 @@ Configuration xSCCMPreReqs
         }
     }
 
-    # ADK install version 1903 (10.1.18362), 1909 ADK won't be released
-    Package ADK
+    if ($InstallADK)
     {
-        Ensure    = 'Present'
-        Path      = $AdkSetupExePath
-        Name      = $AdkProductName
-        ProductId = $AdkProductID
-        Arguments = "/installpath $($AdkInstallPath) /features OptionId.DeploymentTools OptionId.UserStateMigrationTool /quiet /norestart /ceip off"
+        if ([string]::IsNullOrEmpty($AdkSetupExePath) -or [string]::IsNullOrEmpty($AdkWinPeSetupPath))
+        {
+            throw 'To install ADK you must specify ADKSetupExePath and $AdkWinPeSetupPath'
+        }
+
+        Package ADK
+        {
+            Ensure    = 'Present'
+            Path      = $AdkSetupExePath
+            Name      = $AdkProductName
+            ProductId = $AdkProductID
+            Arguments = "/installpath $($AdkInstallPath) /features OptionId.DeploymentTools OptionId.UserStateMigrationTool /quiet /norestart /ceip off"
+        }
+
+        Package WinPE
+        {
+            Ensure    = 'Present'
+            Path      = $AdkWinPeSetupPath
+            Name      = $AdkWinPeProductName
+            ProductId = $AdkWinPeProductID
+            Arguments = "/installpath $($AdkInstallPath) /quiet /norestart /ceip off"
+        }
     }
 
-    # Windows Preinstallation Environment (PE) install. Starting with ADK 1809, this installation occurs separately
-    Package WinPE
+    if ($InstallMdt)
     {
-        Ensure    = 'Present'
-        Path      = $AdkWinPeSetupPath
-        Name      = $AdkWinPeProductName
-        ProductId = $AdkWinPeProductID
-        Arguments = "/installpath $($AdkInstallPath) /quiet /norestart /ceip off"
-    }
+        if ([string]::IsNullOrEmpty($MdtMsiPath))
+        {
+            throw 'To install MDT you must specify MdtMsiPath.'
+        }
 
-    Package MDT
-    {
-        Ensure    = 'Present'
-        Path      = $MdtMsiPath
-        Name      = $MdtProductName
-        ProductId = $MdtProductID
-        Arguments = "INSTALLDIR=$($MdtInstallPath) /qn /norestart"
+        Package MDT
+        {
+            Ensure    = 'Present'
+            Path      = $MdtMsiPath
+            Name      = $MdtProductName
+            ProductId = $MdtProductID
+            Arguments = "INSTALLDIR=$($MdtInstallPath) /qn /norestart"
+        }
     }
 
     foreach ($drive in $NoSmsOnDrives)

@@ -22,6 +22,6 @@
 
     # Build dependent modules
     'DscResource.Common'        = 'latest'
-    'SqlServerDSC'              = '13.5.0'
+    'SqlServerDSC'              = 'latest'
 }
 

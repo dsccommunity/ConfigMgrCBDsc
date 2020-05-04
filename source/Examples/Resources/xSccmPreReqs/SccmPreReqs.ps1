@@ -22,10 +22,11 @@ Configuration Example
 
         xSccmPreReqs SCCMPreReqs
         {
+            InstallAdk             = $true
+            InstallMdt             = $true
             AddWindowsFirewallRule = $true
+            SccmRole               = 'CASorSiteServer'
             FirewallProfile        = 'Domain','Private'
-            FirewallTcpLocalPort   = '1433','1434','4022','445','135','139','49154-49157'
-            FirewallUdpLocalPort   = '137-138','5355'
             AdkSetupExePath        = 'C:\temp\ADKInstall\adksetup.exe'
             AdkWinPeSetupPath      = 'C:\temp\ADKInstall\adkwinpesetup.exe'
             MdtMsiPath             = 'C:\temp\MDTInstall\MicrosoftDeploymentToolkit_x64_1809.msi'
