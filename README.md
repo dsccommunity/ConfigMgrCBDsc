@@ -197,3 +197,26 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMCollections_Absent](Source\Examples\Resources\CMCollections\Collection_Absent.ps1)
 - [CMDeviceCollection_Present](Source\Examples\Resources\CMCollections\DeviceCollection_Present.ps1)
 - [CMUserCollection_Present](Source\Examples\Resources\CMCollections\UserCollection_Present.ps1)
+
+### CMBoundaryGroups
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] BoundaryGroup** _(Key)_: Specifies the name of the boundary group.
+- **[String] Boundaries** _(Write)_: Specifies an array of boundaries that must be
+  identical in the boundary group.
+- **[String] BoundariesToInclude** _(Write)_: Specifies an array of boundaries
+  to append to the boundary group. If Boundaries is specified this setting is ignored.
+- **[String] BoundariesToExclude** _(Write)_: Specifies an array of boundaries
+  must be absent from the boundary group. If boundaries are specified this
+  setting is ignored.
+- **[String] Ensure** _(Write)_: Specifies status of the collection is to be
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMBoundaryGroups Examples
+
+- [CMBoundaryGroups_Absent](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Absent.ps1)
+- [CMBoundaryGroups_Present](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Present.ps1)
+- [CMBoundaryGroups_Include](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Include.ps1)
+- [CMBoundaryGroups_Exclude](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Exclude.ps1)
