@@ -232,4 +232,4 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMManagementPoint_Absent](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Absent.ps1)
 - [CMManagementPoint_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Present.ps1)
-- [CMManagementPoint_UseDatabase_Present] (Source\Examples\Resources\CMManagementPoint\CMManagementPoint_UseDatabase_Present.ps1)
+- [CMManagementPoint_UseDatabase_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_UseDatabase_Present.ps1)
