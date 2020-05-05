@@ -43,14 +43,14 @@ try
             SiteCode    = 'Lab'
             DisplayName = 'Subnet 1'
             Type        = 'IPSubnet'
-            Value       = '10.1.1.1/24'
+            Value       = '10.1.1.0/24'
         }
 
         $inputSubnetAbsent = @{
             SiteCode    = 'Lab'
             DisplayName = 'Subnet 1'
             Type        = 'IPSubnet'
-            Value       = '10.1.1.1/24'
+            Value       = '10.1.1.0/24'
             Ensure      = 'Absent'
         }
 
@@ -81,7 +81,7 @@ try
                 BoundaryId   = 1677726
                 BoundaryType = 0
                 DisplayName  = 'Test Subnet'
-                Value        = '10.1.1.1'
+                Value        = '10.1.1.0'
             }
         )
 
@@ -106,7 +106,7 @@ try
         $getSubnetReturnMatch = @{
             SiteCode    = 'Lab'
             DisplayName = 'Subnet 1'
-            Value       = '10.1.1.1'
+            Value       = '10.1.1.0'
             Type        = 'IPSubnet'
             Ensure      = 'Present'
             BoundaryId  = '1677726'
@@ -115,7 +115,7 @@ try
         $getSubnetReturnName = @{
             SiteCode    = 'Lab'
             DisplayName = 'Subnet 2'
-            Value       = '10.1.1.1'
+            Value       = '10.1.1.0'
             Type        = 'IPSubnet'
             Ensure      = 'Present'
             BoundaryId  = '1677726'
@@ -124,7 +124,7 @@ try
         $getAdSiteReturnName = @{
             SiteCode    = 'Lab'
             DisplayName = 'Subnet 2'
-            Value       = '10.1.1.1'
+            Value       = '10.1.1.0'
             Type        = 'IPSubnet'
             Ensure      = 'Present'
             BoundaryID  = '1677726'
@@ -139,6 +139,12 @@ try
             BoundaryId  = $null
         }
 
+        $convert = @{
+            Cidr           = 24
+            SubnetMask     = '255.255.255.0'
+            NetworkAddress = '10.1.1.0'
+        }
+
         Describe "$moduleResourceName\Get-TargetResource" {
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
@@ -147,12 +153,13 @@ try
 
                 It 'Should return desired result for Subnet return' {
                     Mock -CommandName Get-CMBoundary -MockWith { $boundarySubnetReturn }
+                    Mock -CommandName Convert-CidrToIP -MockWith { $convert }
 
                     $result = Get-TargetResource @inputSubnetPresent
                     $result             | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode    | Should -Be -ExpectedValue 'Lab'
                     $result.DisplayName | Should -Be -ExpectedValue 'Test Subnet'
-                    $result.Value       | Should -Be -ExpectedValue '10.1.1.1'
+                    $result.Value       | Should -Be -ExpectedValue '10.1.1.0'
                     $result.Type        | Should -Be -ExpectedValue 'IPSubnet'
                     $result.Ensure      | Should -Be -ExpectedValue 'Present'
                     $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
@@ -191,14 +198,14 @@ try
                     $result             | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode    | Should -Be -ExpectedValue 'Lab'
                     $result.DisplayName | Should -Be -ExpectedValue $null
-                    $result.Value       | Should -Be -ExpectedValue $null
-                    $result.Type        | Should -Be -ExpectedValue $null
+                    $result.Value       | Should -Be -ExpectedValue 'Default-First-Site'
+                    $result.Type        | Should -Be -ExpectedValue 'AdSite'
                     $result.Ensure      | Should -Be -ExpectedValue 'Absent'
                     $result.BoundaryId  | Should -Be -ExpectedValue $null
                 }
             }
         }
-        
+
         Describe "$moduleResourceName\Set-TargetResource" {
             Context 'When Set-TargetResource runs successfully' {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -284,7 +291,7 @@ try
             Mock -CommandName Import-ConfigMgrPowerShellModule
 
             Context 'When running Test-TargetResource' {
-                
+
                 It 'Should return desired result true when ensure = present and boundary exists' {
                     Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnMatch }
 

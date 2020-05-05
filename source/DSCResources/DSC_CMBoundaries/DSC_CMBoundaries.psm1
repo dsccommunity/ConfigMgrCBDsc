@@ -51,24 +51,29 @@ function Get-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
+    $convertBoundary = switch ($Type)
+    {
+        'IPSubnet' { '0' }
+        'AdSite'   { '1' }
+        'IPRange'  { '3' }
+    }
+
     if ($Type -eq 'IPSubnet')
     {
-        $cValue = Get-CMBoundary | Where-Object -FilterScript { $_.Value -eq $Value.Split('/')[0] }
+        $address = Convert-CidrToIP -IPAddress $Value.Split('/')[0] -Cidr $Value.Split('/')[1]
+        $settingValue = $address.NetworkAddress
+        $cValue = Get-CMBoundary | Where-Object -FilterScript { $_.Value -eq $address.NetworkAddress `
+            -and $_.BoundaryType -eq $convertBoundary }
     }
     else
     {
-        $cValue = Get-CMBoundary | Where-Object -FilterScript { $_.Value -eq $Value }
+        $cValue = Get-CMBoundary | Where-Object -FilterScript { $_.Value -eq $Value `
+            -and $_.BoundaryType -eq $convertBoundary }
+        $settingValue = $Value
     }
 
     if ($cValue)
     {
-        $boundaryType = switch ($cvalue.BoundaryType)
-        {
-            '0' { 'IPSubnet' }
-            '1' { 'ADSite' }
-            '3' { 'IPRange' }
-        }
-
         $state = 'Present'
     }
     else
@@ -79,8 +84,8 @@ function Get-TargetResource
     return @{
         SiteCode    = $SiteCode
         DisplayName = $cValue.DisplayName
-        Type        = $boundaryType
-        Value       = $cValue.Value
+        Type        = $Type
+        Value       = $settingValue
         Ensure      = $state
         BoundaryId  = $cValue.BoundaryID
     }

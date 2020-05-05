@@ -514,6 +514,34 @@ function Get-ClientSettingsSoftwareCenter
     }
 }
 
+function Convert-CidrToIP
+{
+    [CmdLetBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [IPAddress]
+        $IPAddress,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateRange(0,32)]
+        [Int32]
+        $Cidr
+    )
+
+    $CidrBits = ('1' * $Cidr).PadRight(32, '0')
+    $octets = $CidrBits -Split '(.{8})' -ne ''
+    $mask = ($octets | ForEach-Object -Process {[Convert]::ToInt32($_, 2) }) -Join '.'
+
+    $ip = [IPAddress](([IPAddress]"$IPAddress").Address -Band ([IPAddress]"$mask").Address)
+
+    return  @{
+        NetworkAddress = $ip.IPAddressToString
+        Subnetmask     = $mask
+        Cidr           = $Cidr
+    }
+}
+
 Export-ModuleMember -Function @(
     'Get-LocalizedData',
     'New-InvalidArgumentException',
@@ -521,4 +549,5 @@ Export-ModuleMember -Function @(
     'Confirm-ClientSetting'
     'Convert-ClientSetting'
     'Get-ClientSettingsSoftwareCenter'
+    'Convert-CidrToIP'
 )
