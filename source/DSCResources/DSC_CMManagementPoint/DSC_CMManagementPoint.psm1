@@ -226,23 +226,23 @@ function Set-TargetResource
         $ClientConnectionType,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $EnableCloudGateway,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $EnableSsl,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $GenerateAlert,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $UseSiteDatabase,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $UseComputerAccount,
 
         [Parameter()]
@@ -273,7 +273,8 @@ function Set-TargetResource
                 throw 'When CloudGateway is enabled, ClientConnectionType must not equal Intranet'
             }
 
-            if (($EnableSsl -eq $false) -or ([string]::IsNullOrEmpty($EnableSsl) -and
+            if (($PSBoundParameters.EnableSsl -eq $false) -or
+                ([string]::IsNullOrEmpty($PSBoundParameters.EnableSsl) -and
                 ([string]::IsNullOrEmpty($state.EnableSSL) -or $state.EnableSSL -eq $false)))
             {
                 throw 'When CloudGateway is enabled SSL must also be enabled'
@@ -421,23 +422,23 @@ function Test-TargetResource
         $ClientConnectionType,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $EnableCloudGateway,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $EnableSsl,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $GenerateAlert,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $UseSiteDatabase,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $UseComputerAccount,
 
         [Parameter()]
