@@ -197,3 +197,39 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMCollections_Absent](Source\Examples\Resources\CMCollections\Collection_Absent.ps1)
 - [CMDeviceCollection_Present](Source\Examples\Resources\CMCollections\DeviceCollection_Present.ps1)
 - [CMUserCollection_Present](Source\Examples\Resources\CMCollections\UserCollection_Present.ps1)
+
+### CMManagementPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the
+  role on.
+- **[String] SqlServerFqdn** _(Write)_: Specifies the SQL server fqdn if using
+  a SQL replica.
+- **[String] DatabaseName** _(Write)_: Specifies the name of the site
+  database\replica that the management point uses.
+- **[String] ClientConnectionType** _(Write)_: Specifies the type of the client connection.
+  - Values include: { Internet | Intranet | InternetAndIntranet }
+- **[Boolean] EnableCloudGateway** _(Write)_: Specifies if a cloud gateway
+  is to be used for the management point.
+- **[Boolean] EnableSsl** _(Key)_: Specifies whether to enable SSL (HTTPS)
+  traffic to the management point.
+- **[Boolean] GenerateAlert** _(Write)_: Indicates whether the management point
+  generates health alerts.
+- **[Boolean] UseSiteDatabase** _(Write)_: Indicates whether the management point
+  queries a site database.
+- **[Boolean] UseComputerAccount** _(Write)_: Indicates that the management point
+  uses its own computer account.
+- **[String] SqlServerInstanceName** _(Write)_: Specifies the name of the SQL Server
+  instance that clients use to communicate with the site system.
+- **[String] Username** _(Write)_: Specifies user account the management point
+  uses to access site information.
+- **[String] Ensure** _(Write)_: Specifies whether the management point is
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMManagementPoint Examples
+
+- [CMManagementPoint_Absent](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Absent.ps1)
+- [CMManagementPoint_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Present.ps1)
+- [CMManagementPoint_UseDatabase_Present] (Source\Examples\Resources\CMManagementPoint\CMManagementPoint_UseDatabase_Present.ps1)

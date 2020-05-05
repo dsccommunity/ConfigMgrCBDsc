@@ -1,0 +1,17 @@
+[ClassVersion("1.0.0"), FriendlyName("CMManagementPoint")]
+class DSC_CMManagementPoint : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the SiteServer to install the role on.")] String SiteServerName;
+    [Write, Description("Specifies the SQL server fqdn if using a SQL replica.")] String SqlServerFqdn;
+    [Write, Description("Specifies the name of the site database\replica that the management point uses.")] String DatabaseName;
+    [Write, Description("Specifies the type of the client connection."), ValueMap{"Internet","Intranet","InternetAndIntranet"}, Values{"Internet","Intranet","InternetAndIntranet"}] String ClientConnectionType;
+    [Write, Description("Specifies if a cloud gateway is to be used for the management point.")] Boolean EnableCloudGateway;
+    [Write, Description("Specifies whether to enable SSL (HTTPS) traffic to the management point.")] Boolean EnableSsl;
+    [Write, Description("Indicates whether the management point generates health alerts.")] Boolean GenerateAlert;
+    [Write, Description("Indicates whether the management point queries a site database.")] Boolean UseSiteDatabase;
+    [Write, Description("Indicates that the management point uses its own computer account.")] Boolean UseComputerAccount;
+    [Write, Description("Specifies the name of the SQL Server instance that clients use to communicate with the site system.")] String SqlServerInstanceName;
+    [Write, Description("Specifies a domain user account that the management point uses to access site information.")] String Username;
+    [Write, Description("Specifies whether the management point is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
