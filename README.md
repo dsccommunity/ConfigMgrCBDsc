@@ -33,6 +33,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
+- **CMBoundaries**: Provides a resource for creating and removing boundaries.
 
 ### ClientSettings
 

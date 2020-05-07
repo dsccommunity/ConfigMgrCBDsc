@@ -22,6 +22,9 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Updated current DSCResources in module that use Import-ConfigMgrPowerShellModule
   adding SiteCode
 
+- Updated current DSCResources helper in module Import-ConfigMgrPowerShellModule
+  adding fixing registry settings
+
 ### Removed
 
 ### Fixed

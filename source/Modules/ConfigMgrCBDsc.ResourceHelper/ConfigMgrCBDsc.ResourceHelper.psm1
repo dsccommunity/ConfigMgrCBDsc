@@ -26,7 +26,12 @@ function Import-ConfigMgrPowerShellModule
 
     if ((Test-Path -Path "$($SiteCode):\") -eq $false)
     {
-        $siteInfo = Get-CimInstance -ClassName SMS_Site -Namespace root\sms\site_$SiteCode
+        $getCim = @{
+            ClassName = 'SMS_Site'
+            Namespace = "root\sms\site_$SiteCode"
+        }
+
+        $siteInfo = Get-CimInstance @getCim | Where-Object -FilterScript {$_.SiteCode -eq $SiteCode}
         $sid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
         $baseRegKeyPath = "Registry::HKEY_Users\$sid\Software\Microsoft"
         $createKeys = @('ConfigMgr10','AdminUI','MRU','1')
@@ -36,17 +41,18 @@ function Import-ConfigMgrPowerShellModule
             if (-not (Test-Path -Path "$baseRegKeyPath\$key"))
             {
                 New-Item -Path $baseRegKeyPath -Name $key |Out-Null
-                $baseRegKeyPath += "\$key"
             }
+
+            $baseRegKeyPath += "\$key"
         }
 
         $regProperties = (Get-ItemProperty -Path $baseRegKeyPath -ErrorAction SilentlyContinue)
 
         $values = @{
-            ServerName = $siteInfo.ServerName[0]
-            SiteName   = $siteInfo.SiteName[0]
-            SiteCode   = $siteInfo.SiteCode[0]
-            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))[0]
+            ServerName = $siteInfo.ServerName
+            SiteName   = $siteInfo.SiteName
+            SiteCode   = $siteInfo.SiteCode
+            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))
         }
 
         foreach ($value in $values.GetEnumerator())
