@@ -122,7 +122,6 @@ try
             SiteCode = 'Lab'
             Enabled  = $false
         }
-        #need to scrub these params. if any unused, rip out
         Describe "$moduleResourceName\Get-TargetResource" {
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
