@@ -224,7 +224,7 @@ Configuration xSccmSqlSetup
     }
     else
     {
-        $finalSqlTempDBDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+        $finalSqlTempDBDir = "$InstallSqlDataDir\MSSQL$version.$SqlInstanceName\MSSQL\Data"
     }
 
     if ($SqlTempDBLogDir)
@@ -233,7 +233,7 @@ Configuration xSccmSqlSetup
     }
     else
     {
-        $finalSqlTempDBLogDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+        $finalSqlTempDBLogDir = "$InstallSqlDataDir\MSSQL$version.$SqlInstanceName\MSSQL\Data"
     }
 
     if ($SqlUserDBDir)
@@ -242,7 +242,7 @@ Configuration xSccmSqlSetup
     }
     else
     {
-        $finalSqlUserDBDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+        $finalSqlUserDBDir = "$InstallSqlDataDir\MSSQL$version.$SqlInstanceName\MSSQL\Data"
     }
 
     if ($SqlUserDBLogDir)
@@ -251,7 +251,7 @@ Configuration xSccmSqlSetup
     }
     else
     {
-        $finalSqlUserDBLogDir = "$InstallSqlDataDir\MSSQL$version.CA12INST01\MSSQL\Data"
+        $finalSqlUserDBLogDir = "$InstallSqlDataDir\MSSQL$version.$SqlInstanceName\MSSQL\Data"
     }
 
     SqlSetup InstallSql

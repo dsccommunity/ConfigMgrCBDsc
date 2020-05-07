@@ -277,7 +277,7 @@ Configuration xSCCMPreReqs
             Profile               = $FirewallProfile
             Direction             = 'Inbound'
             LocalPort             = $FirewallUdpLocalPort
-            Protocol              = 'TCP'
+            Protocol              = 'UDP'
             Description           = 'Firewall Rule SCCM to SCCM communication - UDP'
         }
     }
@@ -320,7 +320,7 @@ Configuration xSCCMPreReqs
             Path      = $AdkSetupExePath
             Name      = $AdkProductName
             ProductId = $AdkProductID
-            Arguments = "/installpath $($AdkInstallPath) /features OptionId.DeploymentTools OptionId.UserStateMigrationTool /quiet /norestart /ceip off"
+            Arguments = "/installpath `"$($AdkInstallPath)`" /features OptionId.DeploymentTools OptionId.UserStateMigrationTool /quiet /norestart /ceip off"
         }
 
         Package WinPE
@@ -329,7 +329,7 @@ Configuration xSCCMPreReqs
             Path      = $AdkWinPeSetupPath
             Name      = $AdkWinPeProductName
             ProductId = $AdkWinPeProductID
-            Arguments = "/installpath $($AdkInstallPath) /quiet /norestart /ceip off"
+            Arguments = "/installpath `"$($AdkInstallPath)`" /quiet /norestart /ceip off"
         }
     }
 
@@ -346,7 +346,7 @@ Configuration xSCCMPreReqs
             Path      = $MdtMsiPath
             Name      = $MdtProductName
             ProductId = $MdtProductID
-            Arguments = "INSTALLDIR=$($MdtInstallPath) /qn /norestart"
+            Arguments = "INSTALLDIR=`"$($MdtInstallPath)`" /qn /norestart"
         }
     }
 
