@@ -236,7 +236,7 @@ function Test-TargetResource
     {
         if ($state.Ensure -eq 'Absent')
         {
-            Write-Verbose -Message ($script:localizedData.MissingBoundary -f $DisplayName)
+            Write-Verbose -Message ($script:localizedData.MissingBoundary -f $Value)
             $result = $false
         }
         else
