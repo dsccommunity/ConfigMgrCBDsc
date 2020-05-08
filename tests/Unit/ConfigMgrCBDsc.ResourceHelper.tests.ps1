@@ -734,4 +734,75 @@ InModuleScope $script:subModuleName {
             }
         }
     }
+    Describe "$moduleResourceName\ConvertTo-CimCMScheduleString" {
+        $mockCimRefreshScheduleDay = (New-CimInstance -ClassName DSC_TestCimInstance `
+            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+            -Property @{
+                'RecurInterval' = 'Days'
+                'RecurCount'    = 6
+            } -ClientOnly
+        )
+        $mockCimRefreshScheduleHours = (New-CimInstance -ClassName DSC_TestCimInstance `
+            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+            -Property @{
+                'RecurInterval' = 'Hours'
+                'RecurCount'    = 7
+            } -ClientOnly
+        )
+        $mockCimRefreshScheduleMin = (New-CimInstance -ClassName DSC_TestCimInstance `
+            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+            -Property @{
+                'RecurInterval' = 'Minutes'
+                'RecurCount'    = 50
+            } -ClientOnly
+        )
+        $scheduleConvertDays = @{
+            DayDuration    = 0
+            DaySpan        = 6
+            HourDuration   = 0
+            HourSpan       = 0
+            MinuteDuration = 0
+            MinuteSpan     = 0
+        }
+        $scheduleConvertHours = @{
+            DayDuration    = 0
+            DaySpan        = 0
+            HourDuration   = 0
+            HourSpan       = 7
+            MinuteDuration = 0
+            MinuteSpan     = 0
+        }
+        $scheduleConvertMin = @{
+            DayDuration    = 0
+            DaySpan        = 0
+            HourDuration   = 0
+            HourSpan       = 0
+            MinuteDuration = 0
+            MinuteSpan     = 50
+        }
+        $cimInputParam = @{
+            CimClassName   = 'DSC_TestCimInstance'
+            ScheduleString = '0001200000100038'
+        }
+        Context 'When return is as expected' {
+            It 'Should return desired result for hearbeat discovery hours' {
+                Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertDays }
+                $result = ConvertTo-CimCMScheduleString @cimInputParam
+                $result | Should -Match $mockCimRefreshScheduleDay
+                $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            }
+            It 'Should return desired result for hearbeat discovery hours' {
+                Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertHours }
+                $result = ConvertTo-CimCMScheduleString @cimInputParam
+                $result | Should -Match $mockCimRefreshScheduleHours
+                $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            }
+            It 'Should return desired result for hearbeat discovery hours' {
+                Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertMin }
+                $result = ConvertTo-CimCMScheduleString @cimInputParam
+                $result | Should -Match $mockCimRefreshScheduleMin
+                $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            }
+        }
+    }
 }

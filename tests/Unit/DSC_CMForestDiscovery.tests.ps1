@@ -32,11 +32,11 @@ function Invoke-TestCleanup
 }
 
 Invoke-TestSetup
+
 # Begin Testing
 try
 {
     InModuleScope $script:dscResourceName {
-
         $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMForestDiscovery'
 
         $mockCimPollingSchedule = (New-CimInstance -ClassName DSC_CMForestDiscoveryPollingSchedule `
@@ -255,5 +255,5 @@ try
 }
 finally
 {
-    Restore-TestEnvironment -TestEnvironment $TestEnvironment
+    Invoke-TestCleanup
 }
