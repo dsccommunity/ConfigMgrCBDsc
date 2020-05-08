@@ -151,13 +151,10 @@ function Set-TargetResource
                 Write-Verbose -Message ($script:localizedData.CreateBoundary -f $DisplayName, $Type, $Value)
                 New-CMBoundary -Type $Type -Name $DisplayName -Value $Value
             }
-            else
+            elseif ($DisplayName -ne $state.DisplayName)
             {
-                if ($DisplayName -ne $state.DisplayName)
-                {
-                    Write-Verbose -Message ($script:localizedData.ChangeDisplayName -f $state.DisplayName, $DisplayName)
-                    Set-CMBoundary -Id $state.BoundaryId -NewName $DisplayName
-                }
+                Write-Verbose -Message ($script:localizedData.ChangeDisplayName -f $state.DisplayName, $DisplayName)
+                Set-CMBoundary -Id $state.BoundaryId -NewName $DisplayName
             }
         }
         else

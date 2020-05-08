@@ -199,7 +199,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMDeviceCollection_Present](Source\Examples\Resources\CMCollections\DeviceCollection_Present.ps1)
 - [CMUserCollection_Present](Source\Examples\Resources\CMCollections\UserCollection_Present.ps1)
 
-### DSC_CMBoundaries
+### CMBoundaries
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
@@ -212,7 +212,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   - Values include: { Present | Absent }
 - **[String] BoundaryID** _(Read)_: Specifies the boundary id.
 
-#### DSC_CMBoundaries Examples
+#### CMBoundaries Examples
 
 - [CMBoundaries_Absent](Source\Examples\Resources\CMBoundaries\CMBoundaries_Absent.ps1)
 - [CMBoundaries_Present](Source\Examples\Resources\CMBoundaries\CMBoundaries_Present.ps1)

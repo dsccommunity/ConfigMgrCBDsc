@@ -531,7 +531,7 @@ function Convert-CidrToIP
 
         [Parameter(Mandatory = $true)]
         [ValidateRange(0,32)]
-        [Int32]
+        [Int16]
         $Cidr
     )
 
