@@ -161,7 +161,7 @@ function Set-TargetResource
         {
             if ($state.BoundaryId)
             {
-                Write-Verbose -Message ($script:localizedData.BoundaryRemove -f $DisplayName)
+                Write-Verbose -Message ($script:localizedData.BoundaryRemove -f $Value)
                 Remove-CMBoundary -Id $state.BoundaryId
             }
         }
@@ -249,7 +249,7 @@ function Test-TargetResource
     {
         if ($state.Ensure -eq 'Present')
         {
-            Write-Verbose -Message ($script:localizedData.RemoveBoundary -f $DisplayName)
+            Write-Verbose -Message ($script:localizedData.RemoveBoundary -f $Value)
             $result = $false
         }
     }
