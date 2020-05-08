@@ -35,12 +35,13 @@ try
                     'RecurCount'    = 6
                 } -ClientOnly
         )
-        $mockCimPollingScheduleHours = New-CimInstance -ClassName DSC_CMForestDiscoveryPollingSchedule `
+        $mockCimPollingScheduleHours = (New-CimInstance -ClassName DSC_CMForestDiscoveryPollingSchedule `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
                     'RecurInterval' = 'Hours'
                     'RecurCount'    = 7
                 } -ClientOnly
+        )
         $scheduleConvertDays = @{
             DayDuration    = 0
             DaySpan        = 7
@@ -155,8 +156,8 @@ try
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
                 }
-                It 'Should call expected commands enabling discovery and changing the schedule' { # This one errors about recur count on currently set schedule
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput } #changed from $getReturnDisabled because it contained no default schedule
+                It 'Should call expected commands enabling discovery and changing the schedule' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
                     Set-TargetResource @returnEnabledDaysMismatch
@@ -177,7 +178,7 @@ try
                     Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
                 }
             }
-            Context 'When running Set-TargetResource should throw' { # Need to decide what/how it throws
+            Context 'When running Set-TargetResource should throw' {
                 It 'Should call expected commands and throw if query membership throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
                     Mock -CommandName New-CMSchedule

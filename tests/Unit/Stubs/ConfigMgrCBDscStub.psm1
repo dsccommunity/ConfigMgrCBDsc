@@ -40014,7 +40014,6 @@ function Set-CMDiscoveryMethod
         [Parameter(ParameterSetName='SearchByActiveDirectoryUserDiscovery')]
         [Parameter(ParameterSetName='SearchByActiveDirectoryGroupDiscovery')]
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${PollingSchedule},
 
