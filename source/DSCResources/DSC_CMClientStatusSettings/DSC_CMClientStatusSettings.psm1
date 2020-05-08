@@ -125,22 +125,23 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $currentState = Get-TargetResource -SiteCode $SiteCode -IsSingleInstance Yes
+    $state = Get-TargetResource -SiteCode $SiteCode -IsSingleInstance $IsSingleInstance
 
     try
     {
+        $eval = @('ClientPolicyDays','HeartbeatDiscoveryDays','SoftwareInventoryDays','HardwareInventoryDays',
+        'StatusMessageDays','HistoryCleanupDays')
+
         foreach ($property in $PSBoundParameters.GetEnumerator())
         {
-            if ((-not [string]::IsNullOrEmpty($property.Value)) -and ($property.key -ne 'Verbose'))
+            if ($eval -contains $property.Key)
             {
-                $currentValue = $currentState.("$($property.Key)")
-
-                if ($property.Value -ne $currentValue)
+                if ($property.Value -ne $state[$property.Key])
                 {
-                    Write-Verbose -Message ($script:localizedData.ModifySetting -f $property.Key, $property.Value, $currentValue)
+                    Write-Verbose -Message ($script:localizedData.ModifySetting -f $property.Key, $property.Value)
 
                     $buildingParmas += @{
-                        $($property.Key) = $($property.Value)
+                        $property.Key = $property.Value
                     }
                 }
             }
@@ -237,18 +238,19 @@ function Test-TargetResource
         $HistoryCleanupDays
     )
 
-    $currentState = Get-TargetResource -SiteCode $SiteCode -IsSingleInstance Yes
+    $state = Get-TargetResource -SiteCode $SiteCode -IsSingleInstance $IsSingleInstance
     $result = $true
+    $eval = @('ClientPolicyDays','HeartbeatDiscoveryDays','SoftwareInventoryDays','HardwareInventoryDays',
+        'StatusMessageDays','HistoryCleanupDays')
 
     foreach ($property in $PSBoundParameters.GetEnumerator())
     {
-        if ((-not [string]::IsNullOrEmpty($property.Value)) -and ($property.Key -ne 'Verbose'))
+        if ($eval -contains $property.Key)
         {
-            $currentValue = $currentState.("$($property.Key)")
-
-            if ($property.Value -ne $currentValue)
+            if ($property.Value -ne $state[$property.Key])
             {
-                Write-Verbose -Message ($script:localizedData.TestSetting -f $property.Key, $property.Value, $currentValue)
+                Write-Verbose -Message ($script:localizedData.TestSetting `
+                    -f $property.Key, $property.Value, $state[$property.key])
                 $result = $false
             }
         }
