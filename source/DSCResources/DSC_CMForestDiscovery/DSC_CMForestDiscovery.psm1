@@ -35,7 +35,7 @@ function Get-TargetResource
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
     $forestDiscovery = (Get-CMDiscoveryMethod -Name ActiveDirectoryForestDiscovery -SiteCode $SiteCode).Props
@@ -105,7 +105,7 @@ function Set-TargetResource
         $EnableSubnetBoundaryCreation
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
     try
@@ -234,7 +234,7 @@ function Test-TargetResource
         $EnableSubnetBoundaryCreation
     )
 
-    Import-ConfigMgrPowerShellModule
+    Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -Enabled $Enabled
     $result = $true
