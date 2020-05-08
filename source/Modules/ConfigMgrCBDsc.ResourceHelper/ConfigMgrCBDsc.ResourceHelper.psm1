@@ -539,7 +539,7 @@ function Convert-CidrToIP
     $octets = $CidrBits -Split '(.{8})' -ne ''
     $mask = ($octets | ForEach-Object -Process {[Convert]::ToInt32($_, 2) }) -Join '.'
 
-    $ip = [IPAddress](([IPAddress]"$IPAddress").Address -Band ([IPAddress]"$mask").Address)
+    $ip = [IPAddress](($IPAddress).Address -Band ([IPAddress]"$mask").Address)
 
     return  @{
         NetworkAddress = $ip.IPAddressToString
