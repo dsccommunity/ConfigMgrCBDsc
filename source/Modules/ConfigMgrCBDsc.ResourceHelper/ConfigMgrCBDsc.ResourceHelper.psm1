@@ -512,44 +512,45 @@ function Get-ClientSettingsSoftwareCenter
     {
         return $xml.settings.$($Setting)
     }
+}
 
-    function ConvertTo-CimCMScheduleString
+function ConvertTo-CimCMScheduleString
+{
+    [CmdletBinding()]
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ScheduleString,
+        [Parameter(Mandatory = $true)]
+        [String]
+        $CimClassName
+    )
+    $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+    if (-not [string]::IsNullOrEmpty($schedule.DaySpan))
     {
-        [CmdletBinding()]
-        [OutputType([Microsoft.Management.Infrastructure.CimInstance])]
-        param
-        (
-            [Parameter(Mandatory = $true)]
-            [String]
-            $ScheduleString,
-            [Parameter(Mandatory = $true)]
-            [String]
-            $CimClassName
-        )
-        $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
-        if (-not [string]::IsNullOrEmpty($schedule.DaySpan))
+        if ($schedule.DaySpan -gt 0)
         {
-            if ($schedule.DaySpan -gt 0)
-            {
-                $rInterval = 'Days'
-                $rCount = $schedule.DaySpan
-            }
-            elseif ($schedule.HourSpan -gt 0)
-            {
-                $rInterval = 'Hours'
-                $rCount = $schedule.HourSpan
-            }
-            elseif ($schedule.MinuteSpan -gt 0)
-            {
-                $rInterval = 'Minutes'
-                $rCount = $schedule.MinuteSpan
-            }
-            $scheduleCim = New-CimInstance -ClassName $CimClassName -Property @{
-                RecurInterval = $rInterval
-                RecurCount    = $rCount
-            } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration'
-            return $scheduleCim
+            $rInterval = 'Days'
+            $rCount = $schedule.DaySpan
         }
+        elseif ($schedule.HourSpan -gt 0)
+        {
+            $rInterval = 'Hours'
+            $rCount = $schedule.HourSpan
+        }
+        elseif ($schedule.MinuteSpan -gt 0)
+        {
+            $rInterval = 'Minutes'
+            $rCount = $schedule.MinuteSpan
+        }
+        $scheduleCim = New-CimInstance -ClassName $CimClassName -Property @{
+            RecurInterval = $rInterval
+            RecurCount    = $rCount
+        } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration'
+        return $scheduleCim
+    }
 }
 
 Export-ModuleMember -Function @(
