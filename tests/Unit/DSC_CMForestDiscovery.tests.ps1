@@ -45,6 +45,7 @@ try
                     'RecurCount'    = 7
                 } -ClientOnly
         )
+
         $mockCimPollingScheduleDayMismatch = (New-CimInstance -ClassName DSC_CMForestDiscoveryPollingSchedule `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
@@ -52,6 +53,7 @@ try
                     'RecurCount'    = 6
                 } -ClientOnly
         )
+
         $mockCimPollingScheduleHours = (New-CimInstance -ClassName DSC_CMForestDiscoveryPollingSchedule `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
@@ -59,6 +61,7 @@ try
                     'RecurCount'    = 7
                 } -ClientOnly
         )
+
         $scheduleConvertDays = @{
             DayDuration    = 0
             DaySpan        = 7
@@ -67,6 +70,7 @@ try
             MinuteDuration = 0
             MinuteSpan     = 0
         }
+
         $scheduleConvertDaysMismatch = @{
             DayDuration    = 0
             DaySpan        = 6
@@ -75,6 +79,7 @@ try
             MinuteDuration = 0
             MinuteSpan     = 0
         }
+
         $scheduleConvertHours = @{
             DayDuration    = 0
             DaySpan        = 0
@@ -83,6 +88,7 @@ try
             MinuteDuration = 0
             MinuteSpan     = 0
         }
+
         $standardGetDiscoveryOutput = @{
             Props = @(
                 @{
@@ -103,15 +109,18 @@ try
                 }
             )
         }
+
         $standardGetInput = @{
             SiteCode = 'Lab'
             Enabled  = $true
         }
+
         $returnEnabledDaysMismatch = @{
             SiteCode        = 'Lab'
             Enabled         = $true
             PollingSchedule = $mockCimPollingScheduleDayMismatch
         }
+
         $getReturnEnabledDays = @{
             SiteCode                                  = 'Lab'
             Enabled                                   = $true
@@ -119,11 +128,13 @@ try
             EnableActiveDirectorySiteBoundaryCreation = $true
             EnableSubnetBoundaryCreation              = $true
         }
+
         $getReturnEnabledHours = @{
             SiteCode        = 'Lab'
             Enabled         = $true
             PollingSchedule = $mockCimPollingScheduleHours
         }
+
         $getReturnDisabledOutput = @{
             SiteCode                                  = 'Lab'
             Enabled                                   = $false
@@ -131,22 +142,28 @@ try
             EnableActiveDirectorySiteBoundaryCreation = $false
             EnableSubnetBoundaryCreation              = $false
         }
+
         $getInputDisableSubnet = @{
             SiteCode                     = 'Lab'
             Enabled                      = $true
             EnableSubnetBoundaryCreation = $false
         }
+
         $getReturnDisabled = @{
             SiteCode = 'Lab'
             Enabled  = $false
         }
+
         Describe "$moduleResourceName\Get-TargetResource" {
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
+
             Context 'When retrieving Collection settings' {
+
                 It 'Should return desired result for forest discovery.' {
                     Mock -CommandName Get-CMDiscoveryMethod -MockWith { $standardGetDiscoveryOutput }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimPollingSchedule }
+
                     $result = Get-TargetResource @standardGetInput
                     $result                                           | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode                                  | Should -Be -ExpectedValue 'Lab'
@@ -158,14 +175,18 @@ try
                 }
             }
         }
+
         Describe "$moduleResourceName\Set-TargetResource" {
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
             Mock -CommandName Set-CMDiscoveryMethod
+
             Context 'When Set-TargetResource runs successfully' {
+
                 It 'Should call expected commands enabling discovery' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
                     Mock -CommandName New-CMSchedule
+
                     Set-TargetResource @standardGetInput
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
@@ -173,10 +194,12 @@ try
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
                 }
+
                 It 'Should call expected commands enabling discovery and changing the schedule' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
+
                     Set-TargetResource @returnEnabledDaysMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
@@ -184,9 +207,11 @@ try
                     Assert-MockCalled New-CMSchedule -Exactly -Times 2 -Scope It
                     Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
                 }
+
                 It 'Should call expected commands disabling discovery' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
                     Mock -CommandName New-CMSchedule
+
                     Set-TargetResource @getReturnDisabled
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
@@ -195,11 +220,14 @@ try
                     Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
                 }
             }
+
             Context 'When running Set-TargetResource should throw' {
-                It 'Should call expected commands and throw if query membership throws' {
+
+                It 'Should call expected commands and throw if Set-CMDiscoveryMethod throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
                     Mock -CommandName New-CMSchedule
-                    MOck -CommandName Set-CMDiscoveryMethod -MockWith { throw }
+                    Mock -CommandName Set-CMDiscoveryMethod -MockWith { throw }
+
                     { Set-TargetResource @getReturnDisabled } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
@@ -207,9 +235,11 @@ try
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
                 }
+
                 It 'Should call expected commands enabling discovery and changing the schedule' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
                     Mock -CommandName New-CMSchedule -MockWith { throw }
+
                     { Set-TargetResource @returnEnabledDaysMismatch } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
@@ -219,33 +249,42 @@ try
                 }
             }
         }
+
         Describe "$moduleResourceName\Test-TargetResource" {
             Mock -CommandName Set-Location
             Mock -CommandName Import-ConfigMgrPowerShellModule
+
             Context 'When running Test-TargetResource device settings' {
                 Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
+
                 It 'Should return desired result true schedule matches' {
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
+
                     Test-TargetResource @getReturnEnabledDays | Should -Be $true
                 }
                 It 'Should return desired result false schedule days mismatch' {
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
+
                     Test-TargetResource @returnEnabledDaysMismatch | Should -Be $false
                 }
                 It 'Should return desired result false schedule hours mismatch' {
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurInterval -eq 'Days' }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHours } -ParameterFilter { $RecurInterval -eq 'Hours' }
+
                     Test-TargetResource @getReturnEnabledHours | Should -Be $false
                 }
                 It 'Should return desired state false EnableSubnetBoundaryCreation mismatch' {
+
                     Test-TargetResource @getInputDisableSubnet | Should -Be $false
                 }
                 It 'Should return desired result false when setting is enabled and disabled expected disabled' {
+
                     Test-TargetResource @getReturnDisabled | Should -Be $false
                 }
                 It 'Should return desired result true when discovery is disabled' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput }
+
                     Test-TargetResource @getReturnDisabled | Should -Be $true
                 }
             }
