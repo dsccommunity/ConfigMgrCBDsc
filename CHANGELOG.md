@@ -12,6 +12,8 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added SccmIniFile resource
 - Added CMCollections Resource
 - Added Set-ConfigMgrCert to the ResourceHelper
+- Added CMBoundaries resource
+- Added Convert-CidrToIP to the ResourceHelper
 - Added CMForestDiscovery resource
 
 ### Changed
@@ -22,6 +24,9 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
   adding SiteCode
 
 - Updated ConfigMgrCBDscStub, removing line for polling schedule type
+
+- Updated current DSCResources helper in module Import-ConfigMgrPowerShellModule
+  adding fixing registry settings
 
 ### Removed
 

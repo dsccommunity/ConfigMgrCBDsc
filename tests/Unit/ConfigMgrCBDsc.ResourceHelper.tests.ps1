@@ -734,6 +734,38 @@ InModuleScope $script:subModuleName {
             }
         }
     }
+
+    Describe "$moduleResourceName\Convert-CidrToIP" {
+
+        Context 'When results are as expected' {
+
+            It 'Should return expected results Cidr 24' {
+                $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 24
+                $result.NetworkAddress | Should -Be -ExpectedValue '10.1.1.0'
+                $result.Subnetmask     | Should -Be -ExpectedValue '255.255.255.0'
+                $result.Cidr           | Should -Be -ExpectedValue '24'
+            }
+
+            It 'Should return expected results Cidr 16' {
+                $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 16
+                $result.NetworkAddress | Should -Be -ExpectedValue '10.1.0.0'
+                $result.Subnetmask     | Should -Be -ExpectedValue '255.255.0.0'
+                $result.Cidr           | Should -Be -ExpectedValue '16'
+            }
+
+            It 'Should return expected results Cidr 8' {
+                $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 8
+                $result.NetworkAddress | Should -Be -ExpectedValue '10.0.0.0'
+                $result.Subnetmask     | Should -Be -ExpectedValue '255.0.0.0'
+                $result.Cidr           | Should -Be -ExpectedValue '8'
+            }
+
+            It 'Should thow with invalid IP Address' {
+                { Convert-CidrToIP -IPAddress 10.1.1.1.1 -Cidr 8 } | Should -Throw
+            }
+        }
+    }
+
     Describe "$moduleResourceName\ConvertTo-CimCMScheduleString" {
         $mockCimRefreshScheduleDay = (New-CimInstance -ClassName DSC_TestCimInstance `
             -Namespace root/microsoft/Windows/DesiredStateConfiguration `
