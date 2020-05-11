@@ -1,4 +1,3 @@
-[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
 
 $script:dscModuleName   = 'ConfigMgrCBDsc'
@@ -146,7 +145,7 @@ try
             Mock -CommandName Set-Location
             Context 'When retrieving Collection settings' {
                 It 'Should return desired result for forest discovery.' {
-                    mock -CommandName Get-CMDiscoveryMethod -MockWith { $standardGetDiscoveryOutput }
+                    Mock -CommandName Get-CMDiscoveryMethod -MockWith { $standardGetDiscoveryOutput }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimPollingSchedule }
                     $result = Get-TargetResource @standardGetInput
                     $result                                           | Should -BeOfType System.Collections.HashTable

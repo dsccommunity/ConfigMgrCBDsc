@@ -226,7 +226,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[Boolean] Enabled** _(Required)_: Specifies the enablement of the forest
   discovery method. If settings is set to $false no other value provided will be
   evaluated for compliance.
-- **[EmbeddedInstance] PollingSchedule** _(Write)_: Hashtable containing polling
+- **[EmbeddedInstance] PollingSchedule** _(Write)_: Contains the polling
   schedule for Configuration Manager (RecurInterval, RecurCount).
 - **[Boolean] EnableActiveDirectorySiteBoundaryCreation** _(Write)_: Indicates
   whether Configuration Manager creates Active Directory boundaries from AD DS

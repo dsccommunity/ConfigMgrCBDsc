@@ -557,11 +557,14 @@ function ConvertTo-CimCMScheduleString
         [Parameter(Mandatory = $true)]
         [String]
         $ScheduleString,
+
         [Parameter(Mandatory = $true)]
         [String]
         $CimClassName
     )
+
     $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+
     if (-not [string]::IsNullOrEmpty($schedule.DaySpan))
     {
         if ($schedule.DaySpan -gt 0)
@@ -579,10 +582,12 @@ function ConvertTo-CimCMScheduleString
             $rInterval = 'Minutes'
             $rCount = $schedule.MinuteSpan
         }
+
         $scheduleCim = New-CimInstance -ClassName $CimClassName -Property @{
             RecurInterval = $rInterval
             RecurCount    = $rCount
         } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration'
+
         return $scheduleCim
     }
 }

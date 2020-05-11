@@ -186,6 +186,7 @@ function Set-TargetResource
         Set-Location -Path "$env:temp"
     }
 }
+
 <#
     .SYNOPSIS
         This will test the desired state.

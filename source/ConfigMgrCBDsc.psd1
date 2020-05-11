@@ -47,7 +47,7 @@
         'SccmIniFile'
         'CMCollections'
         'CMBoundaries'
-        'DSC_CMForestDiscovery'
+        'CMForestDiscovery'
     )
 
     <#

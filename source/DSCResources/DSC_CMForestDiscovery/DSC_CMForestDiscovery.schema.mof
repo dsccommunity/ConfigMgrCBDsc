@@ -3,7 +3,7 @@ class DSC_CMForestDiscovery: OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Required, Description("Specifies the enablement of the forest discovery method. If settings is set to $false no other value provided will be evaluated for compliance.")] Boolean Enabled;
-    [Write, EmbeddedInstance("DSC_CMForestDiscoveryPollingSchedule"), Description("Hashtable containing polling schedule for Configuration Manager (RecurInterval, RecurCount)")] String PollingSchedule;
+    [Write, EmbeddedInstance("DSC_CMForestDiscoveryPollingSchedule"), Description("Contains the polling schedule for Configuration Manager (RecurInterval, RecurCount)")] String PollingSchedule;
     [Write, Description("Indicates whether Configuration Manager creates Active Directory boundaries from AD DS discovery information.")] Boolean EnableActiveDirectorySiteBoundaryCreation;
     [Write, Description("Indicates whether Configuration Manager creates IP address range boundaries from AD DS discovery information.")] Boolean EnableSubnetBoundaryCreation;
 };
@@ -14,4 +14,3 @@ class DSC_CMForestDiscoveryPollingSchedule
      [Required, Description("Specifies the recur interval of days, hours, or minutes."),ValueMap{"Days","Hours","Minutes"},Values{"Days","Hours","Minutes"}] String RecurInterval;
      [Required, Description("Specifies how often the recur interval is run.")] UInt32 RecurCount;
 };
-
