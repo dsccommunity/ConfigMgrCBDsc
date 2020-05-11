@@ -33,6 +33,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
+- **CMManagementPoint**: Provides a resource for creating and removing
+  management points.
 
 ### ClientSettings
 
@@ -204,7 +206,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Manager site.
 - **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the
   role on.
-- **[String] SqlServerFqdn** _(Write)_: Specifies the SQL server fqdn if using
+- **[String] SqlServerFqdn** _(Write)_: Specifies the SQL server FQDN if using
   a SQL replica.
 - **[String] DatabaseName** _(Write)_: Specifies the name of the site
   database\replica that the management point uses.
@@ -212,7 +214,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   - Values include: { Internet | Intranet | InternetAndIntranet }
 - **[Boolean] EnableCloudGateway** _(Write)_: Specifies if a cloud gateway
   is to be used for the management point.
-- **[Boolean] EnableSsl** _(Key)_: Specifies whether to enable SSL (HTTPS)
+- **[Boolean] EnableSsl** _(Write)_: Specifies whether to enable SSL (HTTPS)
   traffic to the management point.
 - **[Boolean] GenerateAlert** _(Write)_: Indicates whether the management point
   generates health alerts.

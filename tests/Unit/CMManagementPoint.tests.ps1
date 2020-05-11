@@ -243,7 +243,7 @@ try
             Context 'When retrieving boundary group settings' {
 
                 It 'Should return desired result when management is not currently installed' {
-                    Mock -CommandName Get-CMManagementPoint -MockWith { $null  }
+                    Mock -CommandName Get-CMManagementPoint -MockWith { $null }
                     Mock -CommandName Get-CMAlert -MockWith { $null }
 
                     $result = Get-TargetResource @getInput
@@ -264,7 +264,7 @@ try
                 }
 
                 It 'Should return desired result when management is currently installed' {
-                    Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnNoSQL  }
+                    Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnNoSQL }
                     Mock -CommandName Get-CMAlert -MockWith { $cmAlert }
 
                     $result = Get-TargetResource @getInput
@@ -285,7 +285,7 @@ try
                 }
 
                 It 'Should return desired result when management is currently installed with local SQL' {
-                    Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnLocalSQL  }
+                    Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnLocalSQL }
                     Mock -CommandName Get-CMAlert -MockWith { $null }
 
                     $result = Get-TargetResource @getInput

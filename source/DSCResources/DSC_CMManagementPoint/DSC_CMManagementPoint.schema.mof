@@ -3,7 +3,7 @@ class DSC_CMManagementPoint : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Key, Description("Specifies the SiteServer to install the role on.")] String SiteServerName;
-    [Write, Description("Specifies the SQL server fqdn if using a SQL replica.")] String SqlServerFqdn;
+    [Write, Description("Specifies the SQL server FQDN if using a SQL replica.")] String SqlServerFqdn;
     [Write, Description("Specifies the name of the site database\replica that the management point uses.")] String DatabaseName;
     [Write, Description("Specifies the type of the client connection."), ValueMap{"Internet","Intranet","InternetAndIntranet"}, Values{"Internet","Intranet","InternetAndIntranet"}] String ClientConnectionType;
     [Write, Description("Specifies if a cloud gateway is to be used for the management point.")] Boolean EnableCloudGateway;

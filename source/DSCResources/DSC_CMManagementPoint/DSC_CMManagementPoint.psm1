@@ -65,7 +65,7 @@ function Get-TargetResource
                                     }
                 'Username'          {
                                         $userConnection = $mpProp.Value2
-                                        if (($mpProp.Value2 -eq '') -or ($null -eq $mpProp.Value2))
+                                        if ([string]::IsNullOrEmpty($mpProp.Value2))
                                         {
                                             $computerAccount = $true
                                         }
@@ -112,7 +112,7 @@ function Get-TargetResource
             }
         }
 
-        if (($mpAlert) -or ($secondaryAlertCheck))
+        if ($mpAlert -or $secondaryAlertCheck)
         {
             $alert = $true
         }
@@ -156,7 +156,7 @@ function Get-TargetResource
         Specifies the SiteServer to install the role on.
 
     .PARAMETER SqlServerFqdn
-        Specifies the SQL server fqdn if using a SQL replica.
+        Specifies the SQL server FQDN if using a SQL replica.
 
     .PARAMETER DatabaseName
         Specifies the name of the site database or site database replica that the management point uses
@@ -265,7 +265,8 @@ function Set-TargetResource
 
     try
     {
-        if (($EnableCloudGateway -eq $true) -or ($state.EnableCloudGateway -eq $true))
+        if (($EnableCloudGateway -eq $true) -and (($PSBoundParameter.EnableCloudGateway -ne $false) -or
+           ($state.EnableCloudGateway -eq $true)))
         {
             if (($ClientConnectionType -eq 'Intranet') -or ([string]::IsNullOrEmpty($ClientConnectionType) -and
                 ([string]::IsNullOrEmpty($state.ClientConnectionType) -or $state.ClientConnectionType -eq 'Intranet')))
@@ -281,10 +282,30 @@ function Set-TargetResource
             }
         }
 
+        if ((($PSBoundParameters.EnableCloudGateway -eq $false) -or ([string]::IsNullOrEmpty($PSBoundParameters.EnableCloudGateway) -and
+           $state.EnableCloudGateway -eq $false)) -and ((-not [string]::IsNullOrEmpty($PSBoundParameters.ClientConnectionType) -and
+           $PSBoundParameters.ClientConnectionType -ne 'Intranet') -or
+           ([string]::IsNullOrEmpty($PSBoundParameters.ClientConnectionType) -and $state.ClientConnectionType -ne 'Intranet')))
+        {
+            Write-Verbose -Message 'False with ClientConnectionType check' -Verbose
+            throw 'Can not specify Client connection type of Internet if Cloud Gateway is not enabled'
+        }
+
         if ((($SqlServerFqdn) -and [string]::IsNullOrEmpty($DatabaseName)) -or
             (($DatabaseName) -and [string]::IsNullOrEmpty($SqlServerFqdn)))
         {
             throw 'SQLServerFqdn and database name must be specified together'
+        }
+
+        if (($SQLServerFqdn) -and ($PSBoundParameters.UseSiteDatabase -eq $true -or
+           ($PSBoundParameters.UseSiteDatabase -ne $false -and $state.UseSiteDatabase -eq $true)))
+        {
+            Throw 'When specifying using a SQL database you must set UseSiteDatabase to $false'
+        }
+
+        if (($Username) -and ($UseComputerAccount -eq $true))
+        {
+            throw 'You can not specify a Username and UseComputerAccount to $true'
         }
 
         if ($Ensure -eq 'Present')
@@ -301,9 +322,12 @@ function Set-TargetResource
                 Add-CMManagementPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
             }
 
+            $eval = @('SiteServerName','SqlServerFqdn','DatabaseName','ClientConnectionType','EnableCloudGateway',
+            'EnableSsl','GenerateAlert','UseSiteDatabase','UseComputerAccount','SqlServerInstanceName','Username')
+
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if (($param.Key -ne 'Verbose') -and ($param.Key -ne 'Ensure'))
+                if ($eval -contains $param.Key)
                 {
                     if ($param.Value -ne $state[$param.key])
                     {
@@ -318,6 +342,14 @@ function Set-TargetResource
 
             if ($buildingParams)
             {
+                if ($buildingParams.ContainsKey('EnableSsl') -and $buildingParams.ContainsKey('EnableCloudGateway'))
+                {
+                    if ($buildingParams.EnableSsl -eq $false)
+                    {
+                        $buildingParams.Remove('EnableCloudGateway')
+                    }
+                }
+
                 Set-CMManagementPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode @buildingParams
             }
         }
@@ -351,7 +383,7 @@ function Set-TargetResource
         Specifies the SiteServer to install the role on.
 
     .PARAMETER SqlServerFqdn
-        Specifies the SQL server fqdn if using a SQL replica.
+        Specifies the SQL server FQDN if using a SQL replica.
 
     .PARAMETER DatabaseName
         Specifies the name of the site database or site database replica that the management point uses
@@ -469,9 +501,12 @@ function Test-TargetResource
         }
         else
         {
+            $eval = @('SiteServerName','SqlServerFqdn','DatabaseName','ClientConnectionType','EnableCloudGateway',
+            'EnableSsl','GenerateAlert','UseSiteDatabase','UseComputerAccount','SqlServerInstanceName','Username')
+
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if (($param.Key -ne 'Verbose') -and ($param.Key -ne 'Ensure'))
+                if ($eval -contains $param.Key)
                 {
                     if ($param.Value -ne $state[$param.key])
                     {
