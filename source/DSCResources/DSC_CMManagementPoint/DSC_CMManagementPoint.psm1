@@ -271,14 +271,14 @@ function Set-TargetResource
             if (($ClientConnectionType -eq 'Intranet') -or ([string]::IsNullOrEmpty($ClientConnectionType) -and
                 ([string]::IsNullOrEmpty($state.ClientConnectionType) -or $state.ClientConnectionType -eq 'Intranet')))
             {
-                throw 'When CloudGateway is enabled, ClientConnectionType must not equal Intranet'
+                throw $script:localizedData.EnableGateway
             }
 
             if (($PSBoundParameters.EnableSsl -eq $false) -or
                 ([string]::IsNullOrEmpty($PSBoundParameters.EnableSsl) -and
                 ([string]::IsNullOrEmpty($state.EnableSSL) -or $state.EnableSSL -eq $false)))
             {
-                throw 'When CloudGateway is enabled SSL must also be enabled'
+                throw $script:localizedData.GatewaySsl
             }
         }
 
@@ -287,25 +287,24 @@ function Set-TargetResource
            $PSBoundParameters.ClientConnectionType -ne 'Intranet') -or
            ([string]::IsNullOrEmpty($PSBoundParameters.ClientConnectionType) -and $state.ClientConnectionType -ne 'Intranet')))
         {
-            Write-Verbose -Message 'False with ClientConnectionType check' -Verbose
-            throw 'Can not specify Client connection type of Internet if Cloud Gateway is not enabled'
+            throw $script:localizedData.GatewayIntranet
         }
 
         if ((($SqlServerFqdn) -and [string]::IsNullOrEmpty($DatabaseName)) -or
             (($DatabaseName) -and [string]::IsNullOrEmpty($SqlServerFqdn)))
         {
-            throw 'SQLServerFqdn and database name must be specified together'
+            throw $script:localizedData.SqlDatabase
         }
 
         if (($SQLServerFqdn) -and ($PSBoundParameters.UseSiteDatabase -eq $true -or
            ($PSBoundParameters.UseSiteDatabase -ne $false -and $state.UseSiteDatabase -eq $true)))
         {
-            Throw 'When specifying using a SQL database you must set UseSiteDatabase to $false'
+            throw $script:localizedData.SqlSiteDatabase
         }
 
         if (($Username) -and ($UseComputerAccount -eq $true))
         {
-            throw 'You can not specify a Username and UseComputerAccount to $true'
+            throw $script:localizedData.UsernameComputer
         }
 
         if ($Ensure -eq 'Present')

@@ -172,6 +172,15 @@ try
             UseSiteDatabase = $false
         }
 
+        $inputGatewayAndSsl = @{
+            SiteCode             = 'Lab'
+            SiteServerName       = 'MP.contoso.com'
+            EnableCloudGateway   = $false
+            ClientConnectionType = 'Intranet'
+            EnableSsl            = $false
+            Ensure               = 'Present'
+        }
+
         $inputUseSiteDatabaseMisMatch = @{
             SiteCode        = 'Lab'
             SiteServerName  = 'MP.contoso.com'
@@ -214,6 +223,28 @@ try
             SiteServerName       = 'MP.contoso.com'
             EnableCloudGateway   = $true
             ClientConnectionType = 'Intranet'
+        }
+
+        $gatewayFalseClientInternetThrow = @{
+            SiteCode             = 'Lab'
+            SiteServerName       = 'MP.contoso.com'
+            EnableCloudGateway   = $false
+            ClientConnectionType = 'Internet'
+        }
+
+        $sqlSiteDatabaseThrow = @{
+            SiteCode        = 'Lab'
+            SiteServerName  = 'MP.contoso.com'
+            SqlServerFqdn   = 'MP.contoso.com'
+            DatabaseName    = 'Lab'
+            UseSiteDatabase = $true
+        }
+
+        $computerAccountUserAccount = @{
+            SiteCode           = 'Lab'
+            SiteServerName     = 'MP.contoso.com'
+            Username           = 'contoso\test'
+            UseComputerAccount = $true
         }
 
         $gatewayThrowMsg = 'When CloudGateway is enabled, ClientConnectionType must not equal Intranet'
@@ -331,7 +362,21 @@ try
                     Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
                 }
 
-                It 'Should call expected commands when collection is absent' {
+                It 'Should call expected commands when management point is absent' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+
+                    Set-TargetResource @inputGatewayAndSsl
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-CMManagementPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMManagementPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when management point is absent and gateway and SSL are false' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
 
                     Set-TargetResource @inputUseSiteDatabaseMisMatch
@@ -345,7 +390,7 @@ try
                     Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
                 }
 
-                It 'Should call expected commands when collection collection exists and expected absent' {
+                It 'Should call expected commands when management point exists and expected absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     Set-TargetResource @inputAbsent
@@ -401,6 +446,48 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     { Set-TargetResource @sqlServerNoDatabaseParam } | Should -Throw -ExpectedMessage $sqlDbError
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMManagementPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMManagementPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call throws when gateway disabled and connection type is not Intranet' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @gatewayFalseClientInternetThrow } | Should -Throw
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMManagementPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMManagementPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call throws when usesitedatabase and Sqlserver are specified together' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @sqlSiteDatabaseThrow } | Should -Throw
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMManagementPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMManagementPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call throws when usecomputeraccount and username are specified together' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @computerAccountUserAccount } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -478,5 +565,5 @@ try
 }
 finally
 {
-    Restore-TestEnvironment -TestEnvironment $TestEnvironment
+    Invoke-TestCleanup
 }

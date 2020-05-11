@@ -8,4 +8,10 @@ ConvertFrom-StringData @'
     AddMPRole            = Adding management point role to {0}.
     SettingValue         = Setting value: {0} to {1}.
     RemoveMPRole         = Removing management point role from {0}.
+    EnableGateway        = When CloudGateway is enabled, ClientConnectionType must not equal Intranet.
+    GatewaySsl           = When CloudGateway is enabled SSL must also be enabled.
+    GatewayIntranet      = Can not specify Client connection type of Internet if Cloud Gateway is not enabled.
+    SqlDatabase          = SQLServerFqdn and database name must be specified together.
+    SqlSiteDatabase      = When specifying using a SQL database you must set UseSiteDatabase to $false.
+    UsernameComputer     = You can not specify a Username and UseComputerAccount to $true.
 '@
