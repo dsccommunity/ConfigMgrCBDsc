@@ -113,10 +113,10 @@ function Set-TargetResource
         $state = Get-TargetResource -SiteCode $SiteCode -Enabled $Enabled
         if ($Enabled -eq $true)
         {
-            $exludelist = @('Verbose','PollingSchedule')
+            $includeList = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation')
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if ($exludelist -notcontains $param.key)
+                if ($includeList -contains $param.key)
                 {
                     if ($param.Value -ne $state[$param.key])
                     {
@@ -239,10 +239,10 @@ function Test-TargetResource
 
     if ($Enabled -eq $true)
     {
-        $exludelist = @('Verbose','PollingSchedule')
+        $includeList = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation')
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            if ($exludelist -notcontains $param.key)
+            if ($includeList -contains $param.key)
             {
                 if ($param.Value -ne $state[$param.key])
                 {
