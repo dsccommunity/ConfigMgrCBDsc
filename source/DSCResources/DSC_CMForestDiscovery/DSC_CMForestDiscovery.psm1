@@ -169,12 +169,9 @@ function Set-TargetResource
                 Set-CMDiscoveryMethod -ActiveDirectoryForestDiscovery -SiteCode $SiteCode @buildingParams
             }
         }
-        else
+        elseif ($Enabled -eq $false -and $state.Enabled -eq $true)
         {
-            if ($state.Enabled -eq $true)
-            {
-                Set-CMDiscoveryMethod -ActiveDirectoryForestDiscovery -SiteCode $SiteCode -Enabled $false
-            }
+            Set-CMDiscoveryMethod -ActiveDirectoryForestDiscovery -SiteCode $SiteCode -Enabled $false
         }
     }
     catch
