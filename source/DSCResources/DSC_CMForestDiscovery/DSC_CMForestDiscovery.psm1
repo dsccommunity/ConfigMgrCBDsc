@@ -148,10 +148,10 @@ function Set-TargetResource
 
                 foreach ($item in $array)
                 {
-                    if (($desiredPollingSchedule).$($item) -ne ($stateSchedule).$($item))
+                    if ($desiredPollingSchedule.$($item) -ne $stateSchedule.$($item))
                     {
                         Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                            -f $item, $($desiredPollingSchedule.$($item)), $(($stateSchedule).$($item)))
+                            -f $item, $($desiredPollingSchedule.$($item)), $($stateSchedule.$($item)))
                         $setSchedule = $true
                     }
                 }
@@ -275,10 +275,10 @@ function Test-TargetResource
 
             foreach ($item in $array)
             {
-                if (($desiredPollingSchedule).$($item) -ne ($stateSchedule).$($item))
+                if ($desiredPollingSchedule.$($item) -ne $stateSchedule.$($item))
                 {
                     Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                        -f $item, $($desiredPollingSchedule.$($item)), $(($stateSchedule).$($item)))
+                        -f $item, $($desiredPollingSchedule.$($item)), $($stateSchedule.$($item)))
                     $result = $false
                 }
             }
