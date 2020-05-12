@@ -26,7 +26,12 @@ function Import-ConfigMgrPowerShellModule
 
     if ((Test-Path -Path "$($SiteCode):\") -eq $false)
     {
-        $siteInfo = Get-CimInstance -ClassName SMS_Site -Namespace root\sms\site_$SiteCode
+        $getCim = @{
+            ClassName = 'SMS_Site'
+            Namespace = "root\sms\site_$SiteCode"
+        }
+
+        $siteInfo = Get-CimInstance @getCim | Where-Object -FilterScript {$_.SiteCode -eq $SiteCode}
         $sid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
         $baseRegKeyPath = "Registry::HKEY_Users\$sid\Software\Microsoft"
         $createKeys = @('ConfigMgr10','AdminUI','MRU','1')
@@ -36,17 +41,18 @@ function Import-ConfigMgrPowerShellModule
             if (-not (Test-Path -Path "$baseRegKeyPath\$key"))
             {
                 New-Item -Path $baseRegKeyPath -Name $key |Out-Null
-                $baseRegKeyPath += "\$key"
             }
+
+            $baseRegKeyPath += "\$key"
         }
 
         $regProperties = (Get-ItemProperty -Path $baseRegKeyPath -ErrorAction SilentlyContinue)
 
         $values = @{
-            ServerName = $siteInfo.ServerName[0]
-            SiteName   = $siteInfo.SiteName[0]
-            SiteCode   = $siteInfo.SiteCode[0]
-            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))[0]
+            ServerName = $siteInfo.ServerName
+            SiteName   = $siteInfo.SiteName
+            SiteCode   = $siteInfo.SiteCode
+            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))
         }
 
         foreach ($value in $values.GetEnumerator())
@@ -514,6 +520,34 @@ function Get-ClientSettingsSoftwareCenter
     }
 }
 
+function Convert-CidrToIP
+{
+    [CmdLetBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [IPAddress]
+        $IPAddress,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateRange(0,32)]
+        [Int16]
+        $Cidr
+    )
+
+    $CidrBits = ('1' * $Cidr).PadRight(32, '0')
+    $octets = $CidrBits -Split '(.{8})' -ne ''
+    $mask = ($octets | ForEach-Object -Process {[Convert]::ToInt32($_, 2) }) -Join '.'
+
+    $ip = [IPAddress](($IPAddress).Address -Band ([IPAddress]$mask).Address)
+
+    return  @{
+        NetworkAddress = $ip.IPAddressToString
+        Subnetmask     = $mask
+        Cidr           = $Cidr
+    }
+}
+
 Export-ModuleMember -Function @(
     'Get-LocalizedData',
     'New-InvalidArgumentException',
@@ -521,4 +555,5 @@ Export-ModuleMember -Function @(
     'Confirm-ClientSetting'
     'Convert-ClientSetting'
     'Get-ClientSettingsSoftwareCenter'
+    'Convert-CidrToIP'
 )

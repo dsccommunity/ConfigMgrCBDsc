@@ -33,6 +33,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
+- **CMBoundaries**: Provides a resource for creating and removing boundaries.
+- **CMBoundariesGroup**: Provides a resource for creating boundary groups and
+  adding boundaries to the groups.
 
 ### ClientSettings
 
@@ -197,6 +200,24 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMCollections_Absent](Source\Examples\Resources\CMCollections\Collection_Absent.ps1)
 - [CMDeviceCollection_Present](Source\Examples\Resources\CMCollections\DeviceCollection_Present.ps1)
 - [CMUserCollection_Present](Source\Examples\Resources\CMCollections\UserCollection_Present.ps1)
+
+### CMBoundaries
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Value** _(Key)_: Specifies the value for the boundary.
+- **[String] DisplayName** _(Required)_: Specifies the display name of the boundary.
+- **[String] Type** _(Required)_: Specifies the type of boundary.
+  - Values include: { ADSite | IPSubnet | IPRange
+- **[String] Ensure** _(Write)_: Specifies whether the boundary is present or
+  absent.
+  - Values include: { Present | Absent }
+- **[String] BoundaryID** _(Read)_: Specifies the boundary id.
+
+#### CMBoundaries Examples
+
+- [CMBoundaries_Absent](Source\Examples\Resources\CMBoundaries\CMBoundaries_Absent.ps1)
+- [CMBoundaries_Present](Source\Examples\Resources\CMBoundaries\CMBoundaries_Present.ps1)
 
 ### CMBoundaryGroups
 
