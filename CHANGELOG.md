@@ -15,6 +15,9 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added CMBoundaries resource
 - Added Convert-CidrToIP to the ResourceHelper
 - Added CMBoundaryGroups Resource
+- Added ConvertTo-CimBoundaries to the ResourceHelper
+- Added Convert-BoundariesIPSubnets to the ResourceHelper
+- Added Get-BoundaryInfo to the ResourceHelper
 
 ### Changed
 

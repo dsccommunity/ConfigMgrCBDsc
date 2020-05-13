@@ -224,13 +224,11 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
 - **[String] BoundaryGroup** _(Key)_: Specifies the name of the boundary group.
-- **[String] Boundaries** _(Write)_: Specifies an array of boundaries that must be
-  identical in the boundary group.
-- **[String] BoundariesToInclude** _(Write)_: Specifies an array of boundaries
-  to append to the boundary group. If Boundaries is specified this setting is ignored.
-- **[String] BoundariesToExclude** _(Write)_: Specifies an array of boundaries
-  must be absent from the boundary group. If boundaries are specified this
-  setting is ignored.
+- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of boundaries
+  to add or remove from the boundary group.
+- **[String] BoundaryAction** _(Write)_: Specifies the boundaries are to match,
+  add, or remove Boundaries from the boundary group
+  - Values include: { Match | Add | Remove }
 - **[String] Ensure** _(Write)_: Specifies status of the collection is to be
   present or absent.
   - Values include: { Present | Absent }

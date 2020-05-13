@@ -3,8 +3,14 @@ class DSC_CMBoundaryGroups : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Key, Description("Specifies the name of the boundary group.")] String BoundaryGroup;
-    [Write, Description("Specifies the boundaries to exact match of the boundary group.")] String Boundaries[];
-    [Write, Description("Specifies the boundaries to append to the boundary group.")] String BoundariesToInclude[];
-    [Write, Description("Specifies the boundaries to exclude from the boundary group.")] String BoundariesToExclude[];
+    [Write, EmbeddedInstance("DSC_CMBoundaryGroupsBoundaries"), Description("Specifies an array of boundaries to add or remove.")] String Boundaries[];
+    [Write, Description("Specifies the boundaries are to match, add, or remove Boundaries from the boundary group."), ValueMap{"Match","Add","Remove"}, Values{"Match","Add","Remove"}] String BoundaryAction;
     [Write, Description("Specifies whether the boundary group is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMBoundaryGroupsBoundaries
+{
+     [Required, Description("Specifies the value of the boundary")] String Value;
+     [Required, Description("Specifies the type of boundary"), ValueMap {"ADSite","IPSubnet","IPRange"}, Values {"ADSite","IPSubnet","IPRange"}] String Type;
 };

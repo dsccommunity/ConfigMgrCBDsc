@@ -39,7 +39,13 @@ function Get-TargetResource
 
     if ($groupId)
     {
-        [array]$groupMembers = (Get-CMBoundary -BoundaryGroupId $groupId).DisplayName
+        $groupMembers = Get-CMBoundary -BoundaryGroupId $groupId
+
+        if ($groupMembers)
+        {
+            $cimBoundaries = ConvertTo-CimBoundaries -InputObject $groupMembers
+        }
+
         $status = 'Present'
     }
     else
@@ -50,7 +56,7 @@ function Get-TargetResource
     return @{
         SiteCode      = $SiteCode
         BoundaryGroup = $BoundaryGroup
-        Boundaries    = $groupMembers
+        Boundaries    = $cimBoundaries
         Ensure        = $status
     }
 }
@@ -66,15 +72,10 @@ function Get-TargetResource
         Specifies the boundary group name.
 
     .Parameter Boundaries
-        Specifies an array of boundaries that must be identical in the boundary group.
+        Specifies an array of boundaries to add or remove.
 
-    .Parameter BoundariesToInclude
-        Specifies an array of boundaries to append to the boundary group.
-        If boundaries are specified this setting is ignored.
-
-    .Parameter BoundariesToExclude
-        Specifies an array of boundaries must be absent from the boundary group.
-        If boundaries are specified this setting is ignored.
+    .Parameter BoundaryAction
+        Specifies the boundaries are to match, add, or remove Boundaries from the boundary group.
 
     .Parameter Ensure
         Specifies if the boundary group is to be absent or present.
@@ -93,16 +94,13 @@ function Set-TargetResource
         $BoundaryGroup,
 
         [Parameter()]
-        [String[]]
+        [Microsoft.Management.Infrastructure.CimInstance[]]
         $Boundaries,
 
         [Parameter()]
-        [String[]]
-        $BoundariesToInclude,
-
-        [Parameter()]
-        [String[]]
-        $BoundariesToExclude,
+        [ValidateSet('Match','Add','Remove')]
+        [String]
+        $BoundaryAction = 'Add',
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -125,77 +123,116 @@ function Set-TargetResource
                 New-CMBoundaryGroup -Name $BoundaryGroup
             }
 
-            if (($Boundaries) -or ($BoundariesToInclude))
+            if ($Boundaries)
             {
-                if ($Boundaries)
+                $convert = Convert-BoundariesIPSubnets -InputObject $Boundaries
+                $boundaryToGroup = @()
+                $boundaryToRemove = @()
+
+                if ([string]::IsNullOrEmpty($state.Boundaries))
                 {
-                    $includes = $Boundaries
+                    if ($BoundaryAction -ne 'Remove')
+                    {
+                        foreach ($entry in $convert)
+                        {
+                            $boundaryToGroup += @{
+                                Value = $entry.Value
+                                Type  = $entry.Type
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    $includes = $BoundariesToInclude
-                }
+                    $comparesParam = @{
+                        ReferenceObject  = $state.Boundaries
+                        DifferenceObject = $convert
+                        Property         = 'Value','Type'
+                    }
 
-                foreach ($member in $includes)
-                {
-                    if (Get-CMBoundary -BoundaryName $member)
+                    $compares = Compare-Object @comparesParam -IncludeEqual
+
+                    if ($BoundaryAction -ne 'Remove')
                     {
-                        if ($state.Boundaries -notcontains $member)
+                        foreach ($addCompare in $compares)
                         {
-                            Write-Verbose -Message ($script:localizedData.AddingBoundary -f $BoundaryGroup, $member)
-                            Add-CMBoundaryToGroup -BoundaryName $member -BoundaryGroupName $BoundaryGroup
+                            if ($addCompare.SideIndicator -eq '=>')
+                            {
+                                $boundaryToGroup += @{
+                                    Value = $addCompare.Value
+                                    Type  = $addCompare.Type
+                                }
+                            }
                         }
                     }
-                    else
+
+                    if ($BoundaryAction -ne 'Add')
                     {
-                        $errorMsg += ($script:localizedData.BoundaryAbsent -f $member)
-                        Write-Verbose -Message ($script:localizedData.BoundaryAbsent -f $member)
+                        foreach ($removeCompare in $compares)
+                        {
+                            if ($BoundaryAction -eq 'Match')
+                            {
+                                if ($removeCompare.SideIndicator -eq '<=')
+                                {
+                                    $boundaryToRemove += @{
+                                        Value = $removeCompare.Value
+                                        Type  = $removeCompare.Type
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if ($removeCompare.SideIndicator -eq '==')
+                                {
+                                    $boundaryToRemove += @{
+                                        Value = $removeCompare.Value
+                                        Type  = $removeCompare.Type
+                                    }
+                                }
+                            }
+                        }
+
+                        if ($boundaryToRemove)
+                        {
+                            foreach ($item in $boundaryToRemove)
+                            {
+                                $removeBoundary = Get-BoundaryInfo -Value $item.Value -Type $item.Type
+
+                                if ($removeBoundary)
+                                {
+                                    Write-Verbose -Message ($script:localizedData.ExcludingBoundary `
+                                        -f $BoundaryGroup, $item.Type, $item.Value)
+
+                                    Remove-CMBoundaryFromGroup -BoundaryId $removeBoundary -BoundaryGroupName $BoundaryGroup
+                                }
+                            }
+                        }
                     }
                 }
-            }
 
-            if (($Boundaries) -or ($BoundariesToExclude))
-            {
-                if (-not [string]::IsNullOrEmpty($state.Boundaries))
+                if ($boundaryToGroup)
                 {
-                    if ($Boundaries)
+                    foreach ($item in $boundaryToGroup)
                     {
-                        $excludes = $Boundaries
-                    }
-                    else
-                    {
-                        $excludes = $BoundariesToExclude
-                    }
+                        $addBoundary = Get-BoundaryInfo -Value $item.Value -Type $item.Type
 
-                    $compares = Compare-Object -ReferenceObject $state.Boundaries -DifferenceObject $excludes -IncludeEqual
-
-                    foreach ($compare in $compares)
-                    {
-                        if ($Boundaries)
+                        if ($addBoundary)
                         {
-                            if ($compare.SideIndicator -eq '<=')
-                            {
-                                Write-Verbose -Message ($script:localizedData.ExcludingBoundary `
-                                    -f $BoundaryGroup, $compare.InputObject)
-                                Remove-CMBoundaryFromGroup -BoundaryName $compare.InputObject -BoundaryGroupName $BoundaryGroup
-                            }
+                            Write-Verbose -Message ($script:localizedData.AddingBoundary -f `
+                                $BoundaryGroup, $item.Type, $item.Value)
+                            Add-CMBoundaryToGroup -BoundaryId $addBoundary -BoundaryGroupName $BoundaryGroup
                         }
                         else
                         {
-                            if ($compare.SideIndicator -eq '==')
-                            {
-                                Write-Verbose -Message ($script:localizedData.ExcludingBoundary `
-                                    -f $BoundaryGroup, $compare.InputObject)
-                                Remove-CMBoundaryFromGroup -BoundaryName $compare.InputObject -BoundaryGroupName $BoundaryGroup
-                            }
+                            $errorMsg += ($script:localizedData.BoundaryAbsent -f $item.Type, $item.Value)
                         }
                     }
-                }
-            }
 
-            if ($errorMsg)
-            {
-                throw $errorMsg
+                    if ($errorMsg)
+                    {
+                        throw $errorMsg
+                    }
+                }
             }
         }
         else
@@ -228,15 +265,10 @@ function Set-TargetResource
         Specifies the boundary group name.
 
     .Parameter Boundaries
-        Specifies an array of boundaries that must be identical in the boundary group.
+        Specifies an array of boundaries to add or remove.
 
-    .Parameter BoundariesToInclude
-        Specifies an array of boundaries to append to the boundary group.
-        If boundaries are specified this setting is ignored.
-
-    .Parameter BoundariesToExclude
-        Specifies an array of boundaries must be absent from the boundary group.
-        If boundaries are specified this setting is ignored.
+    .Parameter BoundaryAction
+        Specifies the boundaries are to match, add, or remove Boundaries from the boundary group.
 
     .Parameter Ensure
         Specifies if the boundary group is to be absent or present.
@@ -256,16 +288,13 @@ function Test-TargetResource
         $BoundaryGroup,
 
         [Parameter()]
-        [String[]]
+        [Microsoft.Management.Infrastructure.CimInstance[]]
         $Boundaries,
 
         [Parameter()]
-        [String[]]
-        $BoundariesToInclude,
-
-        [Parameter()]
-        [String[]]
-        $BoundariesToExclude,
+        [ValidateSet('Match','Add','Remove')]
+        [String]
+        $BoundaryAction = 'Add',
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -287,59 +316,66 @@ function Test-TargetResource
         }
         else
         {
-            if (($Boundaries) -or ($BoundariesToInclude))
+            if ($Boundaries)
             {
-                if ($Boundaries)
+                $convert = Convert-BoundariesIPSubnets -InputObject $Boundaries
+
+                if ([string]::IsNullOrEmpty($state.Boundaries))
                 {
-                    $includes = $Boundaries
+                    if ($BoundaryAction -ne 'Remove')
+                    {
+                        foreach ($toAdd in $convert)
+                        {
+                            Write-Verbose -Message ($script:localizedData.MissingBoundary `
+                                -f $BoundaryGroup, $addCompare.Type, $addCompare.Value)
+                            $result = $false
+                        }
+                    }
                 }
                 else
                 {
-                    $includes = $BoundariesToInclude
-                }
-
-                foreach ($member in $includes)
-                {
-                    if ($state.Boundaries -notcontains $member)
-                    {
-                        Write-Verbose -Message ($script:localizedData.MissingBoundary -f $BoundaryGroup, $member)
-                        $result = $false
-                    }
-                }
-            }
-
-            if (($Boundaries) -or ($BoundariesToExclude))
-            {
-                if (-not [string]::IsNullOrEmpty($state.Boundaries))
-                {
-                    if ($boundaries)
-                    {
-                        $excludes = $Boundaries
-                    }
-                    else
-                    {
-                        $excludes = $BoundariesToExclude
+                    $comparesParam = @{
+                        ReferenceObject  = $state.Boundaries
+                        DifferenceObject = $convert
+                        Property         = 'Value','Type'
                     }
 
-                    $compares = Compare-Object -ReferenceObject $state.Boundaries -DifferenceObject $excludes -IncludeEqual
-                    foreach ($compare in $compares)
+                    $compares = Compare-Object @comparesParam -IncludeEqual
+
+                    if ($BoundaryAction -ne 'Remove')
                     {
-                        if ($Boundaries)
+                        foreach ($addCompare in $compares)
                         {
-                            if ($compare.SideIndicator -eq '<=')
+                            if ($addCompare.SideIndicator -eq '=>')
                             {
-                               Write-Verbose -Message ($script:localizedData.ExtraBoundary `
-                                    -f $BoundaryGroup, $compare.InputObject)
+                                Write-Verbose -Message ($script:localizedData.MissingBoundary `
+                                    -f $BoundaryGroup, $addCompare.Type, $addCompare.Value)
                                 $result = $false
                             }
                         }
-                        else
+                    }
+
+                    if ($BoundaryAction -ne 'Add')
+                    {
+                        foreach ($removeCompare in $compares)
                         {
-                            if ($compare.SideIndicator -eq '==')
+                            if ($BoundaryAction -eq 'Match')
                             {
-                                Write-Verbose -Message ($script:localizedData.ExtraBoundary `
-                                    -f $BoundaryGroup, $compare.InputObject)
-                                $result = $false
+                                if ($removeCompare.SideIndicator -eq '<=')
+                                {
+                                    Write-Verbose -Message ($script:localizedData.ExtraBoundary `
+                                        -f $BoundaryGroup, $removeCompare.Type, $removeCompare.Value)
+                                    $result = $false
+                                }
+                            }
+                            else
+                            {
+                                if ($removeCompare.SideIndicator -eq '==')
+                                {
+                                    Write-Verbose -Message ($script:localizedData.ExtraBoundary `
+                                        -f $BoundaryGroup, $removeCompare.Type, $removeCompare.Value)
+                                    $result = $false
+                                }
                             }
                         }
                     }
