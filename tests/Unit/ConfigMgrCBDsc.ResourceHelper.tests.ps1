@@ -765,4 +765,153 @@ InModuleScope $script:subModuleName {
             }
         }
     }
+
+    Describe "$moduleResourceName\Convert-BoundariesIPSubnets" {
+
+        $inputObject = @(
+            @{
+                BoundaryID = 16777231
+                BoundaryType = 3
+                Value        = '10.1.1.1-10.1.1.255'
+            }
+            @{
+                BoundaryID = 16777232
+                BoundaryType = 0
+                Value        = '10.1.2.0'
+            }
+            @{
+                BoundaryID = 16777233
+                BoundaryType = 1
+                Value        = 'First-Site'
+            }
+
+        )
+
+        Context 'When results are as expected' {
+
+            It 'Should return desired output' {
+
+                $result = ConvertTo-CimBoundaries -InputObject $inputObject
+                $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                $result.Count    | Should -Be -ExpectedValue 3
+                $result[0].Value | Should -Be -ExpectedValue '10.1.1.1-10.1.1.255'
+                $result[0].Type  | Should -Be -ExpectedValue 'IPRange'
+                $result[1].Value | Should -Be -ExpectedValue '10.1.2.0'
+                $result[1].Type  | Should -Be -ExpectedValue 'IPSubnet'
+                $result[2].Value | Should -Be -ExpectedValue 'First-Site'
+                $result[2].Type  | Should -Be -ExpectedValue 'ADSite'
+            }
+        }
+    }
+
+    Describe "$moduleResourceName\ConvertTo-CimBoundaries" {
+
+        $mockBoundaryMembers = @(
+            (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'Type'  = 'IPSubnet'
+                    'Value' = '10.1.1.1/24'
+                } `
+                -ClientOnly
+            ),
+            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'Type'  = 'IPSubnet'
+                    'Value' = '10.2.2.1/16'
+                } `
+                -ClientOnly
+            ),
+            (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'Type'  = 'IPSubnet'
+                    'Value' = '10.3.3.1/8'
+                } `
+                -ClientOnly
+            ),
+            (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'Value' = 'First-Site'
+                    'Type'  = 'ADSite'
+                } `
+                -ClientOnly
+            )
+        )
+
+        Context 'When results are as expected' {
+
+            It 'Should return desired output' {
+
+                $result = Convert-BoundariesIPSubnets -InputObject $mockBoundaryMembers
+                $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                $result.Count    | Should -Be -ExpectedValue 4
+                $result[0].Value | Should -Be -ExpectedValue '10.1.1.0'
+                $result[0].Type  | Should -Be -ExpectedValue 'IPSubnet'
+                $result[1].Value | Should -Be -ExpectedValue '10.2.0.0'
+                $result[1].Type  | Should -Be -ExpectedValue 'IPSubnet'
+                $result[2].Value | Should -Be -ExpectedValue '10.0.0.0'
+                $result[2].Type  | Should -Be -ExpectedValue 'IPSubnet'
+                $result[3].Value | Should -Be -ExpectedValue 'First-Site'
+                $result[3].Type  | Should -Be -ExpectedValue 'ADSite'
+            }
+        }
+    }
+
+    Describe "$moduleResourceName\Get-BoundaryInfo" {
+
+        $ipSubnet = @{
+            Value = '10.1.1.0'
+            Type  = 'IPSubnet'
+        }
+
+        $adSite = @{
+            Value = 'First-Site'
+            Type  = 'ADSite'
+        }
+
+        $ipRange = @{
+            Value = '10.1.2.1-10.1.2.255'
+            Type  = 'IPRange'
+        }
+
+        $boundaryInfo = @(
+            @{
+                BoundaryID   = 16211
+                BoundaryType = 0
+                Value        = '10.1.1.0'
+            }
+            @{
+                BoundaryID   = 16212
+                BoundaryType = 1
+                Value        = 'First-Site'
+            }
+            @{
+                BoundaryID   = 16213
+                BoundaryType = 3
+                Value        = '10.1.2.1-10.1.2.255'
+            }
+        )
+
+        Context 'When results are as expected' {
+            Mock -CommandName Get-CMBoundary -MockWith { $boundaryInfo }
+
+            It 'Should return desired output for IPSubnet' {
+
+                Get-BoundaryInfo @ipSubnet | Should -Be -ExpectedValue 16211
+            }
+
+            It 'Should return desired output for ADSite' {
+
+                Get-BoundaryInfo @adSite | Should -Be -ExpectedValue 16212
+            }
+
+            It 'Should return desired output for IPRange' {
+
+                Get-BoundaryInfo @ipRange | Should -Be -ExpectedValue 16213
+            }
+        }
+    }
 }
