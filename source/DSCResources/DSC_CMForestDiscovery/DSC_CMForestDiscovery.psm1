@@ -144,7 +144,7 @@ function Set-TargetResource
 
                 $stateSchedule = New-CMSchedule @currentSchedule
 
-                $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
+                $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
 
                 foreach ($item in $array)
                 {
@@ -267,7 +267,7 @@ function Test-TargetResource
 
             $stateSchedule = New-CMSchedule @currentSchedule
 
-            $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
+            $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
 
             foreach ($item in $array)
             {
