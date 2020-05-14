@@ -204,7 +204,6 @@ function Set-TargetResource
     .PARAMETER EnableSubnetBoundaryCreation
         Indicates whether Configuration Manager creates IP address range boundaries from AD DS discovery information.
 #>
-
 function Test-TargetResource
 {
     [CmdletBinding()]
