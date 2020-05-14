@@ -548,6 +548,16 @@ function Convert-CidrToIP
     }
 }
 
+<#
+    .SYNOPSIS
+        Converts CMSchedule objects to a readable and workable format.
+
+    .PARAMETER ScheduleString
+        Specifies the schedule string to convert.
+
+    .PARAMETER CimClassName
+        Specifies the name of the EmbeddedInstance for the schedule object.
+#>
 function ConvertTo-CimCMScheduleString
 {
     [CmdletBinding()]
