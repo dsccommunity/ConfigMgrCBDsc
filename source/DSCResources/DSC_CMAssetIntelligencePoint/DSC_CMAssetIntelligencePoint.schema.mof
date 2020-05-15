@@ -1,0 +1,18 @@
+[ClassVersion("1.0.0"), FriendlyName("CMAssetIntelligencePoint")]
+class DSC_CMAssetIntelligencePoint: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+	[Required, Description("Specifies the Site Server to install or configure the role on.")] String SiteServerName;
+	[Write, Description("Specifies the path to a System Center Online authentication certificate (.pfx) file. If used, this must be in UNC format. Local paths are not allowed.")] String CertificateFile;
+    [Write, EmbeddedInstance("DSC_CMAssetIntelligenceSynchronizationSchedule"), Description("Specifies when the asset intelligence catalog is synchronized. (RecurInterval, RecurCount)")] String Schedule;
+	[Write, Description("Specifies whether the installed asset intelligence role is enabled or disabled.")] Boolean Enable;
+    [Write, Description("Specifies whether to synchronize the asset intelligence catalog.")] Boolean EnableSynchronization;
+	[Write, Description("Specifies whether the asset intelligence synchronization point is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMAssetIntelligenceSynchronizationSchedule
+{
+     [Required, Description("Specifies the recur interval of days or hours."),ValueMap{"Days","Hours"},Values{"Days","Hours"}] String RecurInterval;
+     [Required, Description("Specifies how often the recur interval is run.")] UInt32 RecurCount;
+};
