@@ -11,6 +11,6 @@ class DSC_CMForestDiscovery: OMI_BaseResource
 [ClassVersion("1.0.0")]
 class DSC_CMForestDiscoveryPollingSchedule
 {
-     [Required, Description("Specifies the recur interval of days, or hours."),ValueMap{"Days","Hours","Minutes"},Values{"Days","Hours"}] String RecurInterval;
+     [Required, Description("Specifies the recur interval of days, or hours."),ValueMap{"Days","Hours"},Values{"Days","Hours"}] String RecurInterval;
      [Required, Description("Specifies how often the recur interval is run.")] UInt32 RecurCount;
 };
