@@ -257,13 +257,13 @@ try
                 }
             }
         }
-        
+
         Describe "$moduleResourceName\Set-TargetResource" {
             Context 'When Set-TargetResource runs successfully' {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName New-CMSchedule 
+                Mock -CommandName New-CMSchedule
                 Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
                 Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
 
@@ -320,7 +320,7 @@ try
                     Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
-                
+
                 It 'Should call expected commands when management point exists and expected absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
@@ -339,7 +339,7 @@ try
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName New-CMSchedule 
+                Mock -CommandName New-CMSchedule
                 Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
                 Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
 
@@ -400,7 +400,7 @@ try
                 }
             }
         }
-        
+
         Describe "$moduleResourceName\Test-TargetResource" {
             Mock -CommandName Set-Location
             Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -412,13 +412,13 @@ try
 
                     Test-TargetResource @inputPresent  | Should -Be $false
                 }
-                
+
                 It 'Should return desired result true when ensure = absent and AP is absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
 
                     Test-TargetResource @inputAbsent | Should -Be $true
                 }
-                
+
                 It 'Should return desired result false when ensure = absent and AP is present' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
@@ -438,7 +438,7 @@ try
                 }
 
                 It 'Should return desired result true when no certificate file is specified and no certificate file is present' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert } 
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert }
 
                     Test-TargetResource @inputNoCert | Should -Be $true
                 }
@@ -468,7 +468,6 @@ try
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
                     Test-TargetResource @getReturnAll | Should -Be $true
                 }
-                
             }
         }
     }

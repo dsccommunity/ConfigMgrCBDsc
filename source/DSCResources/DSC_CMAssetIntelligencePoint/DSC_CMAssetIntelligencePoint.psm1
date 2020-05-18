@@ -11,7 +11,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         This will return a hashtable of results.
 
     .PARAMETER SiteCode
-        Specifies the site code for Configuration Manager site.
+        Specifies a site code for the Configuration Manager site that manages the system role for the asset intelligence point.
 
     .PARAMETER SiteServerName
         Specifies the Site Server to install or configure the role on.
