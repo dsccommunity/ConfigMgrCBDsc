@@ -51,10 +51,9 @@ function Get-TargetResource
         $status       = 'Present'
 
         $convertCimParam = @{
-        ScheduleString = $syncSchedule
-        CimClassName   = 'DSC_CMAssetIntelligenceSynchronizationSchedule'
+            ScheduleString = $syncSchedule
+            CimClassName   = 'DSC_CMAssetIntelligenceSynchronizationSchedule'
         }
-
         $sSchedule = ConvertTo-CimCMScheduleString @convertCimParam
     }
 
