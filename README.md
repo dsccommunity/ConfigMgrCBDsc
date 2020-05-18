@@ -216,3 +216,27 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMBoundaries_Absent](Source\Examples\Resources\CMBoundaries\CMBoundaries_Absent.ps1)
 - [CMBoundaries_Present](Source\Examples\Resources\CMBoundaries\CMBoundaries_Present.ps1)
+
+### CMAssetIntelligencePoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Write)_: Specifies the Site Server to install or
+  configure the role on.
+- **[String] CertificateFile** _(Write)_: Specifies the path to a System Center
+  Online authentication certificate (.pfx) file. If used, this must be in UNC
+  format. Local paths are not allowed.
+- **[EmbeddedInstance] Schedule** _(Write)_: Specifies when the asset
+  intelligence catalog is synchronized. (RecurInterval, RecurCount)
+- **[Boolean] Enable** _(Write)_: Specifies whether the installed asset
+  intelligence role is enabled or disabled.
+- **[Boolean] EnableSynchronization** _(Write)_: Specifies whether to
+  synchronize the asset intelligence catalog.
+- **[String] Ensure** _(Write)_: Specifies whether the asset intelligence
+  synchronization point is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMAssetIntelligencePoint Examples
+
+- [CMCollections_Absent](Source\Examples\Resources\DSC_CMAssetIntelligencePoint\CMAssetIntelligencePoint_Absent.ps1)
+- [CMDeviceCollection_Present](Source\Examples\Resources\DSC_CMAssetIntelligencePoint\CMAssetIntelligencePoint_Present.ps1)
