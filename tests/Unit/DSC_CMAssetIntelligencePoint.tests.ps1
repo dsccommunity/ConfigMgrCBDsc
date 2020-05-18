@@ -204,7 +204,7 @@ try
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
 
-            Context 'When retrieving boundary group settings' {
+            Context 'When retrieving asset intelligence point settings' {
 
                 It 'Should return desired result when asset intelligence point is not currently installed' {
                     Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $null }
@@ -321,7 +321,7 @@ try
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
 
-                It 'Should call expected commands when management point exists and expected absent' {
+                It 'Should call expected commands when asset intelligence point exists and expected absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     Set-TargetResource @inputAbsent
