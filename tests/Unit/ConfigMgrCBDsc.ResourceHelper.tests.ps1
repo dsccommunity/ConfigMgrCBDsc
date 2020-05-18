@@ -812,26 +812,34 @@ InModuleScope $script:subModuleName {
             MinuteDuration = 0
             MinuteSpan     = 50
         }
-        $cimInputParam = @{
+        $cimInputParamDays = @{
             CimClassName   = 'DSC_TestCimInstance'
-            ScheduleString = '0001200000100038'
+            ScheduleString = '0001200000100030'
+        }
+        $cimInputParamHours = @{
+            CimClassName   = 'DSC_TestCimInstance'
+            ScheduleString = '0001200000100700'
+        }
+        $cimInputParamMinutes = @{
+            CimClassName   = 'DSC_TestCimInstance'
+            ScheduleString = '0001200000164000'
         }
         Context 'When return is as expected' {
             It 'Should return desired result for day schedule conversion.' {
                 Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertDays }
-                $result = ConvertTo-CimCMScheduleString @cimInputParam
+                $result = ConvertTo-CimCMScheduleString @cimInputParamDays
                 $result | Should -Match $mockCimRefreshScheduleDay
                 $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
             }
             It 'Should return desired result for hour schedule conversion.' {
                 Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertHours }
-                $result = ConvertTo-CimCMScheduleString @cimInputParam
+                $result = ConvertTo-CimCMScheduleString @cimInputParamHours
                 $result | Should -Match $mockCimRefreshScheduleHours
                 $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
             }
             It 'Should return desired result for minute schedule conversion.' {
                 Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertMin }
-                $result = ConvertTo-CimCMScheduleString @cimInputParam
+                $result = ConvertTo-CimCMScheduleString @cimInputParamMinutes
                 $result | Should -Match $mockCimRefreshScheduleMin
                 $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
             }
