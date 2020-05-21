@@ -41,8 +41,8 @@ function Get-TargetResource
     $forestDiscovery = (Get-CMDiscoveryMethod -Name ActiveDirectoryForestDiscovery -SiteCode $SiteCode).Props
     $enabledStatus   = (($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1 -eq 'Active')
     $forestSchedule  = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Startup Schedule'}).Value1
-    $subnetboundary  = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable Subnet Boundary Creation'}).Value
-    $siteboundary    = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable AD Site Boundary Creation'}).Value
+    $subnetBoundary  = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable Subnet Boundary Creation'}).Value
+    $siteBoundary    = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable AD Site Boundary Creation'}).Value
 
     $convertCimParam = @{
         ScheduleString = $forestSchedule
@@ -280,12 +280,9 @@ function Test-TargetResource
             }
         }
     }
-    else
+    elseif ($state.Enabled -eq $true)
     {
-        if ($state.Enabled -eq $true)
-        {
-            $result = $false
-        }
+        $result = $false
     }
 
     Write-Verbose -Message ($script:localizedData.TestState -f $result)
