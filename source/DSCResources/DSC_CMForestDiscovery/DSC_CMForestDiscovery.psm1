@@ -54,8 +54,8 @@ function Get-TargetResource
         SiteCode                                  = $SiteCode
         Enabled                                   = $enabledStatus
         PollingSchedule                           = $syncSchedule
-        EnableActiveDirectorySiteBoundaryCreation = $siteboundary
-        EnableSubnetBoundaryCreation              = $subnetboundary
+        EnableActiveDirectorySiteBoundaryCreation = $siteBoundary
+        EnableSubnetBoundaryCreation              = $subnetBoundary
     }
 }
 
