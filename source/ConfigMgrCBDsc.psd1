@@ -47,6 +47,7 @@
         'SccmIniFile'
         'CMCollections'
         'CMBoundaries'
+        'CMDistributionPoint'
     )
 
     <#
