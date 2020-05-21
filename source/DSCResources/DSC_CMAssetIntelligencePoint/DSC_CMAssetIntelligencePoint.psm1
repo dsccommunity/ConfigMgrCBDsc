@@ -363,13 +363,10 @@ function Test-TargetResource
             }
         }
     }
-    else
+    elseif ($state.Ensure -eq 'Present')
     {
-        if ($state.Ensure -eq 'Present')
-        {
-            Write-Verbose -Message ($script:localizedData.APAbsent -f $SiteServerName)
-            $result = $false
-        }
+        Write-Verbose -Message ($script:localizedData.APAbsent -f $SiteServerName)
+        $result = $false
     }
 
     Write-Verbose -Message ($script:localizedData.TestState -f $result)
