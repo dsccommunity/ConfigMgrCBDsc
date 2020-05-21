@@ -10,11 +10,11 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
     .SYNOPSIS
         This will return a hashtable of results.
 
-    .PARAMETER SiteCode
-        Specifies the site code for Configuration Manager site.
-
     .PARAMETER IsSingleInstance
         Specifies the resource is a single instance, the value must be 'Yes'.
+
+    .PARAMETER SiteCode
+        Specifies the site code for Configuration Manager site.
 #>
 function Get-TargetResource
 {
@@ -23,13 +23,13 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
-        $SiteCode,
-
-        [Parameter(Mandatory = $true)]
         [ValidateSet('Yes')]
         [String]
-        $IsSingleInstance
+        $IsSingleInstance,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $SiteCode
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
@@ -54,11 +54,11 @@ function Get-TargetResource
     .SYNOPSIS
         This will set the desired state.
 
-    .PARAMETER SiteCode
-        Specifies the site code for Configuration Manager site.
-
     .PARAMETER IsSingleInstance
         Specifies the resource is a single instance, the value must be 'Yes'.
+
+    .PARAMETER SiteCode
+        Specifies the site code for Configuration Manager site.
 
     .PARAMETER ClientPolicyDays
         Specifies the data collection intervals for client policy client monitoring activities.
@@ -84,13 +84,13 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
-        $SiteCode,
-
-        [Parameter(Mandatory = $true)]
         [ValidateSet('Yes')]
         [String]
         $IsSingleInstance,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $SiteCode,
 
         [Parameter()]
         [ValidateRange(1,30)]
@@ -168,11 +168,11 @@ function Set-TargetResource
         If the state is not correct it returns $false.
         If the state is correct it returns $true.
 
-    .PARAMETER SiteCode
-        Specifies the site code for Configuration Manager site.
-
     .PARAMETER IsSingleInstance
         Specifies the resource is a single instance, the value must be 'Yes'.
+
+    .PARAMETER SiteCode
+        Specifies the site code for Configuration Manager site.
 
     .PARAMETER ClientPolicyDays
         Specifies the data collection intervals for client policy client monitoring activities.
@@ -199,13 +199,13 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
-        $SiteCode,
-
-        [Parameter(Mandatory = $true)]
         [ValidateSet('Yes')]
         [String]
         $IsSingleInstance,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $SiteCode,
 
         [Parameter()]
         [ValidateRange(1,30)]

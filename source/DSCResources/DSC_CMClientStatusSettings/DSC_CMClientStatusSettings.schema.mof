@@ -1,8 +1,8 @@
 [ClassVersion("1.0.0"), FriendlyName("CMClientStatusSettings")]
 class DSC_CMClientStatusSettings : OMI_BaseResource
 {
-    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Key, Description("Specifies the resource is a single instance, the value must be 'Yes'."), ValueMap{"Yes"}, Values{"Yes"}] String IsSingleInstance;
+    [Required, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Write, Description("Specifies the data collection intervals for client policy client monitoring activities.")] UInt32 ClientPolicyDays;
     [Write, Description("Specifies the data collection intervals for heartbeat discovery client monitoring activities.")] UInt32 HeartbeatDiscoveryDays;
     [Write, Description("Specifies the data collection intervals for software inventory client monitoring activities.")] UInt32 SoftwareInventoryDays;
