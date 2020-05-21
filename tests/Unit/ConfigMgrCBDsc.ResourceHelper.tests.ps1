@@ -767,27 +767,6 @@ InModuleScope $script:subModuleName {
     }
 
     Describe "$moduleResourceName\ConvertTo-CimCMScheduleString" {
-        $mockCimRefreshScheduleDay = (New-CimInstance -ClassName DSC_TestCimInstance `
-            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-            -Property @{
-                'RecurInterval' = 'Days'
-                'RecurCount'    = 6
-            } -ClientOnly
-        )
-        $mockCimRefreshScheduleHours = (New-CimInstance -ClassName DSC_TestCimInstance `
-            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-            -Property @{
-                'RecurInterval' = 'Hours'
-                'RecurCount'    = 7
-            } -ClientOnly
-        )
-        $mockCimRefreshScheduleMin = (New-CimInstance -ClassName DSC_TestCimInstance `
-            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-            -Property @{
-                'RecurInterval' = 'Minutes'
-                'RecurCount'    = 50
-            } -ClientOnly
-        )
         $scheduleConvertDays = @{
             DayDuration    = 0
             DaySpan        = 6
@@ -828,20 +807,26 @@ InModuleScope $script:subModuleName {
             It 'Should return desired result for day schedule conversion.' {
                 Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertDays }
                 $result = ConvertTo-CimCMScheduleString @cimInputParamDays
-                $result | Should -Match $mockCimRefreshScheduleDay
-                $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                $result.RecurInterval | Should -Be -ExpectedValue 'Days'
+                $result.RecurCount    | Should -Be -ExpectedValue 6
+                $result               | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
             }
             It 'Should return desired result for hour schedule conversion.' {
                 Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertHours }
                 $result = ConvertTo-CimCMScheduleString @cimInputParamHours
-                $result | Should -Match $mockCimRefreshScheduleHours
+                $result.RecurInterval | Should -Be -ExpectedValue 'Hours'
+                $result.RecurCount    | Should -Be -ExpectedValue 7
                 $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
             }
             It 'Should return desired result for minute schedule conversion.' {
                 Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertMin }
                 $result = ConvertTo-CimCMScheduleString @cimInputParamMinutes
-                $result | Should -Match $mockCimRefreshScheduleMin
+                $result.RecurInterval | Should -Be -ExpectedValue 'Minutes'
+                $result.RecurCount    | Should -Be -ExpectedValue 50
                 $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
             }
         }
     }
