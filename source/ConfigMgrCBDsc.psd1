@@ -47,6 +47,7 @@
         'SccmIniFile'
         'CMCollections'
         'CMBoundaries'
+        'CMForestDiscovery'
         'CMClientStatusSettings'
     )
 
@@ -60,7 +61,7 @@
             Prerelease   = ''
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc', 'ClientSettings','CMAccounts','SccmIniFile','Collections','Boundaries','ClientStatusSettings')
+            Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc', 'ClientSettings','CMAccounts','SccmIniFile','Collections','CMBoundaries','CMForestDiscovery','ClientStatusSettings')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'
