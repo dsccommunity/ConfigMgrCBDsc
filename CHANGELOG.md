@@ -14,6 +14,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added Set-ConfigMgrCert to the ResourceHelper
 - Added CMBoundaries resource
 - Added Convert-CidrToIP to the ResourceHelper
+- Added CMDsitributionPoint Resource
 
 ### Changed
 

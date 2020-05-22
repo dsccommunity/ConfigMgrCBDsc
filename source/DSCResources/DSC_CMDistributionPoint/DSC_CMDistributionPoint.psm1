@@ -269,6 +269,20 @@ function Set-TargetResource
         {
             if ($state.Ensure -eq 'Absent')
             {
+                if (($PrimaryContentLibraryLocation.Length -gt 1 -or $PrimaryContentLibraryLocation -match '[0-9]') -or
+                   ($SecondaryContentLibraryLocation.Length -gt 1 -or $SecondaryContentLibraryLocation -match '[0-9]') -or
+                   ($PrimaryPackageShareLocation.Length -gt 1 -or $PrimaryPackageShareLocation -match '[0-9]') -or
+                   ($SecondaryPackageShareLocation.Lenth -gt 1 -or $SecondaryPackageShareLocation -match '[0-9]'))
+                {
+                    throw $script:localizedData.InvalidPriOrSecLetter
+                }
+
+                if (($SecondaryContentLibraryLocation -and [string]::IsNullOrEmpty($PrimaryContentLibraryLocation)) -or
+                   ($SecondaryPackageShareLocation -and [string]::IsNullOrEmpty($PrimaryPackageShareLocation)))
+                {
+                    throw $script:localizedData.SecAndNoPrimary
+                }
+
                 if ($null -eq (Get-CMSiteSystemServer -SiteCode $SiteCode -SiteSystemServerName $SiteServerName))
                 {
                     Write-Verbose -Message ($script:localizedData.SiteServerRole -f $SiteServerName)

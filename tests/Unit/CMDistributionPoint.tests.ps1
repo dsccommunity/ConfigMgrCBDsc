@@ -226,6 +226,23 @@ try
             Ensure                          = 'Absent'
         }
 
+        $invalidPrimary = @{
+            SiteCode                        = 'Lab'
+            SiteServerName                  = 'DP01.contoso.com'
+            PrimaryPackageShareLocation     = 4
+            SecondaryContentLibraryLocation = 'C'
+        }
+
+        $invalidEntryThrow = 'Primary and Secondary Library or Package locations must be a character A - Z.'
+
+        $invalidSecondaryNoPrimary  = @{
+            SiteCode                        = 'Lab'
+            SiteServerName                  = 'DP01.contoso.com'
+            SecondaryContentLibraryLocation = 'C'
+        }
+
+        $invalidSecondaryThrow = 'Must specify the assoicated primary location when a secondary location is specified.'
+
         Describe "$moduleResourceName\Get-TargetResource" {
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
@@ -454,7 +471,43 @@ try
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
-                }   
+                }
+
+                It 'Should call expected commands when content or package location are not a letter throws' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnAbsent }
+                    Mock -CommandName Get-CMSiteSystemServer
+                    Mock -CommandName Set-CMDistributionPoint
+                    Mock -CommandName Remove-CMDistributionPoint
+                    Mock -CommandName New-CMSiteSystemServer
+
+                    { Set-TargetResource @invalidPrimary } | Should -Throw -ExpectedMessage $invalidEntryThrow
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when secondary content or package location are specified with no primary location' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnAbsent }
+                    Mock -CommandName Get-CMSiteSystemServer
+                    Mock -CommandName Set-CMDistributionPoint
+                    Mock -CommandName Remove-CMDistributionPoint
+                    Mock -CommandName New-CMSiteSystemServer
+
+                    { Set-TargetResource @invalidSecondaryNoPrimary } | Should -Throw -ExpectedMessage $invalidSecondaryThrow
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
+                }
             }
         }
 

@@ -216,3 +216,56 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMBoundaries_Absent](Source\Examples\Resources\CMBoundaries\CMBoundaries_Absent.ps1)
 - [CMBoundaries_Present](Source\Examples\Resources\CMBoundaries\CMBoundaries_Present.ps1)
+
+### CMDistributionPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the role.
+- **[String] Description** _(Write)_: Specifies a description for the
+  distribution point.
+- **[UInt32] MinimumFreeSpaceMB** _(Write)_: Specifies the amount of free space
+  to reserve on each drive used by this distribution point.
+  Only used when distribution point is not currently installed.
+- **[String] PrimaryContentLibraryLocation** _(Write)_: Specifies the primary
+  content location. Configuration Manager copies content to the primary content location
+  until the amount of free space reaches the value that you specified.
+  Only used when distribution point is not currently installed.
+- **[String] SecondaryContentLibraryLocation** _(Write)_: Specifies the
+  secondary content location.
+  Only used when distribution point is not currently installed.
+- **[String] PrimaryPackageShareLocation** _(Write)_: Specifies the primary
+  package share location. Configuration Manager copies content to the primary package
+  share location until the amount of free space reaches the value that you specified.
+  Only used when distribution point is not currently installed.
+- **[String] SecondaryPackageShareLocation** _(Write)_: Specifies the secondary
+  package share location.
+  Only used when distribution point is not currently installed.
+- **[DateTime] CertificateExpirationTimeUtc** _(Write)_: Specifies, in UTC format,
+  the date and time when the certificate expires.
+  Only used when distribution point is not currently installed.
+- **[String] ClientCommunicationType** _(Write)_: Specifies how clients or devices
+  communicate with the distribution point.
+  - Values include: { Http | Https }
+- **[String] BoundaryGroups[]** _(Write)_: Specifies an array of boundary groups
+  by name.
+- **[String] BoundaryGroupStatus** _(Write)_: Specifies if the boundary group is
+  to be added, removed, or match BoundaryGroups.
+  - Values include: { Add | Remove | Match }
+- **[Boolean] AllowPreStaging** _(Write)_: Indicates whether the distribution point
+  is enabled for prestaged content.
+- **[Boolean] EnableAnonymous** _(Write)_: Indicates that the distribution point
+  permits anonymous connections from Configuration Manager clients
+  to the content library.
+- **[Boolean] EnableBranchCache** _(Write)_: Indicates that clients that use Windows
+  BranchCache are allowed to download content from an on-premises
+  distribution point
+- **[Boolean] EnableLedbat** _(Write)_: Indicates whether to adjust the download
+  speed to use the unused network Bandwidth or Windows LEDBAT.
+- **[String] Ensure** _(Write)_: Specifies if the DP is to be present or absent.
+  - Values include: { Absent | Present }
+
+#### CMDistributionPoint Examples
+
+- [CMDistributionPoint_Absent](Source\Examples\Resources\CMDistributionPoint\CMDistributionPoint_Absent.ps1)
+- [CMDistributionPoint_Present](Source\Examples\Resources\CMDistributionPoint\CMDistributionPoint_Present.ps1)
