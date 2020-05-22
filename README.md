@@ -34,6 +34,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
 - **CMBoundaries**: Provides a resource for creating and removing boundaries.
+- **CMForestDiscovery**: Provides a resource to manage the Configuration Manager
+  AD Forest Discovery method.
 
 ### ClientSettings
 
@@ -216,3 +218,24 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMBoundaries_Absent](Source\Examples\Resources\CMBoundaries\CMBoundaries_Absent.ps1)
 - [CMBoundaries_Present](Source\Examples\Resources\CMBoundaries\CMBoundaries_Present.ps1)
+
+### CMForestDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Required)_: Specifies the enablement of the forest
+  discovery method. If settings is set to $false no other value provided will be
+  evaluated for compliance.
+- **[EmbeddedInstance] PollingSchedule** _(Write)_: Contains the polling
+  schedule for Configuration Manager (RecurInterval, RecurCount).
+- **[Boolean] EnableActiveDirectorySiteBoundaryCreation** _(Write)_: Indicates
+  whether Configuration Manager creates Active Directory boundaries from AD DS
+  discovery information.
+- **[Boolean] EnableSubnetBoundaryCreation** _(Write)_: Indicates whether
+  Configuration Manager creates IP address range boundaries from AD DS discovery
+  information.
+
+#### CMForestDiscovery Examples
+
+- [ForestDiscovery_Disabled](Source\Examples\Resources\DSC_CMForestDiscovery\ForestDiscovery_Disabled.ps1)
+- [ForestDiscovery_Enabled](Source\Examples\Resources\DSC_CMForestDiscovery\ForestDiscovery_Enabled.ps1)
