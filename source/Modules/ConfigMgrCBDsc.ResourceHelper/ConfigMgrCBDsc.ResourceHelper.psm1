@@ -560,6 +560,60 @@ function Convert-CidrToIP
 
 <#
     .SYNOPSIS
+        Converts CMSchedule objects to a readable and workable format.
+
+    .PARAMETER ScheduleString
+        Specifies the schedule string to convert.
+
+    .PARAMETER CimClassName
+        Specifies the name of the EmbeddedInstance for the schedule object.
+#>
+function ConvertTo-CimCMScheduleString
+{
+    [CmdletBinding()]
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ScheduleString,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $CimClassName
+    )
+
+    $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+
+    if (-not [string]::IsNullOrEmpty($schedule.DaySpan))
+    {
+        if ($schedule.DaySpan -gt 0)
+        {
+            $rInterval = 'Days'
+            $rCount = $schedule.DaySpan
+        }
+        elseif ($schedule.HourSpan -gt 0)
+        {
+            $rInterval = 'Hours'
+            $rCount = $schedule.HourSpan
+        }
+        elseif ($schedule.MinuteSpan -gt 0)
+        {
+            $rInterval = 'Minutes'
+            $rCount = $schedule.MinuteSpan
+        }
+
+        $scheduleCim = New-CimInstance -ClassName $CimClassName -Property @{
+            RecurInterval = $rInterval
+            RecurCount    = $rCount
+        } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration'
+
+        return $scheduleCim
+    }
+}
+
+<#
+    .SYNOPSIS
         Converts the boundaries to a CIM Instance.
 
     .PARAMETER InputObject
@@ -695,7 +749,7 @@ function Get-BoundaryInfo
     }
 
     return (Get-CMBoundary | Where-Object -FilterScript { ($_.BoundaryType -eq $convertBoundaryBack) -and
-                ($_.Value -eq $Value) }).BoundaryID
+            ($_.Value -eq $Value) }).BoundaryID
 }
 
 Export-ModuleMember -Function @(
@@ -706,6 +760,7 @@ Export-ModuleMember -Function @(
     'Convert-ClientSetting'
     'Get-ClientSettingsSoftwareCenter'
     'Convert-CidrToIP'
+    'ConvertTo-CimCMScheduleString'
     'ConvertTo-CimBoundaries'
     'Convert-BoundariesIPSubnets'
     'Get-BoundaryInfo'

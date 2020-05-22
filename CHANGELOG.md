@@ -14,6 +14,9 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added Set-ConfigMgrCert to the ResourceHelper
 - Added CMBoundaries resource
 - Added Convert-CidrToIP to the ResourceHelper
+- Added CMForestDiscovery resource
+- Added ConvertTo-CimCMScheduleString to the ResourceHelper
+- Added CMClientStatusSettings Resource
 - Added CMBoundaryGroups Resource
 - Added ConvertTo-CimBoundaries to the ResourceHelper
 - Added Convert-BoundariesIPSubnets to the ResourceHelper
@@ -25,6 +28,8 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 
 - Updated current DSCResources in module that use Import-ConfigMgrPowerShellModule
   adding SiteCode
+
+- Updated ConfigMgrCBDscStub, removing line for polling schedule type
 
 - Updated current DSCResources helper in module Import-ConfigMgrPowerShellModule
   adding fixing registry settings
