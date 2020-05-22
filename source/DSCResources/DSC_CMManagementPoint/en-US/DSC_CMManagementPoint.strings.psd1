@@ -1,5 +1,5 @@
 ConvertFrom-StringData @'
-    RetrieveSettingValue = Getting results for Configuration Manager collection.
+    RetrieveSettingValue = Getting results for Configuration Manager Management Point.
     MPNotInstalled       = Management Point is not installed on server: {0}.
     TestSetting          = {0} expected value: {1} returned {2}.
     MPAbsent             = {0} management point expected absent returned Present.

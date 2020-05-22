@@ -376,10 +376,24 @@ try
                     Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
                 }
 
+                It 'Should call expected commands when management point is present and setting gateway and SSL are false' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    Set-TargetResource @inputGatewayAndSsl
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMManagementPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMManagementPoint -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Remove-CMManagementPoint -Exactly -Times 0 -Scope It
+                }
+
                 It 'Should call expected commands when management point is absent and gateway and SSL are false' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
 
-                    Set-TargetResource @inputUseSiteDatabaseMisMatch
+                    Set-TargetResource @inputGatewayAndSsl
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It

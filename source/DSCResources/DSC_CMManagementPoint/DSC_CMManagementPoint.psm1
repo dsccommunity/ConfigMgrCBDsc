@@ -341,11 +341,21 @@ function Set-TargetResource
 
             if ($buildingParams)
             {
-                if ($buildingParams.ContainsKey('EnableSsl') -and $buildingParams.ContainsKey('EnableCloudGateway'))
+                if ($buildingParams.ContainsKey('EnableSsl') -and $buildingParams.EnableSSL -eq $false)
                 {
-                    if ($buildingParams.EnableSsl -eq $false)
+                    $buildingParams.Remove('EnableCloudGateway')
+                    $buildingParams.Remove('ClientConnectionType')
+
+                    if ($state.ClientConnectionType -ne 'Intranet' -and $state.EnableCloudGateway -eq $true)
                     {
-                        $buildingParams.Remove('EnableCloudGateway')
+                        $intranetParam = @{
+                            SiteSystemServerName = $SiteServerName
+                            SiteCode             = $SiteCode
+                            ClientConnectionType = 'Intranet'
+                            EnableCloudGateway   = $false
+                        }
+
+                        Set-CMManagementPoint @intranetParam
                     }
                 }
 
