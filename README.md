@@ -244,11 +244,11 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ### CMClientStatusSettings
 
-- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
-  Manager site.
 - **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
   instance, the value must be 'Yes'.
   { Yes }.
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
 - **[UInt32] ClientPolicyDays** _(Write)_: Specifies the data collection
   intervals for client policy client monitoring activities.
 - **[UInt32] HeartbeatDiscoveryDays** _(Write)_: Specifies the data collection
