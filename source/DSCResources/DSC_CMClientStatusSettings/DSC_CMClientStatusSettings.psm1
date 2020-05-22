@@ -61,22 +61,22 @@ function Get-TargetResource
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER ClientPolicyDays
-        Specifies the data collection intervals for client policy client monitoring activities.
+        Specifies the data collection interval for client policy client monitoring activities.
 
     .PARAMETER HeartbeatDiscoveryDays
-        Specifies the data collection intervals for heartbeat discovery client monitoring activities.
+        Specifies the data collection interval for heartbeat discovery client monitoring activities.
 
     .PARAMETER SoftwareInventoryDays
-        Specifies the data collection intervals for software inventory client monitoring activities.
+        Specifies the data collection interval for software inventory client monitoring activities.
 
     .PARAMETER HardwareInventoryDays
-        Specifies the data collection intervals for hardware inventory client monitoring activities.
+        Specifies the data collection interval for hardware inventory client monitoring activities.
 
     .PARAMETER StatusMessageDays
-        Specifies the data collection intervals for status message client monitoring activities.
+        Specifies the data collection interval for status message client monitoring activities.
 
     .PARAMETER HistoryCleanupDays
-        Specifies the data collection intervals for status history cleanup client monitoring activities.
+        Specifies the data collection interval for status history cleanup client monitoring activities.
 #>
 function Set-TargetResource
 {
@@ -175,22 +175,22 @@ function Set-TargetResource
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER ClientPolicyDays
-        Specifies the data collection intervals for client policy client monitoring activities.
+        Specifies the data collection interval for client policy client monitoring activities.
 
     .PARAMETER HeartbeatDiscoveryDays
-        Specifies the data collection intervals for heartbeat discovery client monitoring activities.
+        Specifies the data collection interval for heartbeat discovery client monitoring activities.
 
     .PARAMETER SoftwareInventoryDays
-        Specifies the data collection intervals for software inventory client monitoring activities.
+        Specifies the data collection interval for software inventory client monitoring activities.
 
     .PARAMETER HardwareInventoryDays
-        Specifies the data collection intervals for hardware inventory client monitoring activities.
+        Specifies the data collection interval for hardware inventory client monitoring activities.
 
     .PARAMETER StatusMessageDays
-        Specifies the data collection intervals for status message client monitoring activities.
+        Specifies the data collection interval for status message client monitoring activities.
 
     .PARAMETER HistoryCleanupDays
-        Specifies the data collection intervals for status history cleanup client monitoring activities.
+        Specifies the data collection interval for status history cleanup client monitoring activities.
 #>
 function Test-TargetResource
 {

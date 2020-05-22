@@ -250,17 +250,17 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
 - **[UInt32] ClientPolicyDays** _(Write)_: Specifies the data collection
-  intervals for client policy client monitoring activities.
+  interval for client policy client monitoring activities.
 - **[UInt32] HeartbeatDiscoveryDays** _(Write)_: Specifies the data collection
-  intervals for heartbeat discovery client monitoring activities.
+  interval for heartbeat discovery client monitoring activities.
 - **[UInt32] SoftwareInventoryDays** _(Write)_: Specifies the data collection
-  intervals for software inventory client monitoring activities.
+  interval for software inventory client monitoring activities.
 - **[UInt32] HardwareInventoryDays** _(Write)_: Specifies the data collection
-  intervals for hardware inventory client monitoring activities.
+  interval for hardware inventory client monitoring activities.
 - **[UInt32] StatusMessageDays** _(Write)_: Specifies the data collection
-  intervals for status message client monitoring activities.
+  interval for status message client monitoring activities.
 - **[UInt32] HistoryCleanupDays** _(Write)_: Specifies the data collection
-  intervals for status history cleanup client monitoring activities.
+  interval for status history cleanup client monitoring activities.
 
 #### CMClientStatusSettings Examples
 
