@@ -16,6 +16,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added Convert-CidrToIP to the ResourceHelper
 - Added CMForestDiscovery resource
 - Added ConvertTo-CimCMScheduleString to the ResourceHelper
+- Added CMClientStatusSettings Resource
 - Added CMAssetIntelligencePoint Resource
 
 ### Changed
