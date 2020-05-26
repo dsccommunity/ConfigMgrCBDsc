@@ -17,6 +17,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added CMForestDiscovery resource
 - Added ConvertTo-CimCMScheduleString to the ResourceHelper
 - Added CMClientStatusSettings Resource
+- Added CMPxeDistributionPoint Resource
 
 ### Changed
 
