@@ -348,7 +348,7 @@ function Set-TargetResource
                         if ($state.BoundaryGroups -notcontains $boundaryGroup)
                         {
                             Write-Verbose -Message ($script:localizedData.BoundaryGroupAdd -f $boundaryGroup)
-                            $boundaryAddArray += $boundaryGroup
+                            [array]$boundaryAddArray += $boundaryGroup
                         }
                     }
                 }
@@ -360,7 +360,7 @@ function Set-TargetResource
                         if ($state.BoundaryGroups -contains $boundaryGroup)
                         {
                             Write-Verbose -Message ($script:localizedData.BoundaryGroupRemove -f $boundaryGroup)
-                            $boundaryRemoveArray += $boundaryGroup
+                            [array]$boundaryRemoveArray += $boundaryGroup
                         }
                     }
                 }
