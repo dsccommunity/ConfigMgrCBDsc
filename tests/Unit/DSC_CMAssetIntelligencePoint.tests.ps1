@@ -207,7 +207,6 @@ try
             Context 'When retrieving asset intelligence point settings' {
 
                 It 'Should return desired result when asset intelligence point is not currently installed' {
-                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $null }
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $null }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $null }
 
@@ -223,7 +222,6 @@ try
                 }
 
                 It 'Should return desired result when asset intelligence point is currently installed with no certificate file' {
-                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $true }
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnNoCert }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule }
 
@@ -240,7 +238,6 @@ try
                 }
 
                 It 'Should return desired result when asset intelligence point is currently installed with a certificate file' {
-                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $true }
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnWithCert }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule }
 

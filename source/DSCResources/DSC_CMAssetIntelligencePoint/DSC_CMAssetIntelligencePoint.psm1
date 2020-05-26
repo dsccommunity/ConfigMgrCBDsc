@@ -39,11 +39,10 @@ function Get-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
-    $ap = Get-CMAssetIntelligenceSynchronizationPoint -SiteCode $SiteCode -SiteSystemServerName $SiteServerName
+    $apProps      = Get-CMAssetIntelligenceProxy
 
-    if ($ap)
+    if ($apProps)
     {
-        $apProps      = Get-CMAssetIntelligenceProxy | Where-Object -FilterScript {$_.ProxyName -eq $SiteServerName}
         $cert         = $apProps.ProxyCertPath
         $apEnabled    = $apProps.ProxyEnabled
         $syncEnabled  = $apProps.PeriodicCatalogUpdateEnabled
