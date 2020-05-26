@@ -602,6 +602,31 @@ function ConvertTo-CimCMScheduleString
     }
 }
 
+function ConvertTo-AnyCimInstance
+{
+    [CmdletBinding()]
+    [OutputType([System.Object[]])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Hashtable]
+        $Hashtable,
+
+        [Parameter()]
+        [String]
+        $ClassName
+    )
+
+        $property = @{}
+        foreach ($item in $Hashtable.GetEnumerator())
+        {
+            $property += @{$item.Key = $item.Value}
+        }
+
+        New-CimInstance -ClassName $ClassName -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' `
+            -Property $property -ClientOnly
+}
+
 Export-ModuleMember -Function @(
     'Get-LocalizedData',
     'New-InvalidArgumentException',
@@ -611,4 +636,5 @@ Export-ModuleMember -Function @(
     'Get-ClientSettingsSoftwareCenter'
     'Convert-CidrToIP'
     'ConvertTo-CimCMScheduleString'
+    'ConvertTo-AnyCimInstance'
 )

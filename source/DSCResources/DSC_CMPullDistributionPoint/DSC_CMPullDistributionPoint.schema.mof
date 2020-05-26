@@ -1,0 +1,16 @@
+[ClassVersion("1.0.0"), FriendlyName("CMPullDistributionPoint")]
+class DSC_CMPullDistributionPoint : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the SiteServer to install the role on.")] String SiteServerName;
+    [Write, Description("Specifies if EnablePullDP is to be set to enabled or disabled.")] Boolean EnablePullDP;
+    [Write, EmbeddedInstance("DSC_CMPullDistributionPointSourceDP"), Description("Specifies the desired source distribution points and the DP ranking.")] String SourceDistributionPoint[];
+    [Read, Description("Specifies if the DP role is installed.")] String DPStatus;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMPullDistributionPointSourceDP
+{
+     [Required, Description("Specifies the value of the boundary")] String SourceDP;
+     [Required, Description("Specifies the type of boundary")] UInt32 DPRank;
+};

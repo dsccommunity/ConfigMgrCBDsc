@@ -265,3 +265,19 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 #### CMClientStatusSettings Examples
 
 - [CMClientStatusSettings](Source\Examples\Resources\CMClientStatusSettings\CMClientStatusSettings.ps1)
+
+### CMPullDistributionPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the
+  role on.
+- **[Boolean] EnablePullDP** _(Write)_: Specifies if the distribution point is
+  to be set to enabled or disabled for pull distribution point.
+- **[EmbeddedInstance] SourceDistributionPoint[]** _(Write)_: Specifies the desired
+  source distribution points and the DP ranking.
+
+#### CMPullDistributionPoint Examples
+
+- [CMPullDistributionPoint_Enabled](Source\Examples\Resources\CMPullDistributionPoint\CMPullDistributionPoint_Enabled.ps1)
+- [CMPullDistributionPoint_Disabled](Source\Examples\Resources\CMPullDistributionPoint\CMPullDistributionPoint_Disabled.ps1)
