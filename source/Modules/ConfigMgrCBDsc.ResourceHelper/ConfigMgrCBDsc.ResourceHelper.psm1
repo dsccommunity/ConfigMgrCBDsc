@@ -620,7 +620,9 @@ function ConvertTo-AnyCimInstance
         $property = @{}
         foreach ($item in $Hashtable.GetEnumerator())
         {
-            $property += @{$item.Key = $item.Value}
+            $property += @{
+                $item.Key = $item.Value
+            }
         }
 
         New-CimInstance -ClassName $ClassName -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' `
