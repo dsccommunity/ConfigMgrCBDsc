@@ -17,7 +17,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Specifies the Site Server to install or configure the role on.
 
     .Notes
-        This role must only be installed on top-level site of the hierarchy
+        This role must only be installed on top-level site of the hierarchy.
 
 #>
 function Get-TargetResource
@@ -56,7 +56,6 @@ function Get-TargetResource
         }
         $sSchedule = ConvertTo-CimCMScheduleString @convertCimParam
     }
-
     else
     {
         $status = 'Absent'
@@ -100,7 +99,7 @@ function Get-TargetResource
         Specifies whether the asset intelligence synchronization point is present or absent.
 
     .Notes
-        This role must only be installed on top-level site of the hierarchy
+        This role must only be installed on top-level site of the hierarchy.
 #>
 function Set-TargetResource
 {
@@ -216,13 +215,10 @@ function Set-TargetResource
                 Set-CMAssetIntelligenceSynchronizationPoint @buildingParams
             }
         }
-        else
+        elseif ($state.Ensure -eq 'Present')
         {
-            if ($state.Ensure -eq 'Present')
-            {
-                Write-Verbose -Message ($script:localizedData.RemoveAPRole -f $SiteServerName)
-                Remove-CMAssetIntelligenceSynchronizationPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
-            }
+            Write-Verbose -Message ($script:localizedData.RemoveAPRole -f $SiteServerName)
+            Remove-CMAssetIntelligenceSynchronizationPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
         }
     }
     catch
@@ -262,7 +258,7 @@ function Set-TargetResource
         Specifies whether the asset intelligence synchronization point is present or absent.
 
     .Notes
-        This role must only be installed on top-level site of the hierarchy
+        This role must only be installed on top-level site of the hierarchy.
 #>
 
 function Test-TargetResource

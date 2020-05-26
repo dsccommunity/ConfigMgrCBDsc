@@ -270,7 +270,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] SiteServerName** _(Write)_: Specifies the Site Server to install or
+- **[String] SiteServerName** _(Required)_: Specifies the Site Server to install or
   configure the role on.
 - **[String] CertificateFile** _(Write)_: Specifies the path to a System Center
   Online authentication certificate (.pfx) file. If used, this must be in UNC
