@@ -200,6 +200,15 @@ try
             Ensure                = 'Present'
         }
 
+        $syncScheduleThrow = @{
+            SiteCode              = 'Lab'
+            SiteServerName        = 'CA01.contoso.com'
+            EnableSynchronization = $false
+            Schedule              = $mockCimSchedule
+        }
+
+        $syncScheduleThrowMsg = 'When specifying a schedule, the EnableSynchronization paramater must be true.'
+
         Describe "$moduleResourceName\Get-TargetResource" {
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
@@ -262,7 +271,7 @@ try
                 Mock -CommandName Get-CMSiteSystemServer
                 Mock -CommandName New-CMSiteSystemServer
                 Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName New-CMSchedule 
+                Mock -CommandName New-CMSchedule
                 Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
                 Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
 
@@ -328,7 +337,7 @@ try
                     Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
-                
+
                 It 'Should call expected commands when management point exists and expected absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
@@ -351,11 +360,25 @@ try
                 Mock -CommandName Get-CMSiteSystemServer
                 Mock -CommandName New-CMSiteSystemServer
                 Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName New-CMSchedule 
+                Mock -CommandName New-CMSchedule
                 Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
                 Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
 
-                
+                It 'Should call throws when a schedule is specified and enable synchronization is false' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @syncScheduleThrow } | Should -Throw -ExpectedMessage $syncScheduleThrowMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                }
+
                 It 'Should call expected commands and throw if Get-CMSiteSystemServer throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
                     Mock -CommandName Get-CMSiteSystemServer -MockWith { throw }
@@ -371,7 +394,7 @@ try
                     Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
-                
+
                 It 'Should call expected commands and throw if New-CMSiteSystemServer throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
                     Mock -CommandName Get-CMSiteSystemServer

@@ -141,6 +141,11 @@ function Set-TargetResource
 
     try
     {
+        if (($Schedule) -and ($EnableSynchronization -eq $false))
+        {
+            throw $script:localizedData.ScheduleNoSync
+        }
+
         if ($Ensure -eq 'Present')
         {
             if ($state.Ensure -eq 'Absent')
