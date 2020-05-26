@@ -4,6 +4,7 @@ ConvertFrom-StringData @'
     TestSetting          = Setting {0} expected value: {1} returned {2}.
     APAbsent             = {0} Asset Intelligence Synchronization Point expected absent returned present.
     TestState            = Test-TargetResource compliance check returned: {0}.
+    SiteServerRole       = {0} is not currently a site system server adding site system role.
     NullCertCheck        = Expected no certificate file to be configured, but detected that one is currently configured on {0}.
     ScheduleItem         = Schedule item {0} expected {1} returned {2}.
     AddAPRole            = Adding Asset Intelligence Synchronization Point role to {0}.

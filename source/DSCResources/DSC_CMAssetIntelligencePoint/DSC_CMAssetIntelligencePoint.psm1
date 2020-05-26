@@ -145,6 +145,12 @@ function Set-TargetResource
         {
             if ($state.Ensure -eq 'Absent')
             {
+                if ($null -eq (Get-CMSiteSystemServer -SiteCode $SiteCode -SiteSystemServerName $SiteServerName))
+                {
+                    Write-Verbose -Message ($script:localizedData.SiteServerRole -f $SiteServerName)
+                    New-CMSiteSystemServer -SiteCode $SiteCode -SiteSystemServerName $SiteServerName
+                }
+
                 Write-Verbose -Message ($script:localizedData.AddAPRole -f $SiteServerName)
                 Add-CMAssetIntelligenceSynchronizationPoint -SiteSystemServerName $SiteServerName
             }
