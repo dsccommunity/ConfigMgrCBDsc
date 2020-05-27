@@ -220,8 +220,10 @@ try
         $certThrowMsg = "When specifying a certificate, you can't specify RemoveCertificate as true."
 
         Describe "$moduleResourceName\Get-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
+            BeforeAll{
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+            }
 
             Context 'When retrieving asset intelligence point settings' {
 
@@ -276,14 +278,16 @@ try
 
         Describe "$moduleResourceName\Set-TargetResource" {
             Context 'When Set-TargetResource runs successfully' {
-                Mock -CommandName Import-ConfigMgrPowerShellModule
-                Mock -CommandName Set-Location
-                Mock -CommandName Get-CMSiteSystemServer
-                Mock -CommandName New-CMSiteSystemServer
-                Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName New-CMSchedule
-                Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
+                BeforeEach{
+                    Mock -CommandName Import-ConfigMgrPowerShellModule
+                    Mock -CommandName Set-Location
+                    Mock -CommandName Get-CMSiteSystemServer
+                    Mock -CommandName New-CMSiteSystemServer
+                    Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
+                    Mock -CommandName New-CMSchedule
+                    Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
+                    Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
+                }
 
                 It 'Should call expected commands for when changing settings' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
@@ -365,14 +369,16 @@ try
             }
 
             Context 'When Set-TargetResource throws' {
-                Mock -CommandName Import-ConfigMgrPowerShellModule
-                Mock -CommandName Set-Location
-                Mock -CommandName Get-CMSiteSystemServer
-                Mock -CommandName New-CMSiteSystemServer
-                Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName New-CMSchedule
-                Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
-                Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
+                BeforeEach{
+                    Mock -CommandName Import-ConfigMgrPowerShellModule
+                    Mock -CommandName Set-Location
+                    Mock -CommandName Get-CMSiteSystemServer
+                    Mock -CommandName New-CMSiteSystemServer
+                    Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
+                    Mock -CommandName New-CMSchedule
+                    Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
+                    Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
+                }
 
                 It 'Should call throws when a schedule is specified and enable synchronization is false' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
@@ -506,8 +512,10 @@ try
         }
 
         Describe "$moduleResourceName\Test-TargetResource" {
-            Mock -CommandName Set-Location
-            Mock -CommandName Import-ConfigMgrPowerShellModule
+            BeforeAll{
+                Mock -CommandName Set-Location
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+            }
 
             Context 'When running Test-TargetResource' {
 
