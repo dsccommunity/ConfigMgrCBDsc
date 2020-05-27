@@ -7,7 +7,7 @@ class DSC_CMAssetIntelligencePoint: OMI_BaseResource
     [Write, EmbeddedInstance("DSC_CMAssetIntelligenceSynchronizationSchedule"), Description("Specifies when the asset intelligence catalog is synchronized. (RecurInterval, RecurCount)")] String Schedule;
     [Write, Description("Specifies whether the installed asset intelligence role is enabled or disabled.")] Boolean Enable;
     [Write, Description("Specifies whether to synchronize the asset intelligence catalog.")] Boolean EnableSynchronization;
-	[Write, Description("Specifies whether to remove a configured certificate file. Mutually exclusive with the CertificateFile Parameter.")] Boolean RemoveCertificate;
+    [Write, Description("Specifies whether to remove a configured certificate file. Mutually exclusive with the CertificateFile Parameter.")] Boolean RemoveCertificate;
     [Write, Description("Specifies whether the asset intelligence synchronization point is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };
 
