@@ -602,6 +602,16 @@ function ConvertTo-CimCMScheduleString
     }
 }
 
+<#
+    .SYNOPSIS
+        Converts hashtable into a named Cim Instance.
+
+    .PARAMETER HashTable
+        Specifies the schedule string to convert.
+
+    .PARAMETER ClassName
+        Specifies the desired Cim Instance classname for the output.
+#>
 function ConvertTo-AnyCimInstance
 {
     [CmdletBinding()]
@@ -612,7 +622,7 @@ function ConvertTo-AnyCimInstance
         [System.Collections.Hashtable]
         $Hashtable,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [String]
         $ClassName
     )

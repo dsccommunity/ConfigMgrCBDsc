@@ -830,4 +830,38 @@ InModuleScope $script:subModuleName {
             }
         }
     }
+
+    Describe "$moduleResourceName\ConvertTo-AnyCimInstance" {
+        $inputSingleParams = @{
+            ClassName = 'MSFT_KeyPairs'
+            HashTable = @{
+                Value1 = 'Value'
+            }
+        }
+
+        $inputMultipleParams = @{
+            ClassName = 'MSFT_KeyPairs'
+            HashTable = @{
+                Value1 = 'Value'
+                Value2 = 1
+            }
+        }
+
+        Context 'When return is as expected' {
+            It 'Should return desired result for single entry hashtable' {
+                $result = ConvertTo-AnyCimInstance @inputSingleParams
+                $result                       | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                $result.CimClass.CimClassName | Should -Be -ExpectedValue 'MSFT_KeyPairs'
+                $result.Value1                | Should -Be -ExpectedValue 'Value'
+            }
+
+            It 'Should return desired result for multiple entry hashtable' {
+                $result = ConvertTo-AnyCimInstance @inputMultipleParams
+                $result                       | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                $result.CimClass.CimClassName | Should -Be -ExpectedValue 'MSFT_KeyPairs'
+                $result.Value1                | Should -Be -ExpectedValue 'Value'
+                $result.Value2                | Should -Be -ExpectedValue 1
+            }
+        }
+    }
 }

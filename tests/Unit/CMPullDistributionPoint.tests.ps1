@@ -39,7 +39,6 @@ try
     InModuleScope $script:dscResourceName {
         $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMPullDistributionPoint'
 
-        # Get input and output
         $getCMdistroOutputMultiple = @{
             Props     = @(
                 @{
@@ -85,8 +84,6 @@ try
             SiteCode       = 'Lab'
             SiteServerName = 'DP01.contoso.com'
         }
-
-        #Test and Set
 
         $getSourceDPReturn = @(
             (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
@@ -203,7 +200,7 @@ try
                     $result.SiteCode                            | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName                      | Should -Be -ExpectedValue 'DP01.contoso.com'
                     $result.EnablePullDP                        | Should -Be -ExpectedValue $true
-                    $result.SourceDistributionPoint             | should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.SourceDistributionPoint             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.SourceDistributionPoint[0].SourceDP | Should -Be -ExpectedValue 'DP02.contoso.com'
                     $result.SourceDistributionPoint[0].DPRank   | Should -Be -ExpectedValue '1'
                     $result.SourceDistributionPoint[1].SourceDP | Should -Be -ExpectedValue 'DP03.contoso.com'
@@ -219,7 +216,7 @@ try
                     $result.SiteCode                            | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName                      | Should -Be -ExpectedValue 'DP01.contoso.com'
                     $result.EnablePullDP                        | Should -Be -ExpectedValue $true
-                    $result.SourceDistributionPoint             | should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+                    $result.SourceDistributionPoint             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.SourceDistributionPoint[0].SourceDP | Should -Be -ExpectedValue 'DP02.contoso.com'
                     $result.SourceDistributionPoint[0].DPRank   | Should -Be -ExpectedValue '1'
                     $result.DPStatus                            | Should -Be -ExpectedValue 'Present'
@@ -233,7 +230,7 @@ try
                     $result.SiteCode                            | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName                      | Should -Be -ExpectedValue 'DP01.contoso.com'
                     $result.EnablePullDP                        | Should -Be -ExpectedValue $null
-                    $result.SourceDistributionPoint             | should -Be -ExpectedValue $null
+                    $result.SourceDistributionPoint             | Should -Be -ExpectedValue $null
                     $result.DPStatus                            | Should -Be -ExpectedValue 'Absent'
                 }
             }
