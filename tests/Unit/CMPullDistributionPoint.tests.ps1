@@ -183,12 +183,13 @@ try
             SiteServerName = 'DP01.contoso.com'
             EnablePullDP   = $true
         }
-
         $pullDPEnableNoSource = 'When enabling a Pull DP sourceDistribution Point must be specified.'
 
         Describe "$moduleResourceName\Get-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
+            BeforeAll {
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+            }
 
             Context 'When retrieving Collection settings' {
 
@@ -237,9 +238,11 @@ try
         }
 
         Describe "$moduleResourceName\Set-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
-            Mock -CommandName Set-CMDistributionPoint
+            BeforeAll {
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+                Mock -CommandName Set-CMDistributionPoint
+            }
 
             Context 'When Set-TargetResource runs successfully' {
 
@@ -319,8 +322,10 @@ try
         }
 
         Describe "$moduleResourceName\Test-TargetResource" {
-            Mock -CommandName Set-Location
-            Mock -CommandName Import-ConfigMgrPowerShellModule
+            BeforeAll {
+                Mock -CommandName Set-Location
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+            }
 
             Context 'When running Test-TargetResource' {
 
