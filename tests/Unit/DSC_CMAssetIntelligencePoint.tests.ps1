@@ -189,6 +189,7 @@ try
             SiteServerName        = 'CA01.contoso.com'
             Enable                = $true
             EnableSynchronization = $true
+            RemoveCertificate     = $true
             Ensure                = 'Present'
         }
 
@@ -208,6 +209,15 @@ try
         }
 
         $syncScheduleThrowMsg = 'When specifying a schedule, the EnableSynchronization paramater must be true.'
+
+        $certThrow = @{
+            SiteCode              = 'Lab'
+            SiteServerName        = 'CA01.contoso.com'
+            RemoveCertificate     = $true
+            CertificateFile       = '\\CA01.Contoso.com\c$\cert.pfx'
+        }
+
+        $certThrowMsg = "When specifying a certificate, you can't specify RemoveCertificate as true."
 
         Describe "$moduleResourceName\Get-TargetResource" {
             Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -379,6 +389,21 @@ try
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
 
+                It 'Should call throws when a certificate is specified and RemoveCertificate is true' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @certThrow } | Should -Throw -ExpectedMessage $certThrowMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                }
+
                 It 'Should call expected commands and throw if Get-CMSiteSystemServer throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
                     Mock -CommandName Get-CMSiteSystemServer -MockWith { throw }
@@ -513,7 +538,7 @@ try
                 It 'Should return desired result false when a certificate file is not specified and a certificate file is present' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
-                    Test-TargetResource @inputPresent | Should -Be $false
+                    Test-TargetResource @inputNoCert | Should -Be $false
                 }
 
                 It 'Should return desired result true when no certificate file is specified and no certificate file is present' {

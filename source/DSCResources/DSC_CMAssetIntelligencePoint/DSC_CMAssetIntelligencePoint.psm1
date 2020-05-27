@@ -84,6 +84,7 @@ function Get-TargetResource
     .PARAMETER CertificateFile
         Specifies the path to a System Center Online authentication certificate (.pfx) file.
         If used, this must be in UNC format. Local paths are not allowed.
+        Mutually exclusive with the CertificateFile Parameter.
 
     .PARAMETER Schedule
         Specifies when the asset intelligence catalog is synchronized.
@@ -93,6 +94,10 @@ function Get-TargetResource
 
     .PARAMETER EnableSynchronization
         Specifies whether to synchronize the asset intelligence catalog.
+
+    .PARAMETER RemoveCertificate
+        Specifies whether to remove a configured certificate file.
+        Mutually exclusive with the CertificateFile Parameter.
 
     .PARAMETER Ensure
         Specifies whether the asset intelligence synchronization point is present or absent.
@@ -130,6 +135,10 @@ function Set-TargetResource
         $EnableSynchronization,
 
         [Parameter()]
+        [Boolean]
+        $RemoveCertificate,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -144,6 +153,11 @@ function Set-TargetResource
         if (($Schedule) -and ($EnableSynchronization -eq $false))
         {
             throw $script:localizedData.ScheduleNoSync
+        }
+
+        if (($CertificateFile) -and ($RemoveCertificate -eq $true))
+        {
+            throw $script:localizedData.CertMismatch
         }
 
         if ($Ensure -eq 'Present')
@@ -176,7 +190,7 @@ function Set-TargetResource
                 }
             }
 
-            if (([string]::IsNullOrEmpty($CertificateFile)) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
+            if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
             {
                 Write-Verbose -Message ($script:localizedData.RemoveCert -f $SiteServerName)
                 $buildingParams += @{
@@ -254,6 +268,7 @@ function Set-TargetResource
     .PARAMETER CertificateFile
         Specifies the path to a System Center Online authentication certificate (.pfx) file.
         If used, this must be in UNC format. Local paths are not allowed.
+        Mutually exclusive with the CertificateFile Parameter.
 
     .PARAMETER Schedule
         Specifies when the asset intelligence catalog is synchronized.
@@ -263,6 +278,10 @@ function Set-TargetResource
 
     .PARAMETER EnableSynchronization
         Specifies whether to synchronize the asset intelligence catalog.
+
+    .PARAMETER RemoveCertificate
+        Specifies whether to remove a configured certificate file.
+        Mutually exclusive with the CertificateFile Parameter.
 
     .PARAMETER Ensure
         Specifies whether the asset intelligence synchronization point is present or absent.
@@ -302,6 +321,10 @@ function Test-TargetResource
         $EnableSynchronization,
 
         [Parameter()]
+        [Boolean]
+        $RemoveCertificate,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -334,7 +357,7 @@ function Test-TargetResource
             }
         }
 
-        if (([string]::IsNullOrEmpty($CertificateFile)) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
+        if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
         {
             Write-Verbose -Message ($script:localizedData.NullCertCheck -f $SiteServerName)
             $result = $false
