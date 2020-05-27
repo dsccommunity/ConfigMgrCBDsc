@@ -235,13 +235,10 @@ function Set-TargetResource
                 }
             }
         }
-        else
+        elseif ($state.Ensure -eq 'Present')
         {
-            if ($state.Ensure -eq 'Present')
-            {
-                Write-Verbose -Message ($script:localizedData.BoundaryGroupDelete -f $BoundaryGroup)
-                Remove-CMBoundaryGroup -Name $BoundaryGroup
-            }
+            Write-Verbose -Message ($script:localizedData.BoundaryGroupDelete -f $BoundaryGroup)
+            Remove-CMBoundaryGroup -Name $BoundaryGroup
         }
     }
     catch
@@ -383,13 +380,10 @@ function Test-TargetResource
             }
         }
     }
-    else
+    elseif ($state.Ensure -eq 'Present')
     {
-        if ($state.Ensure -eq 'Present')
-        {
-            Write-Verbose -Message ($script:localizedData.BoundaryGroupRemove -f $BoundaryGroup)
-            $result = $false
-        }
+        Write-Verbose -Message ($script:localizedData.BoundaryGroupRemove -f $BoundaryGroup)
+        $result = $false
     }
 
     Write-Verbose -Message ($script:localizedData.TestState -f $result)
