@@ -324,7 +324,7 @@ function Test-TargetResource
                         foreach ($toAdd in $convert)
                         {
                             Write-Verbose -Message ($script:localizedData.MissingBoundary `
-                                -f $BoundaryGroup, $addCompare.Type, $addCompare.Value)
+                                -f $BoundaryGroup, $toAdd.Type, $toAdd.Value)
                             $result = $false
                         }
                     }
