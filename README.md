@@ -38,6 +38,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   AD Forest Discovery method.
 - **CMClientStatusSettings**: Provides a resource for modifying configuration
   manager client status settings.
+- **CMBoundariesGroup**: Provides a resource for creating boundary groups and
+  adding boundaries to the groups.
 
 ### ClientSettings
 
@@ -265,3 +267,24 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 #### CMClientStatusSettings Examples
 
 - [CMClientStatusSettings](Source\Examples\Resources\CMClientStatusSettings\CMClientStatusSettings.ps1)
+
+### CMBoundaryGroups
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] BoundaryGroup** _(Key)_: Specifies the name of the boundary group.
+- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of boundaries
+  to add or remove from the boundary group.
+- **[String] BoundaryAction** _(Write)_: Specifies the boundaries are to match,
+  add, or remove Boundaries from the boundary group
+  - Values include: { Match | Add | Remove }
+- **[String] Ensure** _(Write)_: Specifies status of the collection is to be
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMBoundaryGroups Examples
+
+- [CMBoundaryGroups_Absent](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Absent.ps1)
+- [CMBoundaryGroups_Present](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Present.ps1)
+- [CMBoundaryGroups_Include](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Include.ps1)
+- [CMBoundaryGroups_Exclude](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Exclude.ps1)
