@@ -1,5 +1,5 @@
 [ClassVersion("1.0.0"), FriendlyName("CMAccounts")]
-class CMAccounts : OMI_BaseResource
+class DSC_CMAccounts : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Key, Description("Specifies the Configuration Manager account name.")] String Account;
