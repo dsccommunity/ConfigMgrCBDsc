@@ -62,6 +62,14 @@ try
                 } -ClientOnly
         )
 
+        $mockCimScheduleZero = (New-CimInstance -ClassName DSC_CMAssetIntelligenceSynchronizationSchedule `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'RecurInterval' = 'Days'
+                    'RecurCount'    = 0
+                } -ClientOnly
+        )
+
         $scheduleConvertDays = @{
             DayDuration    = 0
             DaySpan        = 7
@@ -89,6 +97,13 @@ try
             MinuteSpan     = 0
         }
 
+        $scheduleConvertZero = @{
+            DayDuration    = 0
+            HourDuration   = 0
+            IsGMT          = $false
+            MinuteDuration = 0
+        }
+
         $returnEnabledDaysMismatch = @{
             SiteCode       = 'Lab'
             SiteServerName = 'CA01.contoso.com'
@@ -97,10 +112,19 @@ try
         }
 
         $getReturnEnabledHours = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'CA01.contoso.com'
-            Schedule       = $mockCimScheduleHours
-            Ensure         = 'Present'
+            SiteCode              = 'Lab'
+            SiteServerName        = 'CA01.contoso.com'
+            Schedule              = $mockCimScheduleHours
+            EnableSynchronization = $true
+            Ensure                = 'Present'
+        }
+
+        $getReturnEnabledZero = @{
+            SiteCode              = 'Lab'
+            SiteServerName        = 'CA01.contoso.com'
+            Schedule              = $mockCimScheduleZero
+            EnableSynchronization = $true
+            Ensure                = 'Present'
         }
 
         $getInput = @{
@@ -153,6 +177,15 @@ try
             Enable                = $true
             EnableSynchronization = $true
             Schedule              = $mockCimSchedule
+            Ensure                = 'Present'
+        }
+
+        $getReturnNoSchedule = @{
+            SiteCode              = 'Lab'
+            SiteServerName        = 'CA01.contoso.com'
+            CertificateFile       = $null
+            Enable                = $true
+            EnableSynchronization = $true
             Ensure                = 'Present'
         }
 
@@ -365,6 +398,38 @@ try
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when a schedule is present and a nonrecurring schedule is specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero }
+
+                    Set-TargetResource @getReturnEnabledZero
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when no schedule is present and a schedule is specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHours }
+
+                    Set-TargetResource @getReturnEnabledHours
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
             }
 
@@ -579,6 +644,16 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
                     Test-TargetResource @getReturnAll | Should -Be $true
+                }
+
+                It 'Should return desired result false schedule present but nonrecurring specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledHours }
+                    Test-TargetResource @getReturnEnabledZero | Should -Be $false
+                }
+
+                It 'Should return desired result false no schedule present but schedule specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
+                    Test-TargetResource @getReturnEnabledHours | Should -Be $false
                 }
             }
         }

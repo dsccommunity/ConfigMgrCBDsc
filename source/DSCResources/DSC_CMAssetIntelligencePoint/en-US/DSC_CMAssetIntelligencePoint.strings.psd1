@@ -13,4 +13,8 @@ ConvertFrom-StringData @'
     SettingValue         = Setting value: {0} to {1}.
     RemoveCert           = Removing configured certificate file for site server {0}.
     RemoveAPRole         = Removing Asset Intelligence Synchronization Point role from {0}.
+    NoSchedule           = Expected Schedule to be set to None.
+    CurrentSchedule      = Current Schedule is set to none, desired: {0} {1}.
+    SetNoSchedule        = Setting schedule to none.
+    SetSchedule          = Setting schedule to {0} {1}
 '@

@@ -33936,7 +33936,6 @@ function Set-CMAssetIntelligenceSynchronizationPoint
 
         [Alias('ScheduleToken')]
         [AllowNull()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 

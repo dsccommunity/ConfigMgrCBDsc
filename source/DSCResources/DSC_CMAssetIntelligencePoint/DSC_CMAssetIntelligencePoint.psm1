@@ -39,7 +39,7 @@ function Get-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
-    $apProps      = Get-CMAssetIntelligenceProxy
+    $apProps = Get-CMAssetIntelligenceProxy
 
     if ($apProps)
     {
@@ -200,36 +200,62 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($Schedule))
             {
-                $newSchedule = @{
-                    RecurInterval = $Schedule.RecurInterval
-                    RecurCount    = $Schedule.RecurCount
-                }
-
-                $desiredSchedule = New-CMSchedule @newSchedule
-
-                $currentSchedule = @{
-                    RecurInterval = $state.Schedule.RecurInterval
-                    RecurCount    = $state.Schedule.RecurCount
-                }
-
-                $stateSchedule = New-CMSchedule @currentSchedule
-
-                $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-
-                foreach ($item in $array)
+                if (($Schedule.RecurCount -eq 0) -and ($state.Schedule))
                 {
-                    if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
+                    $setSchedule = $true
+                    Write-Verbose -Message $script:localizedData.SetNoSchedule
+                }
+                elseif (-not ($state.Schedule) -and ($Schedule.RecurCount -ne 0))
+                {
+                    Write-Verbose -Message ($script:localizedData.SetSchedule `
+                        -f $Schedule.RecurInterval, $Schedule.RecurCount)
+                    $setSchedule = $true
+                }
+                elseif (($state.Schedule) -and ($Schedule.RecurCount -ne 0))
+                {
+                    $newSchedule = @{
+                        RecurInterval = $Schedule.RecurInterval
+                        RecurCount    = $Schedule.RecurCount
+                    }
+
+                    $desiredSchedule = New-CMSchedule @newSchedule
+
+                    $currentSchedule = @{
+                        RecurInterval = $state.Schedule.RecurInterval
+                        RecurCount    = $state.Schedule.RecurCount
+                    }
+
+                    $stateSchedule = New-CMSchedule @currentSchedule
+
+                    $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
+
+                    foreach ($item in $array)
                     {
-                        Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                            -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
-                        $setSchedule = $true
+                        if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
+                        {
+                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
+                                -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
+                            $setSchedule = $true
+                        }
                     }
                 }
 
-                if ($setSchedule)
+                if ($setSchedule -eq $true)
                 {
+                    if ($Schedule.RecurCount -eq 0)
+                    {
+                        $desiredSchedule = New-CMSchedule -Nonrecurring
+                    }
+                    elseif (-not ($state.Schedule))
+                    {
+                        $desiredScheduleSet = @{
+                            RecurInterval = $Schedule.RecurInterval
+                            RecurCount    = $Schedule.RecurCount
+                        }
+                        $desiredSchedule = New-CMSchedule @desiredScheduleSet
+                    }
                     $buildingParams += @{
-                        Schedule = $desiredPollingSchedule
+                        Schedule = $desiredSchedule
                     }
                 }
             }
@@ -365,29 +391,43 @@ function Test-TargetResource
 
         if (-not [string]::IsNullOrEmpty($Schedule))
         {
-            $newSchedule = @{
-                RecurInterval = $Schedule.RecurInterval
-                RecurCount    = $Schedule.RecurCount
-            }
-
-            $desiredSchedule = New-CMSchedule @newSchedule
-
-            $currentSchedule = @{
-                RecurInterval = $state.Schedule.RecurInterval
-                RecurCount    = $state.Schedule.RecurCount
-            }
-
-            $stateSchedule = New-CMSchedule @currentSchedule
-
-            $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-
-            foreach ($item in $array)
+            if (($Schedule.RecurCount -eq 0) -and ($state.Schedule))
             {
-                if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
+                $result = $false
+                Write-Verbose -Message $script:localizedData.NoSchedule
+            }
+            elseif (-not ($state.Schedule) -and ($Schedule.RecurCount -ne 0))
+            {
+                Write-Verbose -Message ($script:localizedData.CurrentSchedule `
+                    -f $Schedule.RecurInterval, $Schedule.RecurCount)
+                $result = $false
+            }
+            elseif (($state.Schedule) -and ($Schedule.RecurCount -ne 0))
+            {
+                $newSchedule = @{
+                    RecurInterval = $Schedule.RecurInterval
+                    RecurCount    = $Schedule.RecurCount
+                }
+
+                $desiredSchedule = New-CMSchedule @newSchedule
+
+                $currentSchedule = @{
+                    RecurInterval = $state.Schedule.RecurInterval
+                    RecurCount    = $state.Schedule.RecurCount
+                }
+
+                $stateSchedule = New-CMSchedule @currentSchedule
+
+                $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
+
+                foreach ($item in $array)
                 {
-                    Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                        -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
-                    $result = $false
+                    if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
+                    {
+                        Write-Verbose -Message ($script:localizedData.ScheduleItem `
+                            -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
+                        $result = $false
+                    }
                 }
             }
         }
