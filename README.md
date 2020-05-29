@@ -27,9 +27,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ## Resources
 
-- **ClientSettings**: Provides a resource to perform configuration of client settings.
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
-- **SccmIniFile** This resource allows for the creation of the ini file
+- **CMIniFile** This resource allows for the creation of the ini file
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
@@ -42,27 +41,6 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   adding boundaries to the groups.
 - **CMAssetIntelligencePoint**: Provides a resource for creating and managing
   the SCCM Asset Intelligence Synchronization Point role.
-
-### ClientSettings
-
-- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
-  Manager site.
-- **[String] Name** _(Key)_: Specifies the display name of the client setting.
-  package.
-- **[String] DeviceSettingName** _(Key)_: Specifies the parent setting category.
-  - Values include: { BackgroundIntelligentTransfer |ClientCache |
-    ClientPolicy | Cloud | ComplianceSettings | ComputerAgent |
-    ComputerRestart | DeliveryOptimization | EndpointProtection |
-    HardwareInventory | MeteredNetwork | MobileDevice |
-    NetworkAccessProtection | PowerManagement | RemoteTools | SoftwareCenter |
-    SoftwareDeployment | SoftwareInventory | SoftwareMetering| SoftwareUpdates |
-    StateMessaging | UserAndDeviceAffinity | WindowsAnalytics }
-- **[String] Setting** _(Key)_: Specifies the client setting to validate.
-- **[String] SettingValue** _(Required)_: Specifies the value for the setting.
-
-#### ClientSettings Examples
-
-- [ProvisionedPackages_Present](Source\Examples\Resources\ClientSettings\ClientSettings.ps1)
 
 ### CMAccounts
 
@@ -80,7 +58,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
 - [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
 
-### SCCMIniFile
+### CMIniFile
 
 - **IniFileName** _(Key)_: Specifies the ini file name.
 - **IniFilePath** _(Key)_: Specifies the path of the ini file.
@@ -172,10 +150,10 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CurrentBranch** _(Write)_: Specify whether to use Configuration Manager current
   branch or long-term servicing branch (LTSB).
 
-#### SccmIniFile Examples
+#### CMIniFile Examples
 
-- [SccmIniFile_CAS](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
-- [SccmIniFile_Primary](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
+- [CMIniFile_CAS](Source\Examples\Resources\CMIniFile\CMIniFile_CAS.ps1)
+- [CMIniFile_Primary](Source\Examples\Resources\CMIniFile\CMIniFile_Primary.ps1)
 
 ### CMCollections
 

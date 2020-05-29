@@ -35,6 +35,12 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Updated current DSCResources helper in module Import-ConfigMgrPowerShellModule
   adding fixing registry settings
 
+- Renamed CMAccounts resource to DSC_CMAccounts
+
+- Renamed MSFT_SCCMIniFile resource to DSC_CMIniFile
+
 ### Removed
+
+- Removed ClientSettings resource
 
 ### Fixed
