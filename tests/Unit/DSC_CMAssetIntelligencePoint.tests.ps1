@@ -54,14 +54,6 @@ try
                 } -ClientOnly
         )
 
-        $mockCimScheduleHours = (New-CimInstance -ClassName DSC_CMAssetIntelligenceSynchronizationSchedule `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'RecurInterval' = 'Hours'
-                    'RecurCount'    = 7
-                } -ClientOnly
-        )
-
         $mockCimScheduleZero = (New-CimInstance -ClassName DSC_CMAssetIntelligenceSynchronizationSchedule `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                 -Property @{
@@ -88,15 +80,6 @@ try
             MinuteSpan     = 0
         }
 
-        $scheduleConvertHours = @{
-            DayDuration    = 0
-            DaySpan        = 0
-            HourDuration   = 0
-            HourSpan       = 7
-            MinuteDuration = 0
-            MinuteSpan     = 0
-        }
-
         $scheduleConvertZero = @{
             DayDuration    = 0
             HourDuration   = 0
@@ -109,14 +92,6 @@ try
             SiteServerName = 'CA01.contoso.com'
             Schedule       = $mockCimScheduleDayMismatch
             Ensure         = 'Present'
-        }
-
-        $getReturnEnabledHours = @{
-            SiteCode              = 'Lab'
-            SiteServerName        = 'CA01.contoso.com'
-            Schedule              = $mockCimScheduleHours
-            EnableSynchronization = $true
-            Ensure                = 'Present'
         }
 
         $getReturnEnabledZero = @{
@@ -385,7 +360,7 @@ try
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
 
-                It 'Should call expected commands when management point exists and expected absent' {
+                It 'Should call expected commands when asset intelligence point exists and expected absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     Set-TargetResource @inputAbsent
@@ -418,9 +393,9 @@ try
 
                 It 'Should call expected commands when no schedule is present and a schedule is specified' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
-                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHours }
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
 
-                    Set-TargetResource @getReturnEnabledHours
+                    Set-TargetResource @getReturnEnabledDays
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -633,13 +608,6 @@ try
                     Test-TargetResource @returnEnabledDaysMismatch | Should -Be $false
                 }
 
-                It 'Should return desired result false schedule hours mismatch' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
-                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurInterval -eq 'Days' }
-                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHours } -ParameterFilter { $RecurInterval -eq 'Hours' }
-                    Test-TargetResource @getReturnEnabledHours | Should -Be $false
-                }
-
                 It 'Should return desired result true schedule matches' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
@@ -647,13 +615,13 @@ try
                 }
 
                 It 'Should return desired result false schedule present but nonrecurring specified' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledHours }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
                     Test-TargetResource @getReturnEnabledZero | Should -Be $false
                 }
 
                 It 'Should return desired result false no schedule present but schedule specified' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
-                    Test-TargetResource @getReturnEnabledHours | Should -Be $false
+                    Test-TargetResource @getReturnEnabledDays | Should -Be $false
                 }
             }
         }

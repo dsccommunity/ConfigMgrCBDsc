@@ -14,6 +14,6 @@ class DSC_CMAssetIntelligencePoint: OMI_BaseResource
 [ClassVersion("1.0.0")]
 class DSC_CMAssetIntelligenceSynchronizationSchedule
 {
-     [Required, Description("Specifies the recur interval of days or hours."),ValueMap{"Days","Hours"},Values{"Days","Hours"}] String RecurInterval;
+     [Required, Description("Specifies the recur interval of days."),ValueMap{"Days"},Values{"Days"}] String RecurInterval;
      [Required, Description("Specifies how often the recur interval is run.")] UInt32 RecurCount;
 };
