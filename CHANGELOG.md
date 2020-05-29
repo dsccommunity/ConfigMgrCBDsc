@@ -21,6 +21,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added ConvertTo-CimBoundaries to the ResourceHelper
 - Added Convert-BoundariesIPSubnets to the ResourceHelper
 - Added Get-BoundaryInfo to the ResourceHelper
+- Added CMManagementPoint Resource
 
 ### Changed
 
