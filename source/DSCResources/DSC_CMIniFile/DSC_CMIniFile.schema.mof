@@ -1,5 +1,5 @@
-[ClassVersion("1.0.0"), FriendlyName("SccmIniFile")]
-class MSFT_SccmIniFile : OMI_BaseResource
+[ClassVersion("1.0.0"), FriendlyName("CMIniFile")]
+class DSC_CMIniFile : OMI_BaseResource
 {
     [Key, Description("Specifies the ini file name.")] String IniFileName;
     [Key, Description("Specifies the path of the ini file.")] String IniFilePath;
