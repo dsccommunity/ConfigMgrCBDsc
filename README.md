@@ -40,6 +40,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   manager client status settings.
 - **CMBoundariesGroup**: Provides a resource for creating boundary groups and
   adding boundaries to the groups.
+- **CMAssetIntelligencePoint**: Provides a resource for creating and managing
+  the SCCM Asset Intelligence Synchronization Point role.
 
 ### ClientSettings
 
