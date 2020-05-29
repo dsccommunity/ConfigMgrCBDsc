@@ -368,65 +368,69 @@ function Test-TargetResource
             Write-Verbose -Message ($script:localizedData.APNotInstalled -f $SiteServerName)
             $result = $false
         }
-
-        $evalList = @('CertificateFile','Enable','EnableSynchronization')
-
-        foreach ($param in $PSBoundParameters.GetEnumerator())
+        else
         {
-            if ($evalList -contains $param.key)
+            Write-Verbose -Message ($script:localizedData.RoleInstalled)
+
+            $evalList = @('CertificateFile','Enable','EnableSynchronization')
+
+            foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if ($param.Value -ne $state[$param.key])
+                if ($evalList -contains $param.key)
                 {
-                    Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
+                    if ($param.Value -ne $state[$param.key])
+                    {
+                        Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
+                        $result = $false
+                    }
+                }
+            }
+    
+            if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
+            {
+                Write-Verbose -Message ($script:localizedData.NullCertCheck -f $SiteServerName)
+                $result = $false
+            }
+    
+            if (-not [string]::IsNullOrEmpty($Schedule))
+            {
+                if (($Schedule.RecurCount -eq 0) -and ($state.Schedule))
+                {
+                    $result = $false
+                    Write-Verbose -Message $script:localizedData.NoSchedule
+                }
+                elseif (-not ($state.Schedule) -and ($Schedule.RecurCount -ne 0))
+                {
+                    Write-Verbose -Message ($script:localizedData.CurrentSchedule `
+                        -f $Schedule.RecurInterval, $Schedule.RecurCount)
                     $result = $false
                 }
-            }
-        }
-
-        if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
-        {
-            Write-Verbose -Message ($script:localizedData.NullCertCheck -f $SiteServerName)
-            $result = $false
-        }
-
-        if (-not [string]::IsNullOrEmpty($Schedule))
-        {
-            if (($Schedule.RecurCount -eq 0) -and ($state.Schedule))
-            {
-                $result = $false
-                Write-Verbose -Message $script:localizedData.NoSchedule
-            }
-            elseif (-not ($state.Schedule) -and ($Schedule.RecurCount -ne 0))
-            {
-                Write-Verbose -Message ($script:localizedData.CurrentSchedule `
-                    -f $Schedule.RecurInterval, $Schedule.RecurCount)
-                $result = $false
-            }
-            elseif (($state.Schedule) -and ($Schedule.RecurCount -ne 0))
-            {
-                $newSchedule = @{
-                    RecurInterval = $Schedule.RecurInterval
-                    RecurCount    = $Schedule.RecurCount
-                }
-
-                $desiredSchedule = New-CMSchedule @newSchedule
-
-                $currentSchedule = @{
-                    RecurInterval = $state.Schedule.RecurInterval
-                    RecurCount    = $state.Schedule.RecurCount
-                }
-
-                $stateSchedule = New-CMSchedule @currentSchedule
-
-                $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-
-                foreach ($item in $array)
+                elseif (($state.Schedule) -and ($Schedule.RecurCount -ne 0))
                 {
-                    if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
+                    $newSchedule = @{
+                        RecurInterval = $Schedule.RecurInterval
+                        RecurCount    = $Schedule.RecurCount
+                    }
+    
+                    $desiredSchedule = New-CMSchedule @newSchedule
+    
+                    $currentSchedule = @{
+                        RecurInterval = $state.Schedule.RecurInterval
+                        RecurCount    = $state.Schedule.RecurCount
+                    }
+    
+                    $stateSchedule = New-CMSchedule @currentSchedule
+    
+                    $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
+    
+                    foreach ($item in $array)
                     {
-                        Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                            -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
-                        $result = $false
+                        if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
+                        {
+                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
+                                -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
+                            $result = $false
+                        }
                     }
                 }
             }
