@@ -44,6 +44,7 @@ function Get-TargetResource
     if ($apProps)
     {
         $cert         = $apProps.ProxyCertPath
+        $serverName   = $apProps.ProxyName
         $apEnabled    = $apProps.ProxyEnabled
         $syncEnabled  = $apProps.PeriodicCatalogUpdateEnabled
         $syncSchedule = $apProps.PeriodicCatalogUpdateSchedule
@@ -61,7 +62,7 @@ function Get-TargetResource
     }
 
     return @{
-        SiteServerName        = $SiteServerName
+        SiteServerName        = $serverName
         SiteCode              = $SiteCode
         CertificateFile       = $cert
         Enable                = $apEnabled

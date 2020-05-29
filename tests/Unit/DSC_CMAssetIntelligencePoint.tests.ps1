@@ -267,7 +267,7 @@ try
                     $result = Get-TargetResource @getInput
                     $result                       | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode              | Should -Be -ExpectedValue 'Lab'
-                    $result.SiteServerName        | Should -Be -ExpectedValue 'CA01.contoso.com'
+                    $result.SiteServerName        | Should -Be -ExpectedValue $null
                     $result.CertificateFile       | Should -Be -ExpectedValue $null
                     $result.Enable                | Should -Be -ExpectedValue $null
                     $result.EnableSynchronization | Should -Be -ExpectedValue $null
