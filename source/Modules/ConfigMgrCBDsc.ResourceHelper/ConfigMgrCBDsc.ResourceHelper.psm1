@@ -520,6 +520,16 @@ function Get-ClientSettingsSoftwareCenter
     }
 }
 
+<#
+    .SYNOPSIS
+        Converts the CIDR and IPAddress.
+
+    .PARAMETER IPAddress
+        Specifies the network address.
+
+    .PARAMETER Cidr
+        Specifies the network mask value.
+#>
 function Convert-CidrToIP
 {
     [CmdLetBinding()]
@@ -602,6 +612,146 @@ function ConvertTo-CimCMScheduleString
     }
 }
 
+<#
+    .SYNOPSIS
+        Converts the boundaries to a CIM Instance.
+
+    .PARAMETER InputObject
+        Specifies the array of hashtables of boundary returns.
+#>
+function ConvertTo-CimBoundaries
+{
+    [CmdletBinding()]
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance[]])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Object[]]
+        $InputObject
+    )
+
+    $cimClassName = 'DSC_CMBoundaryGroupsBoundaries'
+    $cimNamespace = 'root/microsoft/Windows/DesiredStateConfiguration'
+    $cimCollection = New-Object -TypeName 'System.Collections.ObjectModel.Collection`1[Microsoft.Management.Infrastructure.CimInstance]'
+
+    foreach ($customField in $InputObject)
+    {
+        $convertBoundary = switch ($customField.BoundaryType)
+        {
+            '0' { 'IPSubnet' }
+            '1' { 'AdSite' }
+            '3' { 'IPRange' }
+        }
+
+        $cimProperties = @{
+            Value      = $customField.Value
+            Type       = $convertBoundary
+        }
+
+        $cimCollection += (New-CimInstance -ClassName $cimClassName `
+                        -Namespace $cimNamespace `
+                        -Property $cimProperties `
+                        -ClientOnly)
+    }
+
+    return $cimCollection
+}
+
+<#
+    .SYNOPSIS
+        Converts the boundaries input to a CIM Instance transforming
+        the IPSubnet input to a network address.
+
+    .PARAMETER InputObject
+        Specifies the array of CIM Instances for the boundary input.
+#>
+function Convert-BoundariesIPSubnets
+{
+    [CmdletBinding()]
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance[]])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [Microsoft.Management.Infrastructure.CimInstance[]]
+        $InputObject
+    )
+
+    $cimClassName = 'MSFT_KeyPairs'
+    $cimNamespace = 'root/microsoft/Windows/DesiredStateConfiguration'
+    $bounds = New-Object -TypeName 'System.Collections.ObjectModel.Collection`1[Microsoft.Management.Infrastructure.CimInstance]'
+
+    foreach ($item in $InputObject)
+    {
+        if ($item.Type -eq 'IPSubnet')
+        {
+            $splitValue = $item.Value.Split('/')
+            $address = Convert-CidrToIP -IPAddress $splitValue[0] -Cidr $splitValue[1]
+
+            $cimProperties = @{
+                Value     = $address.NetworkAddress
+                Type      = "IPSubnet"
+            }
+
+            $bounds += (New-CimInstance -ClassName $cimClassName `
+                        -Namespace $cimNamespace `
+                        -Property $cimProperties `
+                        -ClientOnly)
+        }
+        else
+        {
+            $cimProperties = @{
+                Value     = $item.Value
+                Type      = $item.Type
+            }
+
+            $bounds += (New-CimInstance -ClassName $cimClassName `
+                        -Namespace $cimNamespace `
+                        -Property $cimProperties `
+                        -ClientOnly)
+        }
+    }
+
+    return $bounds
+}
+
+<#
+    .SYNOPSIS
+        Returns the boundary ID based on Value and Type of boundary specified.
+
+    .PARAMETER Value
+        Specifies the value of the boundary.
+
+    .PARAMETER Type
+        Specifies the type of boundary options are ADSite, IPSubnet, and IPRange.
+#>
+function Get-BoundaryInfo
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Value,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('ADSite','IPSubnet','IPRange')]
+        [String]
+        $Type
+    )
+
+    $convertBoundaryBack = switch ($Type)
+    {
+        'IPSubnet' { '0' }
+        'AdSite'   { '1' }
+        'IPRange'  { '3' }
+    }
+
+    return (Get-CMBoundary | Where-Object -FilterScript { ($_.BoundaryType -eq $convertBoundaryBack) -and
+            ($_.Value -eq $Value) }).BoundaryID
+}
+
 Export-ModuleMember -Function @(
     'Get-LocalizedData',
     'New-InvalidArgumentException',
@@ -611,4 +761,7 @@ Export-ModuleMember -Function @(
     'Get-ClientSettingsSoftwareCenter'
     'Convert-CidrToIP'
     'ConvertTo-CimCMScheduleString'
+    'ConvertTo-CimBoundaries'
+    'Convert-BoundariesIPSubnets'
+    'Get-BoundaryInfo'
 )
