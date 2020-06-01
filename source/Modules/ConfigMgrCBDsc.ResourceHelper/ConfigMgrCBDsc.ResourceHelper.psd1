@@ -29,22 +29,18 @@
     PowerShellVersion = '4.0'
 
     # Functions to export from this module
-    FunctionsToExport = @()
-
-    # Cmdlets to export from this module
-    CmdletsToExport   = @(
-        'Get-LocalizedData'
-        'New-InvalidArgumentException'
+    FunctionsToExport = @(
         'Import-ConfigMgrPowerShellModule'
-        'Confirm-ClientSetting'
-        'Convert-ClientSetting'
-        'Get-ClientSettingsSoftwareCenter'
+        'Set-ConfigMgrCert'
         'Convert-CidrToIP'
         'ConvertTo-CimCMScheduleString'
         'ConvertTo-CimBoundaries'
         'Convert-BoundariesIPSubnets'
         'Get-BoundaryInfo'
     )
+
+    # Cmdlets to export from this module
+    CmdletsToExport   = @()
 
     # Variables to export from this module
     VariablesToExport = @()
