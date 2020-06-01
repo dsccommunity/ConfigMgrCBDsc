@@ -29,7 +29,10 @@
     PowerShellVersion = '4.0'
 
     # Functions to export from this module
-    FunctionsToExport = @(
+    FunctionsToExport = @()
+
+    # Cmdlets to export from this module
+    CmdletsToExport   = @(
         'Get-LocalizedData'
         'New-InvalidArgumentException'
         'Import-ConfigMgrPowerShellModule'
@@ -42,9 +45,6 @@
         'Convert-BoundariesIPSubnets'
         'Get-BoundaryInfo'
     )
-
-    # Cmdlets to export from this module
-    CmdletsToExport   = @()
 
     # Variables to export from this module
     VariablesToExport = @()
