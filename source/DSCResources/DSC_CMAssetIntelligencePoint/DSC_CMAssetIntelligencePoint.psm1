@@ -45,7 +45,7 @@ function Get-TargetResource
     if ($apProps)
     {
         $cert         = $apProps.ProxyCertPath
-        $serverName   = $apProps.ProxyName
+        $serverName   = (Get-CMAssetIntelligenceSynchronizationPoint).NetworkOSPath.SubString(2)
         $apEnabled    = $apProps.ProxyEnabled
         $syncEnabled  = $apProps.PeriodicCatalogUpdateEnabled
         $syncSchedule = $apProps.PeriodicCatalogUpdateSchedule
