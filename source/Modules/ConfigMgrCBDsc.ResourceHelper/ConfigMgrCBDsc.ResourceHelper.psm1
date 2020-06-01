@@ -336,7 +336,6 @@ function Get-BoundaryInfo
 
 Export-ModuleMember -Function @(
     'Import-ConfigMgrPowerShellModule'
-    'Set-ConfigMgrCert'
     'Convert-CidrToIP'
     'ConvertTo-CimCMScheduleString'
     'ConvertTo-CimBoundaries'

@@ -31,7 +31,6 @@
     # Functions to export from this module
     FunctionsToExport = @(
         'Import-ConfigMgrPowerShellModule'
-        'Set-ConfigMgrCert'
         'Convert-CidrToIP'
         'ConvertTo-CimCMScheduleString'
         'ConvertTo-CimBoundaries'
