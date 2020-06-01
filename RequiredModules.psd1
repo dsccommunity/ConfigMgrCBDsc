@@ -15,7 +15,7 @@
     ChangelogManagement         = 'latest'
     Sampler                     = 'latest'
     MarkdownLinkCheck           = 'latest'
-    'DscResource.Test'          = 'latest'
+    'DscResource.Test'          = '0.13.1'
     'DscResource.AnalyzerRules' = 'latest'
     xDscResourceDesigner        = 'latest'
     'DscResource.DocGenerator'  = 'latest'
