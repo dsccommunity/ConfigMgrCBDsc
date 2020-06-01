@@ -1,5 +1,5 @@
 $script:dscModuleName   = 'ConfigMgrCBDsc'
-$script:dscResourceName = 'MSFT_SccmIniFile'
+$script:dscResourceName = 'DSC_CMIniFile'
 
 function Invoke-TestSetup
 {
@@ -29,7 +29,7 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - SccmIniFile'
+        $moduleResourceName = 'ConfigMgrCBDsc - CMIniFile'
 
         $tests = @(
             @{

@@ -27,9 +27,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ## Resources
 
-- **ClientSettings**: Provides a resource to perform configuration of client settings.
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
-- **SccmIniFile** This resource allows for the creation of the ini file
+- **CMIniFile** This resource allows for the creation of the ini file
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
@@ -38,27 +37,10 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   AD Forest Discovery method.
 - **CMClientStatusSettings**: Provides a resource for modifying configuration
   manager client status settings.
-
-### ClientSettings
-
-- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
-  Manager site.
-- **[String] Name** _(Key)_: Specifies the display name of the client setting.
-  package.
-- **[String] DeviceSettingName** _(Key)_: Specifies the parent setting category.
-  - Values include: { BackgroundIntelligentTransfer |ClientCache |
-    ClientPolicy | Cloud | ComplianceSettings | ComputerAgent |
-    ComputerRestart | DeliveryOptimization | EndpointProtection |
-    HardwareInventory | MeteredNetwork | MobileDevice |
-    NetworkAccessProtection | PowerManagement | RemoteTools | SoftwareCenter |
-    SoftwareDeployment | SoftwareInventory | SoftwareMetering| SoftwareUpdates |
-    StateMessaging | UserAndDeviceAffinity | WindowsAnalytics }
-- **[String] Setting** _(Key)_: Specifies the client setting to validate.
-- **[String] SettingValue** _(Required)_: Specifies the value for the setting.
-
-#### ClientSettings Examples
-
-- [ProvisionedPackages_Present](Source\Examples\Resources\ClientSettings\ClientSettings.ps1)
+- **CMBoundariesGroup**: Provides a resource for creating boundary groups and
+  adding boundaries to the groups.
+- **CMManagementPoint**: Provides a resource for creating and removing
+  management points.
 
 ### CMAccounts
 
@@ -76,7 +58,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
 - [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
 
-### SCCMIniFile
+### CMIniFile
 
 - **IniFileName** _(Key)_: Specifies the ini file name.
 - **IniFilePath** _(Key)_: Specifies the path of the ini file.
@@ -168,10 +150,10 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CurrentBranch** _(Write)_: Specify whether to use Configuration Manager current
   branch or long-term servicing branch (LTSB).
 
-#### SccmIniFile Examples
+#### CMIniFile Examples
 
-- [SccmIniFile_CAS](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
-- [SccmIniFile_Primary](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
+- [CMIniFile_CAS](Source\Examples\Resources\CMIniFile\CMIniFile_CAS.ps1)
+- [CMIniFile_Primary](Source\Examples\Resources\CMIniFile\CMIniFile_Primary.ps1)
 
 ### CMCollections
 
@@ -266,6 +248,63 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMClientStatusSettings](Source\Examples\Resources\CMClientStatusSettings\CMClientStatusSettings.ps1)
 
+### CMBoundaryGroups
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] BoundaryGroup** _(Key)_: Specifies the name of the boundary group.
+- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of boundaries
+  to add or remove from the boundary group.
+- **[String] BoundaryAction** _(Write)_: Specifies the boundaries are to match,
+  add, or remove Boundaries from the boundary group
+  - Values include: { Match | Add | Remove }
+- **[String] Ensure** _(Write)_: Specifies status of the collection is to be
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMBoundaryGroups Examples
+
+- [CMBoundaryGroups_Absent](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Absent.ps1)
+- [CMBoundaryGroups_Present](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Present.ps1)
+- [CMBoundaryGroups_Include](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Include.ps1)
+- [CMBoundaryGroups_Exclude](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Exclude.ps1)
+
+### CMManagementPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the
+  role on.
+- **[String] SqlServerFqdn** _(Write)_: Specifies the SQL server FQDN if using
+  a SQL replica.
+- **[String] DatabaseName** _(Write)_: Specifies the name of the site
+  database\replica that the management point uses.
+- **[String] ClientConnectionType** _(Write)_: Specifies the type of the client connection.
+  - Values include: { Internet | Intranet | InternetAndIntranet }
+- **[Boolean] EnableCloudGateway** _(Write)_: Specifies if a cloud gateway
+  is to be used for the management point.
+- **[Boolean] EnableSsl** _(Write)_: Specifies whether to enable SSL (HTTPS)
+  traffic to the management point.
+- **[Boolean] GenerateAlert** _(Write)_: Indicates whether the management point
+  generates health alerts.
+- **[Boolean] UseSiteDatabase** _(Write)_: Indicates whether the management point
+  queries a site database.
+- **[Boolean] UseComputerAccount** _(Write)_: Indicates that the management point
+  uses its own computer account.
+- **[String] SqlServerInstanceName** _(Write)_: Specifies the name of the SQL Server
+  instance that clients use to communicate with the site system.
+- **[String] Username** _(Write)_: Specifies user account the management point
+  uses to access site information.
+- **[String] Ensure** _(Write)_: Specifies whether the management point is
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMManagementPoint Examples
+
+- [CMManagementPoint_Absent](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Absent.ps1)
+- [CMManagementPoint_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Present.ps1)
+- [CMManagementPoint_UseDatabase_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_UseDatabase_Present.ps1)
+
 ### CMPullDistributionPoint
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
@@ -276,6 +315,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   to be set to enabled or disabled for pull distribution point.
 - **[EmbeddedInstance] SourceDistributionPoint[]** _(Write)_: Specifies the desired
   source distribution points and the DP ranking.
+- **[String] DPStatus** _(Read)_: Specifies if the DP role is installed.
 
 #### CMPullDistributionPoint Examples
 
