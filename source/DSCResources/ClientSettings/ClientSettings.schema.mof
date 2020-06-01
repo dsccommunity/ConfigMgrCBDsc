@@ -1,9 +1,0 @@
-[ClassVersion("1.0.0"), FriendlyName("ClientSettings")]
-class ClientSettings : OMI_BaseResource
-{
-    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
-    [Key, Description("Specifies the display name of the client setting package.")] String Name;
-    [Key, Description("Specifies the parent setting category."), ValueMap{"BackgroundIntelligentTransfer","ClientCache","ClientPolicy","Cloud","ComplianceSettings","ComputerAgent","ComputerRestart","DeliveryOptimization","EndpointProtection","HardwareInventory","MeteredNetwork","MobileDevice","NetworkAccessProtection","PowerManagement","RemoteTools","SoftwareCenter","SoftwareDeployment","SoftwareInventory","SoftwareMetering","SoftwareUpdates","StateMessaging","UserAndDeviceAffinity","WindowsAnalytics"}, Values{"BackgroundIntelligentTransfer","ClientCache","ClientPolicy","Cloud","ComplianceSettings","ComputerAgent","ComputerRestart","DeliveryOptimization","EndpointProtection","HardwareInventory","MeteredNetwork","MobileDevice","NetworkAccessProtection","PowerManagement","RemoteTools","SoftwareCenter","SoftwareDeployment","SoftwareInventory","SoftwareMetering","SoftwareUpdates","StateMessaging","UserAndDeviceAffinity","WindowsAnalytics"}] String DeviceSettingName;
-    [Key, Description("Specifies the client setting to validate.")] String Setting;
-    [Required, Description("Specifies the value for the setting.")] String SettingValue;
-};

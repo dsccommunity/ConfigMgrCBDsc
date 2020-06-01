@@ -42,13 +42,14 @@
 
     # DSC resources to export from this module
     DscResourcesToExport = @(
-        'ClientSettings'
         'CMAccounts'
-        'SccmIniFile'
+        'CMIniFile'
         'CMCollections'
         'CMBoundaries'
         'CMForestDiscovery'
         'CMClientStatusSettings'
+        'CMBoundaryGroups'
+        'CMManagementPoint'
         'CMPxeDistributionPoint'
     )
 
@@ -62,8 +63,8 @@
             Prerelease   = ''
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc', 'ClientSettings','CMAccounts','SccmIniFile','Collections','CMBoundaries',
-            'CMForestDiscovery','ClientStatusSettings','PXE Distribution Point')
+            Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','CMIniFile','Collections',
+            'CMBoundaries','CMForestDiscovery','ClientStatusSettings','BoundaryGroups','ManagementPoint','PXE Distribution Point')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

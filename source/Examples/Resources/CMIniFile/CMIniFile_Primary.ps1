@@ -8,7 +8,7 @@ Configuration Example
 
     Node localhost
     {
-        SCCMIniFile ExampleSetting
+        CMIniFile ExampleSetting
         {
             IniFileName               = 'Lab-PRI-Test.ini'
             IniFilePath               = 'C:\windows\temp\'
