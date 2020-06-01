@@ -7,8 +7,11 @@
 #
 
 @{
+    # Script module or binary module file associated with this manifest.
+    RootModule = 'ConfigMgrCBDsc.ResourceHelper.psm1'
+
     # Version number of this module.
-    ModuleVersion = '0.0.1'
+    ModuleVersion = '1.0'
 
     # ID used to uniquely identify this module
     GUID = 'e73b2d11-812d-4373-99da-95769f055c14'
@@ -56,23 +59,6 @@
     #>
     PrivateData = @{
         PSData = @{
-            # Set to a prerelease string value if the release should be a prerelease.
-            Prerelease   = ''
-
-            # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @()
-
-            # A URL to the license for this module.
-            LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'
-
-            # A URL to the main website for this project.
-            ProjectUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc'
-
-            # A URL to an icon representing this module.
-            IconUri = 'https://dsccommunity.org/images/DSC_Logo_300p.png'
-
-            # ReleaseNotes of this module
-            ReleaseNotes = ''
         } # End of PSData hashtable
     } # End of PrivateData hashtable
 }
