@@ -22,6 +22,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added Convert-BoundariesIPSubnets to the ResourceHelper
 - Added Get-BoundaryInfo to the ResourceHelper
 - Added CMManagementPoint Resource
+- Added CMAssetIntelligencePoint Resource
 
 ### Changed
 
