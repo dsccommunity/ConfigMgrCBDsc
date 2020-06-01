@@ -335,5 +335,5 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### CMAssetIntelligencePoint Examples
 
-- [CMAssetIntelligencePoint_Absent](Source\Examples\Resources\DSC_CMAssetIntelligencePoint\CMAssetIntelligencePoint_Absent.ps1)
-- [CMAssetIntelligencePoint_Present](Source\Examples\Resources\DSC_CMAssetIntelligencePoint\CMAssetIntelligencePoint_Present.ps1)
+- [CMAssetIntelligencePoint_Absent](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Absent.ps1)
+- [CMAssetIntelligencePoint_Present](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Present.ps1)
