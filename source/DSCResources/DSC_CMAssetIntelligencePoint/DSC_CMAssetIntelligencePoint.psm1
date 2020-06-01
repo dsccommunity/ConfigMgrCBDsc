@@ -195,7 +195,7 @@ function Set-TargetResource
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-            if ($evalList -contains $param.key)
+                if ($evalList -contains $param.key)
                 {
                     if ($param.Value -ne $state[$param.key])
                     {
