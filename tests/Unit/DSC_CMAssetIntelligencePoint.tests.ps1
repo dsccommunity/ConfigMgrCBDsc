@@ -88,10 +88,11 @@ try
         }
 
         $returnEnabledDaysMismatch = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'CA01.contoso.com'
-            Schedule       = $mockCimScheduleDayMismatch
-            Ensure         = 'Present'
+            SiteCode         = 'Lab'
+            SiteServerName   = 'CA01.contoso.com'
+            Schedule         = $mockCimScheduleDayMismatch
+            Ensure           = 'Present'
+            IsSingleInstance = 'Yes'
         }
 
         $getReturnEnabledZero = @{
@@ -100,11 +101,12 @@ try
             Schedule              = $mockCimScheduleZero
             EnableSynchronization = $true
             Ensure                = 'Present'
+            IsSingleInstance      = 'Yes'
         }
 
         $getInput = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'CA01.contoso.com'
+            SiteCode         = 'Lab'
+            IsSingleInstance = 'Yes'
         }
 
         $getAPReturnNoCert = @{
@@ -114,6 +116,7 @@ try
             ProxyEnabled                  = $true
             PeriodicCatalogUpdateEnabled  = $true
             PeriodicCatalogUpdateSchedule = '0001200000100038'
+            IsSingleInstance              = 'Yes'
         }
 
         $getAPReturnWithCert = @{
@@ -123,6 +126,7 @@ try
             ProxyEnabled                  = $true
             PeriodicCatalogUpdateEnabled  = $true
             PeriodicCatalogUpdateSchedule = '0001200000100038'
+            IsSingleInstance              = 'Yes'
         }
 
         $getReturnAbsent = @{
@@ -133,6 +137,7 @@ try
             EnableSynchronization = $null
             Schedule              = $null
             Ensure                = 'Absent'
+            IsSingleInstance      = 'Yes'
         }
 
         $getReturnAll = @{
@@ -143,6 +148,7 @@ try
             EnableSynchronization = $true
             Schedule              = $mockCimSchedule
             Ensure                = 'Present'
+            IsSingleInstance      = 'Yes'
         }
 
         $getReturnEnabledDays = @{
@@ -153,6 +159,7 @@ try
             EnableSynchronization = $true
             Schedule              = $mockCimSchedule
             Ensure                = 'Present'
+            IsSingleInstance      = 'Yes'
         }
 
         $getReturnNoSchedule = @{
@@ -162,6 +169,7 @@ try
             Enable                = $true
             EnableSynchronization = $true
             Ensure                = 'Present'
+            IsSingleInstance      = 'Yes'
         }
 
         $getReturnNoCert = @{
@@ -171,25 +179,29 @@ try
             Enable                = $true
             EnableSynchronization = $true
             Ensure                = 'Present'
+            IsSingleInstance      = 'Yes'
         }
 
         $inputAbsent = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'CA01.contoso.com'
-            Ensure         = 'Absent'
+            SiteCode         = 'Lab'
+            SiteServerName   = 'CA01.contoso.com'
+            Ensure           = 'Absent'
+            IsSingleInstance = 'Yes'
         }
 
         $inputPresent = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'CA01.contoso.com'
-            Ensure         = 'Present'
+            SiteCode         = 'Lab'
+            SiteServerName   = 'CA01.contoso.com'
+            Ensure           = 'Present'
+            IsSingleInstance = 'Yes'
         }
 
         $inputUseCert = @{
-            SiteCode        = 'Lab'
-            SiteServerName  = 'CA01.contoso.com'
-            CertificateFile = '\\CA01.Contoso.com\c$\cert.pfx'
-            Ensure          = 'Present'
+            SiteCode         = 'Lab'
+            SiteServerName   = 'CA01.contoso.com'
+            CertificateFile  = '\\CA01.Contoso.com\c$\cert.pfx'
+            Ensure           = 'Present'
+            IsSingleInstance = 'Yes'
         }
 
         $inputNoCert = @{
@@ -199,6 +211,7 @@ try
             EnableSynchronization = $true
             RemoveCertificate     = $true
             Ensure                = 'Present'
+            IsSingleInstance      = 'Yes'
         }
 
         $inputNoSync = @{
@@ -207,6 +220,7 @@ try
             Enable                = $true
             EnableSynchronization = $false
             Ensure                = 'Present'
+            IsSingleInstance      = 'Yes'
         }
 
         $syncScheduleThrow = @{
@@ -214,6 +228,7 @@ try
             SiteServerName        = 'CA01.contoso.com'
             EnableSynchronization = $false
             Schedule              = $mockCimSchedule
+            IsSingleInstance      = 'Yes'
         }
 
         $syncScheduleThrowMsg = 'When specifying a schedule, the EnableSynchronization paramater must be true.'
@@ -223,9 +238,26 @@ try
             SiteServerName        = 'CA01.contoso.com'
             RemoveCertificate     = $true
             CertificateFile       = '\\CA01.Contoso.com\c$\cert.pfx'
+            IsSingleInstance      = 'Yes'
         }
 
         $certThrowMsg = "When specifying a certificate, you can't specify RemoveCertificate as true."
+
+        $installThrow = @{
+            SiteCode         = 'Lab'
+            Ensure           = 'Present'
+            IsSingleInstance = 'Yes'
+        }
+
+        $installThrowMsg = 'Role is not installed, need to specify SiteServerName to add.'
+
+        $removeThrow = @{
+            SiteCode         = 'Lab'
+            Ensure           = 'Absent'
+            IsSingleInstance = 'Yes'
+        }
+
+        $removeThrowMsg = 'Role is installed, need to specify SiteServerName to remove.'
 
         Describe "$moduleResourceName\Get-TargetResource" {
             BeforeAll{
@@ -435,10 +467,40 @@ try
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
 
+                It 'Should call throws when the role needs to be installed and the SiteServerName parameter is not specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+
+                    { Set-TargetResource @installThrow } | Should -Throw -ExpectedMessage $installThrowMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                }
+
                 It 'Should call throws when a certificate is specified and RemoveCertificate is true' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     { Set-TargetResource @certThrow } | Should -Throw -ExpectedMessage $certThrowMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call throws when the role needs to be removed and the SiteServerName parameter is not specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @removeThrow } | Should -Throw -ExpectedMessage $removeThrowMsg
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It

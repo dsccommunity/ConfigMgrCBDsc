@@ -10,11 +10,11 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
     .SYNOPSIS
         This will return a hashtable of results.
 
+    .PARAMETER IsSingleInstance
+        Specifies the resource is a single instance, the value must be 'Yes'.
+
     .PARAMETER SiteCode
         Specifies a site code for the Configuration Manager site that manages the system role for the asset intelligence point.
-
-    .PARAMETER SiteServerName
-        Specifies the Site Server to install or configure the role on.
 
     .Notes
         This role must only be installed on top-level site of the hierarchy.
@@ -27,12 +27,13 @@ function Get-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
         [String]
-        $SiteCode,
+        $IsSingleInstance,
 
         [Parameter(Mandatory = $true)]
         [String]
-        $SiteServerName
+        $SiteCode
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
@@ -63,6 +64,7 @@ function Get-TargetResource
 
     return @{
         SiteServerName        = $serverName
+        IsSingleInstance      = $IsSingleInstance
         SiteCode              = $SiteCode
         CertificateFile       = $cert
         Enable                = $apEnabled
@@ -76,11 +78,15 @@ function Get-TargetResource
     .SYNOPSIS
         This will set the desired state.
 
+    .PARAMETER IsSingleInstance
+        Specifies the resource is a single instance, the value must be 'Yes'.
+
     .PARAMETER SiteCode
         Specifies a site code for the Configuration Manager site that manages the system role for the asset intelligence point.
 
     .PARAMETER SiteServerName
         Specifies the Site Server to install or configure the role on.
+        If the role is already installed on another server this setting will be ignored.
 
     .PARAMETER CertificateFile
         Specifies the path to a System Center Online authentication certificate (.pfx) file.
@@ -112,10 +118,15 @@ function Set-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [String]
+        $IsSingleInstance,
+
+        [Parameter(Mandatory = $true)]
         [String]
         $SiteCode,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [String]
         $SiteServerName,
 
@@ -147,7 +158,7 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode -SiteServerName $SiteServerName
+    $state = Get-TargetResource -SiteCode $SiteCode -IsSingleInstance $IsSingleInstance
 
     try
     {
@@ -165,6 +176,11 @@ function Set-TargetResource
         {
             if ($state.Ensure -eq 'Absent')
             {
+                if (-not $PsBoundParameters.ContainsKey('SiteServerName'))
+                {
+                    throw $script:localizedData.ServerNameAdd
+                }
+
                 if ($null -eq (Get-CMSiteSystemServer -SiteCode $SiteCode -SiteSystemServerName $SiteServerName))
                 {
                     Write-Verbose -Message ($script:localizedData.SiteServerRole -f $SiteServerName)
@@ -268,6 +284,11 @@ function Set-TargetResource
         }
         elseif ($state.Ensure -eq 'Present')
         {
+            if (-not $PsBoundParameters.ContainsKey('SiteServerName'))
+            {
+                throw $script:localizedData.ServerNameRemove
+            }
+
             Write-Verbose -Message ($script:localizedData.RemoveAPRole -f $SiteServerName)
             Remove-CMAssetIntelligenceSynchronizationPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
         }
@@ -286,11 +307,15 @@ function Set-TargetResource
     .SYNOPSIS
         This will test the desired state.
 
+    .PARAMETER IsSingleInstance
+        Specifies the resource is a single instance, the value must be 'Yes'.
+
     .PARAMETER SiteCode
         Specifies a site code for the Configuration Manager site that manages the system role for the asset intelligence point.
 
     .PARAMETER SiteServerName
         Specifies the Site Server to install or configure the role on.
+        If the role is already installed on another server this setting will be ignored.
 
     .PARAMETER CertificateFile
         Specifies the path to a System Center Online authentication certificate (.pfx) file.
@@ -324,10 +349,15 @@ function Test-TargetResource
     param
     (
         [Parameter(Mandatory = $true)]
+        [ValidateSet('Yes')]
+        [String]
+        $IsSingleInstance,
+
+        [Parameter(Mandatory = $true)]
         [String]
         $SiteCode,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [String]
         $SiteServerName,
 
@@ -359,7 +389,7 @@ function Test-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode -SiteServerName $SiteServerName
+    $state = Get-TargetResource -SiteCode $SiteCode -IsSingleInstance $IsSingleInstance
     $result = $true
 
     if ($Ensure -eq 'Present')
@@ -386,13 +416,13 @@ function Test-TargetResource
                     }
                 }
             }
-    
+
             if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
             {
                 Write-Verbose -Message ($script:localizedData.NullCertCheck -f $SiteServerName)
                 $result = $false
             }
-    
+
             if (-not [string]::IsNullOrEmpty($Schedule))
             {
                 if (($Schedule.RecurCount -eq 0) -and ($state.Schedule))
@@ -412,18 +442,18 @@ function Test-TargetResource
                         RecurInterval = $Schedule.RecurInterval
                         RecurCount    = $Schedule.RecurCount
                     }
-    
+
                     $desiredSchedule = New-CMSchedule @newSchedule
-    
+
                     $currentSchedule = @{
                         RecurInterval = $state.Schedule.RecurInterval
                         RecurCount    = $state.Schedule.RecurCount
                     }
-    
+
                     $stateSchedule = New-CMSchedule @currentSchedule
-    
+
                     $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-    
+
                     foreach ($item in $array)
                     {
                         if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))

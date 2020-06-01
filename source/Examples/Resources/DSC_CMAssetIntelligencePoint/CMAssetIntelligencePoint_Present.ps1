@@ -20,6 +20,7 @@ Configuration Example
             }
             Enable                = $True
             EnableSynchronization = $True
+            IsSingleInstance      = 'Yes'
         }
     }
 }

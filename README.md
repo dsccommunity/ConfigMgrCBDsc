@@ -271,10 +271,14 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ### CMAssetIntelligencePoint
 
+- **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
+  instance, the value must be 'Yes'.
+  { Yes }.
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
 - **[String] SiteServerName** _(Required)_: Specifies the Site Server to install
-  or configure the role on.
+  or configure the role on. If the role is already installed on another server
+  this setting will be ignored.
 - **[String] CertificateFile** _(Write)_: Specifies the path to a System Center
   Online authentication certificate (.pfx) file. If used, this must be in UNC
   format. Local paths are not allowed. Mutually exclusive with the

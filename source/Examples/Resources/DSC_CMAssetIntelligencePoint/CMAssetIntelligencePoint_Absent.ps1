@@ -10,9 +10,10 @@ Configuration Example
     {
         CMAssetIntelligencePoint ExampleSettings
         {
-            SiteCode       = 'Lab'
-            SiteServerName = 'CA01.contoso.com'
-            Ensure         = 'Absent'
+            SiteCode         = 'Lab'
+            SiteServerName   = 'CA01.contoso.com'
+            Ensure           = 'Absent'
+            IsSingleInstance = 'Yes'
         }
     }
 }
