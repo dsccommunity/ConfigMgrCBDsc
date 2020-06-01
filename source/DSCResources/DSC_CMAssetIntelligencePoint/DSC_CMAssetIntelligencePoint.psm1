@@ -207,7 +207,7 @@ function Set-TargetResource
                 }
             }
 
-            if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
+            if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty($state.CertificateFile)))
             {
                 Write-Verbose -Message ($script:localizedData.RemoveCert -f $SiteServerName)
                 $buildingParams += @{
@@ -341,7 +341,6 @@ function Set-TargetResource
     .Notes
         This role must only be installed on top-level site of the hierarchy.
 #>
-
 function Test-TargetResource
 {
     [CmdletBinding()]
@@ -417,7 +416,7 @@ function Test-TargetResource
                 }
             }
 
-            if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty(($state.CertificateFile))))
+            if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty($state.CertificateFile)))
             {
                 Write-Verbose -Message ($script:localizedData.NullCertCheck -f $SiteServerName)
                 $result = $false

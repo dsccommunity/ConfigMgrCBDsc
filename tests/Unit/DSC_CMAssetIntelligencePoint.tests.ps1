@@ -234,11 +234,11 @@ try
         $syncScheduleThrowMsg = 'When specifying a schedule, the EnableSynchronization paramater must be true.'
 
         $certThrow = @{
-            SiteCode              = 'Lab'
-            SiteServerName        = 'CA01.contoso.com'
-            RemoveCertificate     = $true
-            CertificateFile       = '\\CA01.Contoso.com\c$\cert.pfx'
-            IsSingleInstance      = 'Yes'
+            SiteCode          = 'Lab'
+            SiteServerName    = 'CA01.contoso.com'
+            RemoveCertificate = $true
+            CertificateFile   = '\\CA01.Contoso.com\c$\cert.pfx'
+            IsSingleInstance  = 'Yes'
         }
 
         $certThrowMsg = "When specifying a certificate, you can't specify RemoveCertificate as true."
@@ -259,8 +259,8 @@ try
 
         $removeThrowMsg = 'Role is installed, need to specify SiteServerName to remove.'
 
-        $NetworkOSPath = @{
-            NetworkOSPath= '\\CA01.Contoso.com'
+        $networkOSPath = @{
+            NetworkOSPath = '\\CA01.Contoso.com'
         }
 
         Describe "$moduleResourceName\Get-TargetResource" {
@@ -289,7 +289,7 @@ try
 
                 It 'Should return desired result when asset intelligence point is currently installed with no certificate file' {
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnNoCert }
-                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $NetworkOSPath }
+                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $networkOSPath }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule }
 
                     $result = Get-TargetResource @getInput
@@ -306,7 +306,7 @@ try
 
                 It 'Should return desired result when asset intelligence point is currently installed with a certificate file' {
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnWithCert }
-                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $NetworkOSPath }
+                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $networkOSPath }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule }
 
                     $result = Get-TargetResource @getInput

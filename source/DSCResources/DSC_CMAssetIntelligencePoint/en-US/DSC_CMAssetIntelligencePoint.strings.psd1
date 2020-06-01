@@ -16,7 +16,7 @@ ConvertFrom-StringData @'
     NoSchedule           = Expected Schedule to be set to None.
     CurrentSchedule      = Current Schedule is set to none, desired: {0} {1}.
     SetNoSchedule        = Setting schedule to none.
-    SetSchedule          = Setting schedule to {0} {1}
+    SetSchedule          = Setting schedule to {0} {1}.
     RoleInstalled        = SiteServerName parameter will be ignored, since role is already installed.
     ServerNameAdd        = Role is not installed, need to specify SiteServerName to add.
     ServerNameRemove     = Role is installed, need to specify SiteServerName to remove.
