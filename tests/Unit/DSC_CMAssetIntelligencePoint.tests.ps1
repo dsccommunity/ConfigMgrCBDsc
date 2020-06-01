@@ -259,6 +259,10 @@ try
 
         $removeThrowMsg = 'Role is installed, need to specify SiteServerName to remove.'
 
+        $NetworkOSPath = @{
+            NetworkOSPath= '\\CA01.Contoso.com'
+        }
+
         Describe "$moduleResourceName\Get-TargetResource" {
             BeforeAll{
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -269,6 +273,7 @@ try
 
                 It 'Should return desired result when asset intelligence point is not currently installed' {
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $null }
+                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $null }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $null }
 
                     $result = Get-TargetResource @getInput
@@ -284,6 +289,7 @@ try
 
                 It 'Should return desired result when asset intelligence point is currently installed with no certificate file' {
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnNoCert }
+                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $NetworkOSPath }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule }
 
                     $result = Get-TargetResource @getInput
@@ -300,6 +306,7 @@ try
 
                 It 'Should return desired result when asset intelligence point is currently installed with a certificate file' {
                     Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnWithCert }
+                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $NetworkOSPath }
                     Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule }
 
                     $result = Get-TargetResource @getInput
