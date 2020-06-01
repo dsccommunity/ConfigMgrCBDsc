@@ -23,6 +23,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added Get-BoundaryInfo to the ResourceHelper
 - Added CMManagementPoint Resource
 - Added psd1 for ResourceHelper
+- Added CMAssetIntelligencePoint Resource
 
 ### Changed
 
