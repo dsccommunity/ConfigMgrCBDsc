@@ -217,7 +217,8 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($Schedule))
             {
-                if (($Schedule.RecurCount -eq 0) -and ($state.Schedule))
+                if (($state.Ensure -eq 'Absent' -and $Schedule.RecurCount -eq 0) -or
+                   ($Schedule.RecurCount -eq 0 -and $state.Schedule))
                 {
                     $setSchedule = $true
                     Write-Verbose -Message $script:localizedData.SetNoSchedule
