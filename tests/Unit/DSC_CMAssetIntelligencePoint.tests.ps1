@@ -445,6 +445,22 @@ try
                     Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
+
+                It 'Should call expected commands when a state is absent and a nonrecurring schedule is specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero }
+
+                    Set-TargetResource @getReturnEnabledZero
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                }
             }
 
             Context 'When Set-TargetResource throws' {
