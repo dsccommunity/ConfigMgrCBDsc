@@ -20,6 +20,9 @@
     .PARAMETER SqlSysAdminAccounts
         Use this parameter to provision logins to be members of the sysadmin role.
 
+    .PARAMETER Features
+        SQL features to install.
+
     .PARAMETER InstallSharedDir
         Specifies the installation directory for 64-bit shared components.
 
@@ -117,6 +120,11 @@ Configuration xSccmSqlSetup
         [ValidateNotNullorEmpty()]
         [String[]]
         $SqlSysAdminAccounts,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty]
+        [String]
+        $Features = 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS',
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
@@ -256,7 +264,7 @@ Configuration xSccmSqlSetup
 
     SqlSetup InstallSql
     {
-        Features            = 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS'
+        Features            = $Features
         InstallSharedDir    = $InstallSharedDir
         InstallSharedWowDir = $InstallSharedWowDir
         InstanceName        = $SqlInstanceName

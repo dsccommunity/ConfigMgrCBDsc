@@ -127,6 +127,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   credential for the service account used to run the SQL Agent Service.
 - **[String] SqlSysAdminAccounts** _(Required)_: Use this parameter to provision
   logins to be members of the sysadmin role.
+- **[String]** : SQL features to install.
+  Default Value: 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS'
 - **[String] InstallSharedDir** : Specifies the installation directory for
   64-bit shared components.
   Default Value: 'C:\Program Files\Microsoft SQL Server'
