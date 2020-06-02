@@ -335,12 +335,7 @@ function Get-BoundaryInfo
 }
 
 Export-ModuleMember -Function @(
-    'Get-LocalizedData',
-    'New-InvalidArgumentException',
     'Import-ConfigMgrPowerShellModule'
-    'Confirm-ClientSetting'
-    'Convert-ClientSetting'
-    'Get-ClientSettingsSoftwareCenter'
     'Convert-CidrToIP'
     'ConvertTo-CimCMScheduleString'
     'ConvertTo-CimBoundaries'

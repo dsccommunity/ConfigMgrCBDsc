@@ -1,7 +1,28 @@
 # ConfigMgrCBDsc
 
 This module contains DSC resources for the management and
-configuration of Microsoft System Center Configuration Manager.
+configuration of Microsoft System Center Configuration Manager Current Branch (ConfigMgrCB).
+
+Current Branch starts after System Center 2012 with version 1511 [Configuration Manager CurrentBranch](https://docs.microsoft.com/en-us/mem/configmgr/core/plan-design/changes/what-has-changed-from-configuration-manager-2012).
+
+Starting with version 1910 Configuration Manager is now part of [Microsoft Endpoint Manager](https://docs.microsoft.com/en-us/mem/configmgr/core/understand/introduction).
+
+This module has been tested on the following versions:
+
+- Configuration Manager 1906
+- Configuration Manager 1902
+
+**Note**
+
+ConfigMgrCBDsc module uses the ConfigurationManager module that is installed with
+Configuration Manager.  In order to use this module, the site needs to be
+registered and the certificate needs to be in the Trusted Publishers store.
+Import-ConfigMgrPowerShellModule, adds keys to the HKEY_Users hive and imports
+the signing certificate from the ConfigurationManager.psd1 to allow the module
+to function, as either LocalSystem, or PSDscRunAsCredential specified.
+
+This occurs in Get, Test, and Set. The function that is called in the resources
+is Import-ConfigMgrPowerShellModule.
 
 [![Build Status](https://dev.azure.com/dsccommunity/ConfigMgrCBDsc/_apis/build/status/dsccommunity.ConfigMgrCBDsc?branchName=master)](https://dev.azure.com/dsccommunity/ConfigMgrCBDsc/_build/latest?definitionId=23&branchName=master)
 ![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/ConfigMgrCBDsc/23/master)
@@ -223,8 +244,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### CMForestDiscovery Examples
 
-- [ForestDiscovery_Disabled](Source\Examples\Resources\DSC_CMForestDiscovery\ForestDiscovery_Disabled.ps1)
-- [ForestDiscovery_Enabled](Source\Examples\Resources\DSC_CMForestDiscovery\ForestDiscovery_Enabled.ps1)
+- [ForestDiscovery_Disabled](Source\Examples\Resources\CMForestDiscovery\ForestDiscovery_Disabled.ps1)
+- [ForestDiscovery_Enabled](Source\Examples\Resources\CMForestDiscovery\ForestDiscovery_Enabled.ps1)
 
 ### CMClientStatusSettings
 
