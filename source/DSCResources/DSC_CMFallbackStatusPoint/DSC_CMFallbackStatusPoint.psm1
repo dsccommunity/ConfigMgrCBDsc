@@ -248,17 +248,19 @@ function Test-TargetResource
             Write-Verbose -Message ($script:localizedData.FSPNotInstalled -f $SiteServerName)
             $result = $false
         }
-
-        $evalList = @('StateMessageCount','ThrottleSec')
-
-        foreach ($param in $PSBoundParameters.GetEnumerator())
+        else
         {
-            if ($evalList -contains $param.key)
+            $evalList = @('StateMessageCount','ThrottleSec')
+
+            foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if ($param.Value -ne $state[$param.key])
+                if ($evalList -contains $param.key)
                 {
-                    Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
-                    $result = $false
+                    if ($param.Value -ne $state[$param.key])
+                    {
+                        Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
+                        $result = $false
+                    }
                 }
             }
         }
