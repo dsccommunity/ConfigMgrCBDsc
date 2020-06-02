@@ -6,7 +6,7 @@ try
     $dscModuleName   = 'ConfigMgrCBDsc'
     $dscResourceName = 'DSC_CMAccounts'
 
-    $TestEnvironment = Initialize-TestEnvironment `
+    $testEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $dscModuleName `
         -DSCResourceName $dscResourceName `
         -ResourceType 'Mof' `
@@ -266,5 +266,5 @@ try
 }
 finally
 {
-    Restore-TestEnvironment -TestEnvironment $TestEnvironment
+    Restore-TestEnvironment -TestEnvironment $testEnvironment
 }
