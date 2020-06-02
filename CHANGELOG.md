@@ -36,9 +36,12 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Renamed CMAccounts resource to DSC_CMAccounts
 - Renamed MSFT_SCCMIniFile resource to DSC_CMIniFile
 - Updated Readme with additional information
+- Updated ModuleBuilder to latest
+- Updated pipeline to run on merges to master only when something in source changes
 
 ### Removed
 
 - Removed ClientSettings resource
+- Removed Historic Changelog
 
 ### Fixed
