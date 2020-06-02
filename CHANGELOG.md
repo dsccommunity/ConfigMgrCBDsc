@@ -24,6 +24,7 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added CMManagementPoint Resource
 - Added psd1 for ResourceHelper
 - Added CMAssetIntelligencePoint Resource
+- Added VSCode Project Settings and PS Script Analyzer rules
 
 ### Changed
 
