@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMManagementPoint Resource
 - Added psd1 for ResourceHelper
 - Added CMAssetIntelligencePoint Resource
+- Added Issue and PR template.
 
 ### Changed
 
