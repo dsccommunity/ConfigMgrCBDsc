@@ -22,23 +22,21 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added Convert-BoundariesIPSubnets to the ResourceHelper
 - Added Get-BoundaryInfo to the ResourceHelper
 - Added CMManagementPoint Resource
+- Added psd1 for ResourceHelper
+- Added CMAssetIntelligencePoint Resource
 - Added CMDsitributionPoint Resource
 
 ### Changed
 
 - Update ConfigMgrCBDsc.ResourceHelper Import-ConfigMgrPowerShellModule
-
 - Updated current DSCResources in module that use Import-ConfigMgrPowerShellModule
   adding SiteCode
-
 - Updated ConfigMgrCBDscStub, removing line for polling schedule type
-
 - Updated current DSCResources helper in module Import-ConfigMgrPowerShellModule
   adding fixing registry settings
-
 - Renamed CMAccounts resource to DSC_CMAccounts
-
 - Renamed MSFT_SCCMIniFile resource to DSC_CMIniFile
+- Updated Readme with additional information
 
 ### Removed
 

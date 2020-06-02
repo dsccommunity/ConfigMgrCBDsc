@@ -1,7 +1,28 @@
 # ConfigMgrCBDsc
 
 This module contains DSC resources for the management and
-configuration of Microsoft System Center Configuration Manager.
+configuration of Microsoft System Center Configuration Manager Current Branch (ConfigMgrCB).
+
+Current Branch starts after System Center 2012 with version 1511 [Configuration Manager CurrentBranch](https://docs.microsoft.com/en-us/mem/configmgr/core/plan-design/changes/what-has-changed-from-configuration-manager-2012).
+
+Starting with version 1910 Configuration Manager is now part of [Microsoft Endpoint Manager](https://docs.microsoft.com/en-us/mem/configmgr/core/understand/introduction).
+
+This module has been tested on the following versions:
+
+- Configuration Manager 1906
+- Configuration Manager 1902
+
+**Note**
+
+ConfigMgrCBDsc module uses the ConfigurationManager module that is installed with
+Configuration Manager.  In order to use this module, the site needs to be
+registered and the certificate needs to be in the Trusted Publishers store.
+Import-ConfigMgrPowerShellModule, adds keys to the HKEY_Users hive and imports
+the signing certificate from the ConfigurationManager.psd1 to allow the module
+to function, as either LocalSystem, or PSDscRunAsCredential specified.
+
+This occurs in Get, Test, and Set. The function that is called in the resources
+is Import-ConfigMgrPowerShellModule.
 
 [![Build Status](https://dev.azure.com/dsccommunity/ConfigMgrCBDsc/_apis/build/status/dsccommunity.ConfigMgrCBDsc?branchName=master)](https://dev.azure.com/dsccommunity/ConfigMgrCBDsc/_build/latest?definitionId=23&branchName=master)
 ![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/ConfigMgrCBDsc/23/master)
@@ -41,6 +62,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   adding boundaries to the groups.
 - **CMManagementPoint**: Provides a resource for creating and removing
   management points.
+- **CMAssetIntelligencePoint**: Provides a resource for creating and managing
+  the SCCM Asset Intelligence Synchronization Point role.
 
 ### CMAccounts
 
@@ -221,8 +244,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### CMForestDiscovery Examples
 
-- [ForestDiscovery_Disabled](Source\Examples\Resources\DSC_CMForestDiscovery\ForestDiscovery_Disabled.ps1)
-- [ForestDiscovery_Enabled](Source\Examples\Resources\DSC_CMForestDiscovery\ForestDiscovery_Enabled.ps1)
+- [ForestDiscovery_Disabled](Source\Examples\Resources\CMForestDiscovery\ForestDiscovery_Disabled.ps1)
+- [ForestDiscovery_Enabled](Source\Examples\Resources\CMForestDiscovery\ForestDiscovery_Enabled.ps1)
 
 ### CMClientStatusSettings
 
@@ -304,6 +327,37 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMManagementPoint_Absent](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Absent.ps1)
 - [CMManagementPoint_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Present.ps1)
 - [CMManagementPoint_UseDatabase_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_UseDatabase_Present.ps1)
+
+### CMAssetIntelligencePoint
+
+- **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
+  instance, the value must be 'Yes'.
+  { Yes }.
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Required)_: Specifies the Site Server to install
+  or configure the role on. If the role is already installed on another server
+  this setting will be ignored.
+- **[String] CertificateFile** _(Write)_: Specifies the path to a System Center
+  Online authentication certificate (.pfx) file. If used, this must be in UNC
+  format. Local paths are not allowed. Mutually exclusive with the
+  RemoveCertificate parameter.
+- **[EmbeddedInstance] Schedule** _(Write)_: Specifies when the asset
+  intelligence catalog is synchronized. (RecurInterval, RecurCount)
+- **[Boolean] Enable** _(Write)_: Specifies whether the installed asset
+  intelligence role is enabled or disabled.
+- **[Boolean] EnableSynchronization** _(Write)_: Specifies whether to
+  synchronize the asset intelligence catalog.
+- **[Boolean] RemoveCertificate** _(Write)_: Specifies whether to remove a
+  configured certificate file. Mutually exclusive with the CertificateFile Parameter.
+- **[String] Ensure** _(Write)_: Specifies whether the asset intelligence
+  synchronization point is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMAssetIntelligencePoint Examples
+
+- [CMAssetIntelligencePoint_Absent](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Absent.ps1)
+- [CMAssetIntelligencePoint_Present](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Present.ps1)
 
 ### CMDistributionPoint
 

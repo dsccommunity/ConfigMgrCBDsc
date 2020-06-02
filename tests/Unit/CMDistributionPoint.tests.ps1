@@ -244,8 +244,10 @@ try
         $invalidSecondaryThrow = 'Must specify the assoicated primary location when a secondary location is specified.'
 
         Describe "$moduleResourceName\Get-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
+            BeforeAll {
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+            }
 
             Context 'When retrieving Collection settings' {
 
@@ -335,12 +337,14 @@ try
         }
 
         Describe "$moduleResourceName\Set-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
-            Mock -CommandName New-CMSiteSystemServer
-            Mock -CommandName Add-CMDistributionPoint
-            Mock -CommandName Set-CMDistributionPoint
-            Mock -CommandName Remove-CMDistributionPoint
+            BeforeAll {
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+                Mock -CommandName New-CMSiteSystemServer
+                Mock -CommandName Add-CMDistributionPoint
+                Mock -CommandName Set-CMDistributionPoint
+                Mock -CommandName Remove-CMDistributionPoint
+            }
 
             Context 'When Set-TargetResource runs successfully' {
 
@@ -512,11 +516,15 @@ try
         }
 
         Describe "$moduleResourceName\Test-TargetResource" {
-            Mock -CommandName Set-Location
-            Mock -CommandName Import-ConfigMgrPowerShellModule
+            BeforeAll {
+                Mock -CommandName Set-Location
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+            }
 
             Context 'When running Test-TargetResource and get returns present' {
-                Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
+                BeforeEach {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
+                }
 
                 It 'Should return desired result true settings match' {
                     Test-TargetResource @matchInput | Should -Be $true
@@ -540,7 +548,9 @@ try
             }
 
             Context 'When running Test-TargetResource and get returns absent' {
-                Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnAbsent }
+                BeforeEach {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnAbsent }
+                }
 
                 It 'Should return desired result true desired result is absent' {
                     Test-TargetResource @absentInput | Should -Be $true
@@ -557,4 +567,3 @@ finally
 {
     Invoke-TestCleanup
 }
-
