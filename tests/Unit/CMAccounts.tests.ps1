@@ -177,10 +177,6 @@ try
             }
 
             Context 'When running Set-TargetResource should throw' {
-                Mock -CommandName Import-ConfigMgrPowerShellModule
-                Mock -CommandName Set-Location
-                Mock -CommandName New-CMAccount
-                Mock -CommandName Remove-CMAccount
 
                 It 'Should Throw when Creds are not specified when adding an account' {
                     Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
