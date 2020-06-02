@@ -296,12 +296,12 @@ Configuration xSccmSqlSetup
 
         Package InstallSqlManagementStudio
         {
-            Ensure      = 'Present'
-            Path        = $SqlManagementStudioExePath
-            Name        = $SqlManagementStudioName
-            Arguments   = '/install /quiet /norestart'
-            ProductId   = $SqlManagemenStudioProductId
-            DependsOn   = '[SqlServerNetwork]EnableTcpIp'
+            Ensure    = 'Present'
+            Path      = $SqlManagementStudioExePath
+            Name      = $SqlManagementStudioName
+            Arguments = '/install /quiet /norestart'
+            ProductId = $SqlManagemenStudioProductId
+            DependsOn = '[SqlServerNetwork]EnableTcpIp'
         }
     }
 }

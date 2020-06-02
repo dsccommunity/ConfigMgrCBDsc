@@ -18,7 +18,6 @@ Configuration Example
 
     Node localhost
     {
-
         xSccmInstall SccmInstall
         {
             SetupExePath       = 'C:\Temp\SCCMInstall\SMSSETUP\BIN\X64'

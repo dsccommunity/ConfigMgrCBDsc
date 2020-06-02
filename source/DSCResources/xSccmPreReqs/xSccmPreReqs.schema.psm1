@@ -212,9 +212,9 @@ Configuration xSCCMPreReqs
                 'Web-Net-Ext','Web-Net-Ext45','Web-Filtering','Web-Windows-Auth','Web-Mgmt-Console','Web-Metabase'
             }
             'FallbackServicePoint' {$features += 'BITS','BITS-IIS-Ext','RSAT-Bits-Server','Web-ISAPI-Ext',
-            'Web-Http-Redirect','Web-Default-Doc','Web-Dir-Browsing','Web-Http-Errors','Web-Static-Content',
-            'Web-Http-Logging','Web-Stat-Compression','Web-Filtering','Web-Metabase','Web-Mgmt-Console',
-            'Web-Http-Tracing','Web-Log-Libraries','Web-Request-Monitor'
+                'Web-Http-Redirect','Web-Default-Doc','Web-Dir-Browsing','Web-Http-Errors','Web-Static-Content',
+                'Web-Http-Logging','Web-Stat-Compression','Web-Filtering','Web-Metabase','Web-Mgmt-Console',
+                'Web-Http-Tracing','Web-Log-Libraries','Web-Request-Monitor'
             }
             'ManagementPoint' {$features += 'Net-Framework-45-Core','BITS','BITS-IIS-Ext','RSAT-Bits-Server',
                 'Web-ISAPI-Ext','Web-Http-Redirect','Web-Default-Doc','Web-Dir-Browsing','Web-Http-Errors',
@@ -257,28 +257,28 @@ Configuration xSCCMPreReqs
 
         Firewall AddSccmTCPFirewallRule
         {
-            Name                  = 'SCCMServerTCP'
-            DisplayName           = 'SCCM to SCCM communication - TCP'
-            Ensure                = 'Present'
-            Enabled               = 'True'
-            Profile               = $FirewallProfile
-            Direction             = 'Inbound'
-            LocalPort             = $FirewallTcpLocalPort
-            Protocol              = 'TCP'
-            Description           = 'Firewall Rule SCCM to SCCM communication - TCP'
+            Name        = 'SCCMServerTCP'
+            DisplayName = 'SCCM to SCCM communication - TCP'
+            Ensure      = 'Present'
+            Enabled     = 'True'
+            Profile     = $FirewallProfile
+            Direction   = 'Inbound'
+            LocalPort   = $FirewallTcpLocalPort
+            Protocol    = 'TCP'
+            Description = 'Firewall Rule SCCM to SCCM communication - TCP'
         }
 
         Firewall AddSccmUdpFirewallRule
         {
-            Name                  = 'SCCMServerUDP'
-            DisplayName           = 'SCCM to SCCM communication - UDP'
-            Ensure                = 'Present'
-            Enabled               = 'True'
-            Profile               = $FirewallProfile
-            Direction             = 'Inbound'
-            LocalPort             = $FirewallUdpLocalPort
-            Protocol              = 'UDP'
-            Description           = 'Firewall Rule SCCM to SCCM communication - UDP'
+            Name        = 'SCCMServerUDP'
+            DisplayName = 'SCCM to SCCM communication - UDP'
+            Ensure      = 'Present'
+            Enabled     = 'True'
+            Profile     = $FirewallProfile
+            Direction   = 'Inbound'
+            LocalPort   = $FirewallUdpLocalPort
+            Protocol    = 'UDP'
+            Description = 'Firewall Rule SCCM to SCCM communication - UDP'
         }
     }
 

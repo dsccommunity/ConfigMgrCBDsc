@@ -25,4 +25,3 @@
     'SqlServerDsc'              = '13.5.0'
     'NetworkingDsc'             = '7.4.0.0'
 }
-

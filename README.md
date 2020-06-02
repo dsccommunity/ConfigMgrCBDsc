@@ -177,6 +177,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 #### xSccmSqlSetup Examples
 
 - [SccmSqlSetup](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetup.ps1)
+- [SccmSqlSetupandManagemenStudio](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetupAndManagementStudio.ps1)
 
 ### ClientSettings
 

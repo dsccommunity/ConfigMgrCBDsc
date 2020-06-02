@@ -19,7 +19,6 @@ Configuration Example
 
     Node localhost
     {
-
         xSccmPreReqs SCCMPreReqs
         {
             InstallAdk             = $true

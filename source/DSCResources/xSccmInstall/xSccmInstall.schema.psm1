@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC  composite resource to install SCCM.
+        A DSC composite resource to install SCCM.
 
     .PARAMETER SetupExePath
         Specifies the path to the setup.exe for SCCM.
