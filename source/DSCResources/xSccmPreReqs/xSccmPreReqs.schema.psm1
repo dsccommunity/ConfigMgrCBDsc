@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC  composite resource to configure/install the required PreReqs for SCCM.
+        A DSC composite resource to configure/install the required PreReqs for SCCM.
         - .NET Framework 3.5 Windows Feature
         - .NET Framework 4.5 or later Windows Feature
         - Remote Differential Compression Windows Feature
