@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed CMAccounts resource to DSC_CMAccounts
 - Renamed MSFT_SCCMIniFile resource to DSC_CMIniFile
 - Updated Readme with additional information
+- Updated GitVersion to reflect a release has not been completed.
 - Updated ModuleBuilder to latest
 - Updated pipeline to run on merges to master only when something in source changes
 
