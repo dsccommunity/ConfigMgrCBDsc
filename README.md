@@ -64,6 +64,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   management points.
 - **CMAssetIntelligencePoint**: Provides a resource for creating and managing
   the SCCM Asset Intelligence Synchronization Point role.
+- **CMFallbackStatusPoint**: Provides a resource for creating and managing
+  the SCCM Fallback Status Point role.
 
 ### CMAccounts
 
@@ -358,3 +360,22 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMAssetIntelligencePoint_Absent](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Absent.ps1)
 - [CMAssetIntelligencePoint_Present](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Present.ps1)
+
+### CMFallbackStatusPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
+  or configure the role on.
+- **[UInt32] StateMessageCount** _(Write)_: Specifies the number of state messages
+  that a fallback status point can send to Configuration Manager within a throttle
+  interval.
+- **[UInt32] ThrottleSec** _(Write)_: Specifies the throttle interval in seconds.
+- **[String] Ensure** _(Write)_: Specifies whether the asset intelligence
+  synchronization point is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMFallbackStatusPoint Examples
+
+- [CMFallbackStatusPoint_Absent](Source\Examples\Resources\CMFallbackStatusPoint\CMFallbackStatusPoint_Absent.ps1)
+- [CMFallbackStatusPoint_Present](Source\Examples\Resources\CMFallbackStatusPoint\CMFallbackStatusPoint_Present.ps1)
