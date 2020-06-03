@@ -90,7 +90,7 @@ try
 
     Describe "$moduleResourceName\Get-TargetResource" -Tag 'Get' {
         InModuleScope $dscResourceName {
-            BeforeEach {
+            BeforeAll {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
@@ -114,7 +114,7 @@ try
                     $result                 | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode        | Should -Be -ExpectedValue 'Lab'
                     $result.Account         | Should -Be -ExpectedValue 'TestUser1'
-                    $result.CurrentAccounts | Should -Be -ExpectedValue $null
+                    $result.CurrentAccounts | Should -BeNullOrEmpty
                     $result.Ensure          | Should -Be -ExpectedValue 'Present'
                 }
             }
@@ -123,7 +123,7 @@ try
 
     Describe "$moduleResourceName\Set-TargetResource" -Tag 'Set' {
         InModuleScope $dscResourceName {
-            BeforeEach {
+            BeforeAll {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName New-CMAccount
@@ -221,7 +221,7 @@ try
 
     Describe "$moduleResourceName\Test-TargetResource" -Tag 'Test' {
         InModuleScope $dscResourceName {
-            BeforeEach {
+            BeforeAll {
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
             }
@@ -232,19 +232,19 @@ try
                 }
 
                 It 'Should return desired result true when ensure = present and account exists' {
-                    Test-TargetResource @cmAccountExists_Present | Should -Be $true
+                    Test-TargetResource @cmAccountExists_Present | Should -BeTrue
                 }
 
                 It 'Should return desired result true when ensure = absent and account does not exist' {
-                    Test-TargetResource @cmAccountNull_Absent | Should -Be $true
+                    Test-TargetResource @cmAccountNull_Absent | Should -BeTrue
                 }
 
                 It 'Should return desired result false when ensure = present and account does not exist' {
-                    Test-TargetResource @cmAccountNull_Present | Should -Be $false
+                    Test-TargetResource @cmAccountNull_Present | Should -BeFalse
                 }
 
                 It 'Should return desired result false when ensure = absent and account does not exist' {
-                    Test-TargetResource @cmAccountExists_Absent | Should -Be $false
+                    Test-TargetResource @cmAccountExists_Absent | Should -BeFalse
                 }
             }
 
@@ -254,11 +254,11 @@ try
                 }
 
                 It 'Should return desired result false when ensure = present' {
-                    Test-TargetResource @cmAccountNull_Present | Should -Be $false
+                    Test-TargetResource @cmAccountNull_Present | Should -BeFalse
                 }
 
                 It 'Should return desired result true when ensure = absent' {
-                    Test-TargetResource @cmAccountNull_Absent | Should -Be $true
+                    Test-TargetResource @cmAccountNull_Absent | Should -BeTrue
                 }
             }
         }

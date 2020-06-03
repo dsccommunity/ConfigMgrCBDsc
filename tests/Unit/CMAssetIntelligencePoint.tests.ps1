@@ -3,8 +3,8 @@ param ()
 # Begin Testing
 try
 {
-    $script:dscModuleName   = 'ConfigMgrCBDsc'
-    $script:dscResourceName = 'DSC_CMAssetIntelligencePoint'
+    $dscModuleName   = 'ConfigMgrCBDsc'
+    $dscResourceName = 'DSC_CMAssetIntelligencePoint'
 
     $TestEnvironment = Initialize-TestEnvironment `
         -DSCModuleName $dscModuleName `
@@ -253,8 +253,8 @@ try
         }
     }
 
-    Describe "$moduleResourceName\Get-TargetResource" {
-        InModuleScope $script:dscResourceName {
+    Describe "$moduleResourceName\Get-TargetResource" -Tag 'Get' {
+        InModuleScope $dscResourceName {
             BeforeAll {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
@@ -269,11 +269,11 @@ try
                     $result = Get-TargetResource @getInput
                     $result                       | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode              | Should -Be -ExpectedValue 'Lab'
-                    $result.SiteServerName        | Should -Be -ExpectedValue $null
-                    $result.CertificateFile       | Should -Be -ExpectedValue $null
-                    $result.Enable                | Should -Be -ExpectedValue $null
-                    $result.EnableSynchronization | Should -Be -ExpectedValue $null
-                    $result.Schedule              | Should -Be -ExpectedValue $null
+                    $result.SiteServerName        | Should -BeNullOrEmpty
+                    $result.CertificateFile       | Should -BeNullOrEmpty
+                    $result.Enable                | Should -BeNullOrEmpty
+                    $result.EnableSynchronization | Should -BeNullOrEmpty
+                    $result.Schedule              | Should -BeNullOrEmpty
                     $result.Ensure                | Should -Be -ExpectedValue 'Absent'
                 }
 
@@ -286,9 +286,9 @@ try
                     $result                       | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode              | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName        | Should -Be -ExpectedValue 'CA01.contoso.com'
-                    $result.CertificateFile       | Should -Be -ExpectedValue $null
-                    $result.Enable                | Should -Be -ExpectedValue $true
-                    $result.EnableSynchronization | Should -Be -ExpectedValue $true
+                    $result.CertificateFile       | Should -BeNullOrEmpty
+                    $result.Enable                | Should -BeTrue
+                    $result.EnableSynchronization | Should -BeTrue
                     $result.Schedule              | Should -Match $mockCimSchedule
                     $result.Schedule              | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.Ensure                | Should -Be -ExpectedValue 'Present'
@@ -304,8 +304,8 @@ try
                     $result.SiteCode              | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName        | Should -Be -ExpectedValue 'CA01.contoso.com'
                     $result.CertificateFile       | Should -Be -ExpectedValue '\\CA01.Contoso.com\c$\cert.pfx'
-                    $result.Enable                | Should -Be -ExpectedValue $true
-                    $result.EnableSynchronization | Should -Be -ExpectedValue $true
+                    $result.Enable                | Should -BeTrue
+                    $result.EnableSynchronization | Should -BeTrue
                     $result.Schedule              | Should -Match $mockCimSchedule
                     $result.Schedule              | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.Ensure                | Should -Be -ExpectedValue 'Present'
@@ -314,20 +314,20 @@ try
         }
     }
 
-    Describe "$moduleResourceName\Set-TargetResource" {
-        InModuleScope $script:dscResourceName {
-            Context 'When Set-TargetResource runs successfully' {
-                BeforeEach{
-                    Mock -CommandName Import-ConfigMgrPowerShellModule
-                    Mock -CommandName Set-Location
-                    Mock -CommandName Get-CMSiteSystemServer
-                    Mock -CommandName New-CMSiteSystemServer
-                    Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                    Mock -CommandName New-CMSchedule
-                    Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
-                    Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
-                }
+    Describe "$moduleResourceName\Set-TargetResource" -Tag 'Set' {
+        InModuleScope $dscResourceName {
+            BeforeAll{
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+                Mock -CommandName Get-CMSiteSystemServer
+                Mock -CommandName New-CMSiteSystemServer
+                Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
+                Mock -CommandName New-CMSchedule
+                Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
+                Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
+            }
 
+            Context 'When Set-TargetResource runs successfully' {
                 It 'Should call expected commands for when changing settings' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
@@ -456,17 +456,6 @@ try
             }
 
             Context 'When Set-TargetResource throws' {
-                BeforeEach{
-                    Mock -CommandName Import-ConfigMgrPowerShellModule
-                    Mock -CommandName Set-Location
-                    Mock -CommandName Get-CMSiteSystemServer
-                    Mock -CommandName New-CMSiteSystemServer
-                    Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-                    Mock -CommandName New-CMSchedule
-                    Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
-                    Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
-                }
-
                 It 'Should call throws when a schedule is specified and enable synchronization is false' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
@@ -629,8 +618,8 @@ try
         }
     }
 
-    Describe "$moduleResourceName\Test-TargetResource" {
-        InModuleScope $script:dscResourceName {
+    Describe "$moduleResourceName\Test-TargetResource" -Tag 'Test'{
+        InModuleScope $dscResourceName {
             BeforeAll{
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -640,66 +629,66 @@ try
                 It 'Should return desired result false when ensure = present and AP is absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
 
-                    Test-TargetResource @inputPresent  | Should -Be $false
+                    Test-TargetResource @inputPresent  | Should -BeFalse
                 }
 
                 It 'Should return desired result true when ensure = absent and AP is absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
 
-                    Test-TargetResource @inputAbsent | Should -Be $true
+                    Test-TargetResource @inputAbsent | Should -BeTrue
                 }
 
                 It 'Should return desired result false when ensure = absent and AP is present' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
-                    Test-TargetResource @inputAbsent | Should -Be $false
+                    Test-TargetResource @inputAbsent | Should -BeFalse
                 }
 
                 It 'Should return desired result true when a certificate file is specified and a certificate file is present' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
-                    Test-TargetResource @inputUseCert | Should -Be $true
+                    Test-TargetResource @inputUseCert | Should -BeTrue
                 }
 
                 It 'Should return desired result false when a certificate file is not specified and a certificate file is present' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
-                    Test-TargetResource @inputNoCert | Should -Be $false
+                    Test-TargetResource @inputNoCert | Should -BeFalse
                 }
 
                 It 'Should return desired result true when no certificate file is specified and no certificate file is present' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert }
 
-                    Test-TargetResource @inputNoCert | Should -Be $true
+                    Test-TargetResource @inputNoCert | Should -BeTrue
                 }
 
                 It 'Should return desired result false when a certificate file is specified and no certificate file is present' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert  }
 
-                    Test-TargetResource @inputUseCert  | Should -Be $false
+                    Test-TargetResource @inputUseCert  | Should -BeFalse
                 }
 
                 It 'Should return desired result false schedule days mismatch' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
-                    Test-TargetResource @returnEnabledDaysMismatch | Should -Be $false
+                    Test-TargetResource @returnEnabledDaysMismatch | Should -BeFalse
                 }
 
                 It 'Should return desired result true schedule matches' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
-                    Test-TargetResource @getReturnAll | Should -Be $true
+                    Test-TargetResource @getReturnAll | Should -BeTrue
                 }
 
                 It 'Should return desired result false schedule present but nonrecurring specified' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
-                    Test-TargetResource @getReturnEnabledZero | Should -Be $false
+                    Test-TargetResource @getReturnEnabledZero | Should -BeFalse
                 }
 
                 It 'Should return desired result false no schedule present but schedule specified' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
-                    Test-TargetResource @getReturnEnabledDays | Should -Be $false
+                    Test-TargetResource @getReturnEnabledDays | Should -BeFalse
                 }
             }
         }
