@@ -18,7 +18,7 @@ BeforeAll {
         throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
     }
 
-    $global:testEnvironment = Initialize-TestEnvironment `
+    $testEnvironment = Initialize-TestEnvironment `
             -DSCModuleName $dscModuleName `
             -DSCResourceName $dscResourceName `
             -ResourceType 'Mof' `
