@@ -82,7 +82,7 @@ try
             Ensure            = 'Present'
         }
     }
-    Describe "$moduleResourceName\Get-TargetResource" {
+    Describe "$moduleResourceName\Get-TargetResource" -Tag 'Get'{
         BeforeAll{
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
@@ -116,7 +116,7 @@ try
         }
     }
 
-    Describe "$moduleResourceName\Set-TargetResource" {
+    Describe "$moduleResourceName\Set-TargetResource" -Tag 'Set'{
         Context 'When Set-TargetResource runs successfully' {
             BeforeEach{
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -263,7 +263,7 @@ try
         }
     }
 
-    Describe "$moduleResourceName\Test-TargetResource" {
+    Describe "$moduleResourceName\Test-TargetResource" -Tag 'Test'{
         BeforeAll{
             Mock -CommandName Set-Location
             Mock -CommandName Import-ConfigMgrPowerShellModule
