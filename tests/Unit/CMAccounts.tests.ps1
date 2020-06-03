@@ -108,7 +108,7 @@ try
                 }
 
                 It 'Should return desired result' {
-                    Mock -CommandName Get-CMAccount -MockWith { $null }
+                    Mock -CommandName Get-CMAccount
 
                     $result = Get-TargetResource @getCmAccounts
                     $result                 | Should -BeOfType System.Collections.HashTable
@@ -250,7 +250,7 @@ try
 
             Context 'When running Test-TargetResource where Get-CMAccounts returned null' {
                 BeforeAll {
-                    Mock -CommandName Get-CMAccount -MockWith { $null }
+                    Mock -CommandName Get-CMAccount
                 }
 
                 It 'Should return desired result false when ensure = present' {

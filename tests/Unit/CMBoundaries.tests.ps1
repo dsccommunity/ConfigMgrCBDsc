@@ -1,4 +1,3 @@
-[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
 
 # Begin Testing
@@ -184,7 +183,7 @@ try
                 }
 
                 It 'Should return desired result when boundary not found' {
-                    Mock -CommandName Get-CMBoundary -MockWith { $null }
+                    Mock -CommandName Get-CMBoundary
 
                     $result = Get-TargetResource @inputAdSitePresent
                     $result             | Should -BeOfType System.Collections.HashTable

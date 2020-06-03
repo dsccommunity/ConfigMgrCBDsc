@@ -1,43 +1,31 @@
-[System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
-
-$script:dscModuleName   = 'ConfigMgrCBDsc'
-$script:dscResourceName = 'DSC_CMClientStatusSettings'
-
-function Invoke-TestSetup
-{
-    try
-    {
-        Import-Module -Name DscResource.Test -Force -ErrorAction 'Stop'
-    }
-    catch [System.IO.FileNotFoundException]
-    {
-        throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
-    }
-
-    $script:testEnvironment = Initialize-TestEnvironment `
-        -DSCModuleName $script:dscModuleName `
-        -DSCResourceName $script:dscResourceName `
-        -ResourceType 'Mof' `
-        -TestType 'Unit'
-
-    # Import Stub function
-    $script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
-    Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'Stubs\ConfigMgrCBDscStub.psm1') -Force -WarningAction SilentlyContinue
-}
-
-function Invoke-TestCleanup
-{
-    Restore-TestEnvironment -TestEnvironment $script:testEnvironment
-}
-
-Invoke-TestSetup
 
 # Begin Testing
 try
 {
-    InModuleScope $script:dscResourceName {
+    $dscModuleName   = 'ConfigMgrCBDsc'
+    $dscResourceName = 'DSC_CMClientStatusSettings'
+
+    $testEnvironment = Initialize-TestEnvironment `
+        -DSCModuleName $dscModuleName `
+        -DSCResourceName $dscResourceName `
+        -ResourceType 'Mof' `
+        -TestType 'Unit'
+
+    BeforeAll {
         $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMClientStatusSettings'
+
+        # Import Stub function
+        Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'Stubs\ConfigMgrCBDscStub.psm1') -Force -WarningAction SilentlyContinue
+
+        try
+        {
+            Import-Module -Name DscResource.Test -Force -ErrorAction 'Stop'
+        }
+        catch [System.IO.FileNotFoundException]
+        {
+            throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
+        }
 
         $cmClientSettingsGet = @{
             SiteCode         = 'Lab'
@@ -88,13 +76,16 @@ try
             HardwareInventoryDays  = 19
             StatusMessageDays      = 7
         }
+    }
 
-        Describe "$moduleResourceName\Get-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
+    Describe "$moduleResourceName\Get-TargetResource" -Tag 'Get' {
+        InModuleScope $dscResourceName {
+            BeforeAll {
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+            }
 
             Context 'When retrieving client status settings' {
-
                 It 'Should return desired result' {
                     Mock -CommandName Get-CMClientStatusSetting -MockWith { $cmClientSettingsReturn }
 
@@ -117,87 +108,86 @@ try
                     $result                        | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
                     $result.IsSingleInstance       | Should -Be -ExpectedValue 'Yes'
-                    $result.ClientPolicyDays       | Should -Be -ExpectedValue $null
-                    $result.HeartbeatDiscoveryDays | Should -Be -ExpectedValue $null
-                    $result.SoftwareInventoryDays  | Should -Be -ExpectedValue $null
-                    $result.HardwareInventoryDays  | Should -Be -ExpectedValue $null
-                    $result.StatusMessageDays      | Should -Be -ExpectedValue $null
-                    $result.HistoryCleanupDays     | Should -Be -ExpectedValue $null
+                    $result.ClientPolicyDays       | Should -BeNullOrEmpty
+                    $result.HeartbeatDiscoveryDays | Should -BeNullOrEmpty
+                    $result.SoftwareInventoryDays  | Should -BeNullOrEmpty
+                    $result.HardwareInventoryDays  | Should -BeNullOrEmpty
+                    $result.StatusMessageDays      | Should -BeNullOrEmpty
+                    $result.HistoryCleanupDays     | Should -BeNullOrEmpty
                 }
             }
         }
+    }
 
-        Describe "$moduleResourceName\Set-TargetResource" {
-            Context 'When Set-TargetResource runs successfully' {
+    Describe "$moduleResourceName\Set-TargetResource" -Tag 'Set' {
+        InModuleScope $dscResourceName {
+            BeforeAll {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName Set-CMClientStatusSetting
+                Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
+            }
 
+            Context 'When Set-TargetResource runs successfully' {
                 It 'Should call expected commands when settings match' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     Set-TargetResource @cmClientSettingsInput
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientStatusSetting -Exactly -Times 0 -Scope It
+                    Should -Invoke Import-ConfigMgrPowerShellModule -Exactly 1 -Scope It
+                    Should -Invoke Set-Location -Exactly 2 -Scope It
+                    Should -Invoke Get-TargetResource -Exactly 1 -Scope It
+                    Should -Invoke Set-CMClientStatusSetting -Exactly 0 -Scope It
                 }
 
                 It 'Should call expected commands for changing single settings' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     Set-TargetResource @cmClientInputHeartbeat
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientStatusSetting -Exactly -Times 1 -Scope It
+                    Should -Invoke Import-ConfigMgrPowerShellModule -Exactly 1 -Scope It
+                    Should -Invoke Set-Location -Exactly 2 -Scope It
+                    Should -Invoke Get-TargetResource -Exactly 1 -Scope It
+                    Should -Invoke Set-CMClientStatusSetting -Exactly 1 -Scope It
                 }
 
                 It 'Should call expected commands for changing multiple settings' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     Set-TargetResource @cmClientInputmultiple
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientStatusSetting -Exactly -Times 1 -Scope It
+                    Should -Invoke Import-ConfigMgrPowerShellModule -Exactly 1 -Scope It
+                    Should -Invoke Set-Location -Exactly 2 -Scope It
+                    Should -Invoke Get-TargetResource -Exactly 1 -Scope It
+                    Should -Invoke Set-CMClientStatusSetting -Exactly 1 -Scope It
                 }
 
                 It 'Should call expected commands when Set client status setting throws' {
                     Mock -CommandName Set-CMClientStatusSetting -MockWith { throw }
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     { Set-TargetResource @cmClientInputmultiple } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientStatusSetting -Exactly -Times 1 -Scope It
+                    Should -Invoke Import-ConfigMgrPowerShellModule 1 -Exactly -Scope It
+                    Should -Invoke Set-Location -Exactly 2 -Scope It
+                    Should -Invoke Get-TargetResource -Exactly 1 -Scope It
+                    Should -Invoke Set-CMClientStatusSetting -Exactly 1 -Scope It
                 }
             }
         }
+    }
 
-        Describe "$moduleResourceName\Test-TargetResource" {
-            Mock -CommandName Set-Location
-            Mock -CommandName Import-ConfigMgrPowerShellModule
+    Describe "$moduleResourceName\Test-TargetResource" -Tag 'Test' {
+        InModuleScope $dscResourceName {
+            BeforeAll{
+                Mock -CommandName Set-Location
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
+            }
 
             Context 'When running Test-TargetResource' {
-
                 It 'Should returned desired result true when settings match' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
-
-                    Test-TargetResource @cmClientSettingsInput | Should -Be $true
+                    Test-TargetResource @cmClientSettingsInput | Should -BeTrue
                 }
 
                 It 'Should returned desired result false when get returns mismatch on single setting' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
-
-                    Test-TargetResource @cmClientInputHeartbeat | Should -Be $false
+                    Test-TargetResource @cmClientInputHeartbeat | Should -BeFalse
                 }
 
                 It 'Should returned desired result false when get returns mismatch on multiple settings' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
-
-                    Test-TargetResource @cmClientInputmultiple | Should -Be $false
+                    Test-TargetResource @cmClientInputmultiple | Should -BeFalse
                 }
             }
         }
@@ -205,5 +195,5 @@ try
 }
 finally
 {
-    Invoke-TestCleanup
+    Restore-TestEnvironment -TestEnvironment $testEnvironment
 }

@@ -262,9 +262,9 @@ try
 
             Context 'When retrieving asset intelligence point settings' {
                 It 'Should return desired result when asset intelligence point is not currently installed' {
-                    Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $null }
-                    Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $null }
-                    Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $null }
+                    Mock -CommandName Get-CMAssetIntelligenceProxy
+                    #Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint
+                    #Mock -CommandName ConvertTo-CimCMScheduleString
 
                     $result = Get-TargetResource @getInput
                     $result                       | Should -BeOfType System.Collections.HashTable
@@ -345,7 +345,7 @@ try
 
                 It 'Should call expected commands when asset intelligence synchronization point is absent' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-                    Mock -CommandName Get-CMSiteSystemServer -MockWith { $null }
+                    Mock -CommandName Get-CMSiteSystemServer
 
                     Set-TargetResource @inputNoCert
                     Should -Invoke Import-ConfigMgrPowerShellModule -Exactly 1 -Scope It
