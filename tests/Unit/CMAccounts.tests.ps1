@@ -4,7 +4,7 @@ param ()
 BeforeAll {
     $dscModuleName   = 'ConfigMgrCBDsc'
     $dscResourceName = 'DSC_CMAccounts'
-    $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMClientAccounts'
+    $moduleResourceName = "$dscModuleName - $dscResourceName"
 
     # Import Stub function
     Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'Stubs\ConfigMgrCBDscStub.psm1') -Force -WarningAction SilentlyContinue
@@ -17,12 +17,6 @@ BeforeAll {
     {
         throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
     }
-
-    $testEnvironment = Initialize-TestEnvironment `
-            -DSCModuleName $dscModuleName `
-            -DSCResourceName $dscResourceName `
-            -ResourceType 'Mof' `
-            -TestType 'Unit'
 
     $testCredential = New-Object `
         -TypeName System.Management.Automation.PSCredential `
@@ -86,14 +80,19 @@ BeforeAll {
 }
 
 Describe "$moduleResourceName\Get-TargetResource" -Tag 'Get' {
-    AfterAll {
-        Restore-TestEnvironment -TestEnvironment $testEnvironment
-    }
-
     InModuleScope $dscResourceName {
         BeforeAll {
+            $testEnvironment = Initialize-TestEnvironment `
+                -DSCModuleName $dscModuleName `
+                -DSCResourceName $dscResourceName `
+                -ResourceType 'Mof' `
+                -TestType 'Unit'
+
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
+        }
+        AfterAll {
+            Restore-TestEnvironment -TestEnvironment $testEnvironment
         }
 
         Context 'When retrieving client settings' {
@@ -123,17 +122,23 @@ Describe "$moduleResourceName\Get-TargetResource" -Tag 'Get' {
 }
 
 Describe "$moduleResourceName\Set-TargetResource" -Tag 'Set' {
-    AfterAll {
-        Restore-TestEnvironment -TestEnvironment $testEnvironment
-    }
-
     InModuleScope $dscResourceName {
         BeforeAll {
+            $testEnvironment = Initialize-TestEnvironment `
+                -DSCModuleName $dscModuleName `
+                -DSCResourceName $dscResourceName `
+                -ResourceType 'Mof' `
+                -TestType 'Unit'
+
             Mock -CommandName Import-ConfigMgrPowerShellModule
             Mock -CommandName Set-Location
             Mock -CommandName New-CMAccount
             Mock -CommandName Remove-CMAccount
         }
+        AfterAll {
+            Restore-TestEnvironment -TestEnvironment $testEnvironment
+        }
+
         Context 'When Set-TargetResource runs successfully' {
 
             It 'Should call expected commands for adding a new account' {
@@ -225,14 +230,19 @@ Describe "$moduleResourceName\Set-TargetResource" -Tag 'Set' {
 }
 
 Describe "$moduleResourceName\Test-TargetResource" -Tag 'Test' {
-    AfterAll {
-        Restore-TestEnvironment -TestEnvironment $testEnvironment
-    }
-
     InModuleScope $dscResourceName {
         BeforeAll {
+            $testEnvironment = Initialize-TestEnvironment `
+                -DSCModuleName $dscModuleName `
+                -DSCResourceName $dscResourceName `
+                -ResourceType 'Mof' `
+                -TestType 'Unit'
+
             Mock -CommandName Set-Location
             Mock -CommandName Import-ConfigMgrPowerShellModule
+        }
+        AfterAll {
+            Restore-TestEnvironment -TestEnvironment $testEnvironment
         }
 
         Context 'When running Test-TargetResource where Get-CMAccounts has accounts' {
