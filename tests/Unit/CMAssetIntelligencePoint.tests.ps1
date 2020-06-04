@@ -17,10 +17,10 @@ BeforeAll {
 
     # Variables used for each Initialize-TestEnvironment
     $initalize = @{
-        DSCModuleName  = 'ConfigMgrCBDsc'
+        DSCModuleName   = 'ConfigMgrCBDsc'
         DSCResourceName = 'DSC_CMAssetIntelligencePoint'
-        ResourceType = 'Mof'
-        TestType  = 'Unit'
+        ResourceType    = 'Mof'
+        TestType        = 'Unit'
     }
 }
 
