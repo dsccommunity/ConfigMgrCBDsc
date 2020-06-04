@@ -17,10 +17,10 @@ BeforeAll {
 
     # Variables used for each Initialize-TestEnvironment
     $initalize = @{
-        DSCModuleName  = 'ConfigMgrCBDsc'
+        DSCModuleName   = 'ConfigMgrCBDsc'
         DSCResourceName = 'DSC_CMAccounts'
-        ResourceType = 'Mof'
-        TestType  = 'Unit'
+        ResourceType    = 'Mof'
+        TestType        = 'Unit'
     }
 }
 
@@ -30,7 +30,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Get-TargetResource' -Tag 'Get' {
 
         $getCmAccounts = @{
             SiteCode  = 'Lab'
-            Account = 'TestUser1'
+            Account   = 'TestUser1'
         }
 
         $cmAccounts = @(
@@ -82,7 +82,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Set-TargetResource' -Tag 'Set' {
 
         $getCmAccounts = @{
             SiteCode  = 'Lab'
-            Account = 'TestUser1'
+            Account   = 'TestUser1'
         }
 
         $cmAccounts = @(
@@ -101,16 +101,16 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Set-TargetResource' -Tag 'Set' {
         -ArgumentList 'DummyUsername', (ConvertTo-SecureString 'DummyPassword' -AsPlainText -Force)
 
         $cmAccountNull_Present = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser3'
-            Ensure   = 'Present'
+            SiteCode        = 'Lab'
+            Account         = 'DummyUser3'
+            Ensure          = 'Present'
             AccountPassword = $testCredential
         }
 
         $cmAccountExists_Absent = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser1'
-            Ensure   = 'Absent'
+            SiteCode        = 'Lab'
+            Account         = 'DummyUser1'
+            Ensure          = 'Absent'
             AccountPassword = $testCredential
         }
 
@@ -127,9 +127,9 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Set-TargetResource' -Tag 'Set' {
     Context 'When Set-TargetResource runs successfully' {
         BeforeEach {
             $cmAccountExists_Present = @{
-                SiteCode = 'Lab'
-                Account  = 'DummyUser1'
-                Ensure   = 'Present'
+                SiteCode        = 'Lab'
+                Account         = 'DummyUser1'
+                Ensure          = 'Present'
                 AccountPassword = $testCredential
             }
 
@@ -230,7 +230,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Test-TargetResource' -Tag 'Test' {
 
         $getCmAccounts = @{
             SiteCode  = 'Lab'
-            Account = 'TestUser1'
+            Account   = 'TestUser1'
         }
 
         $cmAccounts = @(
@@ -249,9 +249,9 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Test-TargetResource' -Tag 'Test' {
         -ArgumentList 'DummyUsername', (ConvertTo-SecureString 'DummyPassword' -AsPlainText -Force)
 
         $cmAccountNull_Present = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser3'
-            Ensure   = 'Present'
+            SiteCode        = 'Lab'
+            Account         = 'DummyUser3'
+            Ensure          = 'Present'
             AccountPassword = $testCredential
         }
 
@@ -265,23 +265,23 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Test-TargetResource' -Tag 'Test' {
     Context 'When running Test-TargetResource where Get-CMAccounts has accounts' {
         BeforeEach {
             $cmAccountNull_Absent = @{
-                SiteCode = 'Lab'
-                Account  = 'DummyUser3'
-                Ensure   = 'Absent'
+                SiteCode        = 'Lab'
+                Account         = 'DummyUser3'
+                Ensure          = 'Absent'
                 AccountPassword = $testCredential
             }
 
             $cmAccountExists_Present = @{
-                SiteCode = 'Lab'
-                Account  = 'DummyUser1'
-                Ensure   = 'Present'
+                SiteCode        = 'Lab'
+                Account         = 'DummyUser1'
+                Ensure          = 'Present'
                 AccountPassword = $testCredential
             }
 
             $cmAccountExists_Absent = @{
-                SiteCode = 'Lab'
-                Account  = 'DummyUser1'
-                Ensure   = 'Absent'
+                SiteCode        = 'Lab'
+                Account         = 'DummyUser1'
+                Ensure          = 'Absent'
                 AccountPassword = $testCredential
             }
 
@@ -308,9 +308,9 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Test-TargetResource' -Tag 'Test' {
     Context 'When running Test-TargetResource where Get-CMAccounts returned null' {
         BeforeEach {
             $cmAccountNull_Absent = @{
-                SiteCode = 'Lab'
-                Account  = 'DummyUser3'
-                Ensure   = 'Absent'
+                SiteCode        = 'Lab'
+                Account         = 'DummyUser3'
+                Ensure          = 'Absent'
                 AccountPassword = $testCredential
             }
 
