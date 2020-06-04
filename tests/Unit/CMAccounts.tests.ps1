@@ -18,13 +18,14 @@ BeforeAll {
         throw 'DscResource.Test module dependency not found. Please run ".\build.ps1 -Tasks build" first.'
     }
 
-    # Variables used for each
+    # Variables used for each Initialize-TestEnvironment
     $initalize = @{
         DSCModuleName  = 'ConfigMgrCBDsc'
         DSCResourceName = 'DSC_CMAccounts'
         ResourceType = 'Mof'
         TestType  = 'Unit'
     }
+
     #region Variables used for Testing
     $testCredential = New-Object `
         -TypeName System.Management.Automation.PSCredential `
