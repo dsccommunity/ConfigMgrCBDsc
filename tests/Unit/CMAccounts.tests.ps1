@@ -25,7 +25,7 @@ BeforeAll {
         ResourceType = 'Mof'
         TestType  = 'Unit'
     }
-
+    #region Variables used for Testing
     $testCredential = New-Object `
         -TypeName System.Management.Automation.PSCredential `
         -ArgumentList 'DummyUsername', (ConvertTo-SecureString 'DummyPassword' -AsPlainText -Force)
@@ -85,6 +85,7 @@ BeforeAll {
             ItemType = 'User'
         }
     )
+    #endregion
 }
 
 Describe "$moduleResourceName\Get-TargetResource" -Tag 'Get' {
