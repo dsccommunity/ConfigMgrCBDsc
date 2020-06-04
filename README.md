@@ -371,8 +371,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   that a fallback status point can send to Configuration Manager within a throttle
   interval.
 - **[UInt32] ThrottleSec** _(Write)_: Specifies the throttle interval in seconds.
-- **[String] Ensure** _(Write)_: Specifies whether the asset intelligence
-  synchronization point is present or absent.
+- **[String] Ensure** _(Write)_: Specifies whether the fallback status point is
+  present or absent.
   - Values include: { Present | Absent }
 
 #### CMFallbackStatusPoint Examples
