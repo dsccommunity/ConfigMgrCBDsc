@@ -236,7 +236,7 @@ Describe "$moduleResourceName\Test-TargetResource" -Tag 'Test' {
     }
 
     Context 'When running Test-TargetResource where Get-CMAccounts has accounts' {
-        BeforeAll {
+        BeforeEach {
             Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
         }
 
@@ -258,7 +258,7 @@ Describe "$moduleResourceName\Test-TargetResource" -Tag 'Test' {
     }
 
     Context 'When running Test-TargetResource where Get-CMAccounts returned null' {
-        BeforeAll {
+        BeforeEach {
             Mock -CommandName Get-CMAccount
         }
 
