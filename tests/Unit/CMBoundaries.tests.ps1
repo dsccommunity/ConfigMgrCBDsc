@@ -1,7 +1,6 @@
 param ()
 
 # Begin Testing
-# Begin Testing
 BeforeAll {
     # Import Stub function
     Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'Stubs\ConfigMgrCBDscStub.psm1') -Force -WarningAction 'SilentlyContinue'
