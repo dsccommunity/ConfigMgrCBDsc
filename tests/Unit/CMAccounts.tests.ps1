@@ -75,6 +75,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Get-TargetResource' -Tag 'Get' {
         }
     }
 }
+
 Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Set-TargetResource' -Tag 'Set' {
     BeforeAll {
         $testEnvironment = Initialize-TestEnvironment @initalize
