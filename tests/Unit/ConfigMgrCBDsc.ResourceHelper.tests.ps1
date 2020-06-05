@@ -1,143 +1,148 @@
 [System.Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSAvoidUsingConvertToSecureStringWithPlainText', '')]
 param ()
 
-$script:projectPath = "$PSScriptRoot\..\.." | Convert-Path
-$script:projectName = (Get-ChildItem -Path "$script:projectPath\*\*.psd1" | Where-Object -FilterScript {
-        ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
-        $(try { Test-ModuleManifest -Path $_.FullName -ErrorAction Stop } catch { $false })
-    }).BaseName
+BeforeAll{
+    # Import Stub function
+    Import-Module (Join-Path -Path $PSScriptRoot -ChildPath 'Stubs\ConfigMgrCBDscStub.psm1') -Force -WarningAction 'SilentlyContinue'
 
-$script:parentModule = Get-Module -Name $script:projectName -ListAvailable | Select-Object -First 1
-$script:subModulesFolder = Join-Path -Path $script:parentModule.ModuleBase -ChildPath 'Modules'
-Remove-Module -Name $script:parentModule -Force -ErrorAction 'SilentlyContinue'
+    $script:projectPath = "$PSScriptRoot\..\.." | Convert-Path
+    $script:projectName = (Get-ChildItem -Path "$script:projectPath\*\*.psd1" | Where-Object -FilterScript {
+            ($_.Directory.Name -match 'source|src' -or $_.Directory.Name -eq $_.BaseName) -and
+            $(try { Test-ModuleManifest -Path $_.FullName -ErrorAction Stop } catch { $false })
+        }).BaseName
 
-$script:subModuleName = (Split-Path -Path $PSCommandPath -Leaf) -replace '\.Tests.ps1'
-$script:subModuleFile = Join-Path -Path $script:subModulesFolder -ChildPath "$($script:subModuleName)"
+    $script:parentModule = Get-Module -Name $script:projectName -ListAvailable | Select-Object -First 1
+    $script:subModulesFolder = Join-Path -Path $script:parentModule.ModuleBase -ChildPath 'Modules'
+    Remove-Module -Name $script:parentModule -Force -ErrorAction 'SilentlyContinue'
 
-Import-Module $script:subModuleFile -Force -ErrorAction 'Stop'
+    $script:subModuleName = (Split-Path -Path $PSCommandPath -Leaf) -replace '\.Tests.ps1'
+    $script:subModuleFile = Join-Path -Path $script:subModulesFolder -ChildPath "$($script:subModuleName)"
 
-InModuleScope $script:subModuleName {
+    Import-Module $script:subModuleFile -Force -ErrorAction 'Stop'
+}
 
-    $moduleResourceName = 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper'
+Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Import-ConfigMgrPowerShellModule' -Tag 'Import-ConfigMgrPowerShellModule' {
+    BeforeAll {
+        $moduleVersionGood = @{
+            Name    = 'ConfgurationManager'
+            Version = '5.1902'
+        }
 
-    $moduleVersionGood = @{
-        Name    = 'ConfgurationManager'
-        Version = '5.1902'
+        $moduleVersionBad = @{
+            Name    = 'ConfgurationManager'
+            Version = '5.1802'
+        }
+
+        $siteCim = @{
+            ServerName = 'Test.contoso.com'
+            SiteCode   = 'Lab'
+            SiteName   = 'Lab'
+            Version    = '5.00.8790.1000'
+        }
+
+        $ENV:SMS_ADMIN_UI_PATH = 'test'
+
+        Mock -CommandName Join-Path -MockWith { 'C:\' }
+        Mock -CommandName Split-Path -MockWith { 'C:\' }
+        Mock -CommandName Import-Module
+        Mock -CommandName Get-CimInstance -MockWith { $siteCim }
+        Mock -CommandName Set-ItemProperty
+        Mock -CommandName New-Item
+        Mock -CommandName Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper
+        Mock -CommandName Get-ItemProperty
+        Mock -CommandName Test-Path
+    }
+    AfterAll {
+        $ENV:SMS_ADMIN_UI_PATH = $null
     }
 
-    $moduleVersionBad = @{
-        Name    = 'ConfgurationManager'
-        Version = '5.1802'
-    }
+    Context 'When importing the module' {
+        It 'Should call expected commands' {
+            Mock -CommandName Get-Module -MockWith { $moduleVersionGood }
+            Mock -CommandName Test-Path -MockWith { $false }
+            Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
 
-    $ENV:SMS_ADMIN_UI_PATH = 'test'
+            Import-ConfigMgrPowerShellModule -SiteCode 'Lab'
+            Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
+            Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
+            Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
+            Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
+            Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
+            Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
+            Assert-MockCalled Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+        }
 
-    $siteCim = @{
-        ServerName = 'Test.contoso.com'
-        SiteCode   = 'Lab'
-        SiteName   = 'Lab'
-        Version    = '5.00.8790.1000'
-    }
+        It 'Should throw when module version is lower than expected' {
+            Mock -CommandName Get-Module -MockWith { $moduleVersionBad }
+            Mock -CommandName Test-Path -MockWith { $true } -ParameterFilter { $Path -eq 'Lab:\' }
 
-    Describe "$moduleResourceName\Import-ConfigMgrPowerShellModule" {
+            { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
+            Assert-MockCalled Import-Module -Exactly -Times 0 -Scope It
+            Assert-MockCalled Join-Path -Exactly -Times 0 -Scope It
+            Assert-MockCalled Split-Path -Exactly -Times 0 -Scope It
+            Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-CimInstance -Exactly -Times 0 -Scope It
+            Assert-MockCalled Get-ItemProperty -Exactly -Times 0 -Scope It
+            Assert-MockCalled New-Item -Exactly -Times 0 -Scope It
+            Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
+            Assert-MockCalled Set-ItemProperty -Exactly -Times 0 -Scope It
+            Assert-MockCalled Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+        }
 
-        Context 'When importing the module' {
-            Mock -CommandName Join-Path -MockWith { 'C:\' }
-            Mock -CommandName Split-Path -MockWith { 'C:\' }
-            Mock -CommandName Import-Module
-            Mock -CommandName Get-CimInstance -MockWith { $siteCim }
-            Mock -CommandName Set-ItemProperty
-            Mock -CommandName New-Item
-            Mock -CommandName Set-ConfigMgrCert
-            Mock -CommandName Get-ItemProperty
-            Mock -CommandName Test-Path
+        It 'Should throw on Module import' {
+            Mock -CommandName Import-Module -MockWith { throw 'bad' }
+            Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
 
-            It 'Should call expected commands' {
-                Mock -CommandName Get-Module -MockWith { $moduleVersionGood }
-                Mock -CommandName Test-Path -MockWith { $false }
-                Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
-
-                Import-ConfigMgrPowerShellModule -SiteCode 'Lab'
-                Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
-                Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
-                Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
-                Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
-                Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
-                Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 1 -Scope It
-            }
-
-            It 'Should throw when module version is lower than expected' {
-                Mock -CommandName Get-Module -MockWith { $moduleVersionBad }
-                Mock -CommandName Test-Path -MockWith { $true } -ParameterFilter { $Path -eq 'Lab:\' }
-
-                { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
-                Assert-MockCalled Import-Module -Exactly -Times 0 -Scope It
-                Assert-MockCalled Join-Path -Exactly -Times 0 -Scope It
-                Assert-MockCalled Split-Path -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CimInstance -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-ItemProperty -Exactly -Times 0 -Scope It
-                Assert-MockCalled New-Item -Exactly -Times 0 -Scope It
-                Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled Set-ItemProperty -Exactly -Times 0 -Scope It
-                Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 0 -Scope It
-            }
-
-            It 'Should throw on Module import' {
-                Mock -CommandName Import-Module -MockWith { throw 'bad' }
-                Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
-
-                { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
-                Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
-                Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-Module -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
-                Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
-                Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
-                Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
-                Assert-MockCalled Set-ConfigMgrCert -Exactly -Times 1 -Scope It
-            }
+            { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
+            Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
+            Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
+            Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-Module -Exactly -Times 0 -Scope It
+            Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
+            Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
+            Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
+            Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
+            Assert-MockCalled Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
         }
     }
+}
 
-    Describe "$moduleResourceName\Convert-CidrToIP" {
+Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Convert-CidrToIP'  -Tag 'Convert-CidrToIP' {
+    Context 'When results are as expected' {
 
-        Context 'When results are as expected' {
+        It 'Should return expected results Cidr 24' {
+            $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 24
+            $result.NetworkAddress | Should -Be -ExpectedValue '10.1.1.0'
+            $result.Subnetmask     | Should -Be -ExpectedValue '255.255.255.0'
+            $result.Cidr           | Should -Be -ExpectedValue '24'
+        }
 
-            It 'Should return expected results Cidr 24' {
-                $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 24
-                $result.NetworkAddress | Should -Be -ExpectedValue '10.1.1.0'
-                $result.Subnetmask     | Should -Be -ExpectedValue '255.255.255.0'
-                $result.Cidr           | Should -Be -ExpectedValue '24'
-            }
+        It 'Should return expected results Cidr 16' {
+            $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 16
+            $result.NetworkAddress | Should -Be -ExpectedValue '10.1.0.0'
+            $result.Subnetmask     | Should -Be -ExpectedValue '255.255.0.0'
+            $result.Cidr           | Should -Be -ExpectedValue '16'
+        }
 
-            It 'Should return expected results Cidr 16' {
-                $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 16
-                $result.NetworkAddress | Should -Be -ExpectedValue '10.1.0.0'
-                $result.Subnetmask     | Should -Be -ExpectedValue '255.255.0.0'
-                $result.Cidr           | Should -Be -ExpectedValue '16'
-            }
+        It 'Should return expected results Cidr 8' {
+            $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 8
+            $result.NetworkAddress | Should -Be -ExpectedValue '10.0.0.0'
+            $result.Subnetmask     | Should -Be -ExpectedValue '255.0.0.0'
+            $result.Cidr           | Should -Be -ExpectedValue '8'
+        }
 
-            It 'Should return expected results Cidr 8' {
-                $result = Convert-CidrToIP -IPAddress 10.1.1.1 -Cidr 8
-                $result.NetworkAddress | Should -Be -ExpectedValue '10.0.0.0'
-                $result.Subnetmask     | Should -Be -ExpectedValue '255.0.0.0'
-                $result.Cidr           | Should -Be -ExpectedValue '8'
-            }
-
-            It 'Should thow with invalid IP Address' {
-                { Convert-CidrToIP -IPAddress 10.1.1.1.1 -Cidr 8 } | Should -Throw
-            }
+        It 'Should thow with invalid IP Address' {
+            { Convert-CidrToIP -IPAddress 10.1.1.1.1 -Cidr 8 } | Should -Throw
         }
     }
+}
 
-    Describe "$moduleResourceName\ConvertTo-CimCMScheduleString" {
+Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\ConvertTo-CimCMScheduleString' -Tag 'ConvertTo-CimCMScheduleString' {
+    BeforeAll {
         $scheduleConvertDays = @{
             DayDuration    = 0
             DaySpan        = 6
@@ -174,36 +179,38 @@ InModuleScope $script:subModuleName {
             CimClassName   = 'DSC_TestCimInstance'
             ScheduleString = '0001200000164000'
         }
-        Context 'When return is as expected' {
-            It 'Should return desired result for day schedule conversion.' {
-                Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertDays }
-                $result = ConvertTo-CimCMScheduleString @cimInputParamDays
-                $result.RecurInterval | Should -Be -ExpectedValue 'Days'
-                $result.RecurCount    | Should -Be -ExpectedValue 6
-                $result               | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
-            }
-            It 'Should return desired result for hour schedule conversion.' {
-                Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertHours }
-                $result = ConvertTo-CimCMScheduleString @cimInputParamHours
-                $result.RecurInterval | Should -Be -ExpectedValue 'Hours'
-                $result.RecurCount    | Should -Be -ExpectedValue 7
-                $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
-            }
-            It 'Should return desired result for minute schedule conversion.' {
-                Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertMin }
-                $result = ConvertTo-CimCMScheduleString @cimInputParamMinutes
-                $result.RecurInterval | Should -Be -ExpectedValue 'Minutes'
-                $result.RecurCount    | Should -Be -ExpectedValue 50
-                $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
-            }
-        }
     }
 
-    Describe "$moduleResourceName\Convert-BoundariesIPSubnets" {
+    Context 'When return is as expected' {
+        It 'Should return desired result for day schedule conversion.' {
+            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertDays }
+            $result = ConvertTo-CimCMScheduleString @cimInputParamDays
+            $result.RecurInterval | Should -Be -ExpectedValue 'Days'
+            $result.RecurCount    | Should -Be -ExpectedValue 6
+            $result               | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            Should -Invoke Convert-CMSchedule -Exactly 1 -Scope It
+        }
+        It 'Should return desired result for hour schedule conversion.' {
+            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertHours }
+            $result = ConvertTo-CimCMScheduleString @cimInputParamHours
+            $result.RecurInterval | Should -Be -ExpectedValue 'Hours'
+            $result.RecurCount    | Should -Be -ExpectedValue 7
+            $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            Should -Invoke Convert-CMSchedule -Exactly 1 -Scope It
+        }
+        It 'Should return desired result for minute schedule conversion.' {
+            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertMin }
+            $result = ConvertTo-CimCMScheduleString @cimInputParamMinutes
+            $result.RecurInterval | Should -Be -ExpectedValue 'Minutes'
+            $result.RecurCount    | Should -Be -ExpectedValue 50
+            $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            Should -Invoke Convert-CMSchedule -Exactly 1 -Scope It
+        }
+    }
+}
 
+Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\ConvertTo-CimBoundaries' -Tag 'ConvertTo-CimBoundaries' {
+    BeforeAll{
         $inputObject = @(
             @{
                 BoundaryID = 16777231
@@ -222,26 +229,26 @@ InModuleScope $script:subModuleName {
             }
 
         )
-
-        Context 'When results are as expected' {
-
-            It 'Should return desired output' {
-
-                $result = ConvertTo-CimBoundaries -InputObject $inputObject
-                $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-                $result.Count    | Should -Be -ExpectedValue 3
-                $result[0].Value | Should -Be -ExpectedValue '10.1.1.1-10.1.1.255'
-                $result[0].Type  | Should -Be -ExpectedValue 'IPRange'
-                $result[1].Value | Should -Be -ExpectedValue '10.1.2.0'
-                $result[1].Type  | Should -Be -ExpectedValue 'IPSubnet'
-                $result[2].Value | Should -Be -ExpectedValue 'First-Site'
-                $result[2].Type  | Should -Be -ExpectedValue 'ADSite'
-            }
-        }
     }
 
-    Describe "$moduleResourceName\ConvertTo-CimBoundaries" {
+    Context 'When results are as expected' {
+        It 'Should return desired output' {
 
+            $result = ConvertTo-CimBoundaries -InputObject $inputObject
+            $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            $result.Count    | Should -Be -ExpectedValue 3
+            $result[0].Value | Should -Be -ExpectedValue '10.1.1.1-10.1.1.255'
+            $result[0].Type  | Should -Be -ExpectedValue 'IPRange'
+            $result[1].Value | Should -Be -ExpectedValue '10.1.2.0'
+            $result[1].Type  | Should -Be -ExpectedValue 'IPSubnet'
+            $result[2].Value | Should -Be -ExpectedValue 'First-Site'
+            $result[2].Type  | Should -Be -ExpectedValue 'ADSite'
+        }
+    }
+}
+
+Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Convert-BoundariesIPSubnets' -Tag 'Convert-BoundariesIPSubnets' {
+    BeforeAll {
         $mockBoundaryMembers = @(
             (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
                 -Namespace root/microsoft/Windows/DesiredStateConfiguration `
@@ -276,28 +283,28 @@ InModuleScope $script:subModuleName {
                 -ClientOnly
             )
         )
-
-        Context 'When results are as expected' {
-
-            It 'Should return desired output' {
-
-                $result = Convert-BoundariesIPSubnets -InputObject $mockBoundaryMembers
-                $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-                $result.Count    | Should -Be -ExpectedValue 4
-                $result[0].Value | Should -Be -ExpectedValue '10.1.1.0'
-                $result[0].Type  | Should -Be -ExpectedValue 'IPSubnet'
-                $result[1].Value | Should -Be -ExpectedValue '10.2.0.0'
-                $result[1].Type  | Should -Be -ExpectedValue 'IPSubnet'
-                $result[2].Value | Should -Be -ExpectedValue '10.0.0.0'
-                $result[2].Type  | Should -Be -ExpectedValue 'IPSubnet'
-                $result[3].Value | Should -Be -ExpectedValue 'First-Site'
-                $result[3].Type  | Should -Be -ExpectedValue 'ADSite'
-            }
-        }
     }
 
-    Describe "$moduleResourceName\Get-BoundaryInfo" {
+    Context 'When results are as expected' {
+        It 'Should return desired output' {
 
+            $result = Convert-BoundariesIPSubnets -InputObject $mockBoundaryMembers
+            $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
+            $result.Count    | Should -Be -ExpectedValue 4
+            $result[0].Value | Should -Be -ExpectedValue '10.1.1.0'
+            $result[0].Type  | Should -Be -ExpectedValue 'IPSubnet'
+            $result[1].Value | Should -Be -ExpectedValue '10.2.0.0'
+            $result[1].Type  | Should -Be -ExpectedValue 'IPSubnet'
+            $result[2].Value | Should -Be -ExpectedValue '10.0.0.0'
+            $result[2].Type  | Should -Be -ExpectedValue 'IPSubnet'
+            $result[3].Value | Should -Be -ExpectedValue 'First-Site'
+            $result[3].Type  | Should -Be -ExpectedValue 'ADSite'
+        }
+    }
+}
+
+Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Get-BoundaryInfo' -Tag 'Get-BoundaryInfo' {
+    BeforeAll {
         $ipSubnet = @{
             Value = '10.1.1.0'
             Type  = 'IPSubnet'
@@ -330,21 +337,20 @@ InModuleScope $script:subModuleName {
                 Value        = '10.1.2.1-10.1.2.255'
             }
         )
+        Mock -CommandName Get-CMBoundary -MockWith { $boundaryInfo }
+    }
 
-        Context 'When results are as expected' {
-            Mock -CommandName Get-CMBoundary -MockWith { $boundaryInfo }
+    Context 'When results are as expected' {
+        It 'Should return desired output for IPSubnet' {
+            Get-BoundaryInfo @ipSubnet | Should -Be -ExpectedValue 16211
+        }
 
-            It 'Should return desired output for IPSubnet' {
-                Get-BoundaryInfo @ipSubnet | Should -Be -ExpectedValue 16211
-            }
+        It 'Should return desired output for ADSite' {
+            Get-BoundaryInfo @adSite | Should -Be -ExpectedValue 16212
+        }
 
-            It 'Should return desired output for ADSite' {
-                Get-BoundaryInfo @adSite | Should -Be -ExpectedValue 16212
-            }
-
-            It 'Should return desired output for IPRange' {
-                Get-BoundaryInfo @ipRange | Should -Be -ExpectedValue 16213
-            }
+        It 'Should return desired output for IPRange' {
+            Get-BoundaryInfo @ipRange | Should -Be -ExpectedValue 16213
         }
     }
 }
