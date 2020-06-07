@@ -29,7 +29,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Get-TargetResource' -Tag
         $testEnvironment = Initialize-TestEnvironment @initalize
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint
-        Mock -CommandName Set-Location
+        Mock -CommandName Set-Location -ModuleName DSC_CMAssetIntelligencePoint
 
         $getInput = @{
             SiteCode         = 'Lab'
@@ -74,7 +74,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Get-TargetResource' -Tag
 
     Context 'When retrieving asset intelligence point settings' {
         It 'Should return desired result when asset intelligence point is not currently installed' {
-            Mock -CommandName Get-CMAssetIntelligenceProxy
+            Mock -CommandName Get-CMAssetIntelligenceProxy -ModuleName DSC_CMAssetIntelligencePoint
 
             $result = Get-TargetResource @getInput
             $result                       | Should -BeOfType System.Collections.HashTable
@@ -88,8 +88,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Get-TargetResource' -Tag
         }
 
         It 'Should return desired result when asset intelligence point is currently installed with no certificate file' {
-            Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnNoCert }
-            Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $networkOSPath }
+            Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnNoCert } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $networkOSPath } -ModuleName DSC_CMAssetIntelligencePoint
             Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule } -ModuleName DSC_CMAssetIntelligencePoint
 
             $result = Get-TargetResource @getInput
@@ -105,8 +105,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Get-TargetResource' -Tag
         }
 
         It 'Should return desired result when asset intelligence point is currently installed with a certificate file' {
-            Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnWithCert }
-            Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $networkOSPath }
+            Mock -CommandName Get-CMAssetIntelligenceProxy -MockWith { $getAPReturnWithCert } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $networkOSPath } -ModuleName DSC_CMAssetIntelligencePoint
             Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimSchedule } -ModuleName DSC_CMAssetIntelligencePoint
 
             $result = Get-TargetResource @getInput
@@ -211,13 +211,13 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Set-TargetResource' -Tag
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint
-        Mock -CommandName Set-Location
-        Mock -CommandName Get-CMSiteSystemServer
-        Mock -CommandName New-CMSiteSystemServer
-        Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint
-        Mock -CommandName New-CMSchedule
-        Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint
-        Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint
+        Mock -CommandName Set-Location -ModuleName DSC_CMAssetIntelligencePoint
+        Mock -CommandName Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint
+        Mock -CommandName New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint
+        Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint
+        Mock -CommandName New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint
+        Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint
+        Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -278,129 +278,129 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Set-TargetResource' -Tag
             }
         }
         It 'Should call expected commands for when changing settings' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @inputNoSync
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when asset intelligence synchronization point is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-            Mock -CommandName Get-CMSiteSystemServer
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @inputNoCert
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when a certificate is present and needs to be removed' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @inputNoCert
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when changing the schedule' {
-            Mock -CommandName Get-TargetResource -MockWith { $returnEnabledDaysMismatch }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
+            Mock -CommandName Get-TargetResource -MockWith { $returnEnabledDaysMismatch } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 } -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @getReturnEnabledDays
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 2 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when asset intelligence point exists and expected absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @inputAbsent
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
         }
 
         It 'Should call expected commands when a schedule is present and a nonrecurring schedule is specified' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero } -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @getReturnEnabledZero
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 1 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when no schedule is present and a schedule is specified' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @getReturnEnabledDays
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 1 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when a state is absent and a nonrecurring schedule is specified' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero } -ModuleName DSC_CMAssetIntelligencePoint
 
             Set-TargetResource @getReturnEnabledZero
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 1 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
     }
 
@@ -450,162 +450,162 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Set-TargetResource' -Tag
             }
         }
         It 'Should call throws when a schedule is specified and enable synchronization is false' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @syncScheduleThrow } | Should -Throw -ExpectedMessage $syncScheduleThrowMsg
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when the role needs to be installed and the SiteServerName parameter is not specified' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @installThrow } | Should -Throw -ExpectedMessage $installThrowMsg
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when a certificate is specified and RemoveCertificate is true' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @certThrow } | Should -Throw -ExpectedMessage $certThrowMsg
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when the role needs to be removed and the SiteServerName parameter is not specified' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @removeThrow } | Should -Throw -ExpectedMessage $removeThrowMsg
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands and throw if Get-CMSiteSystemServer throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-            Mock -CommandName Get-CMSiteSystemServer -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Get-CMSiteSystemServer -MockWith { throw } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @inputPresent } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands and throw if New-CMSiteSystemServer throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-            Mock -CommandName Get-CMSiteSystemServer
-            Mock -CommandName New-CMSiteSystemServer -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSiteSystemServer -MockWith { throw } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @inputPresent } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands and throw if Add-CMAssetIntelligenceSynchronizationPoint throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-            Mock -CommandName Get-CMSiteSystemServer
-            Mock -CommandName New-CMSiteSystemServer -MockWith { $true }
-            Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSiteSystemServer -MockWith { $true } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint -MockWith { throw } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @inputNoCert } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands and throw if New-CMSchedule throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $returnEnabledDaysMismatch }
-            Mock -CommandName New-CMSchedule -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $returnEnabledDaysMismatch } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { throw } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @getReturnEnabledDays } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 1 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands and throw if Set-CMAssetIntelligenceSynchronizationPoint throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
-            Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint -MockWith { throw } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @inputNoSync } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands and throw if Remove-CMAssetIntelligenceSynchronizationPoint throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
-            Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint -MockWith { throw } -ModuleName DSC_CMAssetIntelligencePoint
 
             { Set-TargetResource @inputAbsent } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMAssetIntelligencePoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMAssetIntelligenceSynchronizationPoint -ModuleName DSC_CMAssetIntelligencePoint -Exactly 1 -Scope It
         }
     }
 }
@@ -742,7 +742,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Test-TargetResource' -Ta
             IsSingleInstance = 'Yes'
         }
 
-        Mock -CommandName Set-Location
+        Mock -CommandName Set-Location -ModuleName DSC_CMAssetIntelligencePoint
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMAssetIntelligencePoint
     }
     AfterAll {
@@ -751,67 +751,67 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Test-TargetResource' -Ta
 
     Context 'When running Test-TargetResource' {
         It 'Should return desired result false when ensure = present and AP is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
 
             Test-TargetResource @inputPresent  | Should -BeFalse
         }
 
         It 'Should return desired result true when ensure = absent and AP is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMAssetIntelligencePoint
 
             Test-TargetResource @inputAbsent | Should -BeTrue
         }
 
         It 'Should return desired result false when ensure = absent and AP is present' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             Test-TargetResource @inputAbsent | Should -BeFalse
         }
 
         It 'Should return desired result true when a certificate file is specified and a certificate file is present' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             Test-TargetResource @inputUseCert | Should -BeTrue
         }
 
         It 'Should return desired result false when a certificate file is not specified and a certificate file is present' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
 
             Test-TargetResource @inputNoCert | Should -BeFalse
         }
 
         It 'Should return desired result true when no certificate file is specified and no certificate file is present' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert } -ModuleName DSC_CMAssetIntelligencePoint
 
             Test-TargetResource @inputNoCert | Should -BeTrue
         }
 
         It 'Should return desired result false when a certificate file is specified and no certificate file is present' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert  }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoCert  } -ModuleName DSC_CMAssetIntelligencePoint
 
             Test-TargetResource @inputUseCert  | Should -BeFalse
         }
 
         It 'Should return desired result false schedule days mismatch' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 } -ModuleName DSC_CMAssetIntelligencePoint
             Test-TargetResource @returnEnabledDaysMismatch | Should -BeFalse
         }
 
         It 'Should return desired result true schedule matches' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMAssetIntelligencePoint
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ModuleName DSC_CMAssetIntelligencePoint
             Test-TargetResource @getReturnAll | Should -BeTrue
         }
 
         It 'Should return desired result false schedule present but nonrecurring specified' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays } -ModuleName DSC_CMAssetIntelligencePoint
             Test-TargetResource @getReturnEnabledZero | Should -BeFalse
         }
 
         It 'Should return desired result false no schedule present but schedule specified' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule } -ModuleName DSC_CMAssetIntelligencePoint
             Test-TargetResource @getReturnEnabledDays | Should -BeFalse
         }
     }
