@@ -375,4 +375,4 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 #### CMHeartbeatDiscovery Examples
 
 - [CMHeartbeatDiscovery_Disabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Disabled.ps1)
-- [CMHeartbeatDiscovery_Enabled](Source\Examples\Resources\CMManagementPoint\CMHeartbeatDiscovery_Enabled.ps1)
+- [CMHeartbeatDiscovery_Enabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Enabled.ps1)
