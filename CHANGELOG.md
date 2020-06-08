@@ -40,6 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated GitVersion to reflect a release has not been completed.
 - Updated ModuleBuilder to latest
 - Updated pipeline to run on merges to master only when something in source changes
+- Updated tests to run with Pester 5
 
 ### Removed
 
