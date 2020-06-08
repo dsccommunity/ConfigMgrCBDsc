@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0"), FriendlyName("CMHeartbeatDiscovery")]
+class DSC_CMHeartbeatDiscovery : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Required, Description("Specifies the enablement of the heartbeat discovery method.")] Boolean Enabled;
+    [Write, Description("Specifies the recur interval of days, hours, or minutes."),ValueMap{"Days","Hours","Minutes"},Values{"Days","Hours","Minutes"}] String ScheduleInterval;
+    [Write, Description("Specifies how often the recur interval is run.")] UInt32 ScheduleCount;
+};

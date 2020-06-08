@@ -39,6 +39,7 @@
         'ConvertTo-CimBoundaries'
         'Convert-BoundariesIPSubnets'
         'Get-BoundaryInfo'
+        'ConvertTo-ScheduleInterval'
     )
 
     # Cmdlets to export from this module

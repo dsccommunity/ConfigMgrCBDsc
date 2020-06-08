@@ -358,3 +358,21 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMAssetIntelligencePoint_Absent](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Absent.ps1)
 - [CMAssetIntelligencePoint_Present](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Present.ps1)
+
+### CMHeartbeatDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Required)_: Specifies the enablement of the heartbeat
+  discovery method. If settings is set to $false no other value provided will be
+  evaluated for compliance.
+- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
+  event recurs in hours and days.
+  - Values include: { Hours | Days }
+- **[String] ScheduleCount** _(Write)_: Specifies how often the recur interval
+  is run.
+
+#### CMHeartbeatDiscovery Examples
+
+- [CMHeartbeatDiscovery_Disabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Disabled.ps1)
+- [CMHeartbeatDiscovery_Enabled](Source\Examples\Resources\CMManagementPoint\CMHeartbeatDiscovery_Enabled.ps1)
