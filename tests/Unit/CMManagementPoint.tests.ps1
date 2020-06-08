@@ -29,7 +29,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Get-TargetResource' -Tag 'Get' 
         $testEnvironment = Initialize-TestEnvironment @initalize
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint
-        Mock -CommandName Set-Location
+        Mock -CommandName Set-Location -ModuleName DSC_CMManagementPoint
 
         $getInput = @{
             SiteCode       = 'Lab'
@@ -120,8 +120,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Get-TargetResource' -Tag 'Get' 
     Context 'When retrieving boundary group settings' {
 
         It 'Should return desired result when management is not currently installed' {
-            Mock -CommandName Get-CMManagementPoint
-            Mock -CommandName Get-CMAlert
+            Mock -CommandName Get-CMManagementPoint -ModuleName DSC_CMManagementPoint
+            Mock -CommandName Get-CMAlert -ModuleName DSC_CMManagementPoint
 
             $result = Get-TargetResource @getInput
             $result                       | Should -BeOfType System.Collections.HashTable
@@ -141,8 +141,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Get-TargetResource' -Tag 'Get' 
         }
 
         It 'Should return desired result when management is currently installed' {
-            Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnNoSQL }
-            Mock -CommandName Get-CMAlert -MockWith { $cmAlert }
+            Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnNoSQL } -ModuleName DSC_CMManagementPoint
+            Mock -CommandName Get-CMAlert -MockWith { $cmAlert } -ModuleName DSC_CMManagementPoint
 
             $result = Get-TargetResource @getInput
             $result                       | Should -BeOfType System.Collections.HashTable
@@ -162,8 +162,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Get-TargetResource' -Tag 'Get' 
         }
 
         It 'Should return desired result when management is currently installed with local SQL' {
-            Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnLocalSQL }
-            Mock -CommandName Get-CMAlert
+            Mock -CommandName Get-CMManagementPoint -MockWith { $getMpReturnLocalSQL } -ModuleName DSC_CMManagementPoint
+            Mock -CommandName Get-CMAlert -ModuleName DSC_CMManagementPoint
 
             $result = Get-TargetResource @getInput
             $result                       | Should -BeOfType System.Collections.HashTable
@@ -212,12 +212,12 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint
-        Mock -CommandName Set-Location
-        Mock -CommandName Get-CMSiteSystemServer
-        Mock -CommandName New-CMSiteSystemServer
-        Mock -CommandName Add-CMManagementPoint
-        Mock -CommandName Set-CMManagementPoint
-        Mock -CommandName Remove-CMManagementPoint
+        Mock -CommandName Set-Location -ModuleName DSC_CMManagementPoint
+        Mock -CommandName Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint
+        Mock -CommandName New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint
+        Mock -CommandName Add-CMManagementPoint -ModuleName DSC_CMManagementPoint
+        Mock -CommandName Set-CMManagementPoint -ModuleName DSC_CMManagementPoint
+        Mock -CommandName Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -257,73 +257,73 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
             }
         }
         It 'Should call expected commands for when changing settings' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Set-TargetResource @inputUseSiteDatabaseMisMatch
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when management point is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMManagementPoint
 
             Set-TargetResource @inputGatewayAndSsl
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when management point is present and setting gateway and SSL are false' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Set-TargetResource @inputGatewayAndSsl
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 2 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when management point is absent and gateway and SSL are false' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMManagementPoint
 
             Set-TargetResource @inputGatewayAndSsl
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 1 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands when management point exists and expected absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Set-TargetResource @inputAbsent
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
         }
     }
 
@@ -341,17 +341,17 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
 
             $gatewayThrowMsg = 'When CloudGateway is enabled, ClientConnectionType must not equal Intranet.'
 
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             { Set-TargetResource @gatewayThrow } | Should -Throw -ExpectedMessage $gatewayThrowMsg
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when Gateway is enabled and SSL is false' {
@@ -365,17 +365,17 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
 
             $sslThrowMsg = 'When CloudGateway is enabled SSL must also be enabled.'
 
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             { Set-TargetResource @sslThrow } | Should -Throw -ExpectedMessage $sslThrowMsg
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when sql server specified and no database name' {
@@ -387,17 +387,17 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
 
             $sqlDbError = 'SQLServerFqdn and database name must be specified together.'
 
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             { Set-TargetResource @sqlServerNoDatabaseParam } | Should -Throw -ExpectedMessage $sqlDbError
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when gateway disabled and connection type is not Intranet' {
@@ -408,17 +408,17 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
                 ClientConnectionType = 'Internet'
             }
 
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             { Set-TargetResource @gatewayFalseClientInternetThrow } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when usesitedatabase and Sqlserver are specified together' {
@@ -430,17 +430,17 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
                 UseSiteDatabase = $true
             }
 
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             { Set-TargetResource @sqlSiteDatabaseThrow } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
 
         It 'Should call throws when usecomputeraccount and username are specified together' {
@@ -451,17 +451,17 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Set-TargetResource' -Tag 'Set' 
                 UseComputerAccount = $true
             }
 
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             { Set-TargetResource @computerAccountUserAccount } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Get-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke New-CMSiteSystemServer -Exactly 0 -Scope It
-            Should -Invoke Add-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Set-CMManagementPoint -Exactly 0 -Scope It
-            Should -Invoke Remove-CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMManagementPoint -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMManagementPoint -Exactly 1 -Scope It
+            Should -Invoke Get-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke New-CMSiteSystemServer -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Add-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Set-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
+            Should -Invoke Remove-CMManagementPoint -ModuleName DSC_CMManagementPoint -Exactly 0 -Scope It
         }
     }
 }
@@ -558,8 +558,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Test-TargetResource' -Tag 'Test
             UserName        = ''
         }
 
-        Mock -CommandName Set-Location
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMManagementPoint
+        Mock -CommandName Set-Location -ModuleName DSC_CMManagementPoint
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -568,55 +568,55 @@ Describe 'ConfigMgrCBDsc - DSC_CMManagementPoint\Test-TargetResource' -Tag 'Test
     Context 'When running Test-TargetResource' {
 
         It 'Should return desired result false when ensure = present and MP is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputPresent  | Should -BeFalse
         }
 
         It 'Should return desired result true when ensure = absent and MP is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputAbsent | Should -BeTrue
         }
 
         It 'Should return desired result false when ensure = absent and MP is present' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputAbsent | Should -BeFalse
         }
 
         It 'Should return desired result true when ensure = present and use site database matches' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputUseSiteDatabaseMatch | Should -BeTrue
         }
 
         It 'Should return desired result false when ensure = present and use site database not matches' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputUseSiteDatabaseMisMatch | Should -BeFalse
         }
 
         It 'Should return desired result true when ensure = present and username matches' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputUsernameMatch | Should -BeTrue
         }
 
         It 'Should return desired result false when ensure = present and username not matches' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputUsernameMisMatch | Should -BeFalse
         }
 
         It 'Should return desired result false when ensure = present and multiple mismatches' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputMultipleMismatch | Should -BeFalse
         }
 
         It 'Should return desired result true when ensure = present and multiple matches' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnAll } -ModuleName DSC_CMManagementPoint
 
             Test-TargetResource @inputMultipleMatch | Should -BeTrue
         }

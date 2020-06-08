@@ -43,7 +43,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMClientStatusSettings\Get-TargetResource' -Tag '
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMClientStatusSettings
-        Mock -CommandName Set-Location
+        Mock -CommandName Set-Location -ModuleName DSC_CMClientStatusSettings
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -51,7 +51,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMClientStatusSettings\Get-TargetResource' -Tag '
 
     Context 'When retrieving client status settings' {
         It 'Should return desired result' {
-            Mock -CommandName Get-CMClientStatusSetting -MockWith { $cmClientSettingsReturn }
+            Mock -CommandName Get-CMClientStatusSetting -MockWith { $cmClientSettingsReturn } -ModuleName DSC_CMClientStatusSettings
 
             $result = Get-TargetResource @cmClientSettingsGet
             $result                        | Should -BeOfType System.Collections.HashTable
@@ -66,7 +66,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMClientStatusSettings\Get-TargetResource' -Tag '
         }
 
         It 'Should return desired result when Client status settings are null' {
-            Mock -CommandName Get-CMClientStatusSetting
+            Mock -CommandName Get-CMClientStatusSetting -ModuleName DSC_CMClientStatusSettings
 
             $result = Get-TargetResource @cmClientSettingsGet
             $result                        | Should -BeOfType System.Collections.HashTable
@@ -123,9 +123,9 @@ Describe 'ConfigMgrCBDsc - DSC_CMClientStatusSettings\Set-TargetResource' -Tag '
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMClientStatusSettings
-        Mock -CommandName Set-Location
-        Mock -CommandName Set-CMClientStatusSetting
-        Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
+        Mock -CommandName Set-Location -ModuleName DSC_CMClientStatusSettings
+        Mock -CommandName Set-CMClientStatusSetting -ModuleName DSC_CMClientStatusSettings
+        Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn } -ModuleName DSC_CMClientStatusSettings
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -136,37 +136,37 @@ Describe 'ConfigMgrCBDsc - DSC_CMClientStatusSettings\Set-TargetResource' -Tag '
 
             Set-TargetResource @cmClientSettingsInput
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Set-CMClientStatusSetting -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMClientStatusSettings -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
+            Should -Invoke Set-CMClientStatusSetting -ModuleName DSC_CMClientStatusSettings -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands for changing single settings' {
 
             Set-TargetResource @cmClientInputHeartbeat
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Set-CMClientStatusSetting -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMClientStatusSettings -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
+            Should -Invoke Set-CMClientStatusSetting -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
         }
 
         It 'Should call expected commands for changing multiple settings' {
 
             Set-TargetResource @cmClientInputmultiple
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Set-CMClientStatusSetting -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMClientStatusSettings -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
+            Should -Invoke Set-CMClientStatusSetting -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
         }
 
         It 'Should call expected commands when Set client status setting throws' {
-            Mock -CommandName Set-CMClientStatusSetting -MockWith { throw }
+            Mock -CommandName Set-CMClientStatusSetting -MockWith { throw } -ModuleName DSC_CMClientStatusSettings
 
             { Set-TargetResource @cmClientInputmultiple } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMClientStatusSettings 1 -Exactly -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke Set-CMClientStatusSetting -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMClientStatusSettings -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
+            Should -Invoke Set-CMClientStatusSetting -ModuleName DSC_CMClientStatusSettings -Exactly 1 -Scope It
         }
     }
 }
@@ -211,9 +211,9 @@ Describe 'ConfigMgrCBDsc - DSC_CMClientStatusSettings\Test-TargetResource' -Tag 
             StatusMessageDays      = 7
         }
 
-        Mock -CommandName Set-Location
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMClientStatusSettings
-        Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
+        Mock -CommandName Set-Location -ModuleName DSC_CMClientStatusSettings
+        Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn } -ModuleName DSC_CMClientStatusSettings
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment

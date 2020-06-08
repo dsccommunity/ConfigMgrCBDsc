@@ -83,7 +83,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Get-TargetResource' -Tag 'Get' {
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries
-        Mock -CommandName Set-Location
+        Mock -CommandName Set-Location -ModuleName DSC_CMBoundaries
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -91,7 +91,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Get-TargetResource' -Tag 'Get' {
 
     Context 'When retrieving client settings' {
         It 'Should return desired result for Subnet return' {
-            Mock -CommandName Get-CMBoundary -MockWith { $boundarySubnetReturn }
+            Mock -CommandName Get-CMBoundary -MockWith { $boundarySubnetReturn } -ModuleName DSC_CMBoundaries
             Mock -CommandName Convert-CidrToIP -MockWith { $convert } -ModuleName DSC_CMBoundaries
 
             $result = Get-TargetResource @inputSubnetPresent
@@ -105,7 +105,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Get-TargetResource' -Tag 'Get' {
         }
 
         It 'Should return desired result for IPRange return' {
-            Mock -CommandName Get-CMBoundary -MockWith { $boundaryRangeReturn }
+            Mock -CommandName Get-CMBoundary -MockWith { $boundaryRangeReturn } -ModuleName DSC_CMBoundaries
 
             $result = Get-TargetResource @inputRangePresent
             $result             | Should -BeOfType System.Collections.HashTable
@@ -118,7 +118,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Get-TargetResource' -Tag 'Get' {
         }
 
         It 'Should return desired result for AdSite return' {
-            Mock -CommandName Get-CMBoundary -MockWith { $boundaryAdSiteReturn }
+            Mock -CommandName Get-CMBoundary -MockWith { $boundaryAdSiteReturn } -ModuleName DSC_CMBoundaries
 
             $result = Get-TargetResource @inputAdSitePresent
             $result             | Should -BeOfType System.Collections.HashTable
@@ -131,7 +131,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Get-TargetResource' -Tag 'Get' {
         }
 
         It 'Should return desired result when boundary not found' {
-            Mock -CommandName Get-CMBoundary
+            Mock -CommandName Get-CMBoundary -ModuleName DSC_CMBoundaries
 
             $result = Get-TargetResource @inputAdSitePresent
             $result             | Should -BeOfType System.Collections.HashTable
@@ -192,77 +192,77 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Set-TargetResource' -Tag 'Set' {
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries
-        Mock -CommandName Set-Location
-        Mock -CommandName New-CMBoundary
-        Mock -CommandName Set-CMBoundary
-        Mock -CommandName Remove-CMBoundary
+        Mock -CommandName Set-Location -ModuleName DSC_CMBoundaries
+        Mock -CommandName New-CMBoundary -ModuleName DSC_CMBoundaries
+        Mock -CommandName Set-CMBoundary -ModuleName DSC_CMBoundaries
+        Mock -CommandName Remove-CMBoundary -ModuleName DSC_CMBoundaries
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
     }
     Context 'When Set-TargetResource runs successfully' {
         It 'Should call expected commands for adding a new boundary' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnAbsent } -ModuleName DSC_CMBoundaries
 
             Set-TargetResource @inputSubnetPresent
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMBoundary -Exactly 1 -Scope It
-            Should -Invoke Set-CMBoundary -Exactly 0 -Scope It
-            Should -Invoke Remove-CMBoundary -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMBoundaries -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke New-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke Set-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
+            Should -Invoke Remove-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands for changing boundary name' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName } -ModuleName DSC_CMBoundaries
 
             Set-TargetResource @inputSubnetPresent
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries -Exactly -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMBoundary -Exactly 0 -Scope It
-            Should -Invoke Set-CMBoundary -Exactly 1 -Scope It
-            Should -Invoke Remove-CMBoundary -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMBoundaries -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke New-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
+            Should -Invoke Set-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke Remove-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
         }
 
         It 'Should call expected commands for removing a boundary' {
-            Mock -CommandName Get-TargetResource -MockWith { $getAdSiteReturnName }
+            Mock -CommandName Get-TargetResource -MockWith { $getAdSiteReturnName } -ModuleName DSC_CMBoundaries
 
             Set-TargetResource @inputAdSiteAbsent
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMBoundary -Exactly 0 -Scope It
-            Should -Invoke Set-CMBoundary -Exactly 0 -Scope It
-            Should -Invoke Remove-CMBoundary -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMBoundaries -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke New-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
+            Should -Invoke Set-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
+            Should -Invoke Remove-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
         }
     }
 
     Context 'When Set-TargetResource throws' {
         It 'Should call expected commands when Remove-CMBoundary throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getAdSiteReturnName }
-            Mock -CommandName Remove-CMBoundary -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getAdSiteReturnName } -ModuleName DSC_CMBoundaries
+            Mock -CommandName Remove-CMBoundary -MockWith { throw } -ModuleName DSC_CMBoundaries
 
             { Set-TargetResource @inputAdSiteAbsent } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMBoundary -Exactly 0 -Scope It
-            Should -Invoke Set-CMBoundary -Exactly 0 -Scope It
-            Should -Invoke Remove-CMBoundary -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMBoundaries -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke New-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
+            Should -Invoke Set-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
+            Should -Invoke Remove-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
         }
 
         It 'Should call expected commands when present and Set-CMBoundary throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName }
-            Mock -CommandName Set-CMBoundary -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName } -ModuleName DSC_CMBoundaries
+            Mock -CommandName Set-CMBoundary -MockWith { throw } -ModuleName DSC_CMBoundaries
 
             { Set-TargetResource @inputSubnetPresent } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMBoundary -Exactly 0 -Scope It
-            Should -Invoke Set-CMBoundary -Exactly 1 -Scope It
-            Should -Invoke Remove-CMBoundary -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMBoundaries -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke New-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
+            Should -Invoke Set-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 1 -Scope It
+            Should -Invoke Remove-CMBoundary -ModuleName DSC_CMBoundaries -Exactly 0 -Scope It
         }
     }
 }
@@ -304,8 +304,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Test-TargetResource' -Tag 'Test' {
             BoundaryId  = '1677726'
         }
 
-        Mock -CommandName Set-Location
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMBoundaries
+        Mock -CommandName Set-Location -ModuleName DSC_CMBoundaries
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -313,31 +313,31 @@ Describe 'ConfigMgrCBDsc - DSC_CMBoundaries\Test-TargetResource' -Tag 'Test' {
 
     Context 'When running Test-TargetResource' {
         It 'Should return desired result true when ensure = present and boundary exists' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnMatch }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnMatch } -ModuleName DSC_CMBoundaries
 
             Test-TargetResource @inputSubnetPresent | Should -BeTrue
         }
 
         It 'Should return desired result false when ensure = present and boundary has differnt name' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnName } -ModuleName DSC_CMBoundaries
 
             Test-TargetResource @inputSubnetPresent | Should -BeFalse
         }
 
         It 'Should return desired result false when ensure = present and boundary is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnAbsent } -ModuleName DSC_CMBoundaries
 
             Test-TargetResource @inputSubnetPresent | Should -BeFalse
         }
 
         It 'Should return desired result true when ensure = absent and boundary is absent' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnAbsent }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnAbsent } -ModuleName DSC_CMBoundaries
 
             Test-TargetResource @inputSubnetAbsent | Should -BeTrue
         }
 
         It 'Should return desired result false when ensure = absent and boundary is present' {
-            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnMatch }
+            Mock -CommandName Get-TargetResource -MockWith { $getSubnetReturnMatch } -ModuleName DSC_CMBoundaries
 
             Test-TargetResource @inputSubnetAbsent | Should -BeFalse
         }

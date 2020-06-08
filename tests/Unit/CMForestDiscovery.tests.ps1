@@ -63,8 +63,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMForestDiscovery\Get-TargetResource' -Tag 'Get' 
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery
-        Mock -CommandName Set-Location
-        Mock -CommandName Get-CMDiscoveryMethod -MockWith { $standardGetDiscoveryOutput }
+        Mock -CommandName Set-Location -ModuleName DSC_CMForestDiscovery
+        Mock -CommandName Get-CMDiscoveryMethod -MockWith { $standardGetDiscoveryOutput } -ModuleName DSC_CMForestDiscovery
         Mock -CommandName ConvertTo-CimCMScheduleString -MockWith { $mockCimPollingSchedule } -ModuleName DSC_CMForestDiscovery
     }
     AfterAll {
@@ -131,8 +131,8 @@ Describe 'ConfigMgrCBDsc - DSC_CMForestDiscovery\Set-TargetResource' -Tag 'Set' 
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery
-        Mock -CommandName Set-Location
-        Mock -CommandName Set-CMDiscoveryMethod
+        Mock -CommandName Set-Location -ModuleName DSC_CMForestDiscovery
+        Mock -CommandName Set-CMDiscoveryMethod -ModuleName DSC_CMForestDiscovery
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -167,67 +167,67 @@ Describe 'ConfigMgrCBDsc - DSC_CMForestDiscovery\Set-TargetResource' -Tag 'Set' 
             }
         }
         It 'Should call expected commands enabling discovery' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
-            Mock -CommandName New-CMSchedule
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -ModuleName DSC_CMForestDiscovery
 
             Set-TargetResource @standardGetInput
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMDiscoveryMethod -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMForestDiscovery -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMForestDiscovery -Exactly 0 -Scope It
+            Should -Invoke Set-CMDiscoveryMethod -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
         }
 
         It 'Should call expected commands enabling discovery and changing the schedule' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 } -ModuleName DSC_CMForestDiscovery
 
             Set-TargetResource @returnEnabledDaysMismatch
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 2 -Scope It
-            Should -Invoke Set-CMDiscoveryMethod -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMForestDiscovery -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMForestDiscovery -Exactly 2 -Scope It
+            Should -Invoke Set-CMDiscoveryMethod -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
         }
 
         It 'Should call expected commands disabling discovery' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
-            Mock -CommandName New-CMSchedule
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -ModuleName DSC_CMForestDiscovery
 
             Set-TargetResource @getReturnDisabled
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMDiscoveryMethod -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMForestDiscovery -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMForestDiscovery -Exactly 0 -Scope It
+            Should -Invoke Set-CMDiscoveryMethod -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
         }
     }
 
     Context 'When running Set-TargetResource should throw' {
         It 'Should call expected commands and throw if Set-CMDiscoveryMethod throws' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
-            Mock -CommandName New-CMSchedule
-            Mock -CommandName Set-CMDiscoveryMethod -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName Set-CMDiscoveryMethod -MockWith { throw } -ModuleName DSC_CMForestDiscovery
 
             { Set-TargetResource @getReturnDisabled } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 0 -Scope It
-            Should -Invoke Set-CMDiscoveryMethod -Exactly 1 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMForestDiscovery -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMForestDiscovery -Exactly 0 -Scope It
+            Should -Invoke Set-CMDiscoveryMethod -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
         }
 
         It 'Should call expected commands enabling discovery and changing the schedule' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
-            Mock -CommandName New-CMSchedule -MockWith { throw }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -MockWith { throw } -ModuleName DSC_CMForestDiscovery
 
             { Set-TargetResource @returnEnabledDaysMismatch } | Should -Throw
             Should -Invoke Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
-            Should -Invoke Set-Location -Exactly 2 -Scope It
-            Should -Invoke Get-TargetResource -Exactly 1 -Scope It
-            Should -Invoke New-CMSchedule -Exactly 1 -Scope It
-            Should -Invoke Set-CMDiscoveryMethod -Exactly 0 -Scope It
+            Should -Invoke Set-Location -ModuleName DSC_CMForestDiscovery -Exactly 2 -Scope It
+            Should -Invoke Get-TargetResource -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
+            Should -Invoke New-CMSchedule -ModuleName DSC_CMForestDiscovery -Exactly 1 -Scope It
+            Should -Invoke Set-CMDiscoveryMethod -ModuleName DSC_CMForestDiscovery -Exactly 0 -Scope It
         }
     }
 }
@@ -327,7 +327,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMForestDiscovery\Test-TargetResource' -Tag 'Test
         }
 
         Mock -CommandName Import-ConfigMgrPowerShellModule -ModuleName DSC_CMForestDiscovery
-        Mock -CommandName Set-Location
+        Mock -CommandName Set-Location -ModuleName DSC_CMForestDiscovery
     }
     AfterAll {
         Restore-TestEnvironment -TestEnvironment $testEnvironment
@@ -335,23 +335,23 @@ Describe 'ConfigMgrCBDsc - DSC_CMForestDiscovery\Test-TargetResource' -Tag 'Test
 
     Context 'When running Test-TargetResource device settings' {
         BeforeEach {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays } -ModuleName DSC_CMForestDiscovery
         }
 
         It 'Should return desired result true schedule matches' {
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ModuleName DSC_CMForestDiscovery
 
             Test-TargetResource @getReturnEnabledDays | Should -BeTrue
         }
         It 'Should return desired result false schedule days mismatch' {
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 }
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurCount -eq 7 } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch } -ParameterFilter { $RecurCount -eq 6 } -ModuleName DSC_CMForestDiscovery
 
             Test-TargetResource @returnEnabledDaysMismatch | Should -BeFalse
         }
         It 'Should return desired result false schedule hours mismatch' {
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurInterval -eq 'Days' }
-            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHours } -ParameterFilter { $RecurInterval -eq 'Hours' }
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays } -ParameterFilter { $RecurInterval -eq 'Days' } -ModuleName DSC_CMForestDiscovery
+            Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHours } -ParameterFilter { $RecurInterval -eq 'Hours' } -ModuleName DSC_CMForestDiscovery
 
             Test-TargetResource @getReturnEnabledHours | Should -BeFalse
         }
@@ -364,7 +364,7 @@ Describe 'ConfigMgrCBDsc - DSC_CMForestDiscovery\Test-TargetResource' -Tag 'Test
             Test-TargetResource @getReturnDisabled | Should -BeFalse
         }
         It 'Should return desired result true when discovery is disabled' {
-            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput }
+            Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabledOutput } -ModuleName DSC_CMForestDiscovery
 
             Test-TargetResource @getReturnDisabled | Should -BeTrue
         }

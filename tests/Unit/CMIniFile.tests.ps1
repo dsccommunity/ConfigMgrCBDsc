@@ -212,7 +212,7 @@ Describe 'ConfigMgrCBDsc - CMIniFile\Get-TargetResource' -Tag 'Get' {
                 Filename = 'InstallPrimary.ini'
             }
         ){
-            Mock -CommandName Get-Content
+            Mock -CommandName Get-Content -ModuleName DSC_CMIniFile
 
             $result = Get-TargetResource @Test
             $result | Should -BeOfType System.Collections.HashTable

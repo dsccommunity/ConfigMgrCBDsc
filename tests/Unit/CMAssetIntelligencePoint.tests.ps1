@@ -622,6 +622,22 @@ Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Test-TargetResource' -Ta
             } -ClientOnly
         )
 
+        $mockCimScheduleZero = (New-CimInstance -ClassName DSC_CMAssetIntelligenceSynchronizationSchedule `
+                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                -Property @{
+                    'RecurInterval' = 'Days'
+                    'RecurCount'    = 0
+                } -ClientOnly
+            )
+
+        $mockCimScheduleDayMismatch = (New-CimInstance -ClassName DSC_CMAssetIntelligenceSynchronizationSchedule `
+            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+            -Property @{
+                'RecurInterval' = 'Days'
+                'RecurCount'    = 6
+            } -ClientOnly
+        )
+
         $getReturnAll = @{
             SiteCode              = 'Lab'
             SiteServerName        = 'CA01.contoso.com'

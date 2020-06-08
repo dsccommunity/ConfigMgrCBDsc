@@ -42,15 +42,15 @@ Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Import-ConfigMgrPowerSh
 
         $ENV:SMS_ADMIN_UI_PATH = 'test'
 
-        Mock -CommandName Join-Path -MockWith { 'C:\' }
-        Mock -CommandName Split-Path -MockWith { 'C:\' }
-        Mock -CommandName Import-Module
-        Mock -CommandName Get-CimInstance -MockWith { $siteCim }
-        Mock -CommandName Set-ItemProperty
-        Mock -CommandName New-Item
+        Mock -CommandName Join-Path -MockWith { 'C:\' } -ModuleName ConfigMgrCBDsc.ResourceHelper
+        Mock -CommandName Split-Path -MockWith { 'C:\' } -ModuleName ConfigMgrCBDsc.ResourceHelper
+        Mock -CommandName Import-Module -ModuleName ConfigMgrCBDsc.ResourceHelper
+        Mock -CommandName Get-CimInstance -MockWith { $siteCim } -ModuleName ConfigMgrCBDsc.ResourceHelper
+        Mock -CommandName Set-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper
+        Mock -CommandName New-Item -ModuleName ConfigMgrCBDsc.ResourceHelper
         Mock -CommandName Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper
-        Mock -CommandName Get-ItemProperty
-        Mock -CommandName Test-Path
+        Mock -CommandName Get-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper
+        Mock -CommandName Test-Path -ModuleName ConfigMgrCBDsc.ResourceHelper
     }
     AfterAll {
         $ENV:SMS_ADMIN_UI_PATH = $null
@@ -58,54 +58,54 @@ Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Import-ConfigMgrPowerSh
 
     Context 'When importing the module' {
         It 'Should call expected commands' {
-            Mock -CommandName Get-Module -MockWith { $moduleVersionGood }
-            Mock -CommandName Test-Path -MockWith { $false }
-            Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
+            Mock -CommandName Get-Module -MockWith { $moduleVersionGood } -ModuleName ConfigMgrCBDsc.ResourceHelper
+            Mock -CommandName Test-Path -MockWith { $false } -ModuleName ConfigMgrCBDsc.ResourceHelper
+            Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  } -ModuleName ConfigMgrCBDsc.ResourceHelper
 
             Import-ConfigMgrPowerShellModule -SiteCode 'Lab'
-            Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
-            Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
-            Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
-            Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
-            Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
-            Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
-            Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
-            Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
-            Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
+            Assert-MockCalled Import-Module -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Join-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Split-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-Module -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-CimInstance -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled New-Item -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 4 -Scope It
+            Assert-MockCalled Test-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 5 -Scope It
+            Assert-MockCalled Set-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 4 -Scope It
             Assert-MockCalled Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
         }
 
         It 'Should throw when module version is lower than expected' {
-            Mock -CommandName Get-Module -MockWith { $moduleVersionBad }
-            Mock -CommandName Test-Path -MockWith { $true } -ParameterFilter { $Path -eq 'Lab:\' }
+            Mock -CommandName Get-Module -MockWith { $moduleVersionBad } -ModuleName ConfigMgrCBDsc.ResourceHelper
+            Mock -CommandName Test-Path -MockWith { $true } -ParameterFilter { $Path -eq 'Lab:\' } -ModuleName ConfigMgrCBDsc.ResourceHelper
 
             { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
-            Assert-MockCalled Import-Module -Exactly -Times 0 -Scope It
-            Assert-MockCalled Join-Path -Exactly -Times 0 -Scope It
-            Assert-MockCalled Split-Path -Exactly -Times 0 -Scope It
-            Assert-MockCalled Get-Module -Exactly -Times 1 -Scope It
-            Assert-MockCalled Get-CimInstance -Exactly -Times 0 -Scope It
-            Assert-MockCalled Get-ItemProperty -Exactly -Times 0 -Scope It
-            Assert-MockCalled New-Item -Exactly -Times 0 -Scope It
-            Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
-            Assert-MockCalled Set-ItemProperty -Exactly -Times 0 -Scope It
+            Assert-MockCalled Import-Module -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+            Assert-MockCalled Join-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+            Assert-MockCalled Split-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+            Assert-MockCalled Get-Module -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-CimInstance -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+            Assert-MockCalled Get-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+            Assert-MockCalled New-Item -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+            Assert-MockCalled Test-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Set-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
             Assert-MockCalled Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
         }
 
         It 'Should throw on Module import' {
-            Mock -CommandName Import-Module -MockWith { throw 'bad' }
-            Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  }
+            Mock -CommandName Import-Module -MockWith { throw 'bad' } -ModuleName ConfigMgrCBDsc.ResourceHelper
+            Mock -CommandName Test-Path -MockWith { $false } -ParameterFilter { $Path -eq 'Lab:\'  } -ModuleName ConfigMgrCBDsc.ResourceHelper
 
             { Import-ConfigMgrPowerShellModule -SiteCode 'Lab' } | Should -Throw
-            Assert-MockCalled Import-Module -Exactly -Times 1 -Scope It
-            Assert-MockCalled Join-Path -Exactly -Times 1 -Scope It
-            Assert-MockCalled Split-Path -Exactly -Times 1 -Scope It
-            Assert-MockCalled Get-Module -Exactly -Times 0 -Scope It
-            Assert-MockCalled Get-CimInstance -Exactly -Times 1 -Scope It
-            Assert-MockCalled Get-ItemProperty -Exactly -Times 1 -Scope It
-            Assert-MockCalled New-Item -Exactly -Times 4 -Scope It
-            Assert-MockCalled Test-Path -Exactly -Times 5 -Scope It
-            Assert-MockCalled Set-ItemProperty -Exactly -Times 4 -Scope It
+            Assert-MockCalled Import-Module -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Join-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Split-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-Module -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 0 -Scope It
+            Assert-MockCalled Get-CimInstance -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled Get-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
+            Assert-MockCalled New-Item -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 4 -Scope It
+            Assert-MockCalled Test-Path -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 5 -Scope It
+            Assert-MockCalled Set-ItemProperty -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 4 -Scope It
             Assert-MockCalled Set-ConfigMgrCert -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly -Times 1 -Scope It
         }
     }
@@ -183,28 +183,31 @@ Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\ConvertTo-CimCMSchedule
 
     Context 'When return is as expected' {
         It 'Should return desired result for day schedule conversion.' {
-            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertDays }
+            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertDays } -ModuleName ConfigMgrCBDsc.ResourceHelper
+
             $result = ConvertTo-CimCMScheduleString @cimInputParamDays
             $result.RecurInterval | Should -Be -ExpectedValue 'Days'
             $result.RecurCount    | Should -Be -ExpectedValue 6
             $result               | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-            Should -Invoke Convert-CMSchedule -Exactly 1 -Scope It
+            Should -Invoke Convert-CMSchedule -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly 1 -Scope It
         }
         It 'Should return desired result for hour schedule conversion.' {
-            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertHours }
+            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertHours } -ModuleName ConfigMgrCBDsc.ResourceHelper
+
             $result = ConvertTo-CimCMScheduleString @cimInputParamHours
             $result.RecurInterval | Should -Be -ExpectedValue 'Hours'
             $result.RecurCount    | Should -Be -ExpectedValue 7
             $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-            Should -Invoke Convert-CMSchedule -Exactly 1 -Scope It
+            Should -Invoke Convert-CMSchedule -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly 1 -Scope It
         }
         It 'Should return desired result for minute schedule conversion.' {
-            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertMin }
+            Mock -CommandName Convert-CMSchedule -MockWith { $scheduleConvertMin } -ModuleName ConfigMgrCBDsc.ResourceHelper
+
             $result = ConvertTo-CimCMScheduleString @cimInputParamMinutes
             $result.RecurInterval | Should -Be -ExpectedValue 'Minutes'
             $result.RecurCount    | Should -Be -ExpectedValue 50
             $result | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-            Should -Invoke Convert-CMSchedule -Exactly 1 -Scope It
+            Should -Invoke Convert-CMSchedule -ModuleName ConfigMgrCBDsc.ResourceHelper -Exactly 1 -Scope It
         }
     }
 }
@@ -337,7 +340,7 @@ Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Get-BoundaryInfo' -Tag 
                 Value        = '10.1.2.1-10.1.2.255'
             }
         )
-        Mock -CommandName Get-CMBoundary -MockWith { $boundaryInfo }
+        Mock -CommandName Get-CMBoundary -MockWith { $boundaryInfo }  -ModuleName ConfigMgrCBDsc.ResourceHelper
     }
 
     Context 'When results are as expected' {
