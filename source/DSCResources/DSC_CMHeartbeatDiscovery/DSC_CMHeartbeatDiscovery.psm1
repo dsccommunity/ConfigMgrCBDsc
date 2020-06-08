@@ -84,7 +84,7 @@ function Set-TargetResource
         $ScheduleInterval,
 
         [Parameter()]
-        [String]
+        [UInt32]
         $ScheduleCount
     )
 
@@ -192,7 +192,7 @@ function Test-TargetResource
         $ScheduleInterval,
 
         [Parameter()]
-        [String]
+        [UInt32]
         $ScheduleCount
     )
 
