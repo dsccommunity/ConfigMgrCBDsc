@@ -37,214 +37,106 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMDistributionPoint'
 
-        # Get input and output
-        $dpInfoReturn = @{
-            Communication     = 0
-            NALPath           = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
-            PreStagingAllowed = $false
-            Description       = 'Test Description'
-            EnableLEDBAT      = $false
-        }
-
-        $boundaryGroupSiteSystemReturn = @(
-            @{
-                GroupID  = 16777226
-                ServerNalPath = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
-            }
-            @{
-                GroupID  = 16777227
-                ServerNalPath = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
-            }
-        )
-
-        $boundaryGroupReturnGroup1 = @{
-            GroupId = 16777226
-            Name    = 'Test-Group-1'
-        }
-
-        $boundaryGroupReturnGroup2 = @{
-            GroupId = 16777227
-            Name    = 'Test-Group-2'
-        }
-
-        $cmDistroPointProps = @{
-            Props = @(
-                @{
-                    PropertyName = 'CertificateContextData'
-                    Value1       =  '308201fb308'
-                }
-                @{
-                    PropertyName = 'MinFreeSpace'
-                    Value        =  100
-                }
-                @{
-                    PropertyName = 'IsAnonymousEnabled'
-                    Value        =  1
-                }
-                @{
-                    PropertyName = 'UpdateBranchCacheKey'
-                    Value        =  0
-                }
-                @{
-                    PropertyName = 'AvailableContentLibDrivesList'
-                    Value1       =  'FC'
-                }
-                @{
-                    PropertyName = 'AvailablePkgShareDrivesList'
-                    Value1       =  'FC'
-                }
-            )
-        }
-
-        $cmDistroPointPropsSinReturn = @{
-            Props = @(
-                @{
-                    PropertyName = 'CertificateContextData'
-                    Value1       =  '308201fb308'
-                }
-                @{
-                    PropertyName = 'MinFreeSpace'
-                    Value        =  100
-                }
-                @{
-                    PropertyName = 'IsAnonymousEnabled'
-                    Value        =  1
-                }
-                @{
-                    PropertyName = 'UpdateBranchCacheKey'
-                    Value        =  0
-                }
-                @{
-                    PropertyName = 'AvailableContentLibDrivesList'
-                    Value1       =  'F'
-                }
-                @{
-                    PropertyName = 'AvailablePkgShareDrivesList'
-                    Value1       =  'F'
-                }
-            )
-        }
-
-        $cmCertificate = @{
-            Certificate = '308201fb308'
-            ValidUntil  = '5/18/2022 8:24:38 PM'
-        }
-
-        $getInput = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'DP01.contoso.com'
-        }
-
-        # Test and Set input and output
-        $matchInput = @{
-            SiteCode        = 'Lab'
-            SiteServerName  = 'DP01.contoso.com'
-            EnableAnonymous = $false
-            EnableLedbat    = $false
-            Ensure          = 'Present'
-        }
-
-        $misMatchInput = @{
-            SiteCode        = 'Lab'
-            SiteServerName  = 'DP01.contoso.com'
-            EnableAnonymous = $true
-            EnableLedbat    = $true
-            Ensure          = 'Present'
-        }
-
-        $createDistroPointOnly = @{
-            SiteCode                        = 'Lab'
-            SiteServerName                  = 'DP01.contoso.com'
-            MinimumFreeSpaceMB              = 100
-            PrimaryContentLibraryLocation   = 'F'
-            SecondaryContentLibraryLocation = 'C'
-            PrimaryPackageShareLocation     = 'F'
-            SecondaryPackageShareLocation   = 'C'
-            CertificateExpirationTimeUtc    = '5/28/22 8:30 PM'
-        }
-
-        $boundaryGroupMatchInput = @{
-            SiteCode            = 'Lab'
-            SiteServerName      = 'DP01.contoso.com'
-            BoundaryGroups      = @('Test-Group-1','Test-Group-3')
-            BoundaryGroupStatus = 'Match'
-            Ensure              = 'Present'
-        }
-
-        $dpPresentValidateNonCheckedSettigns = @{
-            SiteCode                      = 'Lab'
-            SiteServerName                = 'DP01.contoso.com'
-            PrimaryContentLibraryLocation = 'X'
-            EnableAnonymous               = $false
-            EnableLedbat                  = $false
-            Ensure                        = 'Present'
-        }
-
-        $absentInput = @{
-            SiteCode        = 'Lab'
-            SiteServerName  = 'DP01.contoso.com'
-            Ensure          = 'Absent'
-        }
-
-        $getTargetReturnPresent = @{
-            SiteCode                        = 'Lab'
-            SiteServerName                  = 'DP01.contoso.com'
-            Description                     = 'test description'
-            MinimumFreeSpaceMB              = 100
-            PrimaryContentLibraryLocation   = 'F'
-            SecondaryContentLibraryLocation = 'C'
-            PrimaryPackageShareLocation     = 'F'
-            SecondaryPackageShareLocation   = 'C'
-            ClientCommunicationType         = 'HTTP'
-            BoundaryGroups                  = @('Test-Group-1','Test-Group-2')
-            AllowPreStaging                 = $false
-            CertificateExpirationTimeUtc    = $validData
-            EnableAnonymous                 = $false
-            EnableBranchCache               = $false
-            EnableLedbat                    = $false
-            Ensure                          = 'Present'
-        }
-
-        $getTargetReturnAbsent = @{
-            SiteCode                        = 'Lab'
-            SiteServerName                  = 'DP01.contoso.com'
-            Description                     = $null
-            MinimumFreeSpaceMB              = $null
-            PrimaryContentLibraryLocation   = $null
-            SecondaryContentLibraryLocation = $null
-            PrimaryPackageShareLocation     = $null
-            SecondaryPackageShareLocation   = $null
-            ClientCommunicationType         = $null
-            BoundaryGroups                  = $null
-            AllowPreStaging                 = $null
-            CertificateExpirationTimeUtc    = $null
-            EnableAnonymous                 = $false
-            EnableBranchCache               = $false
-            EnableLedbat                    = $null
-            Ensure                          = 'Absent'
-        }
-
-        $invalidPrimary = @{
-            SiteCode                        = 'Lab'
-            SiteServerName                  = 'DP01.contoso.com'
-            PrimaryPackageShareLocation     = 4
-            SecondaryContentLibraryLocation = 'C'
-        }
-
-        $invalidEntryThrow = 'Primary and Secondary Library or Package locations must be a character A - Z.'
-
-        $invalidSecondaryNoPrimary  = @{
-            SiteCode                        = 'Lab'
-            SiteServerName                  = 'DP01.contoso.com'
-            SecondaryContentLibraryLocation = 'C'
-        }
-
-        $invalidSecondaryThrow = 'Must specify the assoicated primary location when a secondary location is specified.'
-
-        Describe "$moduleResourceName\Get-TargetResource" {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionPoint\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
+                $dpInfoReturn = @{
+                    Communication     = 0
+                    NALPath           = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
+                    PreStagingAllowed = $false
+                    Description       = 'Test Description'
+                    EnableLEDBAT      = $false
+                }
+
+                $boundaryGroupSiteSystemReturn = @(
+                    @{
+                        GroupID  = 16777226
+                        ServerNalPath = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
+                    }
+                    @{
+                        GroupID  = 16777227
+                        ServerNalPath = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
+                    }
+                )
+
+                $boundaryGroupReturnGroup1 = @{
+                    GroupId = 16777226
+                    Name    = 'Test-Group-1'
+                }
+
+                $boundaryGroupReturnGroup2 = @{
+                    GroupId = 16777227
+                    Name    = 'Test-Group-2'
+                }
+
+                $cmDistroPointProps = @{
+                    Props = @(
+                        @{
+                            PropertyName = 'CertificateContextData'
+                            Value1       =  '308201fb308'
+                        }
+                        @{
+                            PropertyName = 'MinFreeSpace'
+                            Value        =  100
+                        }
+                        @{
+                            PropertyName = 'IsAnonymousEnabled'
+                            Value        =  1
+                        }
+                        @{
+                            PropertyName = 'UpdateBranchCacheKey'
+                            Value        =  0
+                        }
+                        @{
+                            PropertyName = 'AvailableContentLibDrivesList'
+                            Value1       =  'FC'
+                        }
+                        @{
+                            PropertyName = 'AvailablePkgShareDrivesList'
+                            Value1       =  'FC'
+                        }
+                    )
+                }
+
+                $cmDistroPointPropsSinReturn = @{
+                    Props = @(
+                        @{
+                            PropertyName = 'CertificateContextData'
+                            Value1       =  '308201fb308'
+                        }
+                        @{
+                            PropertyName = 'MinFreeSpace'
+                            Value        =  100
+                        }
+                        @{
+                            PropertyName = 'IsAnonymousEnabled'
+                            Value        =  1
+                        }
+                        @{
+                            PropertyName = 'UpdateBranchCacheKey'
+                            Value        =  0
+                        }
+                        @{
+                            PropertyName = 'AvailableContentLibDrivesList'
+                            Value1       =  'F'
+                        }
+                        @{
+                            PropertyName = 'AvailablePkgShareDrivesList'
+                            Value1       =  'F'
+                        }
+                    )
+                }
+
+                $cmCertificate = @{
+                    Certificate = '308201fb308'
+                    ValidUntil  = '5/18/2022 8:24:38 PM'
+                }
+
+                $getInput = @{
+                    SiteCode       = 'Lab'
+                    SiteServerName = 'DP01.contoso.com'
+                }
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
@@ -336,8 +228,79 @@ try
             }
         }
 
-        Describe "$moduleResourceName\Set-TargetResource" {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionPoint\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
+                $getTargetReturnPresent = @{
+                    SiteCode                        = 'Lab'
+                    SiteServerName                  = 'DP01.contoso.com'
+                    Description                     = 'test description'
+                    MinimumFreeSpaceMB              = 100
+                    PrimaryContentLibraryLocation   = 'F'
+                    SecondaryContentLibraryLocation = 'C'
+                    PrimaryPackageShareLocation     = 'F'
+                    SecondaryPackageShareLocation   = 'C'
+                    ClientCommunicationType         = 'HTTP'
+                    BoundaryGroups                  = @('Test-Group-1','Test-Group-2')
+                    AllowPreStaging                 = $false
+                    CertificateExpirationTimeUtc    = $validData
+                    EnableAnonymous                 = $false
+                    EnableBranchCache               = $false
+                    EnableLedbat                    = $false
+                    Ensure                          = 'Present'
+                }
+
+                $getTargetReturnAbsent = @{
+                    SiteCode                        = 'Lab'
+                    SiteServerName                  = 'DP01.contoso.com'
+                    Description                     = $null
+                    MinimumFreeSpaceMB              = $null
+                    PrimaryContentLibraryLocation   = $null
+                    SecondaryContentLibraryLocation = $null
+                    PrimaryPackageShareLocation     = $null
+                    SecondaryPackageShareLocation   = $null
+                    ClientCommunicationType         = $null
+                    BoundaryGroups                  = $null
+                    AllowPreStaging                 = $null
+                    CertificateExpirationTimeUtc    = $null
+                    EnableAnonymous                 = $false
+                    EnableBranchCache               = $false
+                    EnableLedbat                    = $null
+                    Ensure                          = 'Absent'
+                }
+
+                $createDistroPointOnly = @{
+                    SiteCode                        = 'Lab'
+                    SiteServerName                  = 'DP01.contoso.com'
+                    MinimumFreeSpaceMB              = 100
+                    PrimaryContentLibraryLocation   = 'F'
+                    SecondaryContentLibraryLocation = 'C'
+                    PrimaryPackageShareLocation     = 'F'
+                    SecondaryPackageShareLocation   = 'C'
+                    CertificateExpirationTimeUtc    = '5/28/22 8:30 PM'
+                }
+
+                $boundaryGroupMatchInput = @{
+                    SiteCode            = 'Lab'
+                    SiteServerName      = 'DP01.contoso.com'
+                    BoundaryGroups      = @('Test-Group-1','Test-Group-3')
+                    BoundaryGroupStatus = 'Match'
+                    Ensure              = 'Present'
+                }
+
+                $absentInput = @{
+                    SiteCode        = 'Lab'
+                    SiteServerName  = 'DP01.contoso.com'
+                    Ensure          = 'Absent'
+                }
+
+                $misMatchInput = @{
+                    SiteCode        = 'Lab'
+                    SiteServerName  = 'DP01.contoso.com'
+                    EnableAnonymous = $true
+                    EnableLedbat    = $true
+                    Ensure          = 'Present'
+                }
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName New-CMSiteSystemServer
@@ -346,11 +309,13 @@ try
                 Mock -CommandName Remove-CMDistributionPoint
             }
 
-            Context 'When Set-TargetResource runs successfully' {
-
-                It 'Should call expected commands when adding a Distribution Point' {
+            Context 'When Set-TargetResource runs successfully when get returns absent' {
+                BeforeEach {
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnAbsent }
                     Mock -CommandName Get-CMSiteSystemServer
+                }
+
+                It 'Should call expected commands when adding a Distribution Point' {
 
                     Set-TargetResource @boundaryGroupMatchInput
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -364,8 +329,6 @@ try
                 }
 
                 It 'Should call expected commands when adding only a Distribution Point and specifying a certificate date' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnAbsent }
-                    Mock -CommandName Get-CMSiteSystemServer
 
                     Set-TargetResource @createDistroPointOnly
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -377,10 +340,15 @@ try
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
+            }
 
-                It 'Should call expected commands when adding and removing boundary groups' {
+            Context 'When Set-TargetResource runs successfully when get returns present' {
+                BeforeEach {
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
                     Mock -CommandName Get-CMSiteSystemServer
+                }
+
+                It 'Should call expected commands when adding and removing boundary groups' {
 
                     Set-TargetResource @boundaryGroupMatchInput
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -394,8 +362,6 @@ try
                 }
 
                 It 'Should call expected commands when adding settings do not match' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
-                    Mock -CommandName Get-CMSiteSystemServer
 
                     Set-TargetResource @misMatchInput
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -409,8 +375,6 @@ try
                 }
 
                 It 'Should call expected commands when removing a Distribution Point' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
-                    Mock -CommandName Get-CMSiteSystemServer
 
                     Set-TargetResource @absentInput
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -425,6 +389,25 @@ try
             }
 
             Context 'When running Set-TargetResource should throw' {
+                BeforeEach {
+                    $invalidPrimary = @{
+                        SiteCode                        = 'Lab'
+                        SiteServerName                  = 'DP01.contoso.com'
+                        PrimaryPackageShareLocation     = 4
+                        SecondaryContentLibraryLocation = 'C'
+                    }
+
+                    $invalidEntryThrow = 'Primary and Secondary Library or Package locations must be a character A - Z.'
+
+                    $invalidSecondaryNoPrimary  = @{
+                        SiteCode                        = 'Lab'
+                        SiteServerName                  = 'DP01.contoso.com'
+                        SecondaryContentLibraryLocation = 'C'
+                    }
+
+                    $invalidSecondaryThrow = 'Must specify the assoicated primary location when a secondary location is specified.'
+
+                }
 
                 It 'Should call expected commands when Set-CMDistributionPoint throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
@@ -515,14 +498,90 @@ try
             }
         }
 
-        Describe "$moduleResourceName\Test-TargetResource" {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionPoint\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
+                $getTargetReturnPresent = @{
+                    SiteCode                        = 'Lab'
+                    SiteServerName                  = 'DP01.contoso.com'
+                    Description                     = 'test description'
+                    MinimumFreeSpaceMB              = 100
+                    PrimaryContentLibraryLocation   = 'F'
+                    SecondaryContentLibraryLocation = 'C'
+                    PrimaryPackageShareLocation     = 'F'
+                    SecondaryPackageShareLocation   = 'C'
+                    ClientCommunicationType         = 'HTTP'
+                    BoundaryGroups                  = @('Test-Group-1','Test-Group-2')
+                    AllowPreStaging                 = $false
+                    CertificateExpirationTimeUtc    = $validData
+                    EnableAnonymous                 = $false
+                    EnableBranchCache               = $false
+                    EnableLedbat                    = $false
+                    Ensure                          = 'Present'
+                }
+
+                $getTargetReturnAbsent = @{
+                    SiteCode                        = 'Lab'
+                    SiteServerName                  = 'DP01.contoso.com'
+                    Description                     = $null
+                    MinimumFreeSpaceMB              = $null
+                    PrimaryContentLibraryLocation   = $null
+                    SecondaryContentLibraryLocation = $null
+                    PrimaryPackageShareLocation     = $null
+                    SecondaryPackageShareLocation   = $null
+                    ClientCommunicationType         = $null
+                    BoundaryGroups                  = $null
+                    AllowPreStaging                 = $null
+                    CertificateExpirationTimeUtc    = $null
+                    EnableAnonymous                 = $false
+                    EnableBranchCache               = $false
+                    EnableLedbat                    = $null
+                    Ensure                          = 'Absent'
+                }
+
+                $matchInput = @{
+                    SiteCode        = 'Lab'
+                    SiteServerName  = 'DP01.contoso.com'
+                    EnableAnonymous = $false
+                    EnableLedbat    = $false
+                    Ensure          = 'Present'
+                }
+
+                $absentInput = @{
+                    SiteCode        = 'Lab'
+                    SiteServerName  = 'DP01.contoso.com'
+                    Ensure          = 'Absent'
+                }
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
             }
 
             Context 'When running Test-TargetResource and get returns present' {
                 BeforeEach {
+                    $misMatchInput = @{
+                        SiteCode        = 'Lab'
+                        SiteServerName  = 'DP01.contoso.com'
+                        EnableAnonymous = $true
+                        EnableLedbat    = $true
+                        Ensure          = 'Present'
+                    }
+
+                    $dpPresentValidateNonCheckedSettigns = @{
+                        SiteCode                      = 'Lab'
+                        SiteServerName                = 'DP01.contoso.com'
+                        PrimaryContentLibraryLocation = 'X'
+                        EnableAnonymous               = $false
+                        EnableLedbat                  = $false
+                        Ensure                        = 'Present'
+                    }
+
+                    $boundaryGroupMatchInput = @{
+                        SiteCode            = 'Lab'
+                        SiteServerName      = 'DP01.contoso.com'
+                        BoundaryGroups      = @('Test-Group-1','Test-Group-3')
+                        BoundaryGroupStatus = 'Match'
+                        Ensure              = 'Present'
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
                 }
 
