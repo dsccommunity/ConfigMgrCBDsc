@@ -372,7 +372,7 @@ function Test-TargetResource
         $SiteServerName,
 
         [Parameter()]
-        [Nullable[Boolean]]
+        [Boolean]
         $AnonymousWsusAccess,
 
         [Parameter()]
