@@ -300,36 +300,40 @@ try
                 Mock -CommandName Set-Location
             }
 
-            Context 'When running Test-TargetResource' {
-
-                It 'Should return desired result false when ensure = present and FSP is absent' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-
-                    Test-TargetResource @inputPresent  | Should -Be $false
-                }
-
-                It 'Should return desired result true when ensure = absent and FSP is absent' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-
-                    Test-TargetResource @inputAbsent | Should -Be $true
+            Context 'When running Test-TargetResource and Get-TargetResource Returns ' {
+                BeforeEach{
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
                 }
 
                 It 'Should return desired result false when ensure = absent and FSP is present' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     Test-TargetResource @inputAbsent | Should -Be $false
                 }
 
                 It 'Should return desired result true when all returned values match inputs' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     Test-TargetResource @getReturnAll | Should -Be $true
                 }
 
                 It 'Should return desired result false when there is a mismatch between returned values and inputs' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     Test-TargetResource @inputMismatch | Should -Be $false
+                }
+            }
+
+            Context 'When running Test-TargetResource and Get-TargetResource Returns absent' {
+                BeforeEach{
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+                }
+
+                It 'Should return desired result false when ensure = present and FSP is absent' {
+
+                    Test-TargetResource @inputPresent  | Should -Be $false
+                }
+
+                It 'Should return desired result true when ensure = absent and FSP is absent' {
+
+                    Test-TargetResource @inputAbsent | Should -Be $true
                 }
             }
         }
