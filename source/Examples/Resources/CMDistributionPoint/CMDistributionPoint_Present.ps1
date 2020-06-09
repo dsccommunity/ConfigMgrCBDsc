@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to add a distribution point from Configuration Manager.
+        A DSC configuration script to add a distribution point to Configuration Manager.
 #>
 Configuration Example
 {

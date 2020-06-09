@@ -64,6 +64,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   management points.
 - **CMAssetIntelligencePoint**: Provides a resource for creating and managing
   the SCCM Asset Intelligence Synchronization Point role.
+- **CMDistributionPoint**: Provides a resource for creating and managing
+  the distribution point role.
 
 ### CMAccounts
 
@@ -386,7 +388,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[DateTime] CertificateExpirationTimeUtc** _(Write)_: Specifies, in UTC format,
   the date and time when the certificate expires.
   Only used when distribution point is not currently installed.
-- **[String] ClientCommunicationType** _(Write)_: Specifies how clients or devices
+- **[String] ClientCommunicationType** _(Write)_: Specifies protocol clients or devices
   communicate with the distribution point.
   - Values include: { Http | Https }
 - **[String] BoundaryGroups[]** _(Write)_: Specifies an array of boundary groups

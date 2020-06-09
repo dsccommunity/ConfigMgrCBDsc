@@ -17,7 +17,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Specifies the SiteServer to install the role on.
 
     .Notes
-        This must be ran on the Primary servers to install the ManagementPoint role.
+        This must be ran on the Primary servers to install the distribution point role.
         The Primary server computer account must be in the local
         administrators group to perform the install.
 #>
@@ -47,7 +47,7 @@ function Get-TargetResource
         $status = 'Present'
         $clientCommType = @('HTTP','HTTPS')[$dpInfo.Communication]
 
-        $groups = (Get-CMBoundaryGroupSiteSystem |Where-Object -FilterScript {$_.ServerNalPath -eq $DPinfo.NALPath}).GroupID
+        $groups = (Get-CMBoundaryGroupSiteSystem | Where-Object -FilterScript {$_.ServerNalPath -eq $DPinfo.NALPath}).GroupID
 
         foreach ($group in $groups)
         {
@@ -82,10 +82,13 @@ function Get-TargetResource
                                                         $availPkgShareSecondary = ($dpProp.Value1).SubString(1,1)
                                                     }
                                                 }
+                'CertificateContextData'        { $certInfo = $dpProp.Value1 }
+                'MinFreeSpace'                  { $freespace = $dpProp.Value }
+                'IsAnonymousEnabled'            { [boolean]$anonymous = $dpProp.Value }
+                'UpdateBranchCacheKey'          { [boolean]$branchCache = $dpProp.Value }
             }
         }
 
-        $certInfo = $dpProps.Props.where({$_.PropertyName -eq 'CertificateContextData'}).Value1
         if ($certInfo)
         {
             $validData = (Get-CMCertificate | Where-Object -FilterScript {$_.Certificate -match $certInfo}).ValidUntil
@@ -100,7 +103,7 @@ function Get-TargetResource
         SiteCode                        = $SiteCode
         SiteServerName                  = $SiteServerName
         Description                     = $dpInfo.Description
-        MinimumFreeSpaceMB              = $dpProps.Props.Where({$_.PropertyName -eq 'MinFreeSpace'}).Value
+        MinimumFreeSpaceMB              = $freespace
         PrimaryContentLibraryLocation   = $availcontentDrivePrimary
         SecondaryContentLibraryLocation = $availContentDriveSecondary
         PrimaryPackageShareLocation     = $availPkgSharePrimary
@@ -109,8 +112,8 @@ function Get-TargetResource
         BoundaryGroups                  = $bGroups
         AllowPreStaging                 = $dpInfo.PreStagingAllowed
         CertificateExpirationTimeUtc    = $validData
-        EnableAnonymous                 = [Boolean]$dpProps.Props.Where({$_.PropertyName -eq 'IsAnonymousEnabled'}).Value
-        EnableBranchCache               = [Boolean]$dpProps.Props.Where({$_.PropertyName -eq 'UpdateBranchCacheKey'}).Value
+        EnableAnonymous                 = $anonymous
+        EnableBranchCache               = $branchCache
         EnableLedbat                    = $dpInfo.EnableLEDBAT
         Ensure                          = $status
     }
@@ -157,7 +160,7 @@ function Get-TargetResource
         generated with an expiration date of 2 years from date installed.
 
     .PARAMETER ClientCommunicationType
-        Specifies how clients or devices communicate with the distribution point.
+        Specifies protocol clients or devices communicate with the distribution point.
 
     .PARAMETER BoundaryGroups
         Specifies an array of boundary groups by name.
@@ -290,7 +293,7 @@ function Set-TargetResource
                 }
 
                 $initialValues = @('MinimumFreeSpaceMB','PrimaryContentLibraryLocation','SecondaryContentLibraryLocation',
-                                    'PrimaryPackageShareLocation','SecondaryPackageShareLocation')
+                                    'PrimaryPackageShareLocation','SecondaryPackageShareLocation','CertificateExpirationTimeUtc')
 
                 foreach ($item in $initialValues)
                 {
@@ -302,13 +305,7 @@ function Set-TargetResource
                     }
                 }
 
-                if ($PSBoundParameters.ContainsKey('CertificateExpirationTimeUtc'))
-                {
-                    $dpSetupParams += @{
-                        CertificateExpirationTimeUtc = $PSBoundParameters.CertificateExpirationTimeUtc
-                    }
-                }
-                else
+                if (-not $PSBoundParameters.ContainsKey('CertificateExpirationTimeUtc'))
                 {
                     $dateValueDefault = [DateTime]::Now.AddYears(2)
 
@@ -445,7 +442,7 @@ function Set-TargetResource
         generated with an expiration date of 2 years from date installed.
 
     .PARAMETER ClientCommunicationType
-        Specifies how clients or devices communicate with the distribution point.
+        Specifies protocol clients or devices communicate with the distribution point.
 
     .PARAMETER BoundaryGroups
         Specifies an array of boundary groups by name.

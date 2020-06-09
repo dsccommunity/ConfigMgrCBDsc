@@ -220,8 +220,8 @@ try
                     $result.BoundaryGroups                  | Should -Be -ExpectedValue $null
                     $result.AllowPreStaging                 | Should -Be -ExpectedValue $null
                     $result.CertificateExpirationTimeUtc    | Should -Be -ExpectedValue $null
-                    $result.EnableAnonymous                 | Should -Be -ExpectedValue $false
-                    $result.EnableBranchCache               | Should -Be -ExpectedValue $false
+                    $result.EnableAnonymous                 | Should -Be -ExpectedValue $null
+                    $result.EnableBranchCache               | Should -Be -ExpectedValue $null
                     $result.EnableLedbat                    | Should -Be -ExpectedValue $null
                     $result.Ensure                          | Should -Be -ExpectedValue 'Absent'
                 }
