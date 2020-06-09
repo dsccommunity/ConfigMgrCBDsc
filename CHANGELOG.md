@@ -3,7 +3,6 @@
 The format is based on and uses the types of changes according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md).
 
 ## [Unreleased]
 
@@ -24,6 +23,8 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Added CMManagementPoint Resource
 - Added psd1 for ResourceHelper
 - Added CMAssetIntelligencePoint Resource
+- Added VSCode Project Settings and PS Script Analyzer rules
+- Added Issue and PR template.
 - Added CMAFallbackStatusPoint Resource
 
 ### Changed
@@ -37,9 +38,13 @@ For older change log history see the [historic changelog](HISTORIC_CHANGELOG.md)
 - Renamed CMAccounts resource to DSC_CMAccounts
 - Renamed MSFT_SCCMIniFile resource to DSC_CMIniFile
 - Updated Readme with additional information
+- Updated GitVersion to reflect a release has not been completed.
+- Updated ModuleBuilder to latest
+- Updated pipeline to run on merges to master only when something in source changes
 
 ### Removed
 
 - Removed ClientSettings resource
+- Removed Historic Changelog
 
 ### Fixed
