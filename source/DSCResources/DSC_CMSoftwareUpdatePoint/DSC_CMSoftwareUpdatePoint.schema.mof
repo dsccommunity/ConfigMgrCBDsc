@@ -2,7 +2,7 @@
 class DSC_CMSoftwareUpdatePoint: OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
-    [Required, Description("Specifies the Site Server to install or configure the role on.")] String SiteServerName;
+    [Key, Description("Specifies the Site Server to install or configure the role on.")] String SiteServerName;
     [Write, Description("Indicates that the software update point allows anonymous access. Mutually exclusive with WSUSAccessAccount.")] Boolean AnonymousWSUSAccess;
     [Write, Description("Specifies the type of the client connection"), ValueMap{"Internet","Intranet","InternetAndIntranet"}, Values{"Internet","Intranet","InternetAndIntranet"}] String ClientConnectionType;
     [Write, Description("Specifies if a cloud gateway is to be used for the software update point.")] Boolean EnableCloudGateway;

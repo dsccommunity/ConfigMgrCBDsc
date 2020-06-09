@@ -62,9 +62,9 @@ function Get-TargetResource
                                             $intranet = 'Intranet'
                                         }
                                     }
-                'SSLWSUS'           {$enableSsl = $supProp.Value}
-                'UseProxy'          {$useProxyGeneral = $supProp.Value}
-                'UseProxyForADR'    {$useProxyForADR = $supProp.Value}
+                'SSLWSUS'           { $enableSsl = $supProp.Value }
+                'UseProxy'          { $useProxyGeneral = $supProp.Value }
+                'UseProxyForADR'    { $useProxyForADR = $supProp.Value }
                 'WSUSAccessAccount' {
                                         $accessAccount = $supProp.Value2
                                         if ([string]::IsNullOrEmpty($supProp.Value2))
@@ -76,11 +76,11 @@ function Get-TargetResource
                                             $anonymousWsus = $false
                                         }
                                     }
-                'WSUSIISPort'       {$wsusIis = $supProp.Value}
-                'WSUSIISSSLPort'    {$wsusIisSsl = $supProp.Value}
+                'WSUSIISPort'       { $wsusIis = $supProp.Value }
+                'WSUSIISSSLPort'    { $wsusIisSsl = $supProp.Value }
             }
         }
-        if (($internet) -and ($intranet))
+        if ($internet -and $intranet)
         {
             $connectionType = 'InternetAndIntranet'
         }
@@ -91,7 +91,6 @@ function Get-TargetResource
 
         $status = 'Present'
     }
-
     else
     {
         $status = 'Absent'
@@ -145,10 +144,7 @@ function Get-TargetResource
         Specifies an account used to connect to the WSUS server. When not used, specify the AnonymousWSUSAccess parameter.
 
         If specifying an account the account must already exist in
-        Configuration Manager.  This can be achieved by:
-
-        $secure = ConvertTo-SecureString -String "Password" -AsPlainText -Force
-        New-CMAccount -Name 'contoso\test1' -Password $secure -SiteCode '<siteCode>'
+        Configuration Manager. This can be achieved by using the CMAccounts Resource.
 
     .PARAMETER WsusIisPort
         Specifies a port to use for unsecured access to the WSUS server.
@@ -270,17 +266,17 @@ function Set-TargetResource
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-            if ($evalList -contains $param.key)
-                {
-                    if ($param.Value -ne $state[$param.key])
+                if ($evalList -contains $param.key)
                     {
-                        Write-Verbose -Message ($script:localizedData.SettingValue -f $param.Key, $param.Value)
-                        $buildingParams += @{
-                            $param.Key = $param.Value
+                        if ($param.Value -ne $state[$param.key])
+                        {
+                            Write-Verbose -Message ($script:localizedData.SettingValue -f $param.Key, $param.Value)
+                            $buildingParams += @{
+                                $param.Key = $param.Value
+                            }
                         }
                     }
                 }
-            }
 
             if ($buildingParams)
             {
@@ -335,10 +331,7 @@ function Set-TargetResource
         Specifies an account used to connect to the WSUS server. When not used, specify the AnonymousWSUSAccess parameter.
 
         If specifying an account the account must already exist in
-        Configuration Manager.  This can be achieved by:
-
-        $secure = ConvertTo-SecureString -String "Password" -AsPlainText -Force
-        New-CMAccount -Name 'contoso\test1' -Password $secure -SiteCode '<siteCode>'
+        Configuration Manager. This can be achieved by using the CMAccounts Resource.
 
     .PARAMETER WsusIisPort
         Specifies a port to use for unsecured access to the WSUS server.

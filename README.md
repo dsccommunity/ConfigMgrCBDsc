@@ -363,7 +363,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] SiteServerName** _(Required)_: Specifies the Site Server to install
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
   or configure the role on.
 - **[Boolean] AnonymousWSUSAccess** _(Write)_: Indicates that the software update
   point allows anonymous access. Mutually exclusive with WSUSAccessAccount.
