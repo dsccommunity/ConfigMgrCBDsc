@@ -66,7 +66,7 @@ try
             Context 'When retrieving fallback status point settings' {
 
                 It 'Should return desired result when fallback status point is not currently installed' {
-                    Mock -CommandName Get-CMFallbackStatusPoint -MockWith { $null }
+                    Mock -CommandName Get-CMFallbackStatusPoint
 
                     $result = Get-TargetResource @getInput
                     $result                   | Should -BeOfType System.Collections.HashTable

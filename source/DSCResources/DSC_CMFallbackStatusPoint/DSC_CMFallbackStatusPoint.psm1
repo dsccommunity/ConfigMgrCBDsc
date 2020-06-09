@@ -57,7 +57,6 @@ function Get-TargetResource
         #Translate the throttle interval from milliseconds to seconds
         $throttleInterval = $throttleInterval/1000
     }
-
     else
     {
         $status = 'Absent'
@@ -166,7 +165,7 @@ function Set-TargetResource
                 Set-CMFallbackStatusPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode @buildingParams
             }
         }
-        elseIf ($state.Ensure -eq 'Present')
+        elseif ($state.Ensure -eq 'Present')
         {
             Write-Verbose -Message ($script:localizedData.RemoveFSPRole -f $SiteServerName)
             Remove-CMFallbackStatusPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
