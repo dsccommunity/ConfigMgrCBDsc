@@ -87,6 +87,48 @@ try
                     )
                 }
 
+                $getSUPReturn2 = @{
+                    SiteCode = 'Lab'
+                    Props    = @(
+                        @{
+                            PropertyName = 'AllowProxyTraffic'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'IsINF'
+                            Value        = '1'
+                        }
+                        @{
+                            PropertyName = 'IsIntranet'
+                            Value        = '1'
+                        }
+                        @{
+                            PropertyName = 'SSLWSUS'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'UseProxy'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'UseProxyForADR'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'WSUSAccessAccount'
+                            Value2       = 'contoso\admin'
+                        }
+                        @{
+                            PropertyName = 'WSUSIISPort'
+                            Value        = '8530'
+                        }
+                        @{
+                            PropertyName = 'WSUSIISSSLPort'
+                            Value        = '8531'
+                        }
+                    )
+                }
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
@@ -125,6 +167,25 @@ try
                     $result.UseProxy                      | Should -Be -ExpectedValue $false
                     $result.UseProxyForAutoDeploymentRule | Should -Be -ExpectedValue $false
                     $result.WSUSAccessAccount             | Should -Be -ExpectedValue $null
+                    $result.WSUSIISPort                   | Should -Be -ExpectedValue 8530
+                    $result.WSUSIISSSLPort                | Should -Be -ExpectedValue 8531
+                    $result.WSUSSSL                       | Should -Be -ExpectedValue $false
+                    $result.Ensure                        | Should -Be -ExpectedValue 'Present'
+                }
+
+                It 'Should return desired result when software update point is currently installed' {
+                    Mock -CommandName Get-CMSoftwareUpdatePoint -MockWith { $getSUPReturn2 }
+
+                    $result = Get-TargetResource @getInput
+                    $result                               | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode                      | Should -Be -ExpectedValue 'Lab'
+                    $result.SiteServerName                | Should -Be -ExpectedValue 'CA01.contoso.com'
+                    $result.AnonymousWSUSAccess           | Should -Be -ExpectedValue $false
+                    $result.ClientConnectionType          | Should -Be -ExpectedValue 'InternetAndIntranet'
+                    $result.EnableCloudGateway            | Should -Be -ExpectedValue $false
+                    $result.UseProxy                      | Should -Be -ExpectedValue $false
+                    $result.UseProxyForAutoDeploymentRule | Should -Be -ExpectedValue $false
+                    $result.WSUSAccessAccount             | Should -Be -ExpectedValue 'contoso\admin'
                     $result.WSUSIISPort                   | Should -Be -ExpectedValue 8530
                     $result.WSUSIISSSLPort                | Should -Be -ExpectedValue 8531
                     $result.WSUSSSL                       | Should -Be -ExpectedValue $false
