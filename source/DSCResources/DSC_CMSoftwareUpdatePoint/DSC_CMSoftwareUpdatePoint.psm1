@@ -287,7 +287,7 @@ function Set-TargetResource
                 Set-CMSoftwareUpdatePoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode @buildingParams
             }
         }
-        elseIf ($state.Ensure -eq 'Present')
+        elseif ($state.Ensure -eq 'Present')
         {
             Write-Verbose -Message ($script:localizedData.RemoveSUPRole -f $SiteServerName)
             Remove-CMSoftwareUpdatePoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
@@ -444,7 +444,7 @@ function Test-TargetResource
             }
         }
     }
-    elseIf ($state.Ensure -eq 'Present')
+    elseif ($state.Ensure -eq 'Present')
     {
         Write-Verbose -Message ($script:localizedData.SUPAbsent -f $SiteServerName)
         $result = $false

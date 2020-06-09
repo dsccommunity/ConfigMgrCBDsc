@@ -487,7 +487,7 @@ try
                 Mock -CommandName Set-Location
             }
 
-            Context 'When running Test-TargetResourceand Get-TargetResource Returns ' {
+            Context 'When running Test-TargetResource and Get-TargetResource Returns ' {
                 BeforeEach{
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
                 }
@@ -507,40 +507,7 @@ try
                     Test-TargetResource @inputMismatch | Should -Be $false
                 }
             }
-            Context 'When running Test-TargetResource and Get-TargetResource Returns absent' {
-                BeforeEach{
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-                }
 
-                It 'Should return desired result false when ensure = present and SUP is absent' {
-
-                    Test-TargetResource @inputPresent  | Should -Be $false
-                }
-
-                It 'Should return desired result true when ensure = absent and SUP is absent' {
-
-                    Test-TargetResource @inputAbsent | Should -Be $true
-                }
-            }Context 'When running Test-TargetResource and Get-TargetResource Returns ' {
-                BeforeEach{
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
-                }
-
-                It 'Should return desired result false when ensure = absent and SUP is present' {
-
-                    Test-TargetResource @inputAbsent | Should -Be $false
-                }
-
-                It 'Should return desired result true when all returned values match inputs' {
-
-                    Test-TargetResource @inputMatch | Should -Be $true
-                }
-
-                It 'Should return desired result false when there is a mismatch between returned values and inputs' {
-
-                    Test-TargetResource @inputMismatch | Should -Be $false
-                }
-            }
             Context 'When running Test-TargetResource and Get-TargetResource Returns absent' {
                 BeforeEach{
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
