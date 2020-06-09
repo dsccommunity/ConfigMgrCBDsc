@@ -76,8 +76,8 @@ function Get-TargetResource
                                             $anonymousWsus = $false
                                         }
                                     }
-                'WSUSIISPort'       { $wsusIis = $supProp.Value }
-                'WSUSIISSSLPort'    { $wsusIisSsl = $supProp.Value }
+                'WSUSIISPort'       { $WsusIis = $supProp.Value }
+                'WSUSIISSSLPort'    { $WsusIisSsl = $supProp.Value }
             }
         }
         if ($internet -and $intranet)
@@ -99,15 +99,15 @@ function Get-TargetResource
     return @{
         SiteServerName                = $SiteServerName
         SiteCode                      = $SiteCode
-        AnonymousWSUSAccess           = $anonymousWsus
+        AnonymousWsusAccess           = $anonymousWsus
         ClientConnectionType          = $connectionType
         EnableCloudGateway            = $cloudGateway
         UseProxy                      = $useProxyGeneral
         UseProxyForAutoDeploymentRule = $useProxyForADR
-        WSUSAccessAccount             = $accessAccount
-        WSUSIISPort                   = $wsusIis
-        WSUSIISSSLPort                = $wsusIisSsl
-        WSUSSSL                       = $enableSsl
+        WsusAccessAccount             = $accessAccount
+        WsusIISPort                   = $WsusIis
+        WsusIISSSLPort                = $WsusIisSsl
+        WsusSSL                       = $enableSsl
         Ensure                        = $status
     }
 }
@@ -122,8 +122,8 @@ function Get-TargetResource
     .PARAMETER SiteServerName
         Specifies the Site Server to install or configure the role on.
 
-    .PARAMETER AnonymousWSUSAccess
-        Indicates that the software update point allows anonymous access. Mutually exclusive with WSUSAccessAccount.
+    .PARAMETER AnonymousWsusAccess
+        Indicates that the software update point allows anonymous access. Mutually exclusive with WsusAccessAccount.
 
     .PARAMETER ClientConnectionType
         Specifies the type of the client connection. The acceptable value are Internet,
@@ -140,20 +140,20 @@ function Get-TargetResource
     .PARAMETER UseProxyForAutoDeploymentRule
         Indicates whether an auto deployment rule can use a proxy.
 
-    .PARAMETER WSUSAccessAccount
-        Specifies an account used to connect to the WSUS server. When not used, specify the AnonymousWSUSAccess parameter.
+    .PARAMETER WsusAccessAccount
+        Specifies an account used to connect to the Wsus server. When not used, specify the AnonymousWsusAccess parameter.
 
         If specifying an account the account must already exist in
         Configuration Manager. This can be achieved by using the CMAccounts Resource.
 
     .PARAMETER WsusIisPort
-        Specifies a port to use for unsecured access to the WSUS server.
+        Specifies a port to use for unsecured access to the Wsus server.
 
     .PARAMETER WsusIisSslPort
-        Specifies a port to use for secured access to the WSUS server.
+        Specifies a port to use for secured access to the Wsus server.
 
     .PARAMETER WsusSsl
-        Specifies whether the software update point uses SSL to connect to the WSUS server.
+        Specifies whether the software update point uses SSL to connect to the Wsus server.
 
     .PARAMETER Ensure
         Specifies whether the software update point is present or absent.
@@ -199,7 +199,7 @@ function Set-TargetResource
 
         [Parameter()]
         [String]
-        $WSUSAccessAccount,
+        $WsusAccessAccount,
 
         [Parameter()]
         [UInt32]
@@ -242,7 +242,7 @@ function Set-TargetResource
             }
         }
 
-        if (($WSUSAccessAccount) -and ($AnonymousWsusAccess -eq $true))
+        if (($WsusAccessAccount) -and ($AnonymousWsusAccess -eq $true))
         {
             throw $script:localizedData.UsernameComputer
         }
@@ -261,8 +261,8 @@ function Set-TargetResource
                 Add-CMSoftwareUpdatePoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
             }
 
-            $evalList = @('AnonymousWSUSAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
-            'UseProxyForAutoDeploymentRule','WSUSAccessAccount','WSUSIISPort','WSUSIISSSLPort','WSUSSSL')
+            $evalList = @('AnonymousWsusAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
+            'UseProxyForAutoDeploymentRule','WsusAccessAccount','WsusIISPort','WsusIISSSLPort','WsusSSL')
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
@@ -309,8 +309,8 @@ function Set-TargetResource
     .PARAMETER SiteServerName
         Specifies the Site Server to install or configure the role on.
 
-    .PARAMETER AnonymousWSUSAccess
-        Indicates that the software update point allows anonymous access. Mutually exclusive with WSUSAccessAccount.
+    .PARAMETER AnonymousWsusAccess
+        Indicates that the software update point allows anonymous access. Mutually exclusive with WsusAccessAccount.
 
     .PARAMETER ClientConnectionType
         Specifies the type of the client connection. The acceptable value are Internet,
@@ -327,20 +327,20 @@ function Set-TargetResource
     .PARAMETER UseProxyForAutoDeploymentRule
         Indicates whether an auto deployment rule can use a proxy.
 
-    .PARAMETER WSUSAccessAccount
-        Specifies an account used to connect to the WSUS server. When not used, specify the AnonymousWSUSAccess parameter.
+    .PARAMETER WsusAccessAccount
+        Specifies an account used to connect to the Wsus server. When not used, specify the AnonymousWsusAccess parameter.
 
         If specifying an account the account must already exist in
         Configuration Manager. This can be achieved by using the CMAccounts Resource.
 
     .PARAMETER WsusIisPort
-        Specifies a port to use for unsecured access to the WSUS server.
+        Specifies a port to use for unsecured access to the Wsus server.
 
     .PARAMETER WsusIisSslPort
-        Specifies a port to use for secured access to the WSUS server.
+        Specifies a port to use for secured access to the Wsus server.
 
     .PARAMETER WsusSsl
-        Specifies whether the software update point uses SSL to connect to the WSUS server.
+        Specifies whether the software update point uses SSL to connect to the Wsus server.
 
     .PARAMETER Ensure
         Specifies whether the software update point is present or absent.
@@ -387,7 +387,7 @@ function Test-TargetResource
 
         [Parameter()]
         [String]
-        $WSUSAccessAccount,
+        $WsusAccessAccount,
 
         [Parameter()]
         [UInt32]
@@ -421,8 +421,8 @@ function Test-TargetResource
         }
         else
         {
-            $evalList = @('AnonymousWSUSAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
-            'UseProxyForAutoDeploymentRule','WSUSAccessAccount','WSUSIISPort','WSUSIISSSLPort','WSUSSSL')
+            $evalList = @('AnonymousWsusAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
+            'UseProxyForAutoDeploymentRule','WsusAccessAccount','WsusIISPort','WsusIISSSLPort','WsusSSL')
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {

@@ -365,8 +365,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Manager site.
 - **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
   or configure the role on.
-- **[Boolean] AnonymousWSUSAccess** _(Write)_: Indicates that the software update
-  point allows anonymous access. Mutually exclusive with WSUSAccessAccount.
+- **[Boolean] AnonymousWsusAccess** _(Write)_: Indicates that the software update
+  point allows anonymous access. Mutually exclusive with WsusAccessAccount.
 - **[String] ClientConnectionType** _(Write)_: Specifies the type of the client connection.
   - Values include: { Internet | Intranet | InternetAndIntranet }
 - **[Boolean] EnableCloudGateway** _(Write)_: Specifies if a cloud gateway is to
@@ -377,14 +377,14 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   uses the proxy configured for the site system server.
 - **[Boolean] UseProxyForAutoDeploymentRule** _(Write)_: Indicates whether an
   auto deployment rule can use a proxy.
-- **[String] WSUSAccessAccount** _(Write)_: Specifies an account used to connect
-  to the WSUS server. When not used, specify the AnonymousWSUSAccess parameter.
+- **[String] WsusAccessAccount** _(Write)_: Specifies an account used to connect
+  to the WSUS server. When not used, specify the AnonymousWsusAccess parameter.
 - **[UInt32] WsusIisPort** _(Write)_: Specifies a port to use for unsecured
-  access to the WSUS server.
+  access to the Wsus server.
 - **[UInt32] WsusIisSslPort** _(Write)_: Specifies a port to use for secured
-  access to the WSUS server.
+  access to the Wsus server.
 - **[Boolean] WsusSsl** _(Write)_: Specifies whether the software update point
-  uses SSL to connect to the WSUS server.
+  uses SSL to connect to the Wsus server.
 - **[String] Ensure** _(Write)_: Specifies whether the software update point is
   present or absent.
   - Values include: { Present | Absent }

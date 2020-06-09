@@ -10,5 +10,5 @@ ConvertFrom-StringData @'
     RemoveSUPRole        = Removing Software Update Point role from {0}.
     EnableGateway        = When CloudGateway is enabled, ClientConnectionType must not equal Intranet.
     GatewaySsl           = When CloudGateway is enabled SSL must also be enabled.
-    UsernameComputer     = You can not specify a WSUSAccessAccount and set AnonymousWsusAccess to $true.
+    UsernameComputer     = You can not specify a WsusAccessAccount and set AnonymousWsusAccess to $true.
 '@

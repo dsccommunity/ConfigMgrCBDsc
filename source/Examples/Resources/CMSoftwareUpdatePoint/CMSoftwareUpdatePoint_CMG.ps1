@@ -16,7 +16,7 @@ Configuration Example
             EnableCloudGateway            = $true
             UseProxy                      = $false
             UseProxyForAutoDeploymentRule = $false
-            WSUSAccessAccount             = 'contoso\admin'
+            WsusAccessAccount             = 'contoso\admin'
             WsusIisPort                   = '8530'
             WsusIisSslPort                = '8531'
             WsusSsl                       = $true
