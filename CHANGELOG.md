@@ -25,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMAssetIntelligencePoint Resource
 - Added VSCode Project Settings and PS Script Analyzer rules
 - Added Issue and PR template.
-- Added CMAFallbackStatusPoint Resource
+- Added CMFallbackStatusPoint Resource
 
 ### Changed
 
