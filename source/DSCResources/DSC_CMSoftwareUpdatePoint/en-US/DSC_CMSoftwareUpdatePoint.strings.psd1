@@ -1,7 +1,6 @@
 ConvertFrom-StringData @'
     RetrieveSettingValue = Getting information for the specified Software Update Point.
     SUPNotInstalled      = Software Update Point is not installed on server: {0}.
-    TestSetting          = Setting {0} expected value: {1} returned {2}.
     SUPAbsent            = {0} Software Update Point expected absent returned Present.
     TestState            = Test-TargetResource compliance check returned: {0}.
     SiteServerRole       = {0} is not currently a site system server adding site system role.

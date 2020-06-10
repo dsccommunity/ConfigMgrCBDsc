@@ -421,20 +421,14 @@ function Test-TargetResource
         }
         else
         {
-            $evalList = @('AnonymousWsusAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
-            'UseProxyForAutoDeploymentRule','WsusAccessAccount','WsusIISPort','WsusIISSSLPort','WsusSSL')
-
-            foreach ($param in $PSBoundParameters.GetEnumerator())
-            {
-                if ($evalList -contains $param.key)
-                {
-                    if ($param.Value -ne $state[$param.key])
-                    {
-                        Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
-                        $result = $false
-                    }
-                }
+            $testParams = @{
+                CurrentValues = $state
+                DesiredValues = $PSBoundParameters
+                ValuesToCheck = @('AnonymousWSUSAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
+                'UseProxyForAutoDeploymentRule','WSUSAccessAccount','WSUSIISPort','WSUSIISSSLPort','WSUSSSL')
             }
+
+            $result = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
         }
     }
     elseif ($state.Ensure -eq 'Present')
