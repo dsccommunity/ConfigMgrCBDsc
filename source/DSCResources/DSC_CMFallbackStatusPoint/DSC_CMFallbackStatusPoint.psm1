@@ -249,19 +249,13 @@ function Test-TargetResource
         }
         else
         {
-            $evalList = @('StateMessageCount','ThrottleSec')
-
-            foreach ($param in $PSBoundParameters.GetEnumerator())
-            {
-                if ($evalList -contains $param.key)
-                {
-                    if ($param.Value -ne $state[$param.key])
-                    {
-                        Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
-                        $result = $false
-                    }
-                }
+            $testParams = @{
+                CurrentValues = $state
+                DesiredValues = $PSBoundParameters
+                ValuesToCheck = @('StateMessageCount','ThrottleSec')
             }
+
+            $result = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
         }
     }
     elseif ($state.Ensure -eq 'Present')
