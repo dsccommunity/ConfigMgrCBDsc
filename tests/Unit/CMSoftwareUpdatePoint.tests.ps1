@@ -278,7 +278,7 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMSoftwareUpdatePoint -Exactly -Times 1 -Scope It
@@ -349,6 +349,23 @@ try
                     }
 
                     $acountThrowMsg = 'You can not specify a WSUSAccessAccount and set AnonymousWsusAccess to $true.'
+
+                    $proxyThrow = @{
+                        SiteCode       = 'Lab'
+                        SiteServerName = 'CA01.contoso.com'
+                        UseProxy       = $true
+                    }
+
+                    $proxyThrowMsg = 'No proxy is configured on the server. Please configure a proxy before specifying UseProxy or UseProxyForAutoDeploymentRule as true.'
+
+                    $filterReturn = @{
+                        Props = @(
+                            @{
+                                PropertyName = 'UseProxy'
+                                Value        = '0'
+                            }
+                        )
+                    }
                 }
 
                 It 'Should call throws when Gateway is enabled and connection type is intranet' {
@@ -387,6 +404,21 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call throws when useProxy is specified and no proxy is configured on the server' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+                    Mock -CommandName Get-CMSiteSystemServer -MockWith { $filterReturn }
+
+                    { Set-TargetResource @proxyThrow } | Should -Throw -ExpectedMessage $proxyThrowMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
@@ -449,7 +481,7 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMSoftwareUpdatePoint -Exactly -Times 1 -Scope It

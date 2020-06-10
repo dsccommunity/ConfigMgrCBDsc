@@ -247,6 +247,15 @@ function Set-TargetResource
             throw $script:localizedData.UsernameComputer
         }
 
+        if (($UseProxy -eq $true) -or ($UseProxyForAutoDeploymentRule -eq $true))
+        {
+            $proxy = ((Get-CMSiteSystemServer -SiteSystemServerName $SiteServerName).props | Where-Object -FilterScript {$_.PropertyName -eq 'UseProxy'}).Value
+            if ($proxy -eq '0')
+            {
+                throw $script:localizedData.NoProxy
+            }
+        }
+
         if ($Ensure -eq 'Present')
         {
             if ($state.Ensure -eq 'Absent')

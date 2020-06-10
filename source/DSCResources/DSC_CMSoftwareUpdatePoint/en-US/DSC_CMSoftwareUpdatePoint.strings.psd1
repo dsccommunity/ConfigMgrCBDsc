@@ -10,4 +10,5 @@ ConvertFrom-StringData @'
     EnableGateway        = When CloudGateway is enabled, ClientConnectionType must not equal Intranet.
     GatewaySsl           = When CloudGateway is enabled SSL must also be enabled.
     UsernameComputer     = You can not specify a WsusAccessAccount and set AnonymousWsusAccess to $true.
+    NoProxy              = No proxy is configured on the server. Please configure a proxy before specifying UseProxy or UseProxyForAutoDeploymentRule as true.
 '@
