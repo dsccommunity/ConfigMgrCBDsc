@@ -110,12 +110,12 @@ function Set-TargetResource
 
         [Parameter()]
         [ValidateRange(100,100000)]
-        [Int32]
+        [UInt32]
         $StateMessageCount,
 
         [Parameter()]
         [ValidateRange(60,86400)]
-        [Int32]
+        [UInt32]
         $ThrottleSec,
 
         [Parameter()]
@@ -221,12 +221,12 @@ function Test-TargetResource
 
         [Parameter()]
         [ValidateRange(100,100000)]
-        [Int32]
+        [UInt32]
         $StateMessageCount,
 
         [Parameter()]
         [ValidateRange(60,86400)]
-        [Int32]
+        [UInt32]
         $ThrottleSec,
 
         [Parameter()]
