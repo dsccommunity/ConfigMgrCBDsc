@@ -344,13 +344,20 @@ function Set-TargetResource
                     {
                         if ($state.BoundaryGroups -notcontains $boundaryGroup)
                         {
-                            Write-Verbose -Message ($script:localizedData.BoundaryGroupAdd -f $boundaryGroup)
-                            [array]$boundaryAddArray += $boundaryGroup
+                            if (Get-CMBoundaryGroup -Name $boundaryGroup)
+                            {
+                                Write-Verbose -Message ($script:localizedData.BoundaryGroupAdd -f $boundaryGroup)
+                                [array]$boundaryAddArray += $boundaryGroup
+                            }
+                            else
+                            {
+                                $errorMsg += ($script:localizedData.BoundaryGroupAbsent -f $boundaryGroup)
+                            }
                         }
                     }
                 }
 
-                if ($BoundaryGroupStatus -ne 'Add')
+                if ($BoundaryGroupStatus -eq 'Remove')
                 {
                     foreach ($boundaryGroup in $BoundaryGroups)
                     {
@@ -358,6 +365,18 @@ function Set-TargetResource
                         {
                             Write-Verbose -Message ($script:localizedData.BoundaryGroupRemove -f $boundaryGroup)
                             [array]$boundaryRemoveArray += $boundaryGroup
+                        }
+                    }
+                }
+
+                if ($BoundaryGroupStatus -eq 'Match')
+                {
+                    foreach ($stateGroup in $state.BoundaryGroups)
+                    {
+                        if ($BoundaryGroups -notcontains $stateGroup)
+                        {
+                            Write-Verbose -Message ($script:localizedData.BoundaryGroupRemove -f $stateGroup)
+                            [array]$boundaryRemoveArray += $stateGroup
                         }
                     }
                 }
@@ -380,6 +399,11 @@ function Set-TargetResource
             if ($buildingParams)
             {
                 Set-CMDistributionPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode @buildingParams
+            }
+
+            if ($errorMsg)
+            {
+                throw $errorMsg
             }
         }
         else
@@ -559,7 +583,7 @@ function Test-TargetResource
         }
         else
         {
-            Write-Verbose -Message $script:localizedData.SettingsNotEval
+            Write-Warning -Message $script:localizedData.SettingsNotEval
 
             $testParams = @{
                 CurrentValues = $state
@@ -584,13 +608,25 @@ function Test-TargetResource
                     }
                 }
 
-                if ($BoundaryGroupStatus -ne 'Add')
+                if ($BoundaryGroupStatus -eq 'Remove')
                 {
                     foreach ($boundaryGroup in $BoundaryGroups)
                     {
                         if ($state.BoundaryGroups -contains $boundaryGroup)
                         {
                             Write-Verbose -Message ($script:localizedData.BoundaryGroupExtra -f $boundaryGroup)
+                            $result = $false
+                        }
+                    }
+                }
+
+                if ($BoundaryGroupStatus -eq 'Match')
+                {
+                    foreach ($stateGroup in $state.BoundaryGroups)
+                    {
+                        if ($BoundaryGroups -notcontains $stateGroup)
+                        {
+                            Write-Verbose -Message ($script:localizedData.BoundaryGroupExtra -f $stateGroup)
                             $result = $false
                         }
                     }

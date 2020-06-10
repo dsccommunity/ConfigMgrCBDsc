@@ -199,7 +199,7 @@ try
                     $result.Ensure                          | Should -Be -ExpectedValue 'Present'
                 }
 
-                It 'Should return desired result when all info is returned and single content location' {
+                It 'Should return desired result when distribution point is absent' {
                     Mock -CommandName Get-CMDistributionPointInfo -MockWith { $null }
                     Mock -CommandName Get-CMBoundaryGroupSiteSystem
                     Mock -CommandName Get-CMBoundaryGroup
@@ -313,6 +313,7 @@ try
                 BeforeEach {
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnAbsent }
                     Mock -CommandName Get-CMSiteSystemServer
+                    Mock -CommandName Get-CMBoundaryGroup -MockWith { $true }
                 }
 
                 It 'Should call expected commands when adding a Distribution Point' {
@@ -324,6 +325,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 2 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -337,6 +339,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -344,8 +347,17 @@ try
 
             Context 'When Set-TargetResource runs successfully when get returns present' {
                 BeforeEach {
+                    $boundaryGroupRemoveInput = @{
+                        SiteCode            = 'Lab'
+                        SiteServerName      = 'DP01.contoso.com'
+                        BoundaryGroups      = @('Test-Group-1')
+                        BoundaryGroupStatus = 'Remove'
+                        Ensure              = 'Present'
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
                     Mock -CommandName Get-CMSiteSystemServer
+                    Mock -CommandName Get-CMBoundaryGroup -MockWith { $true }
                 }
 
                 It 'Should call expected commands when adding and removing boundary groups' {
@@ -357,6 +369,21 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when removing boundary groups' {
+
+                    Set-TargetResource @boundaryGroupRemoveInput
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -370,6 +397,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -383,6 +411,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 1 -Scope It
                 }
@@ -405,8 +434,16 @@ try
                         SecondaryContentLibraryLocation = 'C'
                     }
 
+                    $invalidBoundaryGroup = @{
+                        SiteCode            = 'Lab'
+                        SiteServerName      = 'DP01.contoso.com'
+                        BoundaryGroups      = 'Test-Boundary-Bad'
+                        BoundaryGroupStatus = 'Add'
+                    }
+
                     $invalidSecondaryThrow = 'Must specify the assoicated primary location when a secondary location is specified.'
 
+                    Mock -CommandName Get-CMBoundaryGroup
                 }
 
                 It 'Should call expected commands when Set-CMDistributionPoint throws' {
@@ -421,6 +458,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -438,6 +476,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 1 -Scope It
                 }
@@ -456,6 +495,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -474,6 +514,23 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when boundary groups do not exist throws' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
+                    Mock -CommandName Get-CMSiteSystemServer
+
+                    { Set-TargetResource @invalidBoundaryGroup } | Should -Throw
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -492,6 +549,7 @@ try
                     Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPoint -Exactly -Times 0 -Scope It
                 }
@@ -551,6 +609,7 @@ try
                     SiteServerName  = 'DP01.contoso.com'
                     Ensure          = 'Absent'
                 }
+
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
             }
@@ -582,6 +641,14 @@ try
                         Ensure              = 'Present'
                     }
 
+                    $boundaryGroupRemoveInput = @{
+                        SiteCode            = 'Lab'
+                        SiteServerName      = 'DP01.contoso.com'
+                        BoundaryGroups      = @('Test-Group-1')
+                        BoundaryGroupStatus = 'Remove'
+                        Ensure              = 'Present'
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturnPresent }
                 }
 
@@ -599,6 +666,10 @@ try
 
                 It 'Should return desired result false when boundarygroups do not match' {
                     Test-TargetResource @boundaryGroupMatchInput | Should -Be $false
+                }
+
+                It 'Should return desired result false when boundarygroups for remove' {
+                    Test-TargetResource @boundaryGroupRemoveInput | Should -Be $false
                 }
 
                 It 'Should return desired result false when desire result is absent' {

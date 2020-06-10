@@ -14,4 +14,5 @@ ConvertFrom-StringData @'
     RemoveDPRole          = Removing distribution point role from {0}.
     InvalidPriOrSecLetter = Primary and Secondary Library or Package locations must be a character A - Z.
     SecAndNoPrimary       = Must specify the assoicated primary location when a secondary location is specified.
+    BoundaryGroupAbsent   = Unable to find Boundary group {0} in Configuration Manager.
 '@
