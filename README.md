@@ -66,6 +66,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   the SCCM Asset Intelligence Synchronization Point role.
 - **CMFallbackStatusPoint**: Provides a resource for creating and managing
   the SCCM Fallback Status Point role.
+- **CMSoftwareUpdatePoint**: Provides a resource for creating and managing
+  the SCCM Software Update Point role.
 
 ### CMAccounts
 
@@ -379,3 +381,39 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMFallbackStatusPoint_Absent](Source\Examples\Resources\CMFallbackStatusPoint\CMFallbackStatusPoint_Absent.ps1)
 - [CMFallbackStatusPoint_Present](Source\Examples\Resources\CMFallbackStatusPoint\CMFallbackStatusPoint_Present.ps1)
+
+### CMSoftwareUpdatePoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
+  or configure the role on.
+- **[Boolean] AnonymousWsusAccess** _(Write)_: Indicates that the software update
+  point allows anonymous access. Mutually exclusive with WsusAccessAccount.
+- **[String] ClientConnectionType** _(Write)_: Specifies the type of the client connection.
+  - Values include: { Internet | Intranet | InternetAndIntranet }
+- **[Boolean] EnableCloudGateway** _(Write)_: Specifies if a cloud gateway is to
+  be used for the software update point. When enabling the cloud gateway, the
+  client connectiontype must be either Internet or InterneAndIntranet. When
+  enabling the cloud gateway, SSL must be enabled.
+- **[Boolean] UseProxy** _(Write)_: Indicates whether a software update point
+  uses the proxy configured for the site system server.
+- **[Boolean] UseProxyForAutoDeploymentRule** _(Write)_: Indicates whether an
+  auto deployment rule can use a proxy.
+- **[String] WsusAccessAccount** _(Write)_: Specifies an account used to connect
+  to the WSUS server. When not used, specify the AnonymousWsusAccess parameter.
+- **[UInt32] WsusIisPort** _(Write)_: Specifies a port to use for unsecured
+  access to the Wsus server.
+- **[UInt32] WsusIisSslPort** _(Write)_: Specifies a port to use for secured
+  access to the Wsus server.
+- **[Boolean] WsusSsl** _(Write)_: Specifies whether the software update point
+  uses SSL to connect to the Wsus server.
+- **[String] Ensure** _(Write)_: Specifies whether the software update point is
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMSoftwareUpdatePoint Examples
+
+- [CMSoftwareUpdatePoint_Absent](Source\Examples\Resources\CMSoftwareUpdatePoint\CMSoftwareUpdatePoint_Absent.ps1)
+- [CMSoftwareUpdatePoint_CMG](Source\Examples\Resources\CMSoftwareUpdatePoint\CMSoftwareUpdatePoint_CMG.ps1)
+- [CMSoftwareUpdatePoint_Present](Source\Examples\Resources\CMSoftwareUpdatePoint\CMSoftwareUpdatePoint_Present.ps1)
