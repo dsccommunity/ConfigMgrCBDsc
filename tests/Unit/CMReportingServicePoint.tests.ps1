@@ -36,8 +36,6 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMReportingServicePoint'
-
         Describe 'ConfigMgrCBDsc - DSC_CMReportingServicePoint\Get-TargetResource' -Tag 'Get'{
             BeforeAll{
                 $getInput = @{
