@@ -140,15 +140,15 @@ try
                     $result                               | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode                      | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName                | Should -Be -ExpectedValue 'CA01.contoso.com'
-                    $result.AnonymousWSUSAccess           | Should -Be -ExpectedValue $null
+                    $result.AnonymousWsusAccess           | Should -Be -ExpectedValue $null
                     $result.ClientConnectionType          | Should -Be -ExpectedValue $null
                     $result.EnableCloudGateway            | Should -Be -ExpectedValue $null
                     $result.UseProxy                      | Should -Be -ExpectedValue $null
                     $result.UseProxyForAutoDeploymentRule | Should -Be -ExpectedValue $null
                     $result.WsusAccessAccount             | Should -Be -ExpectedValue $null
-                    $result.WsusIISPort                   | Should -Be -ExpectedValue $null
-                    $result.WsusIISSSLPort                | Should -Be -ExpectedValue $null
-                    $result.WsusSSL                       | Should -Be -ExpectedValue $null
+                    $result.WsusIisPort                   | Should -Be -ExpectedValue $null
+                    $result.WsusIisSslPort                | Should -Be -ExpectedValue $null
+                    $result.WsusSsl                       | Should -Be -ExpectedValue $null
                     $result.Ensure                        | Should -Be -ExpectedValue 'Absent'
                 }
 
@@ -159,15 +159,15 @@ try
                     $result                               | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode                      | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName                | Should -Be -ExpectedValue 'CA01.contoso.com'
-                    $result.AnonymousWSUSAccess           | Should -Be -ExpectedValue $true
+                    $result.AnonymousWsusAccess           | Should -Be -ExpectedValue $true
                     $result.ClientConnectionType          | Should -Be -ExpectedValue 'Intranet'
                     $result.EnableCloudGateway            | Should -Be -ExpectedValue $false
                     $result.UseProxy                      | Should -Be -ExpectedValue $false
                     $result.UseProxyForAutoDeploymentRule | Should -Be -ExpectedValue $false
                     $result.WsusAccessAccount             | Should -Be -ExpectedValue $null
-                    $result.WsusIISPort                   | Should -Be -ExpectedValue 8530
-                    $result.WsusIISSSLPort                | Should -Be -ExpectedValue 8531
-                    $result.WsusSSL                       | Should -Be -ExpectedValue $false
+                    $result.WsusIisPort                   | Should -Be -ExpectedValue 8530
+                    $result.WsusIisSslPort                | Should -Be -ExpectedValue 8531
+                    $result.WsusSsl                       | Should -Be -ExpectedValue $false
                     $result.Ensure                        | Should -Be -ExpectedValue 'Present'
                 }
 
