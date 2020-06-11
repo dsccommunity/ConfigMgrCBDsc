@@ -178,7 +178,7 @@ try
                     $result                               | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode                      | Should -Be -ExpectedValue 'Lab'
                     $result.SiteServerName                | Should -Be -ExpectedValue 'CA01.contoso.com'
-                    $result.AnonymousWSUSAccess           | Should -Be -ExpectedValue $false
+                    $result.AnonymousWsusAccess           | Should -Be -ExpectedValue $false
                     $result.ClientConnectionType          | Should -Be -ExpectedValue 'InternetAndIntranet'
                     $result.EnableCloudGateway            | Should -Be -ExpectedValue $false
                     $result.UseProxy                      | Should -Be -ExpectedValue $false
