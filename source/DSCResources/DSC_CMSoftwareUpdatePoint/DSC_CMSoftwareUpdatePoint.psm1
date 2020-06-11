@@ -64,7 +64,7 @@ function Get-TargetResource
                                     }
                 'SSLWSUS'           { $enableSsl = $supProp.Value }
                 'UseProxy'          { $useProxyGeneral = $supProp.Value }
-                'UseProxyForADR'    { $useProxyForADR = $supProp.Value }
+                'UseProxyForADR'    { $useProxyForAdr = $supProp.Value }
                 'WSUSAccessAccount' {
                                         $accessAccount = $supProp.Value2
                                         if ([string]::IsNullOrEmpty($supProp.Value2))
@@ -103,7 +103,7 @@ function Get-TargetResource
         ClientConnectionType          = $connectionType
         EnableCloudGateway            = $cloudGateway
         UseProxy                      = $useProxyGeneral
-        UseProxyForAutoDeploymentRule = $useProxyForADR
+        UseProxyForAutoDeploymentRule = $useProxyForAdr
         WsusAccessAccount             = $accessAccount
         WsusIISPort                   = $WsusIis
         WsusIISSSLPort                = $WsusIisSsl
@@ -433,8 +433,8 @@ function Test-TargetResource
             $testParams = @{
                 CurrentValues = $state
                 DesiredValues = $PSBoundParameters
-                ValuesToCheck = @('AnonymousWSUSAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
-                'UseProxyForAutoDeploymentRule','WSUSAccessAccount','WSUSIISPort','WSUSIISSSLPort','WSUSSSL')
+                ValuesToCheck = @('AnonymousWsusAccess','ClientConnectionType','EnableCloudGateway','UseProxy',
+                'UseProxyForAutoDeploymentRule','WsusAccessAccount','WsusIISPort','WsusIISSSLPort','WsusSSL')
             }
 
             $result = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
