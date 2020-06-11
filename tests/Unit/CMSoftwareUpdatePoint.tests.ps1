@@ -134,7 +134,7 @@ try
             Context 'When retrieving software update point settings' {
 
                 It 'Should return desired result when software update point is not currently installed' {
-                    Mock -CommandName Get-CMSoftwareUpdatePoint -MockWith { $null }
+                    Mock -CommandName Get-CMSoftwareUpdatePoint
 
                     $result = Get-TargetResource @getInput
                     $result                               | Should -BeOfType System.Collections.HashTable
@@ -145,10 +145,10 @@ try
                     $result.EnableCloudGateway            | Should -Be -ExpectedValue $null
                     $result.UseProxy                      | Should -Be -ExpectedValue $null
                     $result.UseProxyForAutoDeploymentRule | Should -Be -ExpectedValue $null
-                    $result.WSUSAccessAccount             | Should -Be -ExpectedValue $null
-                    $result.WSUSIISPort                   | Should -Be -ExpectedValue $null
-                    $result.WSUSIISSSLPort                | Should -Be -ExpectedValue $null
-                    $result.WSUSSSL                       | Should -Be -ExpectedValue $null
+                    $result.WsusAccessAccount             | Should -Be -ExpectedValue $null
+                    $result.WsusIISPort                   | Should -Be -ExpectedValue $null
+                    $result.WsusIISSSLPort                | Should -Be -ExpectedValue $null
+                    $result.WsusSSL                       | Should -Be -ExpectedValue $null
                     $result.Ensure                        | Should -Be -ExpectedValue 'Absent'
                 }
 
@@ -164,10 +164,10 @@ try
                     $result.EnableCloudGateway            | Should -Be -ExpectedValue $false
                     $result.UseProxy                      | Should -Be -ExpectedValue $false
                     $result.UseProxyForAutoDeploymentRule | Should -Be -ExpectedValue $false
-                    $result.WSUSAccessAccount             | Should -Be -ExpectedValue $null
-                    $result.WSUSIISPort                   | Should -Be -ExpectedValue 8530
-                    $result.WSUSIISSSLPort                | Should -Be -ExpectedValue 8531
-                    $result.WSUSSSL                       | Should -Be -ExpectedValue $false
+                    $result.WsusAccessAccount             | Should -Be -ExpectedValue $null
+                    $result.WsusIISPort                   | Should -Be -ExpectedValue 8530
+                    $result.WsusIISSSLPort                | Should -Be -ExpectedValue 8531
+                    $result.WsusSSL                       | Should -Be -ExpectedValue $false
                     $result.Ensure                        | Should -Be -ExpectedValue 'Present'
                 }
 

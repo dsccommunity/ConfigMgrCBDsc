@@ -388,7 +388,6 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Manager site.
 - **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
   or configure the role on.
-<<<<<<< HEAD
 - **[Boolean] AnonymousWsusAccess** _(Write)_: Indicates that the software update
   point allows anonymous access. Mutually exclusive with WsusAccessAccount.
 - **[String] ClientConnectionType** _(Write)_: Specifies the type of the client connection.
