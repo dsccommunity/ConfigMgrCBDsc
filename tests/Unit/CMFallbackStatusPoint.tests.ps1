@@ -36,8 +36,6 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMFallbackStatusPoint'
-
         Describe 'ConfigMgrCBDsc - DSC_CMFallbackStatusPoint\Get-TargetResource' -Tag 'Get'{
             BeforeAll{
                 $getInput = @{

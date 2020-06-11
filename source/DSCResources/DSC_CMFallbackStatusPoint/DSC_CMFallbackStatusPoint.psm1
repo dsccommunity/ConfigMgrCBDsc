@@ -49,13 +49,10 @@ function Get-TargetResource
             switch ($fspProp.PropertyName)
             {
                 'Throttle Count'    { $throttleCount = $fspProp.Value }
-                'Throttle Interval' { $throttleInterval = $fspProp.Value }
+                'Throttle Interval' { $throttleInterval = $fspProp.Value/1000 }
             }
         }
         $status = 'Present'
-
-        #Translate the throttle interval from milliseconds to seconds
-        $throttleInterval = $throttleInterval/1000
     }
     else
     {
