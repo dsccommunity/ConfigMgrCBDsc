@@ -64,6 +64,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   management points.
 - **CMAssetIntelligencePoint**: Provides a resource for creating and managing
   the SCCM Asset Intelligence Synchronization Point role.
+- **CMReportingServicePoint**: Provides a resource for creating and managing
+  the SCCM Reporting Service Point role.
 
 ### CMAccounts
 
