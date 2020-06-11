@@ -323,7 +323,7 @@ function Test-TargetResource
 
             $result = Test-DscParameterState @testParams -Verbose
 
-	        if ($FolderName -or $ReportServerInstance)
+            if ($FolderName -or $ReportServerInstance)
             {
                 Write-Warning -Message $script:localizedData.ThrowParams
             }
