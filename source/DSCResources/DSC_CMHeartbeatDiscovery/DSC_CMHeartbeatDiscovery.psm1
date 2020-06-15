@@ -65,7 +65,9 @@ function Get-TargetResource
         Specifies the time when the scheduled event recurs in hours and days.
 
     .PARAMETER ScheduleCount
-        Specifies how often the recur interval is run.
+        Specifies how often the recur interval is run. If hours are specified the max value
+        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
+        is 31. Anything over 31 will result in 31 to be set.
 #>
 function Set-TargetResource
 {
@@ -172,7 +174,9 @@ function Set-TargetResource
         Specifies the time when the scheduled event recurs in hours and days.
 
     .PARAMETER ScheduleCount
-        Specifies how often the recur interval is run.
+        Specifies how often the recur interval is run. If hours are specified the max value
+        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
+        is 31. Anything over 31 will result in 31 to be set.
 #>
 function Test-TargetResource
 {

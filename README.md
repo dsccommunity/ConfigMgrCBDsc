@@ -372,7 +372,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   event recurs in hours and days.
   - Values include: { Hours | Days }
 - **[String] ScheduleCount** _(Write)_: Specifies how often the recur interval
-  is run.
+  is run. If hours are specified the max value is 23. Anything over 23 will result
+  in 23 to be set. If days are specified the max value is 31. Anything over 31 will
+  result in 31 to be set.
 
 #### CMHeartbeatDiscovery Examples
 
