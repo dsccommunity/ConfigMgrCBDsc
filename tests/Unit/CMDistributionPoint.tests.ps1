@@ -50,11 +50,11 @@ try
 
                 $boundaryGroupSiteSystemReturn = @(
                     @{
-                        GroupID  = 16777226
+                        GroupID       = 16777226
                         ServerNalPath = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
                     }
                     @{
-                        GroupID  = 16777227
+                        GroupID       = 16777227
                         ServerNalPath = '["Display=\\DP01.contoso.com\"]MSWNET:["SMS_SITE=Lab"]\\DP01.contoso.com\'
                     }
                 )
@@ -158,9 +158,9 @@ try
                     $result.Description                     | Should -Be -ExpectedValue 'Test Description'
                     $result.MinimumFreeSpaceMB              | Should -Be -ExpectedValue 100
                     $result.PrimaryContentLibraryLocation   | Should -Be -ExpectedValue 'F'
-                    $result.SecondaryContentLibraryLocation | Should -be -ExpectedValue 'C'
+                    $result.SecondaryContentLibraryLocation | Should -Be -ExpectedValue 'C'
                     $result.PrimaryPackageShareLocation     | Should -Be -ExpectedValue 'F'
-                    $result.SecondaryPackageShareLocation   | Should -be -ExpectedValue 'C'
+                    $result.SecondaryPackageShareLocation   | Should -Be -ExpectedValue 'C'
                     $result.ClientCommunicationType         | Should -Be -ExpectedValue 'HTTP'
                     $result.BoundaryGroups                  | Should -Be -ExpectedValue @('Test-Group-1','Test-Group-2')
                     $result.AllowPreStaging                 | Should -Be -ExpectedValue $false
@@ -186,9 +186,9 @@ try
                     $result.Description                     | Should -Be -ExpectedValue 'Test Description'
                     $result.MinimumFreeSpaceMB              | Should -Be -ExpectedValue 100
                     $result.PrimaryContentLibraryLocation   | Should -Be -ExpectedValue 'F'
-                    $result.SecondaryContentLibraryLocation | Should -be -ExpectedValue $null
+                    $result.SecondaryContentLibraryLocation | Should -Be -ExpectedValue $null
                     $result.PrimaryPackageShareLocation     | Should -Be -ExpectedValue 'F'
-                    $result.SecondaryPackageShareLocation   | Should -be -ExpectedValue $null
+                    $result.SecondaryPackageShareLocation   | Should -Be -ExpectedValue $null
                     $result.ClientCommunicationType         | Should -Be -ExpectedValue 'HTTP'
                     $result.BoundaryGroups                  | Should -Be -ExpectedValue @('Test-Group-1','Test-Group-2')
                     $result.AllowPreStaging                 | Should -Be -ExpectedValue $false
@@ -213,9 +213,9 @@ try
                     $result.Description                     | Should -Be -ExpectedValue $null
                     $result.MinimumFreeSpaceMB              | Should -Be -ExpectedValue $null
                     $result.PrimaryContentLibraryLocation   | Should -Be -ExpectedValue $null
-                    $result.SecondaryContentLibraryLocation | Should -be -ExpectedValue $null
+                    $result.SecondaryContentLibraryLocation | Should -Be -ExpectedValue $null
                     $result.PrimaryPackageShareLocation     | Should -Be -ExpectedValue $null
-                    $result.SecondaryPackageShareLocation   | Should -be -ExpectedValue $null
+                    $result.SecondaryPackageShareLocation   | Should -Be -ExpectedValue $null
                     $result.ClientCommunicationType         | Should -Be -ExpectedValue $null
                     $result.BoundaryGroups                  | Should -Be -ExpectedValue $null
                     $result.AllowPreStaging                 | Should -Be -ExpectedValue $null
@@ -288,9 +288,9 @@ try
                 }
 
                 $absentInput = @{
-                    SiteCode        = 'Lab'
-                    SiteServerName  = 'DP01.contoso.com'
-                    Ensure          = 'Absent'
+                    SiteCode       = 'Lab'
+                    SiteServerName = 'DP01.contoso.com'
+                    Ensure         = 'Absent'
                 }
 
                 $misMatchInput = @{
@@ -605,9 +605,9 @@ try
                 }
 
                 $absentInput = @{
-                    SiteCode        = 'Lab'
-                    SiteServerName  = 'DP01.contoso.com'
-                    Ensure          = 'Absent'
+                    SiteCode       = 'Lab'
+                    SiteServerName = 'DP01.contoso.com'
+                    Ensure         = 'Absent'
                 }
 
                 Mock -CommandName Set-Location
