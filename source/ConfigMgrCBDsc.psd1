@@ -51,6 +51,8 @@
         'CMBoundaryGroups'
         'CMManagementPoint'
         'CMAssetIntelligencePoint'
+        'CMFallbackStatusPoint'
+        'CMSoftwareUpdatePoint'
         'CMHeartbeatDiscovery'
     )
 
@@ -65,7 +67,7 @@
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','CMIniFile','Collections',
-            'CMBoundaries','CMForestDiscovery','ClientStatusSettings','BoundaryGroups','ManagementPoint','CMAssetIntelligencePoint','HeartbeatDiscovery')
+            'Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups','ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','HeartbeatDiscovery')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'
