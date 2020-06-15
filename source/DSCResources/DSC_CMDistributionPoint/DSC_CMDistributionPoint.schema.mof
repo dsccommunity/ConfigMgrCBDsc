@@ -11,7 +11,7 @@ class DSC_CMDistributionPoint : OMI_BaseResource
     [Write, Description("Specifies the secondary package share location.")] String SecondaryPackageShareLocation;
     [Write, Description("Specifies, in UTC format, the date and time when the certificate expires.")] DateTime CertificateExpirationTimeUtc;
     [Write, Description("Specifies protocol clients or devices communicate with the distribution point."), ValueMap{"Http","Https"}, Values{"Http","Https"}] String ClientCommunicationType;
-    [Write, Description("Specifies an array of boundary groups by name.")] String BoundaryGroups[];
+    [Write, Description("Specifies an array of existing boundary groups by name.")] String BoundaryGroups[];
     [Write, Description("Specifies if the boundary group is to be added, removed, or match BoundaryGroups."), ValueMap{"Add","Remove","Match"}, Values{"Add","Remove","Match"}] String BoundaryGroupStatus;
     [Write, Description("Indicates whether the distribution point is enabled for prestaged content.")] Boolean AllowPreStaging;
     [Write, Description("Indicates that the distribution point permits anonymous connections from Configuration Manager clients to the content library.")] Boolean EnableAnonymous;

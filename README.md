@@ -391,8 +391,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] ClientCommunicationType** _(Write)_: Specifies protocol clients or devices
   communicate with the distribution point.
   - Values include: { Http | Https }
-- **[String] BoundaryGroups[]** _(Write)_: Specifies an array of boundary groups
-  by name.
+- **[String] BoundaryGroups[]** _(Write)_: Specifies an array of existing boundary
+  groups by name.
 - **[String] BoundaryGroupStatus** _(Write)_: Specifies if the boundary group is
   to be added, removed, or match BoundaryGroups.
   - Values include: { Add | Remove | Match }

@@ -163,7 +163,7 @@ function Get-TargetResource
         Specifies protocol clients or devices communicate with the distribution point.
 
     .PARAMETER BoundaryGroups
-        Specifies an array of boundary groups by name.
+        Specifies an array of existing boundary groups by name.
 
     .PARAMETER BoundaryGroupStatus
         Specifies if the boundary group is to be added, removed, or match BoundaryGroups.
@@ -469,7 +469,7 @@ function Set-TargetResource
         Specifies protocol clients or devices communicate with the distribution point.
 
     .PARAMETER BoundaryGroups
-        Specifies an array of boundary groups by name.
+        Specifies an array of existing boundary groups by name.
 
     .PARAMETER BoundaryGroupStatus
         Specifies if the boundary group is to be added, removed, or match BoundaryGroups.
