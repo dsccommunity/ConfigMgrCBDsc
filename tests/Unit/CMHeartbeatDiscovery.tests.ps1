@@ -272,7 +272,7 @@ try
                 Mock -CommandName Set-Location
             }
 
-            Context 'When running Test-TargetResource device settings' {
+            Context 'When running Test-TargetResource device settings and Heartbeat Discovery is enabled' {
                 BeforeEach {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
                 }
@@ -298,7 +298,7 @@ try
                 }
             }
 
-            Context 'When running Test-TargetResource device settings' {
+            Context 'When running Test-TargetResource device settings and Heartbeat Discovery is disabled' {
                 BeforeEach {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
                 }

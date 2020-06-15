@@ -15,6 +15,8 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .PARAMETER Enabled
         Specifies the enablement of the Heatbeat discovery method.
+
+        Not used in Get-TargetResource.
 #>
 function Get-TargetResource
 {

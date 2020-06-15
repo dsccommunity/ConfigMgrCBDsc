@@ -64,6 +64,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   management points.
 - **CMAssetIntelligencePoint**: Provides a resource for creating and managing
   the SCCM Asset Intelligence Synchronization Point role.
+- **CMHeartbeatDiscovery**: Provides a resource to manage the Configuration Manager
+  Heartbeat Discovery method.
 
 ### CMAccounts
 
