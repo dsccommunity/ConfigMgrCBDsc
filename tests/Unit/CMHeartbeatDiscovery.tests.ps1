@@ -148,6 +148,8 @@ try
                     MinuteSpan     = 0
                 }
 
+                $scheduleNoCountThrow = 'Invalid parameter usage must specify ScheduleInterval and ScheduleCount.'
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName Set-CMDiscoveryMethod
@@ -199,7 +201,7 @@ try
                     Mock -CommandName New-CMSchedule
                     MOck -CommandName Set-CMDiscoveryMethod
 
-                    { Set-TargetResource @inputScheduleNoCount } | Should -Throw
+                    { Set-TargetResource @inputScheduleNoCount } | Should -Throw -ExpectedMessage $scheduleNoCountThrow
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
