@@ -70,6 +70,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   the SCCM Software Update Point role.
 - **CMDistributionPoint**: Provides a resource for creating and managing
   the distribution point role.
+- **CMHeartbeatDiscovery**: Provides a resource to manage the Configuration Manager
+  Heartbeat Discovery method.
 
 ### CMAccounts
 
@@ -472,3 +474,23 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMDistributionPoint_Absent](Source\Examples\Resources\CMDistributionPoint\CMDistributionPoint_Absent.ps1)
 - [CMDistributionPoint_Present](Source\Examples\Resources\CMDistributionPoint\CMDistributionPoint_Present.ps1)
+
+### CMHeartbeatDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Required)_: Specifies the enablement of the heartbeat
+  discovery method. If settings is set to $false no other value provided will be
+  evaluated for compliance.
+- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
+  event recurs in hours and days.
+  - Values include: { Hours | Days }
+- **[String] ScheduleCount** _(Write)_: Specifies how often the recur interval
+  is run. If hours are specified the max value is 23. Anything over 23 will result
+  in 23 to be set. If days are specified the max value is 31. Anything over 31 will
+  result in 31 to be set.
+
+#### CMHeartbeatDiscovery Examples
+
+- [CMHeartbeatDiscovery_Disabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Disabled.ps1)
+- [CMHeartbeatDiscovery_Enabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Enabled.ps1)
