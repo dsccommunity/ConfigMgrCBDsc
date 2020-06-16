@@ -1,7 +1,28 @@
 # ConfigMgrCBDsc
 
 This module contains DSC resources for the management and
-configuration of Microsoft System Center Configuration Manager.
+configuration of Microsoft System Center Configuration Manager Current Branch (ConfigMgrCB).
+
+Current Branch starts after System Center 2012 with version 1511 [Configuration Manager CurrentBranch](https://docs.microsoft.com/en-us/mem/configmgr/core/plan-design/changes/what-has-changed-from-configuration-manager-2012).
+
+Starting with version 1910 Configuration Manager is now part of [Microsoft Endpoint Manager](https://docs.microsoft.com/en-us/mem/configmgr/core/understand/introduction).
+
+This module has been tested on the following versions:
+
+- Configuration Manager 1906
+- Configuration Manager 1902
+
+**Note**
+
+ConfigMgrCBDsc module uses the ConfigurationManager module that is installed with
+Configuration Manager.  In order to use this module, the site needs to be
+registered and the certificate needs to be in the Trusted Publishers store.
+Import-ConfigMgrPowerShellModule, adds keys to the HKEY_Users hive and imports
+the signing certificate from the ConfigurationManager.psd1 to allow the module
+to function, as either LocalSystem, or PSDscRunAsCredential specified.
+
+This occurs in Get, Test, and Set. The function that is called in the resources
+is Import-ConfigMgrPowerShellModule.
 
 [![Build Status](https://dev.azure.com/dsccommunity/ConfigMgrCBDsc/_apis/build/status/dsccommunity.ConfigMgrCBDsc?branchName=master)](https://dev.azure.com/dsccommunity/ConfigMgrCBDsc/_build/latest?definitionId=23&branchName=master)
 ![Azure DevOps coverage (branch)](https://img.shields.io/azure-devops/coverage/dsccommunity/ConfigMgrCBDsc/23/master)
@@ -34,10 +55,29 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **xSccmInstall**: Provides a composite reosurce to install SCCM.
 - **ClientSettings**: Provides a resource to perform configuration of client settings.
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
-- **SccmIniFile** This resource allows for the creation of the ini file
+- **CMIniFile** This resource allows for the creation of the ini file
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
+  - **CMBoundaries**: Provides a resource for creating and removing boundaries.
+- **CMForestDiscovery**: Provides a resource to manage the Configuration Manager
+  AD Forest Discovery method.
+- **CMClientStatusSettings**: Provides a resource for modifying configuration
+  manager client status settings.
+- **CMBoundariesGroup**: Provides a resource for creating boundary groups and
+  adding boundaries to the groups.
+- **CMManagementPoint**: Provides a resource for creating and removing
+  management points.
+- **CMAssetIntelligencePoint**: Provides a resource for creating and managing
+  the SCCM Asset Intelligence Synchronization Point role.
+- **CMFallbackStatusPoint**: Provides a resource for creating and managing
+  the SCCM Fallback Status Point role.
+- **CMSoftwareUpdatePoint**: Provides a resource for creating and managing
+  the SCCM Software Update Point role.
+- **CMDistributionPoint**: Provides a resource for creating and managing
+  the distribution point role.
+- **CMHeartbeatDiscovery**: Provides a resource to manage the Configuration Manager
+  Heartbeat Discovery method.
 
 ### xSccmPreReqs
 
@@ -62,6 +102,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[Boolean] AddWindowsFirewallRule** : Specifies whether to add the Windows
   Firewall Rules needed for the install.
   Default Value: $false
+- **[String] WindowsFeatureSource** : Specifies the source that will be used
+  to install windows features if the files are not present in the local
+  side-by-side store.
 - **[String[]] FirewallProfile** : Specifies the Windows Firewall profile for
   the rules to be added.
 - **[String[]] FirewallTcpLocalPort** : Specifies the TCP ports to be added to
@@ -218,7 +261,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMAccounts_Absent](Source\Examples\Resources\CMAccounts\CMAccounts_Absent.ps1)
 - [CMAccounts_Present](Source\Examples\Resources\CMAccounts\CMAccounts_Present.ps1)
 
-### SCCMIniFile
+### CMIniFile
 
 - **IniFileName** _(Key)_: Specifies the ini file name.
 - **IniFilePath** _(Key)_: Specifies the path of the ini file.
@@ -310,10 +353,10 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CurrentBranch** _(Write)_: Specify whether to use Configuration Manager current
   branch or long-term servicing branch (LTSB).
 
-#### SccmIniFile Examples
+#### CMIniFile Examples
 
-- [SccmIniFile_CAS](Source\Examples\Resources\SccmIniFile\SccmIniFile_CAS.ps1)
-- [SccmIniFile_Primary](Source\Examples\Resources\SccmIniFile\SccmIniFile_Primary.ps1)
+- [CMIniFile_CAS](Source\Examples\Resources\CMIniFile\CMIniFile_CAS.ps1)
+- [CMIniFile_Primary](Source\Examples\Resources\CMIniFile\CMIniFile_Primary.ps1)
 
 ### CMCollections
 
@@ -344,3 +387,282 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMCollections_Absent](Source\Examples\Resources\CMCollections\Collection_Absent.ps1)
 - [CMDeviceCollection_Present](Source\Examples\Resources\CMCollections\DeviceCollection_Present.ps1)
 - [CMUserCollection_Present](Source\Examples\Resources\CMCollections\UserCollection_Present.ps1)
+
+### CMBoundaries
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Value** _(Key)_: Specifies the value for the boundary.
+- **[String] DisplayName** _(Required)_: Specifies the display name of the boundary.
+- **[String] Type** _(Required)_: Specifies the type of boundary.
+  - Values include: { ADSite | IPSubnet | IPRange
+- **[String] Ensure** _(Write)_: Specifies whether the boundary is present or
+  absent.
+  - Values include: { Present | Absent }
+- **[String] BoundaryID** _(Read)_: Specifies the boundary id.
+
+#### CMBoundaries Examples
+
+- [CMBoundaries_Absent](Source\Examples\Resources\CMBoundaries\CMBoundaries_Absent.ps1)
+- [CMBoundaries_Present](Source\Examples\Resources\CMBoundaries\CMBoundaries_Present.ps1)
+
+### CMForestDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Required)_: Specifies the enablement of the forest
+  discovery method. If settings is set to $false no other value provided will be
+  evaluated for compliance.
+- **[EmbeddedInstance] PollingSchedule** _(Write)_: Contains the polling
+  schedule for Configuration Manager (RecurInterval, RecurCount).
+- **[Boolean] EnableActiveDirectorySiteBoundaryCreation** _(Write)_: Indicates
+  whether Configuration Manager creates Active Directory boundaries from AD DS
+  discovery information.
+- **[Boolean] EnableSubnetBoundaryCreation** _(Write)_: Indicates whether
+  Configuration Manager creates IP address range boundaries from AD DS discovery
+  information.
+
+#### CMForestDiscovery Examples
+
+- [ForestDiscovery_Disabled](Source\Examples\Resources\CMForestDiscovery\ForestDiscovery_Disabled.ps1)
+- [ForestDiscovery_Enabled](Source\Examples\Resources\CMForestDiscovery\ForestDiscovery_Enabled.ps1)
+
+### CMClientStatusSettings
+
+- **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
+  instance, the value must be 'Yes'.
+  { Yes }.
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[UInt32] ClientPolicyDays** _(Write)_: Specifies the data collection
+  interval for client policy client monitoring activities.
+- **[UInt32] HeartbeatDiscoveryDays** _(Write)_: Specifies the data collection
+  interval for heartbeat discovery client monitoring activities.
+- **[UInt32] SoftwareInventoryDays** _(Write)_: Specifies the data collection
+  interval for software inventory client monitoring activities.
+- **[UInt32] HardwareInventoryDays** _(Write)_: Specifies the data collection
+  interval for hardware inventory client monitoring activities.
+- **[UInt32] StatusMessageDays** _(Write)_: Specifies the data collection
+  interval for status message client monitoring activities.
+- **[UInt32] HistoryCleanupDays** _(Write)_: Specifies the data collection
+  interval for status history cleanup client monitoring activities.
+
+#### CMClientStatusSettings Examples
+
+- [CMClientStatusSettings](Source\Examples\Resources\CMClientStatusSettings\CMClientStatusSettings.ps1)
+
+### CMBoundaryGroups
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] BoundaryGroup** _(Key)_: Specifies the name of the boundary group.
+- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of boundaries
+  to add or remove from the boundary group.
+- **[String] BoundaryAction** _(Write)_: Specifies the boundaries are to match,
+  add, or remove Boundaries from the boundary group
+  - Values include: { Match | Add | Remove }
+- **[String] Ensure** _(Write)_: Specifies status of the collection is to be
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMBoundaryGroups Examples
+
+- [CMBoundaryGroups_Absent](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Absent.ps1)
+- [CMBoundaryGroups_Present](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Present.ps1)
+- [CMBoundaryGroups_Include](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Include.ps1)
+- [CMBoundaryGroups_Exclude](Source\Examples\Resources\CMBoundaryGroups\CMBoundaryGroups_Exclude.ps1)
+
+### CMManagementPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the
+  role on.
+- **[String] SqlServerFqdn** _(Write)_: Specifies the SQL server FQDN if using
+  a SQL replica.
+- **[String] DatabaseName** _(Write)_: Specifies the name of the site
+  database\replica that the management point uses.
+- **[String] ClientConnectionType** _(Write)_: Specifies the type of the client connection.
+  - Values include: { Internet | Intranet | InternetAndIntranet }
+- **[Boolean] EnableCloudGateway** _(Write)_: Specifies if a cloud gateway
+  is to be used for the management point.
+- **[Boolean] EnableSsl** _(Write)_: Specifies whether to enable SSL (HTTPS)
+  traffic to the management point.
+- **[Boolean] GenerateAlert** _(Write)_: Indicates whether the management point
+  generates health alerts.
+- **[Boolean] UseSiteDatabase** _(Write)_: Indicates whether the management point
+  queries a site database.
+- **[Boolean] UseComputerAccount** _(Write)_: Indicates that the management point
+  uses its own computer account.
+- **[String] SqlServerInstanceName** _(Write)_: Specifies the name of the SQL Server
+  instance that clients use to communicate with the site system.
+- **[String] Username** _(Write)_: Specifies user account the management point
+  uses to access site information.
+- **[String] Ensure** _(Write)_: Specifies whether the management point is
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMManagementPoint Examples
+
+- [CMManagementPoint_Absent](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Absent.ps1)
+- [CMManagementPoint_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_Present.ps1)
+- [CMManagementPoint_UseDatabase_Present](Source\Examples\Resources\CMManagementPoint\CMManagementPoint_UseDatabase_Present.ps1)
+
+### CMAssetIntelligencePoint
+
+- **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
+  instance, the value must be 'Yes'.
+  { Yes }.
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Required)_: Specifies the Site Server to install
+  or configure the role on. If the role is already installed on another server
+  this setting will be ignored.
+- **[String] CertificateFile** _(Write)_: Specifies the path to a System Center
+  Online authentication certificate (.pfx) file. If used, this must be in UNC
+  format. Local paths are not allowed. Mutually exclusive with the
+  RemoveCertificate parameter.
+- **[EmbeddedInstance] Schedule** _(Write)_: Specifies when the asset
+  intelligence catalog is synchronized. (RecurInterval, RecurCount)
+- **[Boolean] Enable** _(Write)_: Specifies whether the installed asset
+  intelligence role is enabled or disabled.
+- **[Boolean] EnableSynchronization** _(Write)_: Specifies whether to
+  synchronize the asset intelligence catalog.
+- **[Boolean] RemoveCertificate** _(Write)_: Specifies whether to remove a
+  configured certificate file. Mutually exclusive with the CertificateFile Parameter.
+- **[String] Ensure** _(Write)_: Specifies whether the asset intelligence
+  synchronization point is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMAssetIntelligencePoint Examples
+
+- [CMAssetIntelligencePoint_Absent](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Absent.ps1)
+- [CMAssetIntelligencePoint_Present](Source\Examples\Resources\CMAssetIntelligencePoint\CMAssetIntelligencePoint_Present.ps1)
+
+### CMFallbackStatusPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
+  or configure the role on.
+- **[UInt32] StateMessageCount** _(Write)_: Specifies the number of state messages
+  that a fallback status point can send to Configuration Manager within a throttle
+  interval.
+- **[UInt32] ThrottleSec** _(Write)_: Specifies the throttle interval in seconds.
+- **[String] Ensure** _(Write)_: Specifies whether the fallback status point is
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMFallbackStatusPoint Examples
+
+- [CMFallbackStatusPoint_Absent](Source\Examples\Resources\CMFallbackStatusPoint\CMFallbackStatusPoint_Absent.ps1)
+- [CMFallbackStatusPoint_Present](Source\Examples\Resources\CMFallbackStatusPoint\CMFallbackStatusPoint_Present.ps1)
+
+### CMSoftwareUpdatePoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
+  or configure the role on.
+- **[Boolean] AnonymousWsusAccess** _(Write)_: Indicates that the software update
+  point allows anonymous access. Mutually exclusive with WsusAccessAccount.
+- **[String] ClientConnectionType** _(Write)_: Specifies the type of the client connection.
+  - Values include: { Internet | Intranet | InternetAndIntranet }
+- **[Boolean] EnableCloudGateway** _(Write)_: Specifies if a cloud gateway is to
+  be used for the software update point. When enabling the cloud gateway, the
+  client connectiontype must be either Internet or InterneAndIntranet. When
+  enabling the cloud gateway, SSL must be enabled.
+- **[Boolean] UseProxy** _(Write)_: Indicates whether a software update point
+  uses the proxy configured for the site system server.
+- **[Boolean] UseProxyForAutoDeploymentRule** _(Write)_: Indicates whether an
+  auto deployment rule can use a proxy.
+- **[String] WsusAccessAccount** _(Write)_: Specifies an account used to connect
+  to the WSUS server. When not used, specify the AnonymousWsusAccess parameter.
+- **[UInt32] WsusIisPort** _(Write)_: Specifies a port to use for unsecured
+  access to the Wsus server.
+- **[UInt32] WsusIisSslPort** _(Write)_: Specifies a port to use for secured
+  access to the Wsus server.
+- **[Boolean] WsusSsl** _(Write)_: Specifies whether the software update point
+  uses SSL to connect to the Wsus server.
+- **[String] Ensure** _(Write)_: Specifies whether the software update point is
+  present or absent.
+  - Values include: { Present | Absent }
+
+#### CMSoftwareUpdatePoint Examples
+
+- [CMSoftwareUpdatePoint_Absent](Source\Examples\Resources\CMSoftwareUpdatePoint\CMSoftwareUpdatePoint_Absent.ps1)
+- [CMSoftwareUpdatePoint_CMG](Source\Examples\Resources\CMSoftwareUpdatePoint\CMSoftwareUpdatePoint_CMG.ps1)
+- [CMSoftwareUpdatePoint_Present](Source\Examples\Resources\CMSoftwareUpdatePoint\CMSoftwareUpdatePoint_Present.ps1)
+
+### CMDistributionPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the role.
+- **[String] Description** _(Write)_: Specifies a description for the
+  distribution point.
+- **[UInt32] MinimumFreeSpaceMB** _(Write)_: Specifies the amount of free space
+  to reserve on each drive used by this distribution point.
+  Only used when distribution point is not currently installed.
+- **[String] PrimaryContentLibraryLocation** _(Write)_: Specifies the primary
+  content location. Configuration Manager copies content to the primary content location
+  until the amount of free space reaches the value that you specified.
+  Only used when distribution point is not currently installed.
+- **[String] SecondaryContentLibraryLocation** _(Write)_: Specifies the
+  secondary content location.
+  Only used when distribution point is not currently installed.
+- **[String] PrimaryPackageShareLocation** _(Write)_: Specifies the primary
+  package share location. Configuration Manager copies content to the primary package
+  share location until the amount of free space reaches the value that you specified.
+  Only used when distribution point is not currently installed.
+- **[String] SecondaryPackageShareLocation** _(Write)_: Specifies the secondary
+  package share location.
+  Only used when distribution point is not currently installed.
+- **[DateTime] CertificateExpirationTimeUtc** _(Write)_: Specifies, in UTC format,
+  the date and time when the certificate expires.
+  Only used when distribution point is not currently installed.
+- **[String] ClientCommunicationType** _(Write)_: Specifies protocol clients or devices
+  communicate with the distribution point.
+  - Values include: { Http | Https }
+- **[String] BoundaryGroups[]** _(Write)_: Specifies an array of existing boundary
+  groups by name.
+- **[String] BoundaryGroupStatus** _(Write)_: Specifies if the boundary group is
+  to be added, removed, or match BoundaryGroups.
+  - Values include: { Add | Remove | Match }
+- **[Boolean] AllowPreStaging** _(Write)_: Indicates whether the distribution point
+  is enabled for prestaged content.
+- **[Boolean] EnableAnonymous** _(Write)_: Indicates that the distribution point
+  permits anonymous connections from Configuration Manager clients
+  to the content library.
+- **[Boolean] EnableBranchCache** _(Write)_: Indicates that clients that use Windows
+  BranchCache are allowed to download content from an on-premises
+  distribution point
+- **[Boolean] EnableLedbat** _(Write)_: Indicates whether to adjust the download
+  speed to use the unused network Bandwidth or Windows LEDBAT.
+- **[String] Ensure** _(Write)_: Specifies if the DP is to be present or absent.
+  - Values include: { Absent | Present }
+
+#### CMDistributionPoint Examples
+
+- [CMDistributionPoint_Absent](Source\Examples\Resources\CMDistributionPoint\CMDistributionPoint_Absent.ps1)
+- [CMDistributionPoint_Present](Source\Examples\Resources\CMDistributionPoint\CMDistributionPoint_Present.ps1)
+
+### CMHeartbeatDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Required)_: Specifies the enablement of the heartbeat
+  discovery method. If settings is set to $false no other value provided will be
+  evaluated for compliance.
+- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
+  event recurs in hours and days.
+  - Values include: { Hours | Days }
+- **[String] ScheduleCount** _(Write)_: Specifies how often the recur interval
+  is run. If hours are specified the max value is 23. Anything over 23 will result
+  in 23 to be set. If days are specified the max value is 31. Anything over 31 will
+  result in 31 to be set.
+
+#### CMHeartbeatDiscovery Examples
+
+- [CMHeartbeatDiscovery_Disabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Disabled.ps1)
+- [CMHeartbeatDiscovery_Enabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Enabled.ps1)

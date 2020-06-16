@@ -26,7 +26,12 @@ function Import-ConfigMgrPowerShellModule
 
     if ((Test-Path -Path "$($SiteCode):\") -eq $false)
     {
-        $siteInfo = Get-CimInstance -ClassName SMS_Site -Namespace root\sms\site_$SiteCode
+        $getCim = @{
+            ClassName = 'SMS_Site'
+            Namespace = "root\sms\site_$SiteCode"
+        }
+
+        $siteInfo = Get-CimInstance @getCim | Where-Object -FilterScript {$_.SiteCode -eq $SiteCode}
         $sid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
         $baseRegKeyPath = "Registry::HKEY_Users\$sid\Software\Microsoft"
         $createKeys = @('ConfigMgr10','AdminUI','MRU','1')
@@ -36,17 +41,18 @@ function Import-ConfigMgrPowerShellModule
             if (-not (Test-Path -Path "$baseRegKeyPath\$key"))
             {
                 New-Item -Path $baseRegKeyPath -Name $key |Out-Null
-                $baseRegKeyPath += "\$key"
             }
+
+            $baseRegKeyPath += "\$key"
         }
 
         $regProperties = (Get-ItemProperty -Path $baseRegKeyPath -ErrorAction SilentlyContinue)
 
         $values = @{
-            ServerName = $siteInfo.ServerName[0]
-            SiteName   = $siteInfo.SiteName[0]
-            SiteCode   = $siteInfo.SiteCode[0]
-            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))[0]
+            ServerName = $siteInfo.ServerName
+            SiteName   = $siteInfo.SiteName
+            SiteCode   = $siteInfo.SiteCode
+            DomainName = ($siteinfo.ServerName.SubString($siteinfo.ServerName.Indexof('.') + 1))
         }
 
         foreach ($value in $values.GetEnumerator())
@@ -98,427 +104,278 @@ function Set-ConfigMgrCert
 
 <#
     .SYNOPSIS
-        Validates the Setting resides in the Device Settings category.
+        Converts the CIDR and IPAddress.
 
-    .PARAMETER DeviceSettingName
-        Specifies the parent setting category.
+    .PARAMETER IPAddress
+        Specifies the network address.
 
-    .PARAMETER Setting
-        Specifies the client setting to validate.
+    .PARAMETER Cidr
+        Specifies the network mask value.
 #>
-function Confirm-ClientSetting
+function Convert-CidrToIP
 {
-    [CmdletBinding()]
+    [CmdLetBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
-        $DeviceSettingName,
+        [IPAddress]
+        $IPAddress,
 
         [Parameter(Mandatory = $true)]
-        [String]
-        $Setting
+        [ValidateRange(0,32)]
+        [Int16]
+        $Cidr
     )
 
-    $softwareUpdatesValue = @(
-        'SC_Old_Branding'
-        'AvailableSoftware'
-        'Updates'
-        'OSD'
-        'InstallationStatus'
-        'Compliance'
-        'Options'
-        'unapproved-applications-hidden'
-        'installed-applications-hidden'
-        'custom-tab-name'
-        'custom-tab-content'
-        'brand-logo'
-        'brand-orgname'
-        'brand-color'
-        'application-catalog-link-hidden'
-    )
+    $CidrBits = ('1' * $Cidr).PadRight(32, '0')
+    $octets = $CidrBits -Split '(.{8})' -ne ''
+    $mask = ($octets | ForEach-Object -Process {[Convert]::ToInt32($_, 2) }) -Join '.'
 
-    if ($DeviceSettingName -ne 'SoftwareCenter')
-    {
-        $validateSetting = Get-CMClientSetting -Setting $DeviceSettingName | Select-Object -Property Keys
-        if ($validateSetting[0].keys -notcontains $Setting)
-        {
-            Set-Location -Path $env:windir
-            throw "The setting: $Setting does not exist under $DeviceSettingName"
-        }
-    }
-    else
-    {
-        if ($softwareUpdatesValue -notcontains $Setting)
-        {
-            Set-Location -Path $env:windir
-            throw "The setting: $Setting does not exist under $DeviceSettingName"
-        }
+    $ip = [IPAddress](($IPAddress).Address -Band ([IPAddress]$mask).Address)
+
+    return  @{
+        NetworkAddress = $ip.IPAddressToString
+        Subnetmask     = $mask
+        Cidr           = $Cidr
     }
 }
 
 <#
     .SYNOPSIS
-        Creates the assoicated settings command for setting the client settings.
+        Converts CMSchedule objects to a readable and workable format.
 
-    .PARAMETER DeviceSettingName
-        Specifies the parent setting category.
+    .PARAMETER ScheduleString
+        Specifies the schedule string to convert.
 
-    .PARAMETER Setting
-        Specifies the client setting to validate.
+    .PARAMETER CimClassName
+        Specifies the name of the EmbeddedInstance for the schedule object.
 #>
-function Convert-ClientSetting
+function ConvertTo-CimCMScheduleString
 {
     [CmdletBinding()]
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance])]
     param
     (
         [Parameter(Mandatory = $true)]
         [String]
-        $DeviceSettingName,
+        $ScheduleString,
 
         [Parameter(Mandatory = $true)]
         [String]
-        $Setting
+        $CimClassName
     )
 
-    if ($DeviceSettingName -eq 'BackgroundIntelligentTransfer')
+    $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+
+    if (-not [string]::IsNullOrEmpty($schedule.DaySpan))
     {
-        $result = switch ($Setting)
+        if ($schedule.DaySpan -gt 0)
         {
-            'MaxBandwidthValidFrom' { 'MaxBandwidthBeginHr' }
-            'MaxBandwidthValidTo'   { 'MaxBandwidthEndHr'   }
-            default                 { $Setting              }
+            $rInterval = 'Days'
+            $rCount = $schedule.DaySpan
         }
-    }
-
-    if ($DeviceSettingName -eq 'ClientCache')
-    {
-        $result = switch ($Setting)
+        elseif ($schedule.HourSpan -gt 0)
         {
-            'BranchCacheEnabled' { 'EnableBranchCache' }
-            'MaxCacheSizeMB'     { 'MaxCacheSize'      }
-            'CanBeSuperPeer'     { 'EnableSuperPeer'   }
-            'HttpPort'           { 'DownloadPort'      }
-            default              { $Setting            }
+            $rInterval = 'Hours'
+            $rCount = $schedule.HourSpan
         }
-    }
-
-    if ($DeviceSettingName -eq 'ClientPolicy')
-    {
-        $result = switch ($Setting)
+        elseif ($schedule.MinuteSpan -gt 0)
         {
-            'PolicyRequestAssignmentTimeout'   { 'PolicyPollingMins'          }
-            'PolicyEnableUserPolicyPolling'    { 'EnableUserPolicy'           }
-            'PolicyEnableUserPolicyOnInternet' { 'EnableUserPolicyOnInternet' }
-            default                            { $Setting                     }
+            $rInterval = 'Minutes'
+            $rCount = $schedule.MinuteSpan
         }
-    }
 
-    if ($DeviceSettingName -eq 'Cloud')
-    {
-        $result = switch ($Setting)
-        {
-            'AllowCloudDP' { 'AllowCloudDistributionPoint' }
-            'AutoAADJoin'  { 'AutoAzureADJoin'             }
-            'AllowCMG'     { 'AllowCloudManagementGateway' }
-            default        { $Setting                      }
-        }
-    }
+        $scheduleCim = New-CimInstance -ClassName $CimClassName -Property @{
+            RecurInterval = $rInterval
+            RecurCount    = $rCount
+        } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration'
 
-    if ($DeviceSettingName -eq 'ComplianceSettings')
-    {
-        $result = switch ($Setting)
-        {
-            'EvaluationSchedule'        { 'Schedule'                 }
-            'EnableUserStateManagement' { 'EnableUserDataAndProfile' }
-            default                     { $Setting                   }
-        }
+        return $scheduleCim
     }
-
-    if ($DeviceSettingName -eq 'ComputerAgent')
-    {
-        $result = switch ($Setting)
-        {
-            'ReminderInterval'     { 'InitialReminderHr'              }
-            'DayReminderInterval'  { 'InterimReminderHr'              }
-            'HourReminderInterval' { 'FinalReminderMins'              }
-            'UseOnPremHAService'   { 'UseOnPremisesHealthAttestation' }
-            'OnPremHAServiceUrl'   { 'HealthAttestationUrl'           }
-            default                { $Setting                         }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'ComputerRestart')
-    {
-        $result = switch ($Setting)
-        {
-            'RebootLogoffNotificationCountdownDuration' { 'CountdownMins'                      }
-            'RebootLogoffNotificationFinalWindow'       { 'FinalWindowMins'                    }
-            'RebootNotificationsDialog'                 { 'ReplaceToastNotificationWithDialog' }
-            default                                     { $Setting                             }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'DeliveryOptimization')
-    {
-        $result = switch ($Setting)
-        {
-            'EnableWindowsDO' { 'Enable' }
-            default           { $Setting }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'EndPointProtection')
-    {
-        $result = switch ($Setting)
-        {
-            'EnableEP'          { 'Enable'                          }
-            'InstallSCEPClient' { 'InstallEndpointProtectionClient' }
-            'ForceRebootPeriod' { 'ForceRebootHr'                   }
-            default             { $Setting                          }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'HardwareInventory')
-    {
-        $result = switch ($Setting)
-        {
-            'Max3rdPartyMIFSize' { 'MaxThirdPartyMifSize' }
-            default              { $Setting               }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'MeteredNetwork')
-    {
-        $result = $Setting
-    }
-
-    if ($DeviceSettingName -eq 'MobileDevice')
-    {
-        $result = switch ($Setting)
-        {
-            'EnableDeviceEnrollment'          { 'EnableDevice'                }
-            'EnableDevice'                    { 'EnableModernDevice'          }
-            'DeviceEnrollmentProfileID'       { 'EnrollmentProfileName'       }
-            'ModernDeviceEnrollmentProfileID' { 'ModernEnrollmentProfileName' }
-            'MDMPollInterval'                 { 'IntervalModernMins'          }
-            default                           { $Setting                      }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'PowerManagement')
-    {
-        $result = switch ($Setting)
-        {
-            'Enabled'                           { 'EnablePowerManagement'           }
-            'Port'                              { 'WakeupProxyPort'                 }
-            'WolPort'                           { 'WakeOnLanPort'                   }
-            'WakeupProxyFirewallFlags'          { 'FirewallExceptionForWakeupProxy' }
-            'WakeupProxyDirectAccessPrefixList' { 'WakeupProxyDirectAccessPrefix'   }
-            default                             { $Setting                          }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'RemoteTools')
-    {
-        $result = switch ($Setting)
-        {
-            'FirewallExceptionProfiles'         { 'FirewallExceptionProfile'            }
-            'AllowRemCtrlToUnattended'          { 'AllowUnattendedComputer'             }
-            'PermissionRequired'                { 'PromptUserForPermission'             }
-            'ClipboardAccessPermissionRequired' { 'PromptUserForClipboardPermission'    }
-            'AllowLocalAdminToDoRemoteControl'  { 'GrantPermissionToLocalAdministrator' }
-            'PermittedViewers'                  { 'PermittedViewer'                     }
-            'RemCtrlTaskbarIcon'                { 'ShowNotificationIconOnTaskbar'       }
-            'RemCtrlConnectionBar'              { 'ShowSessionConnectionBar'            }
-            'ManageRA'                          { 'ManageUnsolicitedRemoteAssistance'   }
-            'EnforceRAandTSSettings'            { 'ManageSolicitedRemoteAssistance'     }
-            'ManageTS'                          { 'ManageRemoteDesktopSetting'          }
-            'EnableTS'                          { 'AllowPermittedViewer'                }
-            'TSUserAuthentication'              { 'RequireAuthentication'               }
-            default                             { $Setting                              }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'SoftwareCenter')
-    {
-        $result = switch ($Setting)
-        {
-            'SC_Old_Branding'                 { 'EnableCustomize'            }
-            'brand-orgname'                   { 'CompanyName'                }
-            'brand-color'                     { 'ColorScheme'                }
-            'brand-logo'                      { 'LogoFilePath'               }
-            'unapproved-applications-hidden'  { 'HideUnapprovedApplication'  }
-            'installed-applications-hidden'   { 'HideInstalledApplication'   }
-            'application-catalog-link-hidden' { 'HideApplicationCatalogLink' }
-            'AvailableSoftware'               { 'EnableApplicationsTab'      }
-            'Updates'                         { 'EnableUpdatesTab'           }
-            'OSD'                             { 'EnableOperatingSystemsTab'  }
-            'InstallationStatus'              { 'EnableStatusTab'            }
-            'Compliance'                      { 'EnableComplianceTab'        }
-            'Options'                         { 'EnableOptionsTab'           }
-            'custom-tab-name'                 { 'CustomTabName'              }
-            'custom-tab-content'              { 'CustomTabUrl'               }
-            default                           { $Setting                     }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'SoftwareDeployment')
-    {
-        $result = switch ($Setting)
-        {
-            'EvaluationSchedule' { 'Schedule' }
-            default              { $Setting   }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'SoftwareMetering')
-    {
-        $result = switch ($Setting)
-        {
-            'Enabled'                { 'Enable'   }
-            'DataCollectionSchedule' { 'Schedule' }
-            default                  { $Setting   }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'SoftwareUpdates')
-    {
-        $result = switch ($Setting)
-        {
-            'Enabled'                   { 'Enable'                       }
-            'EvaluationSchedule'        { 'DeploymentEvaluationSchedule' }
-            'AssignmentBatchingTimeout' { 'BatchingTimeout'              }
-            'O365Management'            { 'Office365ManagementType'      }
-            default                     { $Setting                       }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'StateMessaging')
-    {
-        $result = switch ($Setting)
-        {
-            'BulkSendInterval' { 'ReportingCycleMins' }
-            default            { $Setting             }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'UserAndDeviceAffinity')
-    {
-        $result = switch ($Setting)
-        {
-            'ConsoleMinutes' { 'LogOnThresholdMins' }
-            'IntervalDays'   { 'UsageThresholdDays' }
-            default          { $Setting             }
-        }
-    }
-
-    if ($DeviceSettingName -eq 'WindowsAnalytics')
-    {
-        $result = switch ($Setting)
-        {
-            'WAEnable'         { 'Enable'                 }
-            'WACommercialID'   { 'CommercialIdKey'        }
-            'WATelLevel'       { 'Win10Telemetry'         }
-            'WAOptInDownlevel' { 'EnableEarlierTelemetry' }
-            'WAIEOptInlevel'   { 'IEDataCollectionOption' }
-            default            { $Setting                 }
-        }
-    }
-
-    $result
 }
 
 <#
     .SYNOPSIS
-        Validates the Setting residing in the SoftwareCenter category.
+        Converts the boundaries to a CIM Instance.
 
-    .PARAMETER Name
-        Specifies the display name of the client setting package.
-
-    .PARAMETER Setting
-        Specifies the client setting to validate.
+    .PARAMETER InputObject
+        Specifies the array of hashtables of boundary returns.
 #>
-function Get-ClientSettingsSoftwareCenter
+function ConvertTo-CimBoundaries
 {
+    [CmdletBinding()]
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance[]])]
     param
     (
         [Parameter(Mandatory = $true)]
-        [String]
-        $Name,
-
-        [Parameter(Mandatory = $true)]
-        [ValidateSet('SC_Old_Branding','AvailableSoftware','Updates','OSD','InstallationStatus','Compliance','Options','unapproved-applications-hidden',
-        'installed-applications-hidden','custom-tab-name','custom-tab-content','brand-logo','brand-orgname','brand-color','application-catalog-link-hidden')]
-        [String]
-        $Setting
+        [AllowEmptyCollection()]
+        [AllowNull()]
+        [Object[]]
+        $InputObject
     )
 
-    $settings = Get-CMClientSetting -Name $Name -Setting 'SoftwareCenter'
+    $cimClassName = 'DSC_CMBoundaryGroupsBoundaries'
+    $cimNamespace = 'root/microsoft/Windows/DesiredStateConfiguration'
+    $cimCollection = New-Object -TypeName 'System.Collections.ObjectModel.Collection`1[Microsoft.Management.Infrastructure.CimInstance]'
 
-    $tabVisibility = @(
-        'AvailableSoftware'
-        'Updates'
-        'OSD'
-        'InstallationStatus'
-        'Compliance'
-        'Options'
-    )
-
-    $hidden = @(
-        'unapproved-applications-hidden'
-        'installed-applications-hidden'
-    )
-
-    $tabCustom = @(
-        'custom-tab-name'
-        'custom-tab-content'
-    )
-
-    $additionalSettings = @(
-        'brand-logo'
-        'brand-orgname'
-        'brand-color'
-        'application-catalog-link-hidden'
-    )
-
-    $xml = [xml]$settings.SettingsXml
-
-    if ($Setting -eq 'SC_Old_Branding')
+    foreach ($customField in $InputObject)
     {
-        return $settings.SC_Old_Branding
-    }
-    elseif ($tabVisibility -contains $Setting)
-    {
-        $validateTab = $xml.settings.'tab-visibility'.tab
-
-        foreach ($item in $validateTab)
+        $convertBoundary = switch ($customField.BoundaryType)
         {
-            if ($item.name -eq $Setting)
-            {
-                return $item.visible
+            '0' { 'IPSubnet' }
+            '1' { 'AdSite' }
+            '3' { 'IPRange' }
+        }
+
+        $cimProperties = @{
+            Value      = $customField.Value
+            Type       = $convertBoundary
+        }
+
+        $cimCollection += (New-CimInstance -ClassName $cimClassName `
+                        -Namespace $cimNamespace `
+                        -Property $cimProperties `
+                        -ClientOnly)
+    }
+
+    return $cimCollection
+}
+
+<#
+    .SYNOPSIS
+        Converts the boundaries input to a CIM Instance transforming
+        the IPSubnet input to a network address.
+
+    .PARAMETER InputObject
+        Specifies the array of CIM Instances for the boundary input.
+#>
+function Convert-BoundariesIPSubnets
+{
+    [CmdletBinding()]
+    [OutputType([Microsoft.Management.Infrastructure.CimInstance[]])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [Microsoft.Management.Infrastructure.CimInstance[]]
+        $InputObject
+    )
+
+    $cimClassName = 'MSFT_KeyPairs'
+    $cimNamespace = 'root/microsoft/Windows/DesiredStateConfiguration'
+    $bounds = New-Object -TypeName 'System.Collections.ObjectModel.Collection`1[Microsoft.Management.Infrastructure.CimInstance]'
+
+    foreach ($item in $InputObject)
+    {
+        if ($item.Type -eq 'IPSubnet')
+        {
+            $splitValue = $item.Value.Split('/')
+            $address = Convert-CidrToIP -IPAddress $splitValue[0] -Cidr $splitValue[1]
+
+            $cimProperties = @{
+                Value     = $address.NetworkAddress
+                Type      = "IPSubnet"
             }
+
+            $bounds += (New-CimInstance -ClassName $cimClassName `
+                        -Namespace $cimNamespace `
+                        -Property $cimProperties `
+                        -ClientOnly)
+        }
+        else
+        {
+            $cimProperties = @{
+                Value     = $item.Value
+                Type      = $item.Type
+            }
+
+            $bounds += (New-CimInstance -ClassName $cimClassName `
+                        -Namespace $cimNamespace `
+                        -Property $cimProperties `
+                        -ClientOnly)
         }
     }
-    elseif ($hidden -contains $Setting)
+
+    return $bounds
+}
+
+<#
+    .SYNOPSIS
+        Returns the boundary ID based on Value and Type of boundary specified.
+
+    .PARAMETER Value
+        Specifies the value of the boundary.
+
+    .PARAMETER Type
+        Specifies the type of boundary options are ADSite, IPSubnet, and IPRange.
+#>
+function Get-BoundaryInfo
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $Value,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('ADSite','IPSubnet','IPRange')]
+        [String]
+        $Type
+    )
+
+    $convertBoundaryBack = switch ($Type)
     {
-        return $xml.settings.'software-list'.$($Setting)
+        'IPSubnet' { '0' }
+        'AdSite'   { '1' }
+        'IPRange'  { '3' }
     }
-    elseif ($tabCustom -contains $Setting)
+
+    return (Get-CMBoundary | Where-Object -FilterScript { ($_.BoundaryType -eq $convertBoundaryBack) -and
+            ($_.Value -eq $Value) }).BoundaryID
+}
+
+<#
+    .SYNOPSIS
+        Returns Interval and count from the CM Schedule.
+
+    .PARAMETER ScheduleString
+        Specifies the string value of a CM Schedule to convert.
+#>
+function ConvertTo-ScheduleInterval
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ScheduleString
+    )
+
+    $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+    $itemList = @('DaySpan','MinuteSpan','HourSpan')
+    $recurInterval = 'None'
+
+    foreach ($item in $itemList)
     {
-        return $xml.settings.'custom-tab'.$($Setting)
+        if ($schedule.$item -gt 0)
+        {
+            $recurInterval = $item.Replace('Span','s')
+            $recurCount = $schedule.$item
+        }
     }
-    elseif ($additionalSettings -contains $Setting)
-    {
-        return $xml.settings.$($Setting)
+
+    return @{
+        Interval = $recurInterval
+        Count    = $recurCount
     }
 }
 
 Export-ModuleMember -Function @(
-    'Get-LocalizedData',
-    'New-InvalidArgumentException',
     'Import-ConfigMgrPowerShellModule'
-    'Confirm-ClientSetting'
-    'Convert-ClientSetting'
-    'Get-ClientSettingsSoftwareCenter'
+    'Convert-CidrToIP'
+    'ConvertTo-CimCMScheduleString'
+    'ConvertTo-CimBoundaries'
+    'Convert-BoundariesIPSubnets'
+    'Get-BoundaryInfo'
+    'ConvertTo-ScheduleInterval'
 )

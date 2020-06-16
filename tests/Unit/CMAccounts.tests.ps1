@@ -2,7 +2,7 @@
 param ()
 
 $script:dscModuleName   = 'ConfigMgrCBDsc'
-$script:dscResourceName = 'CMAccounts'
+$script:dscResourceName = 'DSC_CMAccounts'
 
 function Invoke-TestSetup
 {
@@ -36,7 +36,7 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - ClientSettings'
+        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMClientAccounts'
 
         $testCredential = New-Object `
         -TypeName System.Management.Automation.PSCredential `

@@ -1,0 +1,9 @@
+[ClassVersion("1.0.0"), FriendlyName("CMFallbackStatusPoint")]
+class DSC_CMFallbackStatusPoint: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the Site Server to install or configure the role on.")] String SiteServerName;
+    [Write, Description("Specifies the number of state messages that a fallback status point can send to Configuration Manager within a throttle interval.")] UInt32 StateMessageCount;
+    [Write, Description("Specifies the throttle interval in seconds.")] UInt32 ThrottleSec;
+    [Write, Description("Specifies whether the fallback status point is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
