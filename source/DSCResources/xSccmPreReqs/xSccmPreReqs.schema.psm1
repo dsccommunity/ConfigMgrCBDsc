@@ -28,6 +28,10 @@
     .PARAMETER InstallWindowsFeatures
         Specifiy to Install Windows Features needed for the SCCM install.
 
+    .PARAMETER WindowsFeatureSource
+        Specifies the source that will be used to install windows features if the files are not present in the local
+        side-by-side store.
+
     .PARAMETER SccmRole
         Specify the SCCM Roles that will be on the server.
 
