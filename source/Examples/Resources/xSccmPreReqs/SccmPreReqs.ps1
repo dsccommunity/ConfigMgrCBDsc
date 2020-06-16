@@ -23,7 +23,6 @@ Configuration Example
         {
             InstallAdk             = $true
             InstallMdt             = $true
-            AddWindowsFirewallRule = $true
             InstallWindowsFeatures = $true
             SccmRole               = 'CASorSiteServer'
             AddWindowsFirewallRule = $true

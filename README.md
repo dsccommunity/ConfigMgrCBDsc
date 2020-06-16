@@ -226,27 +226,6 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [SccmSqlSetup](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetup.ps1)
 - [SccmSqlSetupandManagemenStudio](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetupAndManagementStudio.ps1)
 
-### ClientSettings
-
-- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
-  Manager site.
-- **[String] Name** _(Key)_: Specifies the display name of the client setting.
-  package.
-- **[String] DeviceSettingName** _(Key)_: Specifies the parent setting category.
-  - Values include: { BackgroundIntelligentTransfer |ClientCache |
-    ClientPolicy | Cloud | ComplianceSettings | ComputerAgent |
-    ComputerRestart | DeliveryOptimization | EndpointProtection |
-    HardwareInventory | MeteredNetwork | MobileDevice |
-    NetworkAccessProtection | PowerManagement | RemoteTools | SoftwareCenter |
-    SoftwareDeployment | SoftwareInventory | SoftwareMetering| SoftwareUpdates |
-    StateMessaging | UserAndDeviceAffinity | WindowsAnalytics }
-- **[String] Setting** _(Key)_: Specifies the client setting to validate.
-- **[String] SettingValue** _(Required)_: Specifies the value for the setting.
-
-#### ClientSettings Examples
-
-- [ProvisionedPackages_Present](Source\Examples\Resources\ClientSettings\ClientSettings.ps1)
-
 ### CMAccounts
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
