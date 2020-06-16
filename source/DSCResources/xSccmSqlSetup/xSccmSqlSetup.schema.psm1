@@ -122,7 +122,7 @@ Configuration xSccmSqlSetup
         $SqlSysAdminAccounts,
 
         [Parameter()]
-        [ValidateNotNullorEmpty]
+        [ValidateNotNullorEmpty()]
         [String]
         $Features = 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS',
 
