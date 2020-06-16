@@ -291,9 +291,9 @@ Configuration xSCCMPreReqs
         }
     }
 
-    $Localadministrators | Where-Object -FilterScript {$_ -like '*\*' -and $_ -notlike 'BUILTIN\*' -and $_ -notlike '.\*' -and $_ -notlike '*@*'}
+    $domainAccounts = $Localadministrators | Where-Object -FilterScript {$_ -like '*\*' -and $_ -notlike 'BUILTIN\*' -and $_ -notlike '.\*' -and $_ -notlike '*@*'}
 
-    if ($LocalAdministrators -gt 0)
+    if ($domainAccounts -gt 0)
     {
         if ($null -eq $DomainCredential)
         {
