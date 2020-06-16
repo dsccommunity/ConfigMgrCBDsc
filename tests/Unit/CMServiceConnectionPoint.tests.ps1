@@ -66,7 +66,6 @@ try
             }
 
             Context 'When retrieving service connection point settings' {
-
                 It 'Should return desired result when service connection point is not currently installed' {
                     Mock -CommandName Get-CMServiceConnectionPoint
 
@@ -89,7 +88,7 @@ try
                     $result.Ensure         | Should -Be -ExpectedValue 'Present'
                 }
 
-                It 'Should return desired result when service connection point is currently installed in onffline mode' {
+                It 'Should return desired result when service connection point is currently installed in offline mode' {
                     Mock -CommandName Get-CMServiceConnectionPoint -MockWith { $getSCPReturnOffline }
 
                     $result = Get-TargetResource @getInput
@@ -102,7 +101,7 @@ try
             }
         }
 
-        Describe "ConfigMgrCBDsc - DSC_CMServiceConnectionPoint\Set-TargetResource" -Tag 'Set'{
+        Describe 'ConfigMgrCBDsc - DSC_CMServiceConnectionPoint\Set-TargetResource' -Tag 'Set'{
             BeforeAll{
                 $inputAbsent = @{
                     SiteCode       = 'Lab'
@@ -220,7 +219,7 @@ try
             }
         }
 
-        Describe "ConfigMgrCBDsc - DSC_CMServiceConnectionPoint\Test-TargetResource" -Tag 'Test'{
+        Describe 'ConfigMgrCBDsc - DSC_CMServiceConnectionPoint\Test-TargetResource' -Tag 'Test'{
             BeforeAll{
                 $inputPresent = @{
                     SiteCode       = 'Lab'

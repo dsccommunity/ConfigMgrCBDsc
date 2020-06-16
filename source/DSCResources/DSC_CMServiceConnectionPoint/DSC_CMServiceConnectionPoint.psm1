@@ -204,10 +204,9 @@ function Test-TargetResource
             Write-Verbose -Message ($script:localizedData.ScpNotInstalled -f $SiteServerName)
             $result = $false
         }
-
-        if (([string]::IsNullOrEmpty($state.mode)) -or ($state.Mode -ne $Mode))
+        elseif ($state.Mode -ne $Mode)
         {
-            Write-Verbose -Message ($script:localizedData.TestSetting -f $Mode, $state.mode)
+            Write-Verbose -Message ($script:localizedData.TestSetting -f $Mode, $state.Mode)
             $result = $false
         }
     }
