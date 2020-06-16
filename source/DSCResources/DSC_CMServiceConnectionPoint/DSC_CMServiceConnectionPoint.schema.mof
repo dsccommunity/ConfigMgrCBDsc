@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0"), FriendlyName("CMServiceConnectionPoint")]
+class DSC_CMServiceConnectionPoint: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+	[Required, Description("Specifies the Site Server to install or configure the role on.")] String SiteServerName;
+    [Write, Description("Specifies a mode for the service connection point."), ValueMap{"Online","Offline"}, Values{"Online","Offline"}] String Mode;
+	[Write, Description("Specifies whether the service connection point is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
