@@ -121,20 +121,18 @@ function Set-TargetResource
         {
             if ($state.Ensure -eq 'Absent')
             {
-                Write-Verbose -Message ($script:localizedData.AddSCPRole -f $SiteServerName)
+                Write-Verbose -Message ($script:localizedData.AddScpRole -f $SiteServerName)
                 Add-CMServiceConnectionPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode -Mode $Mode
             }
-
             elseif ($state.Mode -ne $Mode)
             {
                 Write-Verbose -Message ($script:localizedData.SettingValue -f $Mode)
                 Set-CMServiceConnectionPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode -Mode $Mode
             }
         }
-
         elseif ($state.Ensure -eq 'Present')
         {
-            Write-Verbose -Message ($script:localizedData.RemoveSCPRole -f $SiteServerName)
+            Write-Verbose -Message ($script:localizedData.RemoveScpRole -f $SiteServerName)
             Remove-CMServiceConnectionPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
         }
     }
@@ -203,7 +201,7 @@ function Test-TargetResource
     {
         if ($state.Ensure -eq 'Absent')
         {
-            Write-Verbose -Message ($script:localizedData.SCPNotInstalled -f $SiteServerName)
+            Write-Verbose -Message ($script:localizedData.ScpNotInstalled -f $SiteServerName)
             $result = $false
         }
 
@@ -215,7 +213,7 @@ function Test-TargetResource
     }
     elseif ($state.Ensure -eq 'Present')
     {
-        Write-Verbose -Message ($script:localizedData.SCPAbsent -f $SiteServerName)
+        Write-Verbose -Message ($script:localizedData.ScpAbsent -f $SiteServerName)
         $result = $false
     }
 

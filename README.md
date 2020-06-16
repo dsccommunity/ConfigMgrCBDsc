@@ -72,6 +72,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   the distribution point role.
 - **CMHeartbeatDiscovery**: Provides a resource to manage the Configuration Manager
   Heartbeat Discovery method.
+- **CMServiceConnectionPoint**: Provides a resource for creating and managing
+  the SCCM Service Connection Point role.
 
 ### CMAccounts
 
@@ -499,7 +501,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
+- **[String] SiteServerName** _(Required)_: Specifies the Site Server to install
   or configure the role on.
 - **[String] Mode** _(Write)_: Specifies a mode for the service connection point.
   - Values include: { Online | Offline }
