@@ -494,3 +494,20 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMHeartbeatDiscovery_Disabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Disabled.ps1)
 - [CMHeartbeatDiscovery_Enabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Enabled.ps1)
+
+### CMServiceConnectionPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
+  or configure the role on.
+- **[String] Mode** _(Write)_: Specifies a mode for the service connection point.
+  - Values include: { Online | Offline }
+- **[String] Ensure** _(Write)_: Specifies whether the service connection point
+  is present or absent.
+  - Values include: { Absent | Present }
+
+#### CMServiceConnectionPoint Examples
+
+- [CMServiceConnectionPoint_Absent](Source\Examples\Resources\CMServiceConnectionPoint\CMServiceConnectionPoint_Absent.ps1)
+- [CMServiceConnectionPoint_Present](Source\Examples\Resources\CMServiceConnectionPoint\CMServiceConnectionPoint_Present.ps1)
