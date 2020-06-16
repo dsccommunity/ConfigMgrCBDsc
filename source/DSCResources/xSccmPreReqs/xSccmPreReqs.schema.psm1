@@ -119,6 +119,10 @@ Configuration xSCCMPreReqs
         $InstallWindowsFeatures = $true,
 
         [Parameter()]
+        [System.String]
+        $WindowsFeatureSource,
+
+        [Parameter()]
         [ValidateSet('CASorSiteServer','AssetIntelligenceSynchronizationPoint','CertificateRegistrationPoint','DistributionPoint','EndpointProtectionPoint','EnrollmentPoint','EnrollmentProxyPoint','FallbackServicePoint','ManagementPoint','ReportingServicesPoint','ServiceConnectionPoint','StateMigrationPoint','SoftwareUpdatePoint')]
         [System.String[]]
         $SccmRole = 'CASorSiteServer',
@@ -245,6 +249,7 @@ Configuration xSCCMPreReqs
         {
             Name   = $uniqueFeatures
             Ensure = 'Present'
+            Source = $WindowsFeatureSource
         }
     }
 
