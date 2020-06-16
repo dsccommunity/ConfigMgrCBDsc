@@ -26,6 +26,7 @@ Configuration Example
             AddWindowsFirewallRule = $true
             InstallWindowsFeatures = $true
             SccmRole               = 'CASorSiteServer'
+            AddWindowsFirewallRule = $true
             FirewallProfile        = 'Domain','Private'
             AdkSetupExePath        = 'C:\temp\ADKInstall\adksetup.exe'
             AdkWinPeSetupPath      = 'C:\temp\ADKInstall\adkwinpesetup.exe'
