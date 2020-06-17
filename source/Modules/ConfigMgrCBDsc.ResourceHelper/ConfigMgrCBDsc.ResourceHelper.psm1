@@ -336,6 +336,42 @@ function Get-BoundaryInfo
 
 <#
     .SYNOPSIS
+        Returns Interval and count from the CM Schedule.
+
+    .PARAMETER ScheduleString
+        Specifies the string value of a CM Schedule to convert.
+#>
+function ConvertTo-ScheduleInterval
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ScheduleString
+    )
+
+    $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+    $itemList = @('DaySpan','MinuteSpan','HourSpan')
+    $recurInterval = 'None'
+
+    foreach ($item in $itemList)
+    {
+        if ($schedule.$item -gt 0)
+        {
+            $recurInterval = $item.Replace('Span','s')
+            $recurCount = $schedule.$item
+        }
+    }
+
+    return @{
+        Interval = $recurInterval
+        Count    = $recurCount
+    }
+}
+
+<#
+    .SYNOPSIS
         Converts hashtable into a named Cim Instance.
 
     .PARAMETER HashTable
@@ -359,29 +395,25 @@ function ConvertTo-AnyCimInstance
         $ClassName
     )
 
-        $property = @{}
-        foreach ($item in $Hashtable.GetEnumerator())
-        {
-            $property += @{
-                $item.Key = $item.Value
-            }
+    $property = @{}
+    foreach ($item in $Hashtable.GetEnumerator())
+    {
+        $property += @{
+            $item.Key = $item.Value
         }
+    }
 
-        New-CimInstance -ClassName $ClassName -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' `
-            -Property $property -ClientOnly
+    New-CimInstance -ClassName $ClassName -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' `
+        -Property $property -ClientOnly
 }
 
 Export-ModuleMember -Function @(
-    'Get-LocalizedData',
-    'New-InvalidArgumentException',
     'Import-ConfigMgrPowerShellModule'
-    'Confirm-ClientSetting'
-    'Convert-ClientSetting'
-    'Get-ClientSettingsSoftwareCenter'
     'Convert-CidrToIP'
     'ConvertTo-CimCMScheduleString'
     'ConvertTo-CimBoundaries'
     'Convert-BoundariesIPSubnets'
     'Get-BoundaryInfo'
+    'ConvertTo-ScheduleInterval'
     'ConvertTo-AnyCimInstance'
 )

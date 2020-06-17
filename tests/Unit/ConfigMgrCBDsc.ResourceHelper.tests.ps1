@@ -348,6 +348,106 @@ InModuleScope $script:subModuleName {
         }
     }
 
+    Describe "$moduleResourceName\ConvertTo-ScheduleInterval" {
+        BeforeAll {
+            $inputdays = @{
+                ScheduleString = '0001200000100020'
+            }
+
+            $daysReturn = @{
+                DayDuration    = 0
+                DaySpan        = 4
+                HourDuration   = 0
+                HourSpan       = 0
+                IsGMT          = $False
+                MinuteDuration = 0
+                MinuteSpan     = 0
+                StartTime      = '2/1/1970 12:00:00 AM'
+            }
+
+            $inputHours = @{
+                ScheduleString = '0001200000100400'
+            }
+
+            $hoursReturn = @{
+                DayDuration    = 0
+                DaySpan        = 0
+                HourDuration   = 0
+                HourSpan       = 4
+                IsGMT          = $False
+                MinuteDuration = 0
+                MinuteSpan     = 0
+                StartTime      = '2/1/1970 12:00:00 AM'
+            }
+
+            $inputMins = @{
+                ScheduleString = '0001200000164000'
+            }
+
+            $minsReturn = @{
+                DayDuration    = 0
+                DaySpan        = 0
+                HourDuration   = 0
+                HourSpan       = 0
+                IsGMT          = $False
+                MinuteDuration = 0
+                MinuteSpan     = 50
+                StartTime      = '2/1/1970 12:00:00 AM'
+            }
+
+            $inputNonrecurring = @{
+                ScheduleString = '0001200000080000'
+            }
+
+            $nonrecurringReturn = @{
+                DayDuration    = 0
+                HourDuration   = 0
+                IsGMT          = $False
+                MinuteDuration = 0
+                StartTime      = '2/1/1970 12:00:00 AM'
+            }
+        }
+
+        Context 'When results are as expected' {
+
+            It 'Should return desired output for days' {
+                Mock -CommandName Convert-CMSchedule -MockWith { $daysReturn }
+
+                $result = ConvertTo-ScheduleInterval @inputdays
+                $result.Interval | Should -Be -ExpectedValue 'Days'
+                $result.Count    | Should -Be -ExpectedValue 4
+                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
+            }
+
+            It 'Should return desired output for hours' {
+                Mock -CommandName Convert-CMSchedule -MockWith { $hoursReturn }
+
+                $result = ConvertTo-ScheduleInterval @inputHours
+                $result.Interval | Should -Be -ExpectedValue 'Hours'
+                $result.Count    | Should -Be -ExpectedValue 4
+                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
+            }
+
+            It 'Should return desired output for minutes' {
+                Mock -CommandName Convert-CMSchedule -MockWith { $minsReturn }
+
+                $result = ConvertTo-ScheduleInterval @inputMins
+                $result.Interval | Should -Be -ExpectedValue 'Minutes'
+                $result.Count    | Should -Be -ExpectedValue 50
+                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
+            }
+
+            It 'Should return desired output for schedule set to none' {
+                Mock -CommandName Convert-CMSchedule -MockWith { $nonrecurringReturn }
+
+                $result = ConvertTo-ScheduleInterval @inputNonrecurring
+                $result.Interval | Should -Be -ExpectedValue 'None'
+                $result.Count    | Should -Be -ExpectedValue $null
+                Assert-MockCalled Convert-CMSchedule -Exactly -Times 1 -Scope It
+            }
+        }
+    }
+
     Describe "$moduleResourceName\ConvertTo-AnyCimInstance" {
         $inputSingleParams = @{
             ClassName = 'MSFT_KeyPairs'

@@ -1,0 +1,21 @@
+[ClassVersion("1.0.0"), FriendlyName("CMDistributionPoint")]
+class DSC_CMDistributionPoint : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the SiteServer to install the role on.")] String SiteServerName;
+    [Write, Description("Specifies a description for the distribution point.")] String Description;
+    [Write, Description("Specifies the amount of free space to reserve on each drive used by this distribution point.")] UInt32 MinimumFreeSpaceMB;
+    [Write, Description("Specifies the primary content location.")] String PrimaryContentLibraryLocation;
+    [Write, Description("Specifies the secondary content location.")] String SecondaryContentLibraryLocation;
+    [Write, Description("Specifies the primary package share location.")] String PrimaryPackageShareLocation;
+    [Write, Description("Specifies the secondary package share location.")] String SecondaryPackageShareLocation;
+    [Write, Description("Specifies, in UTC format, the date and time when the certificate expires.")] DateTime CertificateExpirationTimeUtc;
+    [Write, Description("Specifies protocol clients or devices communicate with the distribution point."), ValueMap{"Http","Https"}, Values{"Http","Https"}] String ClientCommunicationType;
+    [Write, Description("Specifies an array of existing boundary groups by name.")] String BoundaryGroups[];
+    [Write, Description("Specifies if the boundary group is to be added, removed, or match BoundaryGroups."), ValueMap{"Add","Remove","Match"}, Values{"Add","Remove","Match"}] String BoundaryGroupStatus;
+    [Write, Description("Indicates whether the distribution point is enabled for prestaged content.")] Boolean AllowPreStaging;
+    [Write, Description("Indicates that the distribution point permits anonymous connections from Configuration Manager clients to the content library.")] Boolean EnableAnonymous;
+    [Write, Description("Indicates that clients that use Windows BranchCache are allowed to download content from an on-premises distribution point.")] Boolean EnableBranchCache;
+    [Write, Description("Indicates whether to adjust the download speed to use the unused network Bandwidth or Windows LEDBAT.")] Boolean EnableLedbat;
+    [Write, Description("Specifies whether the management point is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
