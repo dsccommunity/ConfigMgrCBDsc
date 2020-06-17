@@ -54,7 +54,7 @@ try
                             Value2       = 'CA01.contoso.com'
                         }
                         @{
-                            PropertyName = 'UserName'
+                            PropertyName = 'Username'
                             Value2       = 'contoso\SQLAdmin'
                         }
                         @{

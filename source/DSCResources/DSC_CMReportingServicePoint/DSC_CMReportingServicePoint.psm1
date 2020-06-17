@@ -48,7 +48,7 @@ function Get-TargetResource
             {
                 'DatabaseName'         { $dbName = $rspProp.Value2 }
                 'DatabaseServerName'   { $dbServerName = $rspProp.Value2 }
-                'UserName'             { $account = $rspProp.Value2 }
+                'Username'             { $account = $rspProp.Value2 }
                 'ReportServerInstance' { $rptInstance = $rspProp.Value2 }
                 'RootFolder'           { $folder = $rspProp.Value2 }
             }

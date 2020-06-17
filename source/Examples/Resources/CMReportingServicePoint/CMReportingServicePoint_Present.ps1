@@ -12,7 +12,7 @@ Configuration Example
         {
             SiteCode       = 'Lab'
             SiteServerName = 'CA01.contoso.com'
-            UserName       = 'contoso\Admin'
+            Username       = 'contoso\Admin'
             Ensure         = 'Present'
         }
     }
