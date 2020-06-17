@@ -91,14 +91,7 @@ function Set-TargetResource
         if ($Enabled -ne $state.Enabled)
         {
             Write-Verbose -Message ($script:localizedData.SettingEnable -f $state.Enabled, $Enabled)
-            $buildingParams = @{
-                Enabled = $Enabled
-            }
-        }
-
-        if ($buildingParams)
-        {
-            Set-CMDiscoveryMethod -NetworkDiscovery -SiteCode $SiteCode @buildingParams
+            Set-CMDiscoveryMethod -NetworkDiscovery -SiteCode $SiteCode -Enabled $Enabled
         }
     }
     catch

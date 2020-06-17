@@ -67,7 +67,6 @@ try
             }
 
             Context 'When retrieving settings' {
-
                 It 'Should return desired result when network discovery is disabled' {
                     Mock -CommandName Get-CMDiscoveryMethod -MockWith { $standardGetDiscoveryDisabled }
 
@@ -106,7 +105,6 @@ try
             }
 
             Context 'When Set-TargetResource runs successfully' {
-
                 It 'Should call expected commands enabling discovery' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
 
@@ -129,10 +127,9 @@ try
             }
 
             Context 'When running Set-TargetResource should throw' {
-
                 It 'Should call expected commands and throw when Set-CMDiscoveryMethod throws' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabled }
-                    MOck -CommandName Set-CMDiscoveryMethod -MockWith { throw }
+                    Mock -CommandName Set-CMDiscoveryMethod -MockWith { throw }
 
                     { Set-TargetResource @getReturnDisabled } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
