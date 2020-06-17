@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added SccmIniFile resource
+- Added xSccmInstall examples
+- Added xSccmSql examples
+- Added xSccmPreReq examples
 - Added CMCollections Resource
 - Added Set-ConfigMgrCert to the ResourceHelper
 - Added CMBoundaries resource
@@ -30,6 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMHeartbeatDiscovery module
 - Added ConvertTo-ScheduleInterval to ResourceHelper
 - Added CMServiceConnectionPoint Resource
+- Added CMNetworkDiscovery Resource
 - Added CMPullDistributionPoint Resource
 - Added ConvertTo-AnyCimInstance to the ResourceHelper
 
