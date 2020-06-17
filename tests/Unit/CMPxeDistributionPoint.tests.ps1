@@ -37,117 +37,28 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMPxeDistributionPoint'
 
-        # Get input and output
-        $getDPInfo = @{
-            IsPxe                  = $true
-            SCCMPxe                = $true
-            SupportUnknownMachines = $true
-            UdaSetting             = 0
-            PxePassword            = 'password'
-            IsActive               = $true
-            ResponseDelay          = 2
-            IsMulticast            = $false
-        }
+        Describe 'ConfigMgrCBDsc - DSC_CMPxeDistributionPoint\Get-TargetResource' -Tag 'Get' {
+            BeforeAll {
+                $getDPInfo = @{
+                    IsPxe                  = $true
+                    SCCMPxe                = $true
+                    SupportUnknownMachines = $true
+                    UdaSetting             = 0
+                    PxePassword            = 'password'
+                    IsActive               = $true
+                    ResponseDelay          = 2
+                    IsMulticast            = $false
+                }
 
-        $getInput = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'DP01.contoso.com'
-        }
+                $getInput = @{
+                    SiteCode       = 'Lab'
+                    SiteServerName = 'DP01.contoso.com'
+                }
 
-        # Test and Set
-        $getStatusAbsent = @{
-            SiteCode                     = 'Lab'
-            SiteServerName               = 'DP01.contoso.com'
-            EnablePxe                    = $null
-            EnableNonWdsPxe              = $null
-            EnableUnknownComputerSupport = $null
-            PxePassword                  = $null
-            AllowPxeResponse             = $null
-            PxeServerResponseDelaySec    = 0
-            UserDeviceAffinity           = $null
-            IsMulticast                  = $null
-            DPStatus                     = 'Absent'
-        }
-
-        $getStatusPresentNoPassword = @{
-            SiteCode                     = 'Lab'
-            SiteServerName               = 'DP01.contoso.com'
-            EnablePxe                    = $true
-            EnableNonWdsPxe              = $true
-            EnableUnknownComputerSupport = $true
-            PxePassword                  = $null
-            AllowPxeResponse             = $true
-            PxeServerResponseDelaySec    = [UInt16]2
-            UserDeviceAffinity           = 'AllowWithManualApproval'
-            IsMulticast                  = $false
-            DPStatus                     = 'Present'
-        }
-
-        $inputParamsMatch = @{
-            SiteCode                  = 'Lab'
-            SiteServerName            = 'DP01.contoso.com'
-            EnablePxe                 = $true
-            AllowPxeResponse          = $true
-            PxeServerResponseDelaySec = 2
-            UserDeviceAffinity        = 'AllowWithManualApproval'
-        }
-
-        $inputParamsMismatch = @{
-            SiteCode                  = 'Lab'
-            SiteServerName            = 'DP01.contoso.com'
-            EnablePxe                 = $true
-            AllowPxeResponse          = $false
-            PxeServerResponseDelaySec = 1
-            UserDeviceAffinity        = 'DoNotUse'
-        }
-
-        $testCredential = New-Object `
-        -TypeName System.Management.Automation.PSCredential `
-        -ArgumentList 'DummyUsername', (ConvertTo-SecureString 'DummyPassword' -AsPlainText -Force)
-
-        $inputParamsPxePassword = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'DP01.contoso.com'
-            PxePassword    = $testCredential
-        }
-
-        $distroPointError = 'The Distribution Point role on DP01.contoso.com is not installed, run DSC_CMDistibutionPoint to install the role.'
-        $pxeFalseThrow = 'Can not specify PXE settings when PXE is currently or setting to $false, please set EnablePxe to $true.'
-
-        $badInputPxeFalse = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'DP01.contoso.com'
-            EnablePxe      = $false
-            PxePassword    = $testCredential
-        }
-
-        $nonWdsThrow = 'You can not enable nonWDSPxe while multicast is set to enabled.'
-
-        $getReturnMulticastEnabled = @{
-            SiteCode                     = 'Lab'
-            SiteServerName               = 'DP01.contoso.com'
-            EnablePxe                    = $true
-            EnableNonWdsPxe              = $true
-            EnableUnknownComputerSupport = $true
-            PxePassword                  = $null
-            AllowPxeResponse             = $true
-            PxeServerResponseDelaySec    = [UInt16]2
-            UserDeviceAffinity           = 'AllowWithManualApproval'
-            IsMulticast                  = $true
-            DPStatus                     = 'Present'
-        }
-
-        $setNonWdsEnabled = @{
-            SiteCode        = 'Lab'
-            SiteServerName  = 'DP01.contoso.com'
-            EnableNonWdsPxe = $true
-        }
-
-        Describe "$moduleResourceName\Get-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+            }
 
             Context 'When retrieving Collection settings' {
 
@@ -189,12 +100,57 @@ try
             }
         }
 
-        Describe "$moduleResourceName\Set-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
-            Mock -CommandName Set-CMDistributionPoint
+        Describe 'ConfigMgrCBDsc - DSC_CMPxeDistributionPoint\Set-TargetResource' -Tag 'Set' {
+            BeforeAll {
+                $getStatusPresentNoPassword = @{
+                    SiteCode                     = 'Lab'
+                    SiteServerName               = 'DP01.contoso.com'
+                    EnablePxe                    = $true
+                    EnableNonWdsPxe              = $true
+                    EnableUnknownComputerSupport = $true
+                    PxePassword                  = $null
+                    AllowPxeResponse             = $true
+                    PxeServerResponseDelaySec    = [UInt16]2
+                    UserDeviceAffinity           = 'AllowWithManualApproval'
+                    IsMulticast                  = $false
+                    DPStatus                     = 'Present'
+                }
+
+                $inputParamsMatch = @{
+                    SiteCode                  = 'Lab'
+                    SiteServerName            = 'DP01.contoso.com'
+                    EnablePxe                 = $true
+                    AllowPxeResponse          = $true
+                    PxeServerResponseDelaySec = 2
+                    UserDeviceAffinity        = 'AllowWithManualApproval'
+                }
+
+                $testCredential = New-Object `
+                -TypeName System.Management.Automation.PSCredential `
+                -ArgumentList 'DummyUsername', (ConvertTo-SecureString 'DummyPassword' -AsPlainText -Force)
+
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
+                Mock -CommandName Set-CMDistributionPoint
+            }
 
             Context 'When Set-TargetResource runs successfully' {
+                BeforeEach {
+                    $inputParamsMismatch = @{
+                        SiteCode                  = 'Lab'
+                        SiteServerName            = 'DP01.contoso.com'
+                        EnablePxe                 = $true
+                        AllowPxeResponse          = $false
+                        PxeServerResponseDelaySec = 1
+                        UserDeviceAffinity        = 'DoNotUse'
+                    }
+
+                    $inputParamsPxePassword = @{
+                        SiteCode       = 'Lab'
+                        SiteServerName = 'DP01.contoso.com'
+                        PxePassword    = $testCredential
+                    }
+                }
 
                 It 'Should call expected commands when settings match' {
                     Mock -CommandName Get-TargetResource -MockWith { $getStatusPresentNoPassword }
@@ -228,6 +184,52 @@ try
             }
 
             Context 'When running Set-TargetResource should throw' {
+                BeforeEach {
+                    $distroPointError = 'The Distribution Point role on DP01.contoso.com is not installed, run DSC_CMDistibutionPoint to install the role.'
+                    $pxeFalseThrow = 'Can not specify PXE settings when PXE is currently or setting to $false, please set EnablePxe to $true.'
+                    $nonWdsThrow = 'You can not enable nonWDSPxe while multicast is set to enabled.'
+
+                    $badInputPxeFalse = @{
+                        SiteCode       = 'Lab'
+                        SiteServerName = 'DP01.contoso.com'
+                        EnablePxe      = $false
+                        PxePassword    = $testCredential
+                    }
+
+                    $getReturnMulticastEnabled = @{
+                        SiteCode                     = 'Lab'
+                        SiteServerName               = 'DP01.contoso.com'
+                        EnablePxe                    = $true
+                        EnableNonWdsPxe              = $true
+                        EnableUnknownComputerSupport = $true
+                        PxePassword                  = $null
+                        AllowPxeResponse             = $true
+                        PxeServerResponseDelaySec    = [UInt16]2
+                        UserDeviceAffinity           = 'AllowWithManualApproval'
+                        IsMulticast                  = $true
+                        DPStatus                     = 'Present'
+                    }
+
+                    $setNonWdsEnabled = @{
+                        SiteCode        = 'Lab'
+                        SiteServerName  = 'DP01.contoso.com'
+                        EnableNonWdsPxe = $true
+                    }
+
+                    $getStatusAbsent = @{
+                        SiteCode                     = 'Lab'
+                        SiteServerName               = 'DP01.contoso.com'
+                        EnablePxe                    = $null
+                        EnableNonWdsPxe              = $null
+                        EnableUnknownComputerSupport = $null
+                        PxePassword                  = $null
+                        AllowPxeResponse             = $null
+                        PxeServerResponseDelaySec    = 0
+                        UserDeviceAffinity           = $null
+                        IsMulticast                  = $null
+                        DPStatus                     = 'Absent'
+                    }
+                }
 
                 It 'Should throw and call expected commands when distribution point rule is not installed' {
                     Mock -CommandName Get-TargetResource -MockWith { $getStatusAbsent }
@@ -261,9 +263,67 @@ try
             }
         }
 
-        Describe "$moduleResourceName\Test-TargetResource" {
-            Mock -CommandName Set-Location
-            Mock -CommandName Import-ConfigMgrPowerShellModule
+        Describe 'ConfigMgrCBDsc - DSC_CMPxeDistributionPoint\Test-TargetResource' -Tag 'Test' {
+            BeforeAll {
+                $getStatusAbsent = @{
+                    SiteCode                     = 'Lab'
+                    SiteServerName               = 'DP01.contoso.com'
+                    EnablePxe                    = $null
+                    EnableNonWdsPxe              = $null
+                    EnableUnknownComputerSupport = $null
+                    PxePassword                  = $null
+                    AllowPxeResponse             = $null
+                    PxeServerResponseDelaySec    = 0
+                    UserDeviceAffinity           = $null
+                    IsMulticast                  = $null
+                    DPStatus                     = 'Absent'
+                }
+
+                $getStatusPresentNoPassword = @{
+                    SiteCode                     = 'Lab'
+                    SiteServerName               = 'DP01.contoso.com'
+                    EnablePxe                    = $true
+                    EnableNonWdsPxe              = $true
+                    EnableUnknownComputerSupport = $true
+                    PxePassword                  = $null
+                    AllowPxeResponse             = $true
+                    PxeServerResponseDelaySec    = [UInt16]2
+                    UserDeviceAffinity           = 'AllowWithManualApproval'
+                    IsMulticast                  = $false
+                    DPStatus                     = 'Present'
+                }
+
+                $inputParamsMatch = @{
+                    SiteCode                  = 'Lab'
+                    SiteServerName            = 'DP01.contoso.com'
+                    EnablePxe                 = $true
+                    AllowPxeResponse          = $true
+                    PxeServerResponseDelaySec = 2
+                    UserDeviceAffinity        = 'AllowWithManualApproval'
+                }
+
+                $inputParamsMismatch = @{
+                    SiteCode                  = 'Lab'
+                    SiteServerName            = 'DP01.contoso.com'
+                    EnablePxe                 = $true
+                    AllowPxeResponse          = $false
+                    PxeServerResponseDelaySec = 1
+                    UserDeviceAffinity        = 'DoNotUse'
+                }
+
+                $testCredential = New-Object `
+                -TypeName System.Management.Automation.PSCredential `
+                -ArgumentList 'DummyUsername', (ConvertTo-SecureString 'DummyPassword' -AsPlainText -Force)
+
+                $inputParamsPxePassword = @{
+                    SiteCode       = 'Lab'
+                    SiteServerName = 'DP01.contoso.com'
+                    PxePassword    = $testCredential
+                }
+
+                Mock -CommandName Set-Location
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+            }
 
             Context 'When running Test-TargetResource and get returns present' {
 
