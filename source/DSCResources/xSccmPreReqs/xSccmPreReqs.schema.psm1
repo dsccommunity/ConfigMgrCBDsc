@@ -249,7 +249,7 @@ Configuration xSCCMPreReqs
     {
         [string]$uniqueFeatures = $features | Select-Object -Unique
 
-        WindowsFeatureSet $SccmRole
+        WindowsFeatureSet $([string]$SccmRole)
         {
             Name   = $uniqueFeatures
             Ensure = 'Present'
