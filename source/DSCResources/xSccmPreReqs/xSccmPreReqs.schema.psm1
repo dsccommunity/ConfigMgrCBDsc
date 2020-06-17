@@ -26,7 +26,7 @@
         Specifies the path and filename to the MDT Setup.
 
     .PARAMETER InstallWindowsFeatures
-        Specifiy to Install Windows Features needed for the SCCM install.
+        Specifiy to install Windows Features needed for the SCCM install.
 
     .PARAMETER WindowsFeatureSource
         Specifies the source that will be used to install windows features if the files are not present in the local
@@ -100,7 +100,7 @@ Configuration xSCCMPreReqs
     (
         [Parameter()]
         [Boolean]
-        $InstallADK = $true,
+        $InstallAdk = $true,
 
         [Parameter()]
         [Boolean]
@@ -316,7 +316,7 @@ Configuration xSCCMPreReqs
         }
     }
 
-    if ($InstallADK)
+    if ($InstallAdk)
     {
         if ([string]::IsNullOrEmpty($AdkSetupExePath) -or [string]::IsNullOrEmpty($AdkWinPeSetupPath))
         {

@@ -286,12 +286,12 @@ Configuration xSccmSqlSetup
 
     SqlServerNetwork EnableTcpIp
     {
-        InstanceName    = $SqlInstanceName
-        ProtocolName    = 'Tcp'
-        IsEnabled       = $true
-        TcpPort         = $SqlPort
-        RestartService  = $true
-        DependsOn       = '[SqlSetup]InstallSql'
+        InstanceName   = $SqlInstanceName
+        ProtocolName   = 'Tcp'
+        IsEnabled      = $true
+        TcpPort        = $SqlPort
+        RestartService = $true
+        DependsOn      = '[SqlSetup]InstallSql'
     }
 
     if ($InstallManagementStudio)

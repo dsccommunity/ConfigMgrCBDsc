@@ -19,7 +19,7 @@
     CompanyName = 'DSC Community'
 
     # Copyright statement for this module
-    Copyright = 'Copyright the DSC Community contributors. All rights reserved'
+    Copyright = 'Copyright the DSC Community contributors. All rights reserved.'
 
     # Description of the functionality provided by this module
     # Description = ''
