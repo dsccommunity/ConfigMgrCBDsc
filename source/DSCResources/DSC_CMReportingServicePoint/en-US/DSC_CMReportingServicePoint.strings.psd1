@@ -1,6 +1,6 @@
 ConvertFrom-StringData @'
     RetrieveSettingValue = Getting information for the specified Reporting Service Point.
-    RSPNotInstalled      = Reporting Service Point is not installed on server: {0}.
+    RspNotInstalled      = Reporting Service Point is not installed on server: {0}.
     RspAbsent            = {0} Reporting Service Point expected absent returned Present.
     TestState            = Test-TargetResource compliance check returned: {0}.
     SiteServerRole       = {0} is not currently a site system server adding site system role.
