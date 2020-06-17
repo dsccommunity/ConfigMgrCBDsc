@@ -11,7 +11,7 @@
     PSScriptAnalyzer            = 'latest'
     Pester                      = '4.10.1'
     Plaster                     = 'latest'
-    ModuleBuilder               = '1.0.0'
+    ModuleBuilder               = 'latest'
     ChangelogManagement         = 'latest'
     Sampler                     = 'latest'
     MarkdownLinkCheck           = 'latest'
@@ -22,5 +22,6 @@
 
     # Build dependent modules
     'DscResource.Common'        = 'latest'
+    'SqlServerDsc'              = '14.0.0'
+    'NetworkingDsc'             = '7.4.0.0'
 }
-

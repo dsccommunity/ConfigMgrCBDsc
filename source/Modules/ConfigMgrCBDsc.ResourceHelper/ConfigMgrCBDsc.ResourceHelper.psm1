@@ -334,16 +334,48 @@ function Get-BoundaryInfo
             ($_.Value -eq $Value) }).BoundaryID
 }
 
+<#
+    .SYNOPSIS
+        Returns Interval and count from the CM Schedule.
+
+    .PARAMETER ScheduleString
+        Specifies the string value of a CM Schedule to convert.
+#>
+function ConvertTo-ScheduleInterval
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ScheduleString
+    )
+
+    $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+    $itemList = @('DaySpan','MinuteSpan','HourSpan')
+    $recurInterval = 'None'
+
+    foreach ($item in $itemList)
+    {
+        if ($schedule.$item -gt 0)
+        {
+            $recurInterval = $item.Replace('Span','s')
+            $recurCount = $schedule.$item
+        }
+    }
+
+    return @{
+        Interval = $recurInterval
+        Count    = $recurCount
+    }
+}
+
 Export-ModuleMember -Function @(
-    'Get-LocalizedData',
-    'New-InvalidArgumentException',
     'Import-ConfigMgrPowerShellModule'
-    'Confirm-ClientSetting'
-    'Convert-ClientSetting'
-    'Get-ClientSettingsSoftwareCenter'
     'Convert-CidrToIP'
     'ConvertTo-CimCMScheduleString'
     'ConvertTo-CimBoundaries'
     'Convert-BoundariesIPSubnets'
     'Get-BoundaryInfo'
+    'ConvertTo-ScheduleInterval'
 )
