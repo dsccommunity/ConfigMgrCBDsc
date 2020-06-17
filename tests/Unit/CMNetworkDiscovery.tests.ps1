@@ -142,7 +142,6 @@ try
 
         Describe 'ConfigMgrCBDsc - DSC_CMNetworkDiscovery\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
-
                 $getReturnDisabled = @{
                     SiteCode = 'Lab'
                     Enabled  = $false
