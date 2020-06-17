@@ -45,7 +45,7 @@ function Get-TargetResource
     {
         $enable = $false
     }
-    else
+    elseif ($enabledStatus -eq 'TRUE')
     {
         $enable = $true
     }
