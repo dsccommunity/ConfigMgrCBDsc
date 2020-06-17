@@ -59,7 +59,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
-  - **CMBoundaries**: Provides a resource for creating and removing boundaries.
+- **CMBoundaries**: Provides a resource for creating and removing boundaries.
 - **CMForestDiscovery**: Provides a resource to manage the Configuration Manager
   AD Forest Discovery method.
 - **CMClientStatusSettings**: Provides a resource for modifying configuration
