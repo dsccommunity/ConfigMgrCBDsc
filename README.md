@@ -78,6 +78,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   the distribution point role.
 - **CMHeartbeatDiscovery**: Provides a resource to manage the Configuration Manager
   Heartbeat Discovery method.
+- **CMNetworkDiscovery**: Provides a resource to manage the Configuration Manager
+  Network Discovery method.
 - **CMServiceConnectionPoint**: Provides a resource for creating and managing
   the SCCM Service Connection Point role.
 
@@ -647,6 +649,18 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMHeartbeatDiscovery_Disabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Disabled.ps1)
 - [CMHeartbeatDiscovery_Enabled](Source\Examples\Resources\CMHeartbeatDiscovery\CMHeartbeatDiscovery_Enabled.ps1)
+
+### CMNetworkDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Required)_: Specifies the enablement of the network
+  discovery method.
+
+#### CMNetworkDiscovery Examples
+
+- [CMNetworkDiscovery_Disabled](Source\Examples\Resources\CMNetworkDiscovery\CMNetworkDiscovery_Disabled.ps1)
+- [CMNetworkDiscovery_Enabled](Source\Examples\Resources\CMNetworkDiscovery\CMNetworkDiscovery_Enabled.ps1)
 
 ### CMServiceConnectionPoint
 
