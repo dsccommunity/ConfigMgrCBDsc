@@ -37,7 +37,7 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        Describe "ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Get-TargetResource" {
+        Describe 'ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
@@ -136,7 +136,7 @@ try
             }
         }
 
-        Describe "ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Set-TargetResource" {
+        Describe 'ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
                 $inputAbsent = @{
                     SiteCode       = 'Lab'
@@ -316,7 +316,7 @@ try
             }
         }
 
-        Describe "ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Test-TargetResource" {
+        Describe 'ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
