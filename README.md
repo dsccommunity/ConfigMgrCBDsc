@@ -82,7 +82,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Network Discovery method.
 - **CMServiceConnectionPoint**: Provides a resource for creating and managing
   the SCCM Service Connection Point role.
-- **CMPullDistributionPoint**: Provides a resource for modifying a Distribution Point
+- **CMPullDistributionPoint**: Provides a resource for modifying a distribution point
   and making the distribution point a Pull Distribution Point.
 
 ### xSccmPreReqs

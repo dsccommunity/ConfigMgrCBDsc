@@ -37,161 +37,60 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMPullDistributionPoint'
-
-        $getCMdistroOutputMultiple = @{
-            Props     = @(
-                @{
-                    PropertyName = 'IsPullDP'
-                    Value        = 1
-                }
-            )
-            PropLists = @(
-                @{
-                    PropertyListName = 'SourceDistributionPoints'
-                    Values           = @(
-                        'DISPLAY=\\DP02.contoso.com\"]MSWNET:["SMS_SITE=LAB"]\\DP02.contoso.com\',
-                        'DISPLAY=\\DP03.contoso.com\"]MSWNET:["SMS_SITE=LAB"]\\DP03.contoso.com\'
-                    )
-                }
-                @{
-                    PropertyListName = 'SourceDPRanks'
-                    Values           = @('1','2')
-                }
-            )
-        }
-
-        $getCMdistroOutputSingle = @{
-            Props     = @(
-                @{
-                    PropertyName = 'IsPullDP'
-                    Value        = 1
-                }
-            )
-            PropLists = @(
-                @{
-                    PropertyListName = 'SourceDistributionPoints'
-                    Values           = 'DISPLAY=\\DP02.contoso.com\"]MSWNET:["SMS_SITE=LAB"]\\DP02.contoso.com\'
-                }
-                @{
-                    PropertyListName = 'SourceDPRanks'
-                    Values           = '1'
-                }
-            )
-        }
-
-        $getInput = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'DP01.contoso.com'
-        }
-
-        $getSourceDPReturn = @(
-            (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'SourceDP' = 'DP02.contoso.com'
-                    'DPRank'   = '1'
-                } `
-                -ClientOnly
-            ),
-            (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'SourceDP' = 'DP03.contoso.com'
-                    'DPRank'   = '2'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $sourceDPInput = @(
-            (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'SourceDP' = 'DP02.contoso.com'
-                    'DPRank'   = '1'
-                } `
-                -ClientOnly
-            ),
-            (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'SourceDP' = 'DP04.contoso.com'
-                    'DPRank'   = '2'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $getTargetReturn = @{
-            SiteCode                = 'Lab'
-            SiteServerName          = 'DP01.contoso.com'
-            EnablePullDP            = $true
-            SourceDistributionPoint = $getSourceDPReturn
-            DPStatus                = 'Present'
-        }
-
-        $inputMatch = @{
-            SiteCode                = 'Lab'
-            SiteServerName          = 'DP01.contoso.com'
-            EnablePullDP            = $true
-            SourceDistributionPoint = $getSourceDPReturn
-        }
-
-        $inputSourceDPMisMatch = @{
-            SiteCode                = 'Lab'
-            SiteServerName          = 'DP01.contoso.com'
-            EnablePullDP            = $true
-            SourceDistributionPoint = $sourceDPInput
-        }
-
-        $dpRoleNotInstalledReturn = @{
-            SiteCode                = 'Lab'
-            SiteServerName          = 'DP01.contoso.com'
-            EnablePullDP            = $null
-            SourceDistributionPoint = $null
-            DPStatus                = 'Absent'
-        }
-
-        $pullDPDisabled = @{
-            SiteCode                = 'Lab'
-            SiteServerName          = 'DP01.contoso.com'
-            EnablePullDP            = $false
-            SourceDistributionPoint = $null
-            DPStatus                = 'Present'
-        }
-
-        $inputAbsent = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'DP01.contoso.com'
-            EnablePullDP   = $false
-        }
-
-        $inputAbsentValue = @{
-            SiteCode                = 'Lab'
-            SiteServerName          = 'DP01.contoso.com'
-            EnablePullDP            = $false
-            SourceDistributionPoint = $getSourceDPReturn
-        }
-
-        $invalidConfig = 'EnablePullDP is being set to false or is currently false and can not specify a sourcedistribution point, set to enable of remove SourceDistributionPoint from the configuration.'
-
-        $dpRoleAbsent = 'The Distribution Point role on DP01.contoso.com is not installed, run DSC_CMDistibutionPoint to install the role.'
-
-        $inputInvalid = @{
-            SiteCode       = 'Lab'
-            SiteServerName = 'DP01.contoso.com'
-            EnablePullDP   = $true
-        }
-        $pullDPEnableNoSource = 'When enabling a Pull DP sourceDistribution Point must be specified.'
-
-        Describe "$moduleResourceName\Get-TargetResource" {
+        Describe "ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Get-TargetResource" {
             BeforeAll {
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
 
             Context 'When retrieving Collection settings' {
+                BeforeEach {
+                    $getCMdistroOutputMultiple = @{
+                        Props     = @(
+                            @{
+                                PropertyName = 'IsPullDP'
+                                Value        = 1
+                            }
+                        )
+                        PropLists = @(
+                            @{
+                                PropertyListName = 'SourceDistributionPoints'
+                                Values           = @(
+                                    'DISPLAY=\\DP02.contoso.com\"]MSWNET:["SMS_SITE=LAB"]\\DP02.contoso.com\',
+                                    'DISPLAY=\\DP03.contoso.com\"]MSWNET:["SMS_SITE=LAB"]\\DP03.contoso.com\'
+                                )
+                            }
+                            @{
+                                PropertyListName = 'SourceDPRanks'
+                                Values           = @('1','2')
+                            }
+                        )
+                    }
+
+                    $getCMdistroOutputSingle = @{
+                        Props     = @(
+                            @{
+                                PropertyName = 'IsPullDP'
+                                Value        = 1
+                            }
+                        )
+                        PropLists = @(
+                            @{
+                                PropertyListName = 'SourceDistributionPoints'
+                                Values           = 'DISPLAY=\\DP02.contoso.com\"]MSWNET:["SMS_SITE=LAB"]\\DP02.contoso.com\'
+                            }
+                            @{
+                                PropertyListName = 'SourceDPRanks'
+                                Values           = '1'
+                            }
+                        )
+                    }
+
+                    $getInput = @{
+                        SiteCode       = 'Lab'
+                        SiteServerName = 'DP01.contoso.com'
+                    }
+                }
 
                 It 'Should return desired result when all info is returned with multiple SourceDPs' {
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $getCMdistroOutputMultiple }
@@ -237,14 +136,82 @@ try
             }
         }
 
-        Describe "$moduleResourceName\Set-TargetResource" {
+        Describe "ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Set-TargetResource" {
             BeforeAll {
+                $inputAbsent = @{
+                    SiteCode       = 'Lab'
+                    SiteServerName = 'DP01.contoso.com'
+                    EnablePullDP   = $false
+                }
+
+                $getSourceDPReturn = @(
+                    (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                        -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                        -Property @{
+                            'SourceDP' = 'DP02.contoso.com'
+                            'DPRank'   = '1'
+                        } `
+                        -ClientOnly
+                    ),
+                    (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                        -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                        -Property @{
+                            'SourceDP' = 'DP03.contoso.com'
+                            'DPRank'   = '2'
+                        } `
+                        -ClientOnly
+                    )
+                )
+
+                $getTargetReturn = @{
+                    SiteCode                = 'Lab'
+                    SiteServerName          = 'DP01.contoso.com'
+                    EnablePullDP            = $true
+                    SourceDistributionPoint = $getSourceDPReturn
+                    DPStatus                = 'Present'
+                }
+
+                $inputMatch = @{
+                    SiteCode                = 'Lab'
+                    SiteServerName          = 'DP01.contoso.com'
+                    EnablePullDP            = $true
+                    SourceDistributionPoint = $getSourceDPReturn
+                }
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName Set-CMDistributionPoint
             }
 
             Context 'When Set-TargetResource runs successfully' {
+                BeforeEach {
+                    $sourceDPInput = @(
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP02.contoso.com'
+                                'DPRank'   = '1'
+                            } `
+                            -ClientOnly
+                        ),
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP04.contoso.com'
+                                'DPRank'   = '2'
+                            } `
+                            -ClientOnly
+                        )
+                    )
+
+                    $inputSourceDPMisMatch = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $true
+                        SourceDistributionPoint = $sourceDPInput
+                    }
+
+                }
 
                 It 'Should call expected commands when settings match' {
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
@@ -288,6 +255,34 @@ try
             }
 
             Context 'When running Set-TargetResource should throw' {
+                BeforeEach {
+                    $dpRoleNotInstalledReturn = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $null
+                        SourceDistributionPoint = $null
+                        DPStatus                = 'Absent'
+                    }
+
+                    $inputAbsentValue = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $false
+                        SourceDistributionPoint = $getSourceDPReturn
+                    }
+
+                    $invalidConfig = 'EnablePullDP is being set to false or is currently false and can not specify a sourcedistribution point, set to enable of remove SourceDistributionPoint from the configuration.'
+
+                    $dpRoleAbsent = 'The Distribution Point role on DP01.contoso.com is not installed, run DSC_CMDistibutionPoint to install the role.'
+
+                    $inputInvalid = @{
+                        SiteCode       = 'Lab'
+                        SiteServerName = 'DP01.contoso.com'
+                        EnablePullDP   = $true
+                    }
+
+                    $pullDPEnableNoSource = 'When enabling a Pull DP sourceDistribution Point must be specified.'
+                }
 
                 It 'Should throw and call expected commands when distribution point rule is not installed' {
                     Mock -CommandName Get-TargetResource -MockWith { $dpRoleNotInstalledReturn }
@@ -321,13 +316,96 @@ try
             }
         }
 
-        Describe "$moduleResourceName\Test-TargetResource" {
+        Describe "ConfigMgrCBDsc - DSC_CMPullDistributionPoint\Test-TargetResource" {
             BeforeAll {
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
             }
 
             Context 'When running Test-TargetResource' {
+                BeforeEach {
+                    $getSourceDPReturn = @(
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP02.contoso.com'
+                                'DPRank'   = '1'
+                            } `
+                            -ClientOnly
+                        ),
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP03.contoso.com'
+                                'DPRank'   = '2'
+                            } `
+                            -ClientOnly
+                        )
+                    )
+
+                    $sourceDPInput = @(
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP02.contoso.com'
+                                'DPRank'   = '1'
+                            } `
+                            -ClientOnly
+                        ),
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP04.contoso.com'
+                                'DPRank'   = '2'
+                            } `
+                            -ClientOnly
+                        )
+                    )
+
+                    $getTargetReturn = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $true
+                        SourceDistributionPoint = $getSourceDPReturn
+                        DPStatus                = 'Present'
+                    }
+
+                    $inputMatch = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $true
+                        SourceDistributionPoint = $getSourceDPReturn
+                    }
+
+                    $inputSourceDPMisMatch = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $true
+                        SourceDistributionPoint = $sourceDPInput
+                    }
+
+                    $dpRoleNotInstalledReturn = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $null
+                        SourceDistributionPoint = $null
+                        DPStatus                = 'Absent'
+                    }
+
+                    $pullDPDisabled = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $false
+                        SourceDistributionPoint = $null
+                        DPStatus                = 'Present'
+                    }
+
+                    $inputAbsent = @{
+                        SiteCode       = 'Lab'
+                        SiteServerName = 'DP01.contoso.com'
+                        EnablePullDP   = $false
+                    }
+                }
 
                 It 'Should return desired result true settings match' {
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn  }
