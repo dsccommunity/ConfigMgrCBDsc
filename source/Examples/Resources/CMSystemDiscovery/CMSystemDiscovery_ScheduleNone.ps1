@@ -1,4 +1,4 @@
-﻿<#
+<#
     .SYNOPSIS
         A DSC configuration script to system discovery set to none.
 #>

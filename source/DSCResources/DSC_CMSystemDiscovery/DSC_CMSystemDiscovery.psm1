@@ -247,7 +247,6 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($ScheduleInterval))
             {
-
                 if ($ScheduleInterval -ne $state.ScheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.SIntervalSet -f $ScheduleInterval)
