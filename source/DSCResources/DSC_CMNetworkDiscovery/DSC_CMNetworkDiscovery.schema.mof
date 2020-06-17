@@ -1,0 +1,6 @@
+[ClassVersion("1.0.0"), FriendlyName("CMNetworkDiscovery")]
+class DSC_CMNetworkDiscovery: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Required, Description("Specifies the enablement of the network discovery method. When setting enabled to true, Network Discovery will be enabled with default settings.")] Boolean Enabled;
+};
