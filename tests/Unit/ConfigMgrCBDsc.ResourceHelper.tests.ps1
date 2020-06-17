@@ -449,18 +449,20 @@ InModuleScope $script:subModuleName {
     }
 
     Describe "$moduleResourceName\ConvertTo-AnyCimInstance" {
-        $inputSingleParams = @{
-            ClassName = 'MSFT_KeyPairs'
-            HashTable = @{
-                Value1 = 'Value'
+        BeforeAll {
+            $inputSingleParams = @{
+                ClassName = 'MSFT_KeyPairs'
+                HashTable = @{
+                    Value1 = 'Value'
+                }
             }
-        }
 
-        $inputMultipleParams = @{
-            ClassName = 'MSFT_KeyPairs'
-            HashTable = @{
-                Value1 = 'Value'
-                Value2 = 1
+            $inputMultipleParams = @{
+                ClassName = 'MSFT_KeyPairs'
+                HashTable = @{
+                    Value1 = 'Value'
+                    Value2 = 1
+                }
             }
         }
 
