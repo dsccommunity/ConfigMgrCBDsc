@@ -1,0 +1,17 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSystemDiscovery")]
+class DSC_CMSystemDiscovery : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the enablement of the system discovery method.")] Boolean Enabled;
+    [Write, Description("Indicates whether Configuration Manager discovers resources created or modified in AD DS since the last discovery cycle.")] Boolean EnableDeltaDiscovery;
+    [Write, Description("Specifies the number of minutes for the delta discovery.")] UInt32 DeltaDiscoveryMins;
+    [Write, Description("Indicates whether Configuration Manager discovers only computers that have logged onto a domain within a specified number of days.")] Boolean EnableFilteringExpiredLogon;
+    [Write, Description("Specify the number of days for EnableFilteringExpiredLogon.")] UInt32 TimeSinceLastLogonDays;
+    [Write, Description("Indicates whether Configuration Manager discovers only computers that have updated their computer account password within a specified number of days.")] Boolean EnableFilteringExpiredPassword;
+    [Write, Description("Specify the number of days for EnableFilteringExpiredPassword.")] UInt32 TimeSinceLastPasswordUpdateDays;
+    [Write, Description("Specifies an array of names of Active Directory containers to match to the discovery.")] String ADContainers[];
+    [Write, Description("Specifies an array of names of Active Directory containers to add to the discovery.")] String ADContainersToInclude[];
+    [Write, Description("Specifies an array of names of Active Directory containers to exclude to the discovery.")] String ADContainersToExclude[];
+    [Write, Description("Specifies the time when the scheduled event recurs."), ValueMap{"None","Days","Hours","Minutes"}, Values{"None","Days","Hours","Minutes"}] String ScheduleInterval;
+    [Write, Description("Specifies how often the recur interval is run.")] UInt32 ScheduleCount;
+};
