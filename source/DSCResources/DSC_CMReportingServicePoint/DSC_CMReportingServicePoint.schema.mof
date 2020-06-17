@@ -7,6 +7,6 @@ class DSC_CMReportingServicePoint: OMI_BaseResource
     [Write, Description("Specifies the name of the Configuration Manager database server that you want to use as the data source for reports from Microsoft SQL Server Reporting Services.")] String DatabaseServerName;
     [Write, Description("Specifies the name of the report folder on the report server.")] String FolderName;
     [Write, Description("Specifies the name of an instance of Microsoft SQL Server Reporting Services.")] String ReportServerInstance;
-    [Write, Description("Specifies a user name for an account that Configuration Manager uses to connect with Microsoft SQL Server Reporting Services and that gives this user access to the site database.")] String UserName;
+    [Write, Description("Specifies a Username for an account that Configuration Manager uses to connect with Microsoft SQL Server Reporting Services and that gives this user access to the site database.")] String Username;
     [Write, Description("Specifies whether the reporting service point is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };

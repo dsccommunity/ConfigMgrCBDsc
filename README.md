@@ -424,7 +424,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] SiteServerName** _(Required)_: Specifies the Site Server to install
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
   or configure the role on.
 - **[String] DatabaseName** _(Write)_: Specifies the name of the Configuration
   Manager database that you want to use as the data source for reports from Microsoft
@@ -438,7 +438,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] ReportServerInstance** _(Write)_: Specifies the name of an instance
   of Microsoft SQL Server Reporting Services. This parameter can only be used
   when installing the role.
-- **[String] UserName** _(Write)_: Specifies a user name for an account that
+- **[String] Username** _(Write)_: Specifies a Username for an account that
   Configuration Manager uses to connect with Microsoft SQL Server Reporting Services
   and that gives this user access to the site database.
 - **[String] Ensure** _(Write)_: Specifies whether the asset reporting

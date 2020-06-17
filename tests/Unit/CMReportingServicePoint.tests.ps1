@@ -43,7 +43,7 @@ try
                     SiteServerName = 'CA01.contoso.com'
                 }
 
-                $getRSPReturn = @{
+                $getRspReturn = @{
                     Props    = @(
                         @{
                             PropertyName = 'DatabaseName'
@@ -73,7 +73,6 @@ try
             }
 
             Context 'When retrieving reporting service point settings' {
-
                 It 'Should return desired result when the reporting service point is not currently installed' {
                     Mock -CommandName Get-CMReportingServicePoint
 
@@ -83,14 +82,14 @@ try
                     $result.SiteServerName       | Should -Be -ExpectedValue 'CA01.contoso.com'
                     $result.DatabaseName         | Should -Be -ExpectedValue $null
                     $result.DatabaseServerName   | Should -Be -ExpectedValue $null
-                    $result.UserName             | Should -Be -ExpectedValue $null
+                    $result.Username             | Should -Be -ExpectedValue $null
                     $result.FolderName           | Should -Be -ExpectedValue $null
                     $result.ReportServerInstance | Should -Be -ExpectedValue $null
                     $result.Ensure               | Should -Be -ExpectedValue 'Absent'
                 }
 
                 It 'Should return desired result when the reporting service point is currently installed' {
-                    Mock -CommandName Get-CMReportingServicePoint -MockWith { $getRSPReturn }
+                    Mock -CommandName Get-CMReportingServicePoint -MockWith { $getRspReturn }
 
                     $result = Get-TargetResource @getInput
                     $result                      | Should -BeOfType System.Collections.HashTable
@@ -98,7 +97,7 @@ try
                     $result.SiteServerName       | Should -Be -ExpectedValue 'CA01.contoso.com'
                     $result.DatabaseName         | Should -Be -ExpectedValue 'CM_LAB'
                     $result.DatabaseServerName   | Should -Be -ExpectedValue 'CA01.contoso.com'
-                    $result.UserName             | Should -Be -ExpectedValue 'contoso\SQLAdmin'
+                    $result.Username             | Should -Be -ExpectedValue 'contoso\SQLAdmin'
                     $result.FolderName           | Should -Be -ExpectedValue 'ConfigMgr_LAB'
                     $result.ReportServerInstance | Should -Be -ExpectedValue 'MSSQLSERVER'
                     $result.Ensure               | Should -Be -ExpectedValue 'Present'
@@ -119,7 +118,7 @@ try
                     SiteCode           = 'Lab'
                     DatabaseName       = 'CM_LAB'
                     DatabaseServerName = 'CA01.contoso.com'
-                    UserName           = 'contoso\SQLAdmin'
+                    Username           = 'contoso\SQLAdmin'
                     Ensure             = 'Present'
                 }
 
@@ -128,7 +127,7 @@ try
                     SiteCode           = 'Lab'
                     DatabaseName       = 'CM_LAB'
                     DatabaseServerName = 'CA01.contoso.com'
-                    UserName           = 'contoso\CMAdmin'
+                    Username           = 'contoso\CMAdmin'
                     Ensure             = 'Present'
                 }
 
@@ -137,7 +136,7 @@ try
                     SiteCode             = 'Lab'
                     DatabaseName         = 'CM_LAB'
                     DatabaseServerName   = 'CA01.contoso.com'
-                    UserName             = 'contoso\SQLAdmin'
+                    Username             = 'contoso\SQLAdmin'
                     FolderName           = 'ConfigMgr_LAB'
                     ReportServerInstance = 'MSSQLSERVER'
                     Ensure               = 'Present'
@@ -148,7 +147,7 @@ try
                     SiteCode             = 'Lab'
                     DatabaseName         = $null
                     DatabaseServerName   = $null
-                    UserName             = $null
+                    Username             = $null
                     FolderName           = $null
                     ReportServerInstance = $null
                     Ensure               = 'Absent'
@@ -164,7 +163,6 @@ try
             }
 
             Context 'When Set-TargetResource runs successfully' {
-
                 It 'Should call expected commands for when changing settings' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
@@ -225,13 +223,13 @@ try
                         Ensure             = 'Present'
                     }
 
-                    $userThrowMsg = 'The UserName parameter is required when installing the Reporting Service Point Role.'
+                    $userThrowMsg = 'The Username parameter is required when installing the Reporting Service Point role.'
 
                     $paramThrowMsg = 'Folder Name and Report Server Instance can not be changed once the Reporting Service Point is installed.'
 
                 }
 
-                It 'Should call throws when the role needs to be installed and a username is not specified' {
+                It 'Should call throws when the role needs to be installed and a Username is not specified' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
 
                     { Set-TargetResource @inputPresent } | Should -Throw -ExpectedMessage $userThrowMsg
@@ -357,7 +355,7 @@ try
                     SiteCode           = 'Lab'
                     DatabaseName       = 'CM_LAB'
                     DatabaseServerName = 'CA01.contoso.com'
-                    UserName           = 'contoso\SQLAdmin'
+                    Username           = 'contoso\SQLAdmin'
                     Ensure             = 'Present'
                 }
 
@@ -366,7 +364,7 @@ try
                     SiteCode           = 'Lab'
                     DatabaseName       = 'CM_LAB'
                     DatabaseServerName = 'CA01.contoso.com'
-                    UserName           = 'contoso\CMAdmin'
+                    Username           = 'contoso\CMAdmin'
                     Ensure             = 'Present'
                 }
 
@@ -384,7 +382,7 @@ try
                     SiteCode             = 'Lab'
                     DatabaseName         = 'CM_LAB'
                     DatabaseServerName   = 'CA01.contoso.com'
-                    UserName             = 'contoso\SQLAdmin'
+                    Username             = 'contoso\SQLAdmin'
                     FolderName           = 'ConfigMgr_LAB'
                     ReportServerInstance = 'MSSQLSERVER'
                     Ensure               = 'Present'
@@ -395,7 +393,7 @@ try
                     SiteCode             = 'Lab'
                     DatabaseName         = $null
                     DatabaseServerName   = $null
-                    UserName             = $null
+                    Username             = $null
                     FolderName           = $null
                     ReportServerInstance = $null
                     Ensure               = 'Absent'

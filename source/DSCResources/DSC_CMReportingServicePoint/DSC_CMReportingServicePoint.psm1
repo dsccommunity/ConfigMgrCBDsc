@@ -66,7 +66,7 @@ function Get-TargetResource
         SiteCode             = $SiteCode
         DatabaseName         = $dbName
         DatabaseServerName   = $dbServerName
-        UserName             = $account
+        Username             = $account
         FolderName           = $folder
         ReportServerInstance = $rptInstance
         Ensure               = $status
@@ -103,8 +103,8 @@ function Get-TargetResource
         This parameter can only be used when installing the role.
         Once the role is installed, this parameter cannot be changed without uninstalling the role.
 
-    .PARAMETER UserName
-        Specifies a user name for an account that Configuration Manager uses to connect with Microsoft SQL Server
+    .PARAMETER Username
+        Specifies a Username for an account that Configuration Manager uses to connect with Microsoft SQL Server
         Reporting Services and that gives this user access to the site database.
 
         If specifying an account the account must already exist in
@@ -144,7 +144,7 @@ function Set-TargetResource
 
         [Parameter()]
         [String]
-        $UserName,
+        $Username,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -160,7 +160,7 @@ function Set-TargetResource
     {
         if ($Ensure -eq 'Present')
         {
-            $evalList = @('DatabaseName','DatabaseServerName','UserName','FolderName','ReportServerInstance')
+            $evalList = @('DatabaseName','DatabaseServerName','Username','FolderName','ReportServerInstance')
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
@@ -178,7 +178,7 @@ function Set-TargetResource
 
             if ($state.Ensure -eq 'Absent')
             {
-                if ([string]::IsNullOrEmpty($buildingParams.UserName))
+                if ([string]::IsNullOrEmpty($buildingParams.Username))
                 {
                     throw $script:localizedData.SpecifyUser
                 }
@@ -189,7 +189,7 @@ function Set-TargetResource
                     New-CMSiteSystemServer -SiteCode $SiteCode -SiteSystemServerName $SiteServerName
                 }
 
-                Write-Verbose -Message ($script:localizedData.AddRSPRole -f $SiteServerName)
+                Write-Verbose -Message ($script:localizedData.AddRspRole -f $SiteServerName)
                 Add-CMReportingServicePoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode @buildingParams
             }
             else
@@ -206,7 +206,7 @@ function Set-TargetResource
         }
         elseif ($state.Ensure -eq 'Present')
         {
-            Write-Verbose -Message ($script:localizedData.RemoveRSPRole -f $SiteServerName)
+            Write-Verbose -Message ($script:localizedData.RemoveRspRole -f $SiteServerName)
             Remove-CMReportingServicePoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
         }
     }
@@ -250,8 +250,8 @@ function Set-TargetResource
         This parameter can only be used when installing the role.
         Once the role is installed, this parameter cannot be changed without uninstalling the role.
 
-    .PARAMETER UserName
-        Specifies a user name for an account that Configuration Manager uses to connect with Microsoft SQL Server
+    .PARAMETER Username
+        Specifies a Username for an account that Configuration Manager uses to connect with Microsoft SQL Server
         Reporting Services and that gives this user access to the site database.
 
         If specifying an account the account must already exist in
@@ -293,7 +293,7 @@ function Test-TargetResource
 
         [Parameter()]
         [String]
-        $UserName,
+        $Username,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -310,7 +310,7 @@ function Test-TargetResource
     {
         if ($state.Ensure -eq 'Absent')
         {
-            Write-Verbose -Message ($script:localizedData.RSPNotInstalled -f $SiteServerName)
+            Write-Verbose -Message ($script:localizedData.RspNotInstalled -f $SiteServerName)
             $result = $false
         }
         else
@@ -318,7 +318,7 @@ function Test-TargetResource
             $testParams = @{
                 CurrentValues = $state
                 DesiredValues = $PSBoundParameters
-                ValuesToCheck = ('DatabaseName','DatabaseServerName','UserName','FolderName','ReportServerInstance')
+                ValuesToCheck = ('DatabaseName','DatabaseServerName','Username','FolderName','ReportServerInstance')
             }
 
             $result = Test-DscParameterState @testParams -Verbose
@@ -331,7 +331,7 @@ function Test-TargetResource
     }
     elseif ($state.Ensure -eq 'Present')
     {
-        Write-Verbose -Message ($script:localizedData.RSPAbsent -f $SiteServerName)
+        Write-Verbose -Message ($script:localizedData.RspAbsent -f $SiteServerName)
         $result = $false
     }
 
