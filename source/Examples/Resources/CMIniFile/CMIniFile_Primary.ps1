@@ -33,9 +33,9 @@ Configuration Example
             SQLServerName             = 'PRI.contoso.com'
             DatabaseName              = 'PRIINST01\CM_PRI'
             SQLSSBPort                = 4022
-            SQLDataFilePath           = 'E:\MSSQL12.CASINST01\MSSQL\Data\App\'
-            SQLLogFilePath            = 'E:\MSSQL12.CASINST01\MSSQL\Log\App\'
-            CloudConnector            = $false
+            SQLDataFilePath           = 'C:\MSSQL12.CASINST01\MSSQL\Data\App\'
+            SQLLogFilePath            = 'C:\MSSQL12.CASINST01\MSSQL\Log\App\'
+            CloudConnector            = $true
             SAActive                  = $true
             CurrentBranch             = $true
         }
