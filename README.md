@@ -48,12 +48,18 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ## Resources
 
+- **xSccmPreReqs**: Provides a composite resource to install ADK, ADK WinPE, MDT,
+  required Windows Features, modify Local Administrators group, and create the
+  no_sms_on_drive files.
+- **xSccmSqlSetup**: Provides a composite resource to install SQL for SCCM.
+- **xSccmInstall**: Provides a composite reosurce to install SCCM.
+- **ClientSettings**: Provides a resource to perform configuration of client settings.
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
 - **CMIniFile** This resource allows for the creation of the ini file
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
-- **CMBoundaries**: Provides a resource for creating and removing boundaries.
+  - **CMBoundaries**: Provides a resource for creating and removing boundaries.
 - **CMForestDiscovery**: Provides a resource to manage the Configuration Manager
   AD Forest Discovery method.
 - **CMClientStatusSettings**: Provides a resource for modifying configuration
@@ -74,6 +80,151 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Heartbeat Discovery method.
 - **CMServiceConnectionPoint**: Provides a resource for creating and managing
   the SCCM Service Connection Point role.
+
+### xSccmPreReqs
+
+- **[Boolean] InstallADK** : Specifies whether to install ADK.
+  Default Value: $true
+- **[Boolean] InstallMDT** : Specifies whether to install MDT.
+- **[String] AdkSetupExePath** : Specifies the path and filename to
+  the ADK Setup.
+- **[String] AdkWinPeSetupPath** : Specifies the path and filename
+  to the ADK WinPE Setup.
+- **[String] MdtMsiPath** : Specifies the path and filename to the
+  MDT Setup.
+- **[String] InstallWindowsFeatures** : Specifies to install Windows Features
+  needed for the SCCM install.
+- **[String[]] SccmRole** : Specifies the SCCM Roles that will be on the server.
+  Default Value: CASorSiteServer
+  - Values{CASorSiteServer | AssetIntelligenceSynchronizationPoint |
+    CertificateRegistrationPoint | DistributionPoint | EndpointProtectionPoint |
+    EnrollmentPoint | EnrollmentProxyPoint | FallbackServicePoint |
+    ManagementPoint | ReportingServicesPoint | ServiceConnectionPoint |
+    StateMigrationPoint | SoftwareUpdatePoint}
+- **[Boolean] AddWindowsFirewallRule** : Specifies whether to add the Windows
+  Firewall Rules needed for the install.
+  Default Value: $false
+- **[String] WindowsFeatureSource** : Specifies the source that will be used
+  to install windows features if the files are not present in the local
+  side-by-side store.
+- **[String[]] FirewallProfile** : Specifies the Windows Firewall profile for
+  the rules to be added.
+- **[String[]] FirewallTcpLocalPort** : Specifies the TCP ports to be added to
+  the windows firewall as allowed.
+  Default Value: @('1433','1434','4022','445','135','139','49154-49157')
+- **[String[]] FirewallUdpLocalPort** : Specifies the UDP ports to be added to
+  the windows firewall as allowed.
+  Default Value: @('137-138','5355')
+- **[String] LocalAdministrators** : Specifies the accounts and/or groups you
+  want to add to the local administrators group.
+- **[String] NoSmsOnDrives** : Specifies the drive letters of the drive you
+  don't want SCCM to install on.
+- **[PSCredential] DomainCredential** : Specifies credentials that have domain
+  read permissions to add domain users or groups to the local administrators group.
+- **[String] AdkProductName** : Specifies the Product Name for ADK.
+  Default Value: 'Windows Assessment and Deployment Kit - Windows 10'
+- **[String] AdkProductID** : Specifies the Product ID for ADK.
+  Default Value: 'fb450356-9879-4b2e-8dc9-282709286661'
+- **[String] AdkWinPeProductName** : Specifies the Product Name for  ADK WinPE.
+  Default Value: 'Windows Assessment and Deployment Kit Windows Preinstallation
+  Environment Add-ons - Windows 10'
+- **[String] AdkWinPeProductID** : Specifies the Product ID for ADK WinPE.
+  Default Value: 'd8369a05-1f4a-4735-9558-6e131201b1a2'
+- **[String] AdkInstallPath** : Specifies the path to install ADK and ADK WinPE.
+  Default Value: 'C:\Program Files (x86)\Windows Kits\10'
+- **[String] MdtProductName** : Specifies the Product Name for MDT.
+  Default Value: 'Microsoft Deployment Toolkit (6.3.8456.1000)'
+- **[String] MdtProductID** : Specifies the Product ID for MDT.
+  Default Value: '2E6CD7B9-9D00-4B04-882F-E6971BC9A763'
+- **[String] MdtInstallPath** : Specifies the path to install MDT.
+  Default Value: 'C:\Program Files\Microsoft Deployment Toolkit'
+
+#### xSccmPreReqs Examples
+
+- [SccmPreReqs](Source\Examples\Resources\xSccmPreReqs\SccmPreReqs.ps1)
+
+### xSccmInstall
+
+- **[String] SetupExePath** _(Required)_: Specifies the path to the setup.exe
+  for SCCM.
+- **[String] IniFile** _(Required)_: Specifies the path of the ini file, to include
+  the filename.
+- **[String] SccmServerType** _(Required)_: Specifies the SCCM Server type install,
+  CAS or Primary.
+  - Values: { CAS | Primary }
+- **[PSCredential] SccmInstallAccount** _(Required)_: Specifies the credentials to
+  use for the SCCM install.
+
+#### xSccmInstall Examples
+
+- [SccmInstall](Source\Examples\Resources\xSccmInstall\SccmInstall.ps1)
+
+### xSccmSqlSetup
+
+- **[String] SqlVersion** _(Required)_: Specify the version of SQL to be installed.
+  - Values: { 2008 | 2008R2 | 2012 | 2014 | 2016 | 2017 | 2019 }
+- **[String] SqlInstallPath** _(Required)_: Specifies the path to the setup.exe
+  file for SQL.
+- **[String] SqlInstanceName** _(Required)_: Specifies a SQL Server instance name.
+- **[PSCredential] SqlServiceCredential** _(Required)_: Specifies the credential
+  for the service account used to run the SQL Service.
+- **[PSCredential] SqlAgentServiceCredential** _(Required)_: Specifies the
+  credential for the service account used to run the SQL Agent Service.
+- **[String] SqlSysAdminAccounts** _(Required)_: Use this parameter to provision
+  logins to be members of the sysadmin role.
+- **[String]** : SQL features to install.
+  Default Value: 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS'
+- **[String] InstallSharedDir** : Specifies the installation directory for
+  64-bit shared components.
+  Default Value: 'C:\Program Files\Microsoft SQL Server'
+- **[String] InstallSharedWowDir** : Specifies the installation directory for
+  32-bit shared components. Supported only on a 64-bit system.
+  Default Value: 'C:\Program Files (x86)\Microsoft SQL Server'
+- **[String] RSSvcStartupType** : Specifies the startup mode for Reporting Services.
+  Default Value: 'Automatic'
+- **[String] AgtSvcStartupType** : Specifies the startup mode for the SQL Server
+  Agent service.
+  Default Value: 'Automatic'
+- **[String] RSInstallMode** : Specifies the Install mode for Reporting Services.
+  Default Value: 'DefaultNativeMode'
+- **[String] SqlCollation** : Specifies the collation settings for SQL Server.
+  Default Value: 'SQL_Latin1_General_CP1_CI_AS'
+- **[String] InstallSqlDataDir** : Specifies the data directory for SQL Server
+  data files.
+  Default Value: 'C:\'
+- **[String] SqlUserDBDir** : Specifies the directory for the data
+  files for user databases.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] SqlUserDBLogDir** : Specifies the directory for the log
+  files for user databases.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] SqlTempDBDir** : Specifies the directory for the data
+  files for tempdb.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] SqlTempDBLogDir** : Specifies the directory for the log
+  files for tempdb.
+  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[String] UpdateEnabled** : Specify whether SQL Server setup should discover
+  and include product updates.
+  Default Value: $false
+- **[String] SqlPort** : Specifies the port SQL listens on.
+  Default Value: 1433
+- **[String] InstallManagementStudio** : Specify whether to install SQL
+  Management Studio.
+  Default Value: $false
+- **[String] SqlManagementStudioExePath** : Specify that path and filename to
+  the exe for Management Studio instal.
+- **[String] SqlManagementStudioName** : Specify the name of SQL Server
+  Management Studio.
+  Default Value: 'SQL Server Management Studio'
+- **[String] SqlManagementStudioProductId** : Specify the product if of the SQL
+  Management Studio install being performed.
+  Default Value: 'E3FD687D-6757-474B-8D83-5AA944B02C58'
+
+#### xSccmSqlSetup Examples
+
+- [SccmSqlSetup](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetup.ps1)
+- [SccmSqlSetupandManagemenStudio](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetupAndManagementStudio.ps1)
 
 ### CMAccounts
 

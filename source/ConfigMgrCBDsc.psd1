@@ -43,6 +43,10 @@
     # DSC resources to export from this module
     DscResourcesToExport = @(
         'CMAccounts'
+        'SccmIniFile'
+        'XSccmInstall'
+        'xSccmPreReqs'
+        'xSccmSqlSetup'
         'CMIniFile'
         'CMCollections'
         'CMBoundaries'
@@ -68,9 +72,10 @@
             Prerelease   = ''
 
             # Tags applied to this module. These help with module discovery in online galleries.
-            Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','CMIniFile','Collections',
-            'Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups','ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint',
-            'SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery','ServiceConnectionPoint')
+            Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','SCCMPreReqs',
+            'SccmSqlSetup','SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups',
+            'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
+            'ServiceConnectionPoint')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'
