@@ -124,7 +124,7 @@ Configuration xSCCMPreReqs
 
         [Parameter()]
         [System.String]
-        $WindowsFeatureSource,
+        $WindowsFeatureSource = 'C:\Windows\WinSxS',
 
         [Parameter()]
         [ValidateSet('CASorSiteServer','AssetIntelligenceSynchronizationPoint','CertificateRegistrationPoint','DistributionPoint','EndpointProtectionPoint','EnrollmentPoint','EnrollmentProxyPoint','FallbackServicePoint','ManagementPoint','ReportingServicesPoint','ServiceConnectionPoint','StateMigrationPoint','SoftwareUpdatePoint')]
