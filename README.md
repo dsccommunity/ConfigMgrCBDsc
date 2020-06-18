@@ -82,6 +82,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Network Discovery method.
 - **CMServiceConnectionPoint**: Provides a resource for creating and managing
   the SCCM Service Connection Point role.
+- **CMReportingServicePoint**: Provides a resource for creating and managing
+  the SCCM Reporting Service Point role.
 
 ### xSccmPreReqs
 
@@ -678,3 +680,33 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMServiceConnectionPoint_Absent](Source\Examples\Resources\CMServiceConnectionPoint\CMServiceConnectionPoint_Absent.ps1)
 - [CMServiceConnectionPoint_Present](Source\Examples\Resources\CMServiceConnectionPoint\CMServiceConnectionPoint_Present.ps1)
+
+### CMReportingServicePoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the Site Server to install
+  or configure the role on.
+- **[String] DatabaseName** _(Write)_: Specifies the name of the Configuration
+  Manager database that you want to use as the data source for reports from Microsoft
+  SQL Server Reporting Services.
+- **[String] DatabaseServerName** _(Write)_: Specifies the name of the Configuration
+  Manager database server that you want to use as the data source for reports from
+  Microsoft SQL Server Reporting Services.
+  To specify a database instance, use the format Server Name\Instance Name.
+- **[String] FolderName** _(Write)_: Specifies the name of the report folder on
+  the report server. This parameter can only be used when installing the role.
+- **[String] ReportServerInstance** _(Write)_: Specifies the name of an instance
+  of Microsoft SQL Server Reporting Services. This parameter can only be used
+  when installing the role.
+- **[String] Username** _(Write)_: Specifies a Username for an account that
+  Configuration Manager uses to connect with Microsoft SQL Server Reporting Services
+  and that gives this user access to the site database.
+- **[String] Ensure** _(Write)_: Specifies whether the asset reporting
+  service point is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMReportingServicePoint Examples
+
+- [CMReportingServicePoint_Absent](Source\Examples\Resources\CMReportingServicePoint\CMReportingServicePoint_Absent.ps1)
+- [CMReportingServicePoint_Present](Source\Examples\Resources\CMReportingServicePoint\CMReportingServicePoint_Present.ps1)
