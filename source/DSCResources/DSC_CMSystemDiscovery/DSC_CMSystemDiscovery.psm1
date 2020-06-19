@@ -500,7 +500,7 @@ function Test-TargetResource
                               'TimeSinceLastLogonDays','EnableFilteringExpiredPassword','TimeSinceLastPasswordUpdateDays')
         }
 
-        $result = Test-DscParameterState @testParams -Verbose
+        $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
 
         if ($PSBoundParameters.ContainsKey('ScheduleInterval'))
         {
