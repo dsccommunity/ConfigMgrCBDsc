@@ -670,19 +670,19 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[Boolean] Enabled** _(Required)_: Specifies the enablement of the system
+- **[Boolean] Enabled** _(Key)_: Specifies the enablement of the system
   discovery method. If settings is set to $false no other value provided will be
   evaluated for compliance.
-- **[Boolean] EnableDeltaDiscovery** _(Required)_: Indicates whether Configuration
+- **[Boolean] EnableDeltaDiscovery** _(Write)_: Indicates whether Configuration
   Manager discovers resources created or modified in AD DS since the last
   discovery cycle.
 - **[UInt32] DeltaDiscoveryMins** _(Write)_: Specifies the number of minutes for
   the delta discovery.
-- **[Boolean] EnableFilteringExpiredLogon** _(Required)_: Indicates whether Configuration
+- **[Boolean] EnableFilteringExpiredLogon** _(Write)_: Indicates whether Configuration
   Manager discovers only computers that have logged onto a domain within a specified
   number of days.
 - **[UInt32] TimeSinceLastLogonDays** _(Write)_: Specify the number of days for EnableFilteringExpiredLogon.
-- **[Boolean] EnableFilteringExpiredPassword** _(Required)_: Indicates whether Configuration
+- **[Boolean] EnableFilteringExpiredPassword** _(Write)_: Indicates whether Configuration
   Manager discovers only computers that have updated their computer account password
   within a specified number of days.
 - **[UInt32] TimeSinceLastPasswordUpdateDays** _(Write)_: Specify the number of days

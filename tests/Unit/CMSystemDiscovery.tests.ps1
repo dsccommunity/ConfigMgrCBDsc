@@ -198,9 +198,9 @@ try
                     $result.Enabled                         | Should -Be -ExpectedValue $true
                     $result.EnableDeltaDiscovery            | Should -Be -ExpectedValue $true
                     $result.DeltaDiscoveryMins              | Should -Be -ExpectedValue 60
-                    $result.EnableFilteringExpiredLogon     | Should -be -ExpectedValue $true
+                    $result.EnableFilteringExpiredLogon     | Should -Be -ExpectedValue $true
                     $result.TimeSinceLastLogonDays          | Should -Be -ExpectedValue 20
-                    $result.EnableFilteringExpiredPassword  | Should -be -ExpectedValue $true
+                    $result.EnableFilteringExpiredPassword  | Should -Be -ExpectedValue $true
                     $result.TimeSinceLastPasswordUpdateDays | Should -Be -ExpectedValue 40
                     $result.ADContainers                    | Should -Be -ExpectedValue $adContainersReturn
                     $result.ScheduleInterval                | Should -Be -ExpectedValue 'Days'
@@ -218,9 +218,9 @@ try
                     $result.Enabled                         | Should -Be -ExpectedValue $true
                     $result.EnableDeltaDiscovery            | Should -Be -ExpectedValue $true
                     $result.DeltaDiscoveryMins              | Should -Be -ExpectedValue 45
-                    $result.EnableFilteringExpiredLogon     | Should -be -ExpectedValue $true
+                    $result.EnableFilteringExpiredLogon     | Should -Be -ExpectedValue $true
                     $result.TimeSinceLastLogonDays          | Should -Be -ExpectedValue 20
-                    $result.EnableFilteringExpiredPassword  | Should -be -ExpectedValue $true
+                    $result.EnableFilteringExpiredPassword  | Should -Be -ExpectedValue $true
                     $result.TimeSinceLastPasswordUpdateDays | Should -Be -ExpectedValue 40
                     $result.ADContainers                    | Should -Be -ExpectedValue $adContainersReturn
                     $result.ScheduleInterval                | Should -Be -ExpectedValue 'Hours'
@@ -238,9 +238,9 @@ try
                     $result.Enabled                         | Should -Be -ExpectedValue $true
                     $result.EnableDeltaDiscovery            | Should -Be -ExpectedValue $false
                     $result.DeltaDiscoveryMins              | Should -Be -ExpectedValue $null
-                    $result.EnableFilteringExpiredLogon     | Should -be -ExpectedValue $true
+                    $result.EnableFilteringExpiredLogon     | Should -Be -ExpectedValue $true
                     $result.TimeSinceLastLogonDays          | Should -Be -ExpectedValue 20
-                    $result.EnableFilteringExpiredPassword  | Should -be -ExpectedValue $true
+                    $result.EnableFilteringExpiredPassword  | Should -Be -ExpectedValue $true
                     $result.TimeSinceLastPasswordUpdateDays | Should -Be -ExpectedValue 40
                     $result.ADContainers                    | Should -Be -ExpectedValue $adContainersReturn
                     $result.ScheduleInterval                | Should -Be -ExpectedValue 'None'
@@ -294,9 +294,9 @@ try
                 $adContainersMismatch = 'LDAP://OU=Test2,DC=contoso,DC=com'
 
                 $inputParamsADContainersMismatch = @{
-                    SiteCode                        = 'Lab'
-                    Enabled                         = $true
-                    ADContainers                    = $adContainersMismatch
+                    SiteCode     = 'Lab'
+                    Enabled      = $true
+                    ADContainers = $adContainersMismatch
                 }
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -636,9 +636,16 @@ try
                     }
 
                     $inputParamsADContainersMismatch = @{
-                        SiteCode                        = 'Lab'
-                        Enabled                         = $true
-                        ADContainers                    = $adContainersMismatch
+                        SiteCode     = 'Lab'
+                        Enabled      = $true
+                        ADContainers = $adContainersMismatch
+                    }
+
+                    $inputParamsADContainersMultiple = @{
+                        SiteCode              = 'Lab'
+                        Enabled               = $true
+                        ADContainers          = $adContainersMismatch
+                        ADContainersToExclude = $adContainersExclude
                     }
 
                     $inputParamsADContainersInclude = @{
@@ -657,42 +664,38 @@ try
                 }
 
                 It 'Should return desired result true when system discovery settings match' {
-
                     Test-TargetResource @iputAllParamsMatch | Should -Be $true
                 }
 
                 It 'Should return desired result false when delta schedule mismatch' {
-
                     Test-TargetResource @inputParamsDeltaMismatch | Should -Be $false
                 }
 
                 It 'Should return desired result false when system discovery schedules do not match' {
-
                     Test-TargetResource @inputParamsHours | Should -Be $false
                 }
 
                 It 'Should return desired result false when system discovery desires none schedule to be set' {
-
                     Test-TargetResource @inputParamsNoSchedule | Should -Be $false
                 }
 
                 It 'Should return desired result false when system discovery ADContainers are not correct add and remove' {
-
                     Test-TargetResource @inputParamsADContainersMismatch | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery ADContainersInclude are not correct' {
+                It 'Should return desired result false when system discovery ADContainers and ADContainersExclude are specified' {
+                    Test-TargetResource @inputParamsADContainersMultiple | Should -Be $false
+                }
 
+                It 'Should return desired result false when system discovery ADContainersInclude are not correct' {
                     Test-TargetResource @inputParamsADContainersInclude | Should -Be $false
                 }
 
                 It 'Should return desired result false when system discovery ADContainersExclude is not correct' {
-
                     Test-TargetResource @inputParamsADContainersExclude | Should -Be $false
                 }
 
                 It 'Should return desired result false when system discovery set to Enabled and expected value disabled' {
-
                     Test-TargetResource @inputParamsDisable | Should -Be $false
                 }
             }
@@ -709,22 +712,18 @@ try
                 }
 
                 It 'Should return desired result false when current state returns null schedule' {
-
                     Test-TargetResource @inputParamsDisable | Should -Be $false
                 }
 
                 It 'Should return desired result true when current schedule and desired schedule are none' {
-
                     Test-TargetResource @inputParamsNoSchedule | Should -Be $true
                 }
 
                 It 'Should return desired result false when current schedule is none and desired schedule is set' {
-
                     Test-TargetResource @inputParamsHours | Should -Be $false
                 }
 
                 It 'Should return desired result false when input param is setting schedule is count is missing' {
-
                     Test-TargetResource @inputParamsBadSchedule | Should -Be $false
                 }
             }

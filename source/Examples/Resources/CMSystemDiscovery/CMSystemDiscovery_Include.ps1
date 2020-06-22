@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to system discovery ad containers to Include.
+        A DSC configuration script for system discovery to include ad containers.
 #>
 Configuration Example
 {
@@ -21,8 +21,8 @@ Configuration Example
             EnableFilteringExpiredPassword  = $true
             TimeSinceLastPasswordUpdateDays = 40
             ADContainersToInclude           = @(
-                'LDAP://OU=Far East,DC=contoso,DC=com','LDAP://OU=Far East,OU=Domain Controllers,DC=jeffo,DC=lab',
-                'LDAP://OU=Far East,OU=Deployables,DC=jeffo,DC=lab'
+                'LDAP://OU=Far,DC=contoso,DC=com','LDAP://OU=Far,OU=Domain Controllers,DC=contoso,DC=com',
+                'LDAP://OU=Far,OU=Deployables,DC=contoso,DC=com'
             )
         }
     }

@@ -233,9 +233,9 @@ function Set-TargetResource
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if ($paramsToCheck -contains $param.key)
+                if ($paramsToCheck -contains $param.Key)
                 {
-                    if ($param.Value -ne $state[$param.key])
+                    if ($param.Value -ne $state[$param.Key])
                     {
                         Write-Verbose -Message ($script:localizedData.SetCommonSettings -f $param.Key, $param.Value)
                         $buildingParams += @{
@@ -529,6 +529,11 @@ function Test-TargetResource
         {
             if ($ADContainers)
             {
+                if ($PSBoundParameters.ContainsKey('ADContainersToInclude') -or
+                   $PSBoundParameters.ContainsKey('ADContainersToExclude'))
+                {
+                    Write-Warning -Message $script:localizedData.ADIgnore
+                }
                 $includes = $ADContainers
             }
             else

@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to system discovery set to none.
+        A DSC configuration script to system discovery set to a custom schedule to none.
 #>
 Configuration Example
 {
@@ -20,8 +20,8 @@ Configuration Example
             EnableFilteringExpiredPassword  = $true
             TimeSinceLastPasswordUpdateDays = 40
             ADContainers                    = @(
-                'LDAP://OU=Far East,DC=contoso,DC=com','LDAP://OU=Far East,OU=Domain Controllers,DC=jeffo,DC=lab',
-                'LDAP://OU=Far East,OU=Deployables,DC=jeffo,DC=lab'
+                'LDAP://OU=Far,DC=contoso,DC=com','LDAP://OU=Far,OU=Domain Controllers,DC=contoso,DC=com',
+                'LDAP://OU=Far,OU=Deployables,DC=contoso,DC=com'
             )
         }
     }

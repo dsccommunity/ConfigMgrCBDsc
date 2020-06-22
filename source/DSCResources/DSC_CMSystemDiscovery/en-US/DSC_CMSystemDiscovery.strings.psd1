@@ -14,4 +14,5 @@ ConvertFrom-StringData @'
     RemoveADContainer     = Removing AD Container: {0}.
     SetDisabled           = Setting System Discovery to disabled.
     MissingDeltaDiscovery = When changing delta schedule, delta schedule must be enabled.
+    ADIgnore              = ADContainers was specified, ADContainersInclude and ADContainersExclude will be ignored.
 '@
