@@ -2,9 +2,9 @@
 class DSC_CMPxeDistributionPoint : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
-    [Key, Description("Specifies the SiteServer to install the role on.")] String SiteServerName;
+    [Key, Description("Specifies the SiteServer to configure the Distribution Point for PXE.")] String SiteServerName;
     [Write, Description("Indicates whether PXE is enabled on the distribution point.")] Boolean EnablePxe;
-    [Write, Description("Specifies whether to enable Pxe responder without Windows Deployment services.")] Boolean EnableNonWdsPxe;
+    [Write, Description("Specifies whether to enable PXE responder without Windows Deployment Services.")] Boolean EnableNonWdsPxe;
     [Write, Description("Indicates whether support for unknown computers is enabled.")] Boolean EnableUnknownComputerSupport;
     [Write, Description("Indicates whether the distribution point can respond to PXE requests.")] Boolean AllowPxeResponse;
     [Write, Description("Specifies, in seconds, how long the distribution point delays before it responds to computer requests.")] UInt16 PxeServerResponseDelaySec;

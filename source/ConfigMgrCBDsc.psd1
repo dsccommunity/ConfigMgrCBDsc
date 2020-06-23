@@ -61,6 +61,8 @@
         'CMHeartbeatDiscovery'
         'CMServiceConnectionPoint'
         'CMNetworkDiscovery'
+        'CMReportingServicePoint'
+        'CMSystemDiscovery'
         'CMPxeDistributionPoint'
     )
 
@@ -77,7 +79,7 @@
             Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','SCCMPreReqs',
             'SccmSqlSetup','SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups',
             'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
-            'ServiceConnectionPoint','NetworkDiscovery','PXE Distribution Point')
+            'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

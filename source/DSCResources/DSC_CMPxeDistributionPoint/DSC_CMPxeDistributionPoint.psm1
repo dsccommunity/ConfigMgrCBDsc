@@ -14,12 +14,10 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER SiteServerName
-        Specifies the SiteServer to install the role on.
+        Specifies the SiteServer to configure the Distribution Point for PXE.
 
     .Notes
-        This must be ran on the Primary servers to install the Distribution Point role.
-        The Primary server computer account must be in the local
-        administrators group to perform the install.
+        This must be ran on the Primary site server to configure the Distribution Point for PXE.
 #>
 function Get-TargetResource
 {
@@ -77,35 +75,35 @@ function Get-TargetResource
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER SiteServerName
-        Specifies the SiteServer to install the role on.
+        Specifies the SiteServer to configure the Distribution Point for PXE.
 
     .PARAMETER EnablePxe
-        Indicates whether Pxe is enabled on the distribution point.
-        When you enable Pxe, Configuration Manager installs Windows Deployment Services on the server, if required.
-        Windows Deployment Services is the service that performs the Pxe boot to install operating systems.
+        Indicates whether PXE is enabled on the distribution point.
+        When you enable PXE, Configuration Manager installs Windows Deployment Services on the server, if required.
+        Windows Deployment Services is the service that performs the PXE boot to install operating systems.
         After you create the distribution point, Configuration Manager installs a provider in
-        Windows Deployment Services that uses the Pxe boot functions.
+        Windows Deployment Services that uses the PXE boot functions.
 
     .PARAMETER EnableNonWdsPxe
-        Specifies whether to enable Pxe responder without Windows Deployment services.
+        Specifies whether to enable PXE responder without Windows Deployment Services.
 
     .PARAMETER EnableUnknownComputerSupport
         Indicates whether support for unknown computers is enabled.
         Unknown computers are computers that are not managed by Configuration Manager.
 
     .PARAMETER AllowPxeResponse
-        Indicates whether the distribution point can respond to Pxe requests.
+        Indicates whether the distribution point can respond to PXE requests.
 
     .PARAMETER PxeServerResponseDelaySec
         Specifies, in seconds, how long the distribution point delays before it responds to computer requests when
-        you are using multiple Pxe-enabled distribution points. By default, the Configuration Manager
-        Pxe service point responds first to network Pxe requests.
+        you are using multiple PXE-enabled distribution points. By default, the Configuration Manager
+        PXE service point responds first to network PXE requests.
 
     .PARAMETER UserDeviceAffinity
-        Specifies how you want the distribution point to associate users with their devices for Pxe deployments.
+        Specifies how you want the distribution point to associate users with their devices for PXE deployments.
 
     .PARAMETER PxePassword
-        Specifies, as a secure string, the Pxe password.
+        Specifies, as a secure string, the PXE password.
 #>
 function Set-TargetResource
 {
@@ -219,41 +217,41 @@ function Set-TargetResource
 
 <#
     .SYNOPSIS
-        This will test the desired state.
+        This will set the desired state.
 
     .PARAMETER SiteCode
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER SiteServerName
-        Specifies the SiteServer to install the role on.
+        Specifies the SiteServer to configure the Distribution Point for PXE.
 
     .PARAMETER EnablePxe
-        Indicates whether Pxe is enabled on the distribution point.
-        When you enable Pxe, Configuration Manager installs Windows Deployment Services on the server, if required.
-        Windows Deployment Services is the service that performs the Pxe boot to install operating systems.
+        Indicates whether PXE is enabled on the distribution point.
+        When you enable PXE, Configuration Manager installs Windows Deployment Services on the server, if required.
+        Windows Deployment Services is the service that performs the PXE boot to install operating systems.
         After you create the distribution point, Configuration Manager installs a provider in
-        Windows Deployment Services that uses the Pxe boot functions.
+        Windows Deployment Services that uses the PXE boot functions.
 
     .PARAMETER EnableNonWdsPxe
-        Specifies whether to enable Pxe responder without Windows Deployment services.
+        Specifies whether to enable PXE responder without Windows Deployment Services.
 
     .PARAMETER EnableUnknownComputerSupport
         Indicates whether support for unknown computers is enabled.
         Unknown computers are computers that are not managed by Configuration Manager.
 
     .PARAMETER AllowPxeResponse
-        Indicates whether the distribution point can respond to Pxe requests.
+        Indicates whether the distribution point can respond to PXE requests.
 
     .PARAMETER PxeServerResponseDelaySec
         Specifies, in seconds, how long the distribution point delays before it responds to computer requests when
-        you are using multiple Pxe-enabled distribution points. By default, the Configuration Manager
-        Pxe service point responds first to network Pxe requests.
+        you are using multiple PXE-enabled distribution points. By default, the Configuration Manager
+        PXE service point responds first to network PXE requests.
 
     .PARAMETER UserDeviceAffinity
-        Specifies how you want the distribution point to associate users with their devices for Pxe deployments.
+        Specifies how you want the distribution point to associate users with their devices for PXE deployments.
 
     .PARAMETER PxePassword
-        Specifies, as a secure string, the Pxe password.
+        Specifies, as a secure string, the PXE password.
 #>
 function Test-TargetResource
 {
@@ -312,6 +310,20 @@ function Test-TargetResource
     }
     else
     {
+        if ((($PSBoundParameters.EnablePxe -eq $false) -or ([string]::IsNullOrEmpty($PSBoundParameters.EnablePxe) -and
+            $state.EnablePxe -eq $false)) -and (($PSBoundParameters.EnableNonWdsPxe) -or
+            ($PSBoundParameters.EnableUnknownComputerSupport) -or ($PSBoundParameters.AllowPxeResponse) -or
+            ($PSBoundParameters.PxeServerResponseDelaySec) -or ($PSBoundParameters.UserDeviceAffinity) -or
+            ($PSBoundParameters.PxePassword)))
+        {
+            Write-Warning $script:localizedData.PxeThrow
+        }
+
+        if ($EnableNonWdsPxe -eq $true -and $state.IsMulticast -eq $true)
+        {
+            Write-Warning $script:localizedData.NonWdsThrow
+        }
+
         $testParams = @{
             CurrentValues = $state
             DesiredValues = $PSBoundParameters

@@ -186,7 +186,7 @@ try
             Context 'When running Set-TargetResource should throw' {
                 BeforeEach {
                     $distroPointError = 'The Distribution Point role on DP01.contoso.com is not installed, run DSC_CMDistibutionPoint to install the role.'
-                    $pxeFalseThrow = 'Can not specify PXE settings when PXE is currently or setting to $false, please set EnablePxe to $true.'
+                    $pxeFalseThrow = 'Can not specify PXE settings when PXE is currently $false or setting to $false, please set EnablePxe to $true.'
                     $nonWdsThrow = 'You can not enable nonWDSPxe while multicast is set to enabled.'
 
                     $badInputPxeFalse = @{
@@ -321,6 +321,33 @@ try
                     PxePassword    = $testCredential
                 }
 
+                $getReturnMulticastEnabled = @{
+                    SiteCode                     = 'Lab'
+                    SiteServerName               = 'DP01.contoso.com'
+                    EnablePxe                    = $true
+                    EnableNonWdsPxe              = $false
+                    EnableUnknownComputerSupport = $true
+                    PxePassword                  = $null
+                    AllowPxeResponse             = $true
+                    PxeServerResponseDelaySec    = [UInt16]2
+                    UserDeviceAffinity           = 'AllowWithManualApproval'
+                    IsMulticast                  = $true
+                    DPStatus                     = 'Present'
+                }
+
+                $setNonWdsEnabled = @{
+                    SiteCode        = 'Lab'
+                    SiteServerName  = 'DP01.contoso.com'
+                    EnableNonWdsPxe = $true
+                }
+
+                $badInputPxeFalse = @{
+                    SiteCode       = 'Lab'
+                    SiteServerName = 'DP01.contoso.com'
+                    EnablePxe      = $false
+                    PxePassword    = $testCredential
+                }
+
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
             }
@@ -349,6 +376,18 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getStatusAbsent }
 
                     Test-TargetResource @inputParamsMatch | Should -Be $false
+                }
+
+                It 'Should return desired result false enable NonWdsPxe and Multicast is currently enabled' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnMulticastEnabled }
+
+                    Test-TargetResource @setNonWdsEnabled | Should -Be $false
+                }
+
+                It 'Should return desired result false specifying additional settings and setting EnablePxe to false' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getStatusPresentNoPassword }
+
+                    Test-TargetResource @badInputPxeFalse | Should -Be $false
                 }
             }
         }
