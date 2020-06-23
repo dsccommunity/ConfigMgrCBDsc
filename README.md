@@ -59,7 +59,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   used during the SCCM install, for CAS and Primary.
 - **CMCollections**: Provides a resource for creating collections and collection
   queries, direct, and exclude membership rules.
-  - **CMBoundaries**: Provides a resource for creating and removing boundaries.
+- **CMBoundaries**: Provides a resource for creating and removing boundaries.
 - **CMForestDiscovery**: Provides a resource to manage the Configuration Manager
   AD Forest Discovery method.
 - **CMClientStatusSettings**: Provides a resource for modifying configuration
@@ -78,6 +78,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   the distribution point role.
 - **CMHeartbeatDiscovery**: Provides a resource to manage the Configuration Manager
   Heartbeat Discovery method.
+- **CMSystemDiscovery**: Provides a resource to manage the Configuration Manager
+  System Discovery method.
 - **CMNetworkDiscovery**: Provides a resource to manage the Configuration Manager
   Network Discovery method.
 - **CMServiceConnectionPoint**: Provides a resource for creating and managing
@@ -663,6 +665,49 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMNetworkDiscovery_Disabled](Source\Examples\Resources\CMNetworkDiscovery\CMNetworkDiscovery_Disabled.ps1)
 - [CMNetworkDiscovery_Enabled](Source\Examples\Resources\CMNetworkDiscovery\CMNetworkDiscovery_Enabled.ps1)
+
+### CMSystemDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Key)_: Specifies the enablement of the system
+  discovery method. If settings is set to $false no other value provided will be
+  evaluated for compliance.
+- **[Boolean] EnableDeltaDiscovery** _(Write)_: Indicates whether Configuration
+  Manager discovers resources created or modified in AD DS since the last
+  discovery cycle.
+- **[UInt32] DeltaDiscoveryMins** _(Write)_: Specifies the number of minutes for
+  the delta discovery.
+- **[Boolean] EnableFilteringExpiredLogon** _(Write)_: Indicates whether Configuration
+  Manager discovers only computers that have logged onto a domain within a specified
+  number of days.
+- **[UInt32] TimeSinceLastLogonDays** _(Write)_: Specify the number of days for EnableFilteringExpiredLogon.
+- **[Boolean] EnableFilteringExpiredPassword** _(Write)_: Indicates whether Configuration
+  Manager discovers only computers that have updated their computer account password
+  within a specified number of days.
+- **[UInt32] TimeSinceLastPasswordUpdateDays** _(Write)_: Specify the number of days
+  for EnableFilteringExpiredPassword.
+- **[String] ADContainers[]** _(Write)_: Specifies an array of names of Active Directory
+  containers to match to the discovery.
+- **[String] ADContainersToInclude[]** _(Write)_: Specifies an array of names of
+  Active Directory containers to add to the discovery.
+- **[String] ADContainersToExclude[]** _(Write)_: Specifies an array of names of
+  Active Directory containers to exclude to the discovery.
+- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
+  event recurs in hours and days.
+  - Values include: { None| Days| Hours | Minutes }
+- **[UInt32] ScheduleCount** _(Write)_: Specifies how often the recur interval
+  is run. If hours are specified the max value is 23. Anything over 23 will result
+  in 23 to be set. If days are specified the max value is 31. Anything over 31 will
+  result in 31 to be set.
+
+#### CMSystemDiscovery Examples
+
+- [CMSystemDiscovery_Disabled](Source\Examples\Resources\CMSystemDiscovery\CMSystemDiscovery_Disabled.ps1)
+- [CMSystemDiscovery_Enabled](Source\Examples\Resources\CMSystemDiscovery\CMSystemDiscovery_Enabled.ps1)
+- [CMSystemDiscovery_Exclude](Source\Examples\Resources\CMSystemDiscovery\CMSystemDiscovery_Exclude.ps1)
+- [CMSystemDiscovery_Include](Source\Examples\Resources\CMSystemDiscovery\CMSystemDiscovery_Include.ps1)
+- [CMSystemDiscovery_ScheduleNone](Source\Examples\Resources\CMSystemDiscovery\CMSystemDiscovery_ScheduleNone.ps1)
 
 ### CMServiceConnectionPoint
 
