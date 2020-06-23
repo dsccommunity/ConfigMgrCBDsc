@@ -111,7 +111,7 @@ function Get-TargetResource
     .PARAMETER EnableDeltaDiscovery
         Indicates whether Configuration Manager discovers resources created or modified in AD DS
         since the last discovery cycle. If you specify a value of $True for this parameter,
-        specify a value for the DeltaDiscoveryIntervalMinutes parameter.
+        specify a value for the DeltaDiscoveryMins parameter.
 
     .PARAMETER DeltaDiscoveryMins
         Specifies the number of minutes for the delta discovery.
@@ -389,7 +389,7 @@ function Set-TargetResource
     .PARAMETER EnableDeltaDiscovery
         Indicates whether Configuration Manager discovers resources created or modified in AD DS
         since the last discovery cycle. If you specify a value of $True for this parameter,
-        specify a value for the DeltaDiscoveryIntervalMinutes parameter.
+        specify a value for the DeltaDiscoveryMins parameter.
 
     .PARAMETER DeltaDiscoveryMins
         Specifies the number of minutes for the delta discovery.
