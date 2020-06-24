@@ -5,8 +5,8 @@ ConvertFrom-StringData @'
     SourceDPMatch        = MATCH:  The settings is present {0} and {1}.
     SourceDPMissing      = NOTMATCH:  The setting is missing {0} and {1}.
     SourceDPExtra        = NOTMATCH:  The setting is extra {0} and {1}.
-    InvalidConfig        = EnablePullDP is being set to false or is currently false and can not specify a sourcedistribution point, set to enable of remove SourceDistributionPoint from the configuration.
-    PullDPEnabledThrow   = When enabling a Pull DP sourceDistribution Point must be specified.
+    InvalidConfig        = EnablePullDP is being set to false or is currently false and can not specify a SourceDistributionPoints, set to enable of remove SourceDistributionPoints from the configuration.
+    PullDPEnabledThrow   = When enabling a Pull DP SourceDistributionPoints must be specified.
     EnablePullDP         = Setting EnablePullDP to true.
     SourceDPMismatch     = SourceDistributionPoints do not match setting to desired state.
 '@

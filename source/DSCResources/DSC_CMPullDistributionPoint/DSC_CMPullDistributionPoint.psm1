@@ -14,12 +14,10 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER SiteServerName
-        Specifies the SiteServer to install the role on.
+        Specifies the SiteServer to configure the Pull Distribution Point.
 
     .Notes
-        This must be ran on the Primary servers to install the ManagementPoint role.
-        The Primary server computer account must be in the local
-        administrators group to perform the install.
+        This must be ran on the Primary servers to configure the Distribution Point (DP) to a pull DP.
 #>
 function Get-TargetResource
 {
@@ -115,7 +113,7 @@ function Get-TargetResource
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER SiteServerName
-        Specifies the SiteServer to install the role on.
+        Specifies the SiteServer to configure the Pull Distribution Point.
 
     .PARAMETER EnablePullDP
         Specifies if EnablePullDP is to be set to enabled or disabled.
@@ -244,7 +242,7 @@ function Set-TargetResource
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER SiteServerName
-        Specifies the SiteServer to install the role on.
+        Specifies the SiteServer to configure the Pull Distribution Point.
 
     .PARAMETER EnablePullDP
         Specifies if EnablePullDP is to be set to enabled or disabled.

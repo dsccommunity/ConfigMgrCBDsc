@@ -284,7 +284,7 @@ try
                     $pullDPEnableNoSource = 'When enabling a Pull DP sourceDistribution Point must be specified.'
                 }
 
-                It 'Should throw and call expected commands when distribution point rule is not installed' {
+                It 'Should throw and call expected commands when distribution point role is not installed' {
                     Mock -CommandName Get-TargetResource -MockWith { $dpRoleNotInstalledReturn }
 
                     { Set-TargetResource @inputAbsent } | Should -Throw -ExpectedMessage $dpRoleAbsent
