@@ -271,9 +271,10 @@ try
                         SourceDistributionPoint = $getSourceDPReturn
                     }
 
-                    $invalidConfig = 'EnablePullDP is being set to false or is currently false and can not specify a sourcedistribution point, set to enable of remove SourceDistributionPoint from the configuration.'
-
+                    $invalidConfig = 'EnablePullDP is being set to false or is currently false and can not specify a SourceDistributionPoint, set to enable of remove SourceDistributionPoint from the configuration.'
                     $dpRoleAbsent = 'The Distribution Point role on DP01.contoso.com is not installed, run DSC_CMDistibutionPoint to install the role.'
+                    $pullDPEnableNoSource = 'When enabling a Pull DP SourceDistributionPoint must be specified.'
+                    $sourceDPSiteServer = 'You can not specify the Pull DP DP01.contoso.com as a SourceDistributionPoint.'
 
                     $inputInvalid = @{
                         SiteCode       = 'Lab'
@@ -281,7 +282,23 @@ try
                         EnablePullDP   = $true
                     }
 
-                    $pullDPEnableNoSource = 'When enabling a Pull DP sourceDistribution Point must be specified.'
+                    $inputMatchSourceAndSite = @(
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP01.contoso.com'
+                                'DPRank'   = '1'
+                            } `
+                            -ClientOnly
+                        )
+                    )
+
+                    $inputMatchingSourceAndSite = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $true
+                        SourceDistributionPoint = $inputMatchSourceAndSite
+                    }
                 }
 
                 It 'Should throw and call expected commands when distribution point role is not installed' {
@@ -308,6 +325,16 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     { Set-TargetResource @inputInvalid } | Should -Throw -ExpectedMessage $pullDPEnableNoSource
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDistributionPoint -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw and call expected commands Source Distribution Points contains SiteServerName' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
+
+                    { Set-TargetResource @inputMatchingSourceAndSite } | Should -Throw -ExpectedMessage $sourceDPSiteServer
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -405,42 +432,66 @@ try
                         SiteServerName = 'DP01.contoso.com'
                         EnablePullDP   = $false
                     }
+
+                    $inputMatchSourceAndSite = @(
+                        (New-CimInstance -ClassName DSC_CMPullDistributionPointSourceDP `
+                            -Namespace root/microsoft/Windows/DesiredStateConfiguration `
+                            -Property @{
+                                'SourceDP' = 'DP01.contoso.com'
+                                'DPRank'   = '1'
+                            } `
+                            -ClientOnly
+                        )
+                    )
+
+                    $inputMatchingSourceAndSite = @{
+                        SiteCode                = 'Lab'
+                        SiteServerName          = 'DP01.contoso.com'
+                        EnablePullDP            = $false
+                        SourceDistributionPoint = $inputMatchSourceAndSite
+                    }
                 }
 
                 It 'Should return desired result true settings match' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn  }
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     Test-TargetResource @inputMatch  | Should -Be $true
                 }
 
                 It 'Should return desired result false when Source DP settings do not match' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn  }
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     Test-TargetResource @inputSourceDPMisMatch  | Should -Be $false
                 }
 
                 It 'Should return desired result false when Pull DP is disabled and expected enabled' {
-                    Mock -CommandName Get-TargetResource -MockWith { $pullDPDisabled  }
+                    Mock -CommandName Get-TargetResource -MockWith { $pullDPDisabled }
 
                     Test-TargetResource @inputSourceDPMisMatch  | Should -Be $false
                 }
 
                 It 'Should return desired result false when Pull DP is enabled and expected disabled' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn  }
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
 
                     Test-TargetResource @inputAbsent  | Should -Be $false
                 }
 
                 It 'Should return desired result false when Distribution Point role is not installed' {
-                    Mock -CommandName Get-TargetResource -MockWith { $dpRoleNotInstalledReturn  }
+                    Mock -CommandName Get-TargetResource -MockWith { $dpRoleNotInstalledReturn }
 
                     Test-TargetResource @inputMatch  | Should -Be $false
                 }
 
                 It 'Should return desired result true when Pull DP is disabled and expected disabled' {
-                    Mock -CommandName Get-TargetResource -MockWith { $pullDPDisabled  }
+                    Mock -CommandName Get-TargetResource -MockWith { $pullDPDisabled }
 
                     Test-TargetResource @inputAbsent  | Should -Be $true
+                }
+
+                It 'Should return desired result false when SourceDP does not match get return' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetReturn }
+
+                    Test-TargetResource @inputMatchingSourceAndSite  | Should -Be $false
                 }
             }
         }

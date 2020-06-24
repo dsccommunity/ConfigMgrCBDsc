@@ -178,6 +178,11 @@ function Set-TargetResource
 
         if ($SourceDistributionPoint)
         {
+            if ($SourceDistributionPoint.SourceDP.Contains($SiteServerName))
+            {
+                throw ($script:localizedData.SourceDPSiteServer -f $SiteServerName)
+            }
+
             if ($state.SourceDistributionPoint)
             {
                 $comparesParam = @{
@@ -294,6 +299,11 @@ function Test-TargetResource
 
         if ($SourceDistributionPoint)
         {
+            if ($SourceDistributionPoint.SourceDP.Contains($SiteServerName))
+            {
+                Write-Warning -Message ($script:localizedData.SourceDPSiteServer -f $SiteServerName)
+            }
+
             if ($state.SourceDistributionPoint)
             {
                 $comparesParam = @{
