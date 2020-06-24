@@ -86,6 +86,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   the SCCM Service Connection Point role.
 - **CMReportingServicePoint**: Provides a resource for creating and managing
   the SCCM Reporting Service Point role.
+- **CMPxeDistributionPoint**: Provides a resource for modifying a distribution point
+  to changing to a PXE enabled distribution point.
 
 ### xSccmPreReqs
 
@@ -419,7 +421,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
   instance, the value must be 'Yes'.
   { Yes }.
-- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+- **[String] SiteCode** _(Required)_: Specifies the Site Code for the Configuration
   Manager site.
 - **[UInt32] ClientPolicyDays** _(Write)_: Specifies the data collection
   interval for client policy client monitoring activities.
@@ -755,3 +757,33 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMReportingServicePoint_Absent](Source\Examples\Resources\CMReportingServicePoint\CMReportingServicePoint_Absent.ps1)
 - [CMReportingServicePoint_Present](Source\Examples\Resources\CMReportingServicePoint\CMReportingServicePoint_Present.ps1)
+
+### CMPxeDistributionPoint
+
+- **[String] SiteCode** _(Key)_:  Specifies the SiteCode for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to install the
+  role on.
+- **[Boolean] EnablePxe** _(Write)_: Indicates whether PXE is enabled on
+  the distribution point.
+- **[Boolean] EnableNonWdsPxe** _(Write)_: Specifies whether to enable PXE responder
+  without Windows Deployment services.
+- **[Boolean] EnableUnknownComputerSupport** _(Write)_: Indicates whether support
+  for unknown computers is enabled.
+- **[Boolean] AllowPxeResponse** _(Write)_: Indicates whether the distribution
+  point can respond to PXE requests.
+- **[UInt16] PxeServerResponseDelaySec** _(Write)_: Specifies, in seconds, how
+  long the distribution point delays before it responds to computer requests.
+- **[String] UserDeviceAffinity** _(Write)_: Specifies how you want the distribution
+  point to associate users with their devices for PXE deployments.
+  - Values include: { DoNotUse | AllowWithManualApproval |
+    AllowWithAutomaticApproval }
+- **[PSCredential] PxePassword** _(Write)_: Specifies, as a credential, the
+  PXE password.
+- **[Boolean] IsMulticast** _(Read)_: Specifies if multicast is enabled.
+- **[String] DPStatus** _(Read)_: Specifies if the DP role is installed.
+
+#### CMPxeDistributionPoint Examples
+
+- [CMPxeDistributionPoint_Disabled](Source\Examples\Resources\CMPxeDistributionPoint\CMPxeDistributionPoint_Disabled.ps1)
+- [CMPxeDistributionPoint_Enabled](Source\Examples\Resources\CMPxeDistributionPoint\CMPxeDistributionPoint_Enabled.ps1)
