@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to disable Pxe Distribution Point for Configuration Manager.
+        A DSC configuration script to disable PXE Distribution Point for Configuration Manager.
 #>
 Configuration Example
 {

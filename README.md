@@ -87,7 +87,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMReportingServicePoint**: Provides a resource for creating and managing
   the SCCM Reporting Service Point role.
 - **CMPxeDistributionPoint**: Provides a resource for modifying a distribution point
-  to changing to a Pxe enabled distribution point.
+  to changing to a PXE enabled distribution point.
 
 ### xSccmPreReqs
 
@@ -766,7 +766,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   role on.
 - **[Boolean] EnablePxe** _(Write)_: Indicates whether PXE is enabled on
   the distribution point.
-- **[Boolean] EnableNonWdsPxe** _(Write)_: Specifies whether to enable Pxe responder
+- **[Boolean] EnableNonWdsPxe** _(Write)_: Specifies whether to enable PXE responder
   without Windows Deployment services.
 - **[Boolean] EnableUnknownComputerSupport** _(Write)_: Indicates whether support
   for unknown computers is enabled.
@@ -775,11 +775,11 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[UInt16] PxeServerResponseDelaySec** _(Write)_: Specifies, in seconds, how
   long the distribution point delays before it responds to computer requests.
 - **[String] UserDeviceAffinity** _(Write)_: Specifies how you want the distribution
-  point to associate users with their devices for Pxe deployments.
+  point to associate users with their devices for PXE deployments.
   - Values include: { DoNotUse | AllowWithManualApproval |
     AllowWithAutomaticApproval }
 - **[PSCredential] PxePassword** _(Write)_: Specifies, as a credential, the
-  Pxe password.
+  PXE password.
 - **[Boolean] IsMulticast** _(Read)_: Specifies if multicast is enabled.
 - **[String] DPStatus** _(Read)_: Specifies if the DP role is installed.
 

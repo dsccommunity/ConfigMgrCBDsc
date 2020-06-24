@@ -1,9 +1,9 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to configure Pxe Distribution Point for Configuration Manager.
+        A DSC configuration script to configure PXE Distribution Point for Configuration Manager.
 
     .PARAMETER PxePassword
-        Specify the password to be used for the Pxe.
+        Specify the password to be used for the PXE.
 #>
 Configuration Example
 {
