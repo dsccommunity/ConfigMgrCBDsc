@@ -745,7 +745,7 @@ function Set-TargetResource
     Write-Verbose -Message $script:localizedData.WritingParameter
     foreach ($configOption in $configOptions)
     {
-        $outputIni += "$($configOption.Title) `n"
+        $outputIni += "$($configOption.Title) `r`n"
         $configOption.Remove('Title')
         foreach ($param in $configOption)
         {
@@ -759,16 +759,16 @@ function Set-TargetResource
                         $false {$newValue = 0}
                     }
                     Write-Verbose -Message ($script:localizedData.AddingParameter -f $($item.Key), $newValue)
-                    $outputIni += "$($item.Key)=$newValue`n"
+                    $outputIni += "$($item.Key)=$newValue`r`n"
                 }
                 elseif ($PSBoundParameters.$($item.Name))
                 {
                     Write-Verbose -Message ($script:localizedData.AddingParameter -f $($item.Key), $($PSBoundParameters.$($item.Name)))
-                    $outputIni += "$($item.Key)=$($PSBoundParameters.$($item.Name))`n"
+                    $outputIni += "$($item.Key)=$($PSBoundParameters.$($item.Name))`r`n"
                 }
             }
         }
-        $outputIni += "`n"
+        $outputIni += "`r`n"
     }
     Write-Verbose -Message ($script:localizedData.ExportingFile -f $IniFilePath, $IniFilename)
     $outputIni | Out-File -FilePath "$IniFilePath\$IniFilename" -Force
