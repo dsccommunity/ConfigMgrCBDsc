@@ -90,6 +90,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   to changing to a PXE enabled distribution point.
 - **CMPullDistributionPoint**: Provides a resource for modifying a distribution point
   and making the distribution point a Pull Distribution Point.
+- **CMSiteMaintenance**: Provides a resource for modifying the Site Maintenance tasks.
 
 ### xSccmPreReqs
 
@@ -806,3 +807,54 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMPullDistributionPoint_Enabled](Source\Examples\Resources\CMPullDistributionPoint\CMPullDistributionPoint_Enabled.ps1)
 - [CMPullDistributionPoint_Disabled](Source\Examples\Resources\CMPullDistributionPoint\CMPullDistributionPoint_Disabled.ps1)
+
+### CMSiteMaintenance
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] TaskName** _(Key)_: Specifies the name of the maintenance task.
+  - Values include: { Delete Aged Inventory History | Delete Aged Metering Data |
+  Clear Undiscovered Clients | Delete Obsolete Alerts | Delete Aged Replication Data
+  | Delete Aged Device Wipe Record | Delete Aged Enrolled Devices | Delete Aged User
+  Device Affinity Data | Delete Duplicate System Discovery Data | Delete Aged
+  Unknown Computers | Delete Expired MDM Bulk Enroll Package Records | Backup SMS
+  Site Server | Delete Aged Status Messages | Delete Aged Metering Summary Data |
+  Delete Inactive Client Discovery Data | Delete Aged Application Revisions |
+  Delete Aged Replication Summary Data | Delete Obsolete Forest Discovery Sites
+  And Subnets | Delete Aged Threat Data | Delete Aged Delete Detection Data |
+  Delete Aged Distribution Point Usage Stats | Delete Orphaned Client Deployment
+  State Records | Rebuild Indexes | Delete Aged Discovery Data | Summarize File
+  Usage Metering Data | Delete Obsolete Client Discovery Data | Delete Aged Log
+  Data | Delete Aged Application Request Data | Check Application Title with
+  Inventory Information | Delete Aged EP Health Status History Data | Delete
+  Aged Notification Task History | Delete Aged Passcode Records | Delete Aged
+  Console Connection Data | Monitor Keys | Delete Aged Collected Files |
+  Summarize Monthly Usage Metering Data | Delete Aged Computer Association Data
+  | Delete Aged Client Download History | Delete Aged Exchange Partnership |
+  Summarize Installed Software Data | Delete Aged Client Operations | Delete Aged
+  Notification Server History | Update Application Available Targeting | Delete
+  Aged Cloud Management Gateway Traffic Data | Update Application Catalog
+  Tables }
+- **[Boolean] Enabled** _(Required)_: Specifies if the task is enabled or disabled.
+- **[String] DaysOfWeek[]** _(Write)_: Specifies an array of day names that
+  determine the days of each week on which the maintenance task runs.
+- **[String] BeginTime** _(Write)_: Specifies the time at which a maintenance
+  task starts.
+- **[String] LatestBeginTime** _(Write)_: Specifies the latest start time at
+  which the maintenance task runs.
+- **[UInt32] DeleteOlderThanDays** _(Write)_: Specifies how many days to delete
+  data that has been inactive for.
+- **[String] BackupLocation** _(Write)_: Specifies the backup location for Backup
+  Site Server.
+- **[UInt32] RunInterval** _(Write)_: Species the run interval in minutes for
+  Application Catalog Tables task only.
+- **[UInt32] TaskType** _(Read)_: Specifies the type of task.
+- **[UInt32] SiteType** _(Read)_: Specifies the a numeric value for the site type.
+
+#### CMSiteMaintenance Examples
+
+- [CMSiteMaintenance_BackupTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_BackupTask_Enabled.ps1)
+- [CMSiteMaintenance_Disabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_Disabled.ps1)
+- [CMSiteMaintenance_MaintenanceTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_MaintenanceTask_Enabled.ps1)
+- [CMSiteMaintenance_SummaryTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_SummaryTask_Enabled.ps1)
+- [CMSiteMaintenance_UpdateAppCatTablesTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_UpdateAppCatTablesTask_Enabled.ps1)

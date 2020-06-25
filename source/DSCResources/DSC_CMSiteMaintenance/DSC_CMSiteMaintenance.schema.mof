@@ -1,0 +1,44 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSiteMaintenance")]
+class DSC_CMSiteMaintenance : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the parent setting category."), ValueMap{"Delete Aged Inventory History","Delete Aged Metering Data","Clear Undiscovered Clients","Delete Obsolete Alerts",
+        "Delete Aged Replication Data","Delete Aged Device Wipe Record","Delete Aged Enrolled Devices","Delete Aged User Device Affinity Data",
+        "Delete Duplicate System Discovery Data","Delete Aged Unknown Computers","Delete Expired MDM Bulk Enroll Package Records","Backup SMS Site Server",
+        "Delete Aged Status Messages","Delete Aged Metering Summary Data","Delete Inactive Client Discovery Data",
+        "Delete Aged Application Revisions","Delete Aged Replication Summary Data","Delete Obsolete Forest Discovery Sites And Subnets",
+        "Delete Aged Threat Data","Delete Aged Delete Detection Data","Delete Aged Distribution Point Usage Stats",
+        "Delete Orphaned Client Deployment State Records","Rebuild Indexes","Delete Aged Discovery Data","Summarize File Usage Metering Data",
+        "Delete Obsolete Client Discovery Data","Delete Aged Log Data","Delete Aged Application Request Data",
+        "Check Application Title with Inventory Information","Delete Aged EP Health Status History Data","Delete Aged Notification Task History",
+        "Delete Aged Passcode Records","Delete Aged Console Connection Data","Monitor Keys","Delete Aged Collected Files",
+        "Summarize Monthly Usage Metering Data","Delete Aged Computer Association Data","Delete Aged Client Download History",
+        "Delete Aged Exchange Partnership","Summarize Installed Software Data","Delete Aged Client Operations",
+        "Delete Aged Notification Server History","Update Application Available Targeting",
+        "Delete Aged Cloud Management Gateway Traffic Data","Update Application Catalog Tables"},
+        Values{"Delete Aged Inventory History","Delete Aged Metering Data","Clear Undiscovered Clients","Delete Obsolete Alerts",
+        "Delete Aged Replication Data","Delete Aged Device Wipe Record","Delete Aged Enrolled Devices","Delete Aged User Device Affinity Data",
+        "Delete Duplicate System Discovery Data","Delete Aged Unknown Computers","Delete Expired MDM Bulk Enroll Package Records","Backup SMS Site Server",
+        "Delete Aged Status Messages","Delete Aged Metering Summary Data","Delete Inactive Client Discovery Data",
+        "Delete Aged Application Revisions","Delete Aged Replication Summary Data","Delete Obsolete Forest Discovery Sites And Subnets",
+        "Delete Aged Threat Data","Delete Aged Delete Detection Data","Delete Aged Distribution Point Usage Stats",
+        "Delete Orphaned Client Deployment State Records","Rebuild Indexes","Delete Aged Discovery Data","Summarize File Usage Metering Data",
+        "Delete Obsolete Client Discovery Data","Delete Aged Log Data","Delete Aged Application Request Data",
+        "Check Application Title with Inventory Information","Delete Aged EP Health Status History Data","Delete Aged Notification Task History",
+        "Delete Aged Passcode Records","Delete Aged Console Connection Data","Monitor Keys","Delete Aged Collected Files",
+        "Summarize Monthly Usage Metering Data","Delete Aged Computer Association Data","Delete Aged Client Download History",
+        "Delete Aged Exchange Partnership","Summarize Installed Software Data","Delete Aged Client Operations",
+        "Delete Aged Notification Server History","Update Application Available Targeting",
+        "Delete Aged Cloud Management Gateway Traffic Data","Update Application Catalog Tables"}] String TaskName;
+    [Required, Description("Specifies if the task is enabled or disabled.")] Boolean Enabled;
+    [Write, Description("Specifies an array of day names that determine the days of each week on which the maintenance task runs"), ValueMap{"Sunday","Monday",
+    "Tuesday","Wednesday","Thursday","Friday","Saturday"},Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday",
+    "Saturday"}] String DaysOfWeek[];
+    [Write, Description("Specifies the time at which a maintenance task starts.")] String BeginTime;
+    [Write, Description("Specifies the latest start time at which the maintenance task runs.")] String LatestBeginTime;
+    [Write, Description("Specifies how many days to delete data that has been inactive for.")] UInt32 DeleteOlderThanDays;
+    [Write, Description("Specifies the backup location for Backup Site Server.")] String BackupLocation;
+    [Write, Description("Specifies the run interval in minutes for the task.")] UInt32 RunInterval;
+    [Read, Description("Specifies the type of task")] UInt32 TaskType;
+    [Read, Description("Specifies the a numeric value for the site type.")] UInt32 SiteType;
+};
