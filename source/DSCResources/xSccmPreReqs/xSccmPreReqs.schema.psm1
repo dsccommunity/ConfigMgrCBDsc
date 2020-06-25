@@ -145,7 +145,7 @@ Configuration xSCCMPreReqs
 
         [Parameter()]
         [System.String[]]
-        $FirewallUdpLocalPort = @('137-138','5355'),
+        $FirewallUdpLocalPort = @('137-138','1434','5355'),
 
         [Parameter()]
         [System.String[]]
