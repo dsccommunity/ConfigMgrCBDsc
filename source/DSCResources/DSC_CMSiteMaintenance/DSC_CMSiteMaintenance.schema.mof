@@ -40,4 +40,5 @@ class DSC_CMSiteMaintenance : OMI_BaseResource
     [Write, Description("Specifies the backup location for Backup Site Server.")] String BackupLocation;
     [Write, Description("Specifies the run interval in minutes for the task.")] UInt32 RunInterval;
     [Read, Description("Specifies the type of task")] UInt32 TaskType;
+    [Read, Description("Specifies the a numeric value for the site type.")] UInt32 SiteType;
 };

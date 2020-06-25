@@ -64,6 +64,16 @@ try
                     Enabled  = $false
                 }
 
+                $resultSiteTypeCas = @{
+                    SiteCode = 'Lab'
+                    SiteType = 4
+                }
+
+                $resultSiteTypePrimary = @{
+                    SiteCode = 'Lab'
+                    SiteType = 2
+                }
+
                 $resultBackup = @{
                     TaskName      = 'Backup SMS Site Server'
                     ManagedObject = @{
@@ -132,6 +142,7 @@ try
 
                 It 'Should return desired result for tasktype 1' {
                     Mock -CommandName Get-CMSiteMaintenanceTask -MockWith { $resultBackup }
+                    Mock -CommandName Get-CMSiteDefinition -MockWith { $resultSiteTypeCas }
 
                     $result = Get-TargetResource @getInputType1Enabled
                     $result                     | Should -BeOfType System.Collections.HashTable
@@ -145,10 +156,12 @@ try
                     $result.BackupLocation      | Should -Be -ExpectedValue 'C:\Temp123'
                     $result.RunInterval         | Should -Be -ExpectedValue $null
                     $result.TaskType            | Should -Be -ExpectedValue 1
+                    $result.SiteType            | Should -Be -ExpectedValue 4
                 }
 
                 It 'Should return desired result for tasktype 2' {
                     Mock -CommandName Get-CMSiteMaintenanceTask -MockWith { $resultMeteringData }
+                    Mock -CommandName Get-CMSiteDefinition -MockWith { $resultSiteTypePrimary }
 
                     $result = Get-TargetResource @inputType2Disabled
                     $result                     | Should -BeOfType System.Collections.HashTable
@@ -162,10 +175,12 @@ try
                     $result.BackupLocation      | Should -Be -ExpectedValue $null
                     $result.RunInterval         | Should -Be -ExpectedValue $null
                     $result.TaskType            | Should -Be -ExpectedValue 2
+                    $result.SiteType            | Should -Be -ExpectedValue 2
                 }
 
                 It 'Should return desired result for tasktype 3' {
                     Mock -CommandName Get-CMSiteMaintenanceTask -MockWith { $resultAgedClient }
+                    Mock -CommandName Get-CMSiteDefinition -MockWith { $resultSiteTypePrimary }
 
                     $result = Get-TargetResource @inputType3Disabled
                     $result                     | Should -BeOfType System.Collections.HashTable
@@ -179,10 +194,12 @@ try
                     $result.BackupLocation      | Should -Be -ExpectedValue $null
                     $result.RunInterval         | Should -Be -ExpectedValue $null
                     $result.TaskType            | Should -Be -ExpectedValue 3
+                    $result.SiteType            | Should -Be -ExpectedValue 2
                 }
 
                 It 'Should return desired result for Update Application Catalog Tables enabled' {
                     Mock -CommandName Get-CMSiteSummaryTask -MockWith { $resultSummaryTaskEnabled }
+                    Mock -CommandName Get-CMSiteDefinition -MockWith { $resultSiteTypePrimary }
 
                     $result = Get-TargetResource @inputSummaryTaskDisabled
                     $result                     | Should -BeOfType System.Collections.HashTable
@@ -196,10 +213,12 @@ try
                     $result.BackupLocation      | Should -Be -ExpectedValue $null
                     $result.RunInterval         | Should -Be -ExpectedValue 1380
                     $result.TaskType            | Should -Be -ExpectedValue $null
+                    $result.SiteType            | Should -Be -ExpectedValue 2
                 }
 
                 It 'Should return desired result for Update Application Catalog Tables disabled' {
                     Mock -CommandName Get-CMSiteSummaryTask -MockWith { $resultSummaryTaskDisabled }
+                    Mock -CommandName Get-CMSiteDefinition -MockWith { $resultSiteTypePrimary }
 
                     $result = Get-TargetResource @inputSummaryTaskDisabled
                     $result                     | Should -BeOfType System.Collections.HashTable
@@ -213,6 +232,7 @@ try
                     $result.BackupLocation      | Should -Be -ExpectedValue $null
                     $result.RunInterval         | Should -Be -ExpectedValue 1380
                     $result.TaskType            | Should -Be -ExpectedValue $null
+                    $result.SiteType            | Should -Be -ExpectedValue 2
                 }
             }
         }
@@ -238,6 +258,7 @@ try
                         RunInterval         = $null
                         BackupLocation      = 'C:\Temp123'
                         DeleteOlderThanDays = 0
+                        SiteType            = 4
                     }
 
                     $inputType1EnabledBad = @{
@@ -273,6 +294,7 @@ try
                         DeleteOlderThanDays = 0
                         BackupLocation      = $null
                         RunInterval         = $null
+                        SiteType            = 2
                     }
 
                     $inputType2EnabledBad = @{
@@ -296,6 +318,7 @@ try
                         SiteCode            = 'Lab'
                         BackupLocation      = $null
                         RunInterval         = $null
+                        SiteType            = 2
                     }
 
                     $getReturnTaskType3Disabled = @{
@@ -309,6 +332,7 @@ try
                         SiteCode            = 'Lab'
                         BackupLocation      = $null
                         RunInterval         = $null
+                        SiteType            = 2
                     }
 
                     $inputType3EnabledDay = @{
@@ -339,6 +363,7 @@ try
                         Enabled             = $true
                         BackupLocation      = $null
                         DeleteOlderThanDays = 0
+                        SiteType            = 2
                     }
 
                     $inputSummaryTaskEnabledBad = @{
@@ -490,6 +515,7 @@ try
                         RunInterval         = $null
                         BackupLocation      = $null
                         DeleteOlderThanDays = 0
+                        SiteType            = 4
                     }
 
                     $inputType1EnabledBad = @{
@@ -501,6 +527,50 @@ try
                         LatestBeginTime = '0700'
                         RunInterval     = 5
                     }
+
+                    $getReturnWrongTypeCasOnly = @{
+                        SiteCode            = 'Lab'
+                        BeginTime           = $null
+                        LatestBeginTime     = $null
+                        DaysOfWeek          = $null
+                        TaskType            = $null
+                        Enabled             = $true
+                        DeleteOlderThanDays = 0
+                        BackupLocation      = $null
+                        RunInterval         = $null
+                        SiteType            = 2
+                    }
+
+                    $inputCasOnlySetting = @{
+                        SiteCode = 'Lab'
+                        TaskName = 'Delete Duplicate System Discovery Data'
+                        Enabled  = $true
+                    }
+
+                    $casOnlyThrow = 'The task specified Delete Duplicate System Discovery Data only applies to Centeral Administrative Site (CAS) Site Server.'
+
+                    $getReturnWrongTypePrimaryOnly = @{
+                        BeginTime           = $null
+                        LatestBeginTime     = $null
+                        DaysOfWeek          = $null
+                        TaskName            = 'Delete Aged Client Download History'
+                        TaskType            = $null
+                        Enabled             = $null
+                        DeleteOlderThanDays = $null
+                        SiteCode            = 'Lab'
+                        BackupLocation      = $null
+                        RunInterval         = $null
+                        SiteType            = 4
+                    }
+
+                    $inputPriOnlySetting = @{
+                        SiteCode = 'Lab'
+                        TaskName = 'Delete Aged Client Download History'
+                        Enabled  = $true
+                    }
+
+                    $primaryOnlyThrow = 'The task specified Delete Aged Client Download History only applies to a Primary Site Server.'
+
                 }
 
                 It 'Should throw when taskname is invalid' {
@@ -536,11 +606,33 @@ try
                     Assert-MockCalled Set-CMSiteSummaryTask -Exactly -Times 0 -Scope It
                 }
 
-                It 'Should throw when an Backup location is Null' {
+                It 'Should throw when an backup location is Null' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnTaskType1Null }
                     Mock -CommandName Set-CMSiteMaintenanceTask -MockWith { throw }
 
                     { Set-TargetResource @inputType1EnabledBad } | Should -Throw
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSiteMaintenanceTask -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSiteSummaryTask -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw when specifying a CAS only setting on a Primary Server' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnWrongTypeCasOnly }
+
+                    { Set-TargetResource @inputCasOnlySetting } | Should -Throw -ExpectedMessage $casOnlyThrow
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSiteMaintenanceTask -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSiteSummaryTask -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw when specifying a Primary only setting on a CAS Server' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnWrongTypePrimaryOnly }
+
+                    { Set-TargetResource @inputPriOnlySetting } | Should -Throw -ExpectedMessage $primaryOnlyThrow
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -569,6 +661,7 @@ try
                         RunInterval         = $null
                         BackupLocation      = 'C:\Temp123'
                         DeleteOlderThanDays = 0
+                        SiteType            = 4
                     }
 
                     $inputType1Enabled = @{
@@ -627,6 +720,7 @@ try
                         DeleteOlderThanDays = 0
                         BackupLocation      = $null
                         RunInterval         = $null
+                        SiteType            = 2
                     }
 
                     $inputType2Disabled = @{
@@ -683,6 +777,7 @@ try
                         SiteCode            = 'Lab'
                         BackupLocation      = $null
                         RunInterval         = $null
+                        SiteType            = 2
                     }
 
                     $inputType3Disabled = @{
@@ -798,7 +893,7 @@ try
                 }
             }
 
-            Context 'When running Test-TargetResource Parameter Validation' {
+            Context 'When running Test-TargetResource input validation' {
                 BeforeEach {
                     $inputBadBegin = @{
                         SiteCode    = 'Lab'
@@ -813,6 +908,45 @@ try
                         Enabled         = $true
                         LatestBeginTime = 'e340'
                     }
+
+                    $getReturnWrongTypeCasOnly = @{
+                        SiteCode            = 'Lab'
+                        BeginTime           = $null
+                        LatestBeginTime     = $null
+                        DaysOfWeek          = $null
+                        TaskType            = $null
+                        Enabled             = $true
+                        DeleteOlderThanDays = 0
+                        BackupLocation      = $null
+                        RunInterval         = $null
+                        SiteType            = 2
+                    }
+
+                    $inputCasOnlySetting = @{
+                        SiteCode = 'Lab'
+                        TaskName = 'Delete Duplicate System Discovery Data'
+                        Enabled  = $true
+                    }
+
+                    $getReturnWrongTypePrimaryOnly = @{
+                        BeginTime           = $null
+                        LatestBeginTime     = $null
+                        DaysOfWeek          = $null
+                        TaskName            = 'Delete Aged Client Download History'
+                        TaskType            = $null
+                        Enabled             = $null
+                        DeleteOlderThanDays = $null
+                        SiteCode            = 'Lab'
+                        BackupLocation      = $null
+                        RunInterval         = $null
+                        SiteType            = 4
+                    }
+
+                    $inputPriOnlySetting = @{
+                        SiteCode = 'Lab'
+                        TaskName = 'Delete Aged Client Download History'
+                        Enabled  = $true
+                    }
                 }
 
                 It 'Should thow when BeginTime is wrong format' {
@@ -821,6 +955,18 @@ try
 
                 It 'Should throw when LatestBeginTime is in wrong format' {
                     { Test-TargetResource @inputBadLatestBegin } | Should -Throw
+                }
+
+                It 'Should return false when specifying a CAS only task on a Primary server' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnWrongTypeCasOnly }
+
+                    Test-TargetResource @inputCasOnlySetting | Should -Be $false
+                }
+
+                It 'Should return false when specifying a Primary only task on a CAS server' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnWrongTypePrimaryOnly }
+
+                    Test-TargetResource @inputPriOnlySetting | Should -Be $false
                 }
             }
         }

@@ -849,6 +849,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[UInt32] RunInterval** _(Write)_: Species the run interval in minutes for
   Application Catalog Tables task only.
 - **[UInt32] TaskType** _(Read)_: Specifies the type of task.
+- **[UInt32] SiteType** _(Read)_: Specifies the a numeric value for the site type.
 
 #### CMSiteMaintenance Examples
 

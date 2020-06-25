@@ -62,33 +62,37 @@ function Get-TargetResource
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
+    $siteType = Get-CMSiteDefinition -SiteCode $SiteCode
 
     if ($TaskName -ne 'Update Application Catalog Tables')
     {
         $siteMaintenance = (Get-CMSiteMaintenanceTask -Name $TaskName -SiteCode $SiteCode).ManagedObject
 
-        $days = $siteMaintenance.DaysOfWeek
-
-        $daysArr = @('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')
-        $weekDays = @()
-        do
+        if ($siteMaintenance)
         {
-            $dayMax = [Math]::Truncate([Math]::Log($days,2))
-            $weekDays += $daysArr[$dayMax]
-            $days -= [Math]::Pow(2,$dayMax)
-        }
-        while ($days -gt 0 )
+            $days = $siteMaintenance.DaysOfWeek
 
-        $bTime = $($siteMaintenance.BeginTime).Substring(8,4)
-        $lTime = $($siteMaintenance.LatestBeginTime).Substring(8,4)
-        $enabledStatus = $siteMaintenance.Enabled
+            $daysArr = @('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')
+            $weekDays = @()
+            do
+            {
+                $dayMax = [Math]::Truncate([Math]::Log($days,2))
+                $weekDays += $daysArr[$dayMax]
+                $days -= [Math]::Pow(2,$dayMax)
+            }
+            while ($days -gt 0 )
+
+            $bTime = $($siteMaintenance.BeginTime).Substring(8,4)
+            $lTime = $($siteMaintenance.LatestBeginTime).Substring(8,4)
+            $enabledStatus = $siteMaintenance.Enabled
+        }
     }
     else
     {
         $siteMaintenance = Get-CMSiteSummaryTask -TaskName $TaskName
 
         $interval = $($siteMaintenance.RunInterval) / 60
-        if ($null -eq $($siteMaintenance.TaskParameter))
+        if ([string]::IsNullOrEmpty($siteMaintenance.TaskParameter))
         {
             $enabledStatus = $true
         }
@@ -109,6 +113,7 @@ function Get-TargetResource
         RunInterval         = $interval
         BackupLocation      = $siteMaintenance.DeviceName
         TaskType            = $siteMaintenance.TaskType
+        SiteType            = $siteType.SiteType
     }
 }
 
@@ -228,6 +233,33 @@ function Set-TargetResource
 
     try
     {
+        $casOnly = @('Check Application Title with Inventory Information','Delete Duplicate System Discovery Data')
+        $primaryOnly = @('Clear Undiscovered Clients','Delete Aged Application Request Data','Delete Aged Client Download History',
+            'Delete Aged Collected Files','Delete Aged Computer Association Data','Delete Aged Device Wipe Record',
+            'Delete Aged Discovery Data','Delete Aged Enrolled Devices','Delete Aged EP Health Status History Data',
+            'Delete Aged Exchange Partnership','Delete Aged Inventory History','Delete Aged Metering Data',
+            'Delete Aged Metering Summary Data','Delete Aged Notification Task History','Delete Aged Threat Data'
+            'Delete Aged Unknown Computers','Delete Aged User Device Affinity Data','Delete Inactive Client Discovery Data'
+            'Delete Obsolete Client Discovery Data','Delete Orphaned Client Deployment State Records','Evaluate Collection Members',
+            'Summarize File Usage Metering Data','Summarize Installed Software Data','Summarize Monthly Usage Metering Data',
+            'Update Application Available Targeting','Update Application Catalog Tables'
+        )
+
+        if ($state.SiteType -eq 4)
+        {
+            if ($primaryOnly -contains $TaskName)
+            {
+                throw ($script:localizedData.PrimaryOnly -f $TaskName)
+            }
+        }
+        elseif($state.SiteType -eq 2)
+        {
+            if ($casOnly -contains $TaskName)
+            {
+                throw ($script:localizedData.CasOnly -f $TaskName)
+            }
+        }
+
         if ($Enabled -eq $true)
         {
             $buildingParams = @{
@@ -481,7 +513,36 @@ function Test-TargetResource
     $state = Get-TargetResource -SiteCode $SiteCode -TaskName $TaskName -Enabled $Enabled
     $result = $true
 
-    if ($Enabled -eq $true)
+    $casOnly = @('Check Application Title with Inventory Information','Delete Duplicate System Discovery Data')
+    $primaryOnly = @('Clear Undiscovered Clients','Delete Aged Application Request Data','Delete Aged Client Download History',
+        'Delete Aged Collected Files','Delete Aged Computer Association Data','Delete Aged Device Wipe Record',
+        'Delete Aged Discovery Data','Delete Aged Enrolled Devices','Delete Aged EP Health Status History Data',
+        'Delete Aged Exchange Partnership','Delete Aged Inventory History','Delete Aged Metering Data',
+        'Delete Aged Metering Summary Data','Delete Aged Notification Task History','Delete Aged Threat Data'
+        'Delete Aged Unknown Computers','Delete Aged User Device Affinity Data','Delete Inactive Client Discovery Data'
+        'Delete Obsolete Client Discovery Data','Delete Orphaned Client Deployment State Records','Evaluate Collection Members',
+        'Summarize File Usage Metering Data','Summarize Installed Software Data','Summarize Monthly Usage Metering Data',
+        'Update Application Available Targeting','Update Application Catalog Tables'
+    )
+
+    if ($state.SiteType -eq 4)
+    {
+        if ($primaryOnly -contains $TaskName)
+        {
+            Write-Warning -Message ($script:localizedData.PrimaryOnly -f $TaskName)
+            $result = $false
+        }
+    }
+    elseif($state.SiteType -eq 2)
+    {
+        if ($casOnly -contains $TaskName)
+        {
+            Write-Warning -Message ($script:localizedData.CasOnly -f $TaskName)
+            $result = $false
+        }
+    }
+
+    if ($Enabled -eq $true -and $result -ne $false)
     {
         if ($state.TaskType -eq 1)
         {
