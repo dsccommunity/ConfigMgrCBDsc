@@ -231,7 +231,7 @@ Configuration xSCCMPreReqs
             }
             'ReportingServicesPoint' {$features += 'Net-Framework-45-Core'}
             'ServiceConnectionPoint' {$features += 'Net-Framework-45-Core','Net-Framework-Core'}
-            'SoftwareUpdatePoint' {$features += 'Net-Framework-45-Core','Net-Framework-Core','UpdateServices',
+            'SoftwareUpdatePoint' {$features += 'Net-Framework-45-Core','Net-Framework-Core',
                 'NET-Framework-45-ASPNET','UpdateServices-RSAT','UpdateServices-API','UpdateServices-UI',
                 'Web-Asp-Net45','Web-ISAPI-Ext','Web-ISAPI-Filter','Web-Net-Ext45','Web-Default-Doc',
                 'Web-Static-Content','Web-Dyn-Compression','Web-Filtering','Web-Windows-Auth','Web-Mgmt-Console',
