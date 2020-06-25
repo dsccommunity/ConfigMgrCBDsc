@@ -81,7 +81,7 @@
             Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','SCCMPreReqs',
             'SccmSqlSetup','SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups',
             'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
-            'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','Pull Distribution Point',
+            'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint',
             'SiteMaintenance')
 
             # A URL to the license for this module.
