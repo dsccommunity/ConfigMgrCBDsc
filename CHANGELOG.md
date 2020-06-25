@@ -29,12 +29,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Issue and PR template.
 - Added CMFallbackStatusPoint Resource
 - Added CMSoftwareUpdatePoint Resource
-- Added CMDsitributionPoint Resource
+- Added CMDistributionPoint Resource
 - Added CMHeartbeatDiscovery module
 - Added ConvertTo-ScheduleInterval to ResourceHelper
 - Added CMServiceConnectionPoint Resource
 - Added CMNetworkDiscovery Resource
 - Added CMReportingServicePoint Resource
+- Added CMSystemDiscovery Resource
+- Added CMPxeDistributionPoint Resource
+- Added CMPullDistributionPoint Resource
+- Added ConvertTo-AnyCimInstance to the ResourceHelper
 - Added CMSiteMaintenance Resource
 
 ### Changed

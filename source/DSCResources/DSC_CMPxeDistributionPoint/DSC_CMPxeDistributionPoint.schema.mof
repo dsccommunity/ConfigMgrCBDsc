@@ -1,0 +1,15 @@
+[ClassVersion("1.0.0"), FriendlyName("CMPxeDistributionPoint")]
+class DSC_CMPxeDistributionPoint : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the SiteServer to configure the Distribution Point for PXE.")] String SiteServerName;
+    [Write, Description("Indicates whether PXE is enabled on the distribution point.")] Boolean EnablePxe;
+    [Write, Description("Specifies whether to enable PXE responder without Windows Deployment Services.")] Boolean EnableNonWdsPxe;
+    [Write, Description("Indicates whether support for unknown computers is enabled.")] Boolean EnableUnknownComputerSupport;
+    [Write, Description("Indicates whether the distribution point can respond to PXE requests.")] Boolean AllowPxeResponse;
+    [Write, Description("Specifies, in seconds, how long the distribution point delays before it responds to computer requests.")] UInt16 PxeServerResponseDelaySec;
+    [Write, Description("Specifies how you want the distribution point to associate users with their devices for PXE deployments."), ValueMap{"DoNotUse","AllowWithManualApproval","AllowWithAutomaticApproval"}, Values{"DoNotUse","AllowWithManualApproval","AllowWithAutomaticApproval"}] String UserDeviceAffinity;
+    [Write, Description("Specifies, as a secure string, the PXE password."), EmbeddedInstance("MSFT_Credential")] String PxePassword;
+    [Read, Description("Specifies if multicast is enabled.")] Boolean IsMulticast;
+    [Read, Description("Specifies if the DP role is installed.")] String DPStatus;
+};
