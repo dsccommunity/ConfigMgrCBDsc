@@ -125,7 +125,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Default Value: @('1433','1434','4022','445','135','139','49154-49157')
 - **[String[]] FirewallUdpLocalPort** : Specifies the UDP ports to be added to
   the windows firewall as allowed.
-  Default Value: @('137-138','5355')
+  Default Value: @('137-138','1434','5355')
 - **[String] LocalAdministrators** : Specifies the accounts and/or groups you
   want to add to the local administrators group.
 - **[String] NoSmsOnDrives** : Specifies the drive letters of the drive you
