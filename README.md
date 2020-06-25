@@ -88,6 +88,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   the SCCM Reporting Service Point role.
 - **CMPxeDistributionPoint**: Provides a resource for modifying a distribution point
   to changing to a PXE enabled distribution point.
+- **CMPullDistributionPoint**: Provides a resource for modifying a distribution point
+  and making the distribution point a Pull Distribution Point.
 
 ### xSccmPreReqs
 
@@ -787,3 +789,20 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMPxeDistributionPoint_Disabled](Source\Examples\Resources\CMPxeDistributionPoint\CMPxeDistributionPoint_Disabled.ps1)
 - [CMPxeDistributionPoint_Enabled](Source\Examples\Resources\CMPxeDistributionPoint\CMPxeDistributionPoint_Enabled.ps1)
+
+### CMPullDistributionPoint
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteServerName** _(Key)_: Specifies the SiteServer to configure the
+  Pull Distribution Point.
+- **[Boolean] EnablePullDP** _(Write)_: Specifies if the distribution point is
+  to be set to enabled or disabled for pull distribution point.
+- **[EmbeddedInstance] SourceDistributionPoint[]** _(Write)_: Specifies the desired
+  source distribution points and the DP ranking.
+- **[String] DPStatus** _(Read)_: Specifies if the DP role is installed.
+
+#### CMPullDistributionPoint Examples
+
+- [CMPullDistributionPoint_Enabled](Source\Examples\Resources\CMPullDistributionPoint\CMPullDistributionPoint_Enabled.ps1)
+- [CMPullDistributionPoint_Disabled](Source\Examples\Resources\CMPullDistributionPoint\CMPullDistributionPoint_Disabled.ps1)

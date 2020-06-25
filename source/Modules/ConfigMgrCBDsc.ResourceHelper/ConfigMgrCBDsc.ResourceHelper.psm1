@@ -370,6 +370,43 @@ function ConvertTo-ScheduleInterval
     }
 }
 
+<#
+    .SYNOPSIS
+        Converts hashtable into a named Cim Instance.
+
+    .PARAMETER HashTable
+        Specifies the schedule string to convert.
+
+    .PARAMETER ClassName
+        Specifies the desired Cim Instance classname for the output.
+#>
+function ConvertTo-AnyCimInstance
+{
+    [CmdletBinding()]
+    [OutputType([System.Object[]])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [System.Collections.Hashtable]
+        $Hashtable,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ClassName
+    )
+
+    $property = @{}
+    foreach ($item in $Hashtable.GetEnumerator())
+    {
+        $property += @{
+            $item.Key = $item.Value
+        }
+    }
+
+    New-CimInstance -ClassName $ClassName -Namespace 'root/microsoft/Windows/DesiredStateConfiguration' `
+        -Property $property -ClientOnly
+}
+
 Export-ModuleMember -Function @(
     'Import-ConfigMgrPowerShellModule'
     'Convert-CidrToIP'
@@ -378,4 +415,5 @@ Export-ModuleMember -Function @(
     'Convert-BoundariesIPSubnets'
     'Get-BoundaryInfo'
     'ConvertTo-ScheduleInterval'
+    'ConvertTo-AnyCimInstance'
 )
