@@ -252,7 +252,7 @@ function Set-TargetResource
                 throw ($script:localizedData.PrimaryOnly -f $TaskName)
             }
         }
-        elseif($state.SiteType -eq 2)
+        elseif ($state.SiteType -eq 2)
         {
             if ($casOnly -contains $TaskName)
             {
@@ -533,7 +533,7 @@ function Test-TargetResource
             $result = $false
         }
     }
-    elseif($state.SiteType -eq 2)
+    elseif ($state.SiteType -eq 2)
     {
         if ($casOnly -contains $TaskName)
         {
