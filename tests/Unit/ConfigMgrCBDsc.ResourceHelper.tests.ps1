@@ -483,4 +483,90 @@ InModuleScope $script:subModuleName {
             }
         }
     }
+
+    Describe "$moduleResourceName\Compare-MultipleCompares" {
+        BeforeAll {
+            $inputParamMatch = @{
+                CurrentState = 'Device1','Device2'
+                Match        = 'Device2','Device3'
+                Include      = $null
+                Exclude      = $null
+            }
+
+            $inputParamCurrentNull = @{
+                CurrentState = $null
+                Match        = 'Device2','Device3'
+                Include      = $null
+                Exclude      = $null
+            }
+
+            $inputParamInclude = @{
+                CurrentState = 'Device1','Device2'
+                Match        = $null
+                Include      = 'Device2','Device3'
+                Exclude      = $null
+            }
+
+            $inputParamExclude = @{
+                CurrentState = 'Device1','Device2'
+                Match        = $null
+                Include      = $null
+                Exclude      = 'Device2','Device3'
+            }
+
+            $inputParamExcludeInclude = @{
+                CurrentState = 'Device1','Device2'
+                Match        = $null
+                Include      = 'Device4'
+                Exclude      = 'Device2','Device3'
+            }
+        }
+
+        Context 'When return is as expected' {
+            It 'Should return desired result for desired results with match' {
+                $result = Compare-MultipleCompares @inputParamMatch
+                $result              | Should -BeOfType System.Collections.HashTable
+                $result.Type         | Should -Be -ExpectedValue 'Match'
+                $result.Missing      | Should -Be -ExpectedValue 'Device3'
+                $result.Remove       | Should -Be -ExpectedValue 'Device1'
+                $result.CurrentState | Should -Be -ExpectedValue 'Device1','Device2'
+            }
+
+            It 'Should return desired result for desired missing settings with match when current state is null' {
+                $result = Compare-MultipleCompares @inputParamCurrentNull
+                $result              | Should -BeOfType System.Collections.HashTable
+                $result.Type         | Should -Be -ExpectedValue 'Match'
+                $result.Missing      | Should -Be -ExpectedValue 'Device2','Device3'
+                $result.Remove       | Should -Be -ExpectedValue $null
+                $result.CurrentState | Should -Be -ExpectedValue $null
+            }
+
+            It 'Should return desired result for desired missing settings with include' {
+                $result = Compare-MultipleCompares @inputParamInclude
+                $result              | Should -BeOfType System.Collections.HashTable
+                $result.Type         | Should -Be -ExpectedValue 'Include'
+                $result.Missing      | Should -Be -ExpectedValue 'Device3'
+                $result.Remove       | Should -Be -ExpectedValue $null
+                $result.CurrentState | Should -Be -ExpectedValue 'Device1','Device2'
+            }
+
+            It 'Should return desired result for desired exclude settings with exclude' {
+                $result = Compare-MultipleCompares @inputParamExclude
+                $result              | Should -BeOfType System.Collections.HashTable
+                $result.Type         | Should -Be -ExpectedValue 'Exclude'
+                $result.Missing      | Should -Be -ExpectedValue $null
+                $result.Remove       | Should -Be -ExpectedValue 'Device2'
+                $result.CurrentState | Should -Be -ExpectedValue 'Device1','Device2'
+            }
+
+            It 'Should return desired result for desired exclude settings with include and exclude' {
+                $result = Compare-MultipleCompares @inputParamExcludeInclude
+                $result              | Should -BeOfType System.Collections.HashTable
+                $result.Type         | Should -Be -ExpectedValue 'Include, Exclude'
+                $result.Missing      | Should -Be -ExpectedValue 'Device4'
+                $result.Remove       | Should -Be -ExpectedValue 'Device2'
+                $result.CurrentState | Should -Be -ExpectedValue 'Device1','Device2'
+            }
+        }
+    }
 }

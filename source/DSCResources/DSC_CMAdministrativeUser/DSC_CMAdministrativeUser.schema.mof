@@ -1,0 +1,16 @@
+[ClassVersion("1.0.0"), FriendlyName("CMAdministrativeUser")]
+class DSC_CMAdministrativeUser : OMI_BaseResource
+{
+    [Key, Description("Specifies the name of the administrator account.")] String AdminName;
+    [Required, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Write, Description("Specifies an array of names for the roles desired to be assigned to an administrative user.")] String Roles[];
+    [Write, Description("Specifies an array of names for the roles desired to be added to an administrative user.")] String RolesToInclude[];
+    [Write, Description("Specifies an array of names for the roles desired to be removed from an administrative user.")] String RolesToExclude[];
+    [Write, Description("Specifies an array of names for the scopes desired to be assigned to an administrative user.")] String Scopes[];
+    [Write, Description("Specifies an array of names for the scopes desired to be added to an administrative user.")] String ScopesToInclude[];
+    [Write, Description("Specifies an array of names for the scopes desired to be removed from an administrative user.")] String ScopesToExclude[];
+    [Write, Description("Specifies an array of names for the collections desired to be assigned to an administrative user.")] String Collections[];
+    [Write, Description("Specifies an array of names for the collections desired to be added to an administrative user.")] String CollectionsToInclude[];
+    [Write, Description("Specifies an array of names for the collections desired to be removed from an administrative user.")] String CollectionsToExclude[];
+    [Write, Description("Specifies whether the administrative user is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
