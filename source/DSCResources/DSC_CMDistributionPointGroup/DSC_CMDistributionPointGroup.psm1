@@ -153,7 +153,7 @@ function Set-TargetResource
                             }
 
                             Write-Verbose -Message ($script:localizedData.AddDistro -f $add, $DistributionPointGroup)
-                            Add-CMDistributionPointToGroup @addParam -Force
+                            Add-CMDistributionPointToGroup @addParam
                         }
                         else
                         {
@@ -172,7 +172,7 @@ function Set-TargetResource
                         }
 
                         Write-Verbose -Message ($script:localizedData.RemoveDistro -f $remove, $DistributionPointGroup)
-                        Remove-CMDistributionPointFromGroup @removeParam -Force
+                        Remove-CMDistributionPointFromGroup @removeParam
                     }
                 }
             }
