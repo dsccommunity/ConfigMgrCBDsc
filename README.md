@@ -858,3 +858,24 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMSiteMaintenance_MaintenanceTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_MaintenanceTask_Enabled.ps1)
 - [CMSiteMaintenance_SummaryTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_SummaryTask_Enabled.ps1)
 - [CMSiteMaintenance_UpdateAppCatTablesTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_UpdateAppCatTablesTask_Enabled.ps1)
+
+### CMDistributionPointGroup
+
+- **[String] DistributionPointGroup** _(Key)_: Specifies the distribution point
+  group name.
+- **[String] SiteCode** _(Required)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] DistributionPoints[]** _(Write)_: Specifies an array of distribution
+  points to match to the distribution point group.
+- **[String] DistributionPointsToInclude[]** _(Write)_: Specifies an array of
+  distribution points to add to the distribution point group.
+- **[String] DistributionPointsToExclude[]** _(Write)_: Specifies an array of
+  distribution points to remove from the distribution point group.
+- **[String] Ensure** _(Write)_: Specifies whether the distribution point group
+  is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMDistributionPointGroup Examples
+
+- [CMDistributionPointGroup_Present](Source\Examples\Resources\CMDistributionPointGroup\CMDistributionPointGroup_Present.ps1)
+- [CMDistributionPointGroup_Absent](Source\Examples\Resources\CMDistributionPointGroup\CMDistributionPointGroup_Absent.ps1)
