@@ -57,6 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated pipeline to run on merges to master only when something in source changes
 - Added UDP 1434 to the defaults for the xSCCMPreReqs.
 - Fixed newline in the CMIniFile resource.
+- Removed WSUS top level feature.
 
 ### Removed
 
