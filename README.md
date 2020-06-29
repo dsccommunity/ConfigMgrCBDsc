@@ -91,6 +91,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMPullDistributionPoint**: Provides a resource for modifying a distribution point
   and making the distribution point a Pull Distribution Point.
 - **CMSiteMaintenance**: Provides a resource for modifying the Site Maintenance tasks.
+- **CMDistributionPointGroup**: Provides a resource for creating Distribution Point
+  Groups and adding Distribution Points to the group.
 
 ### xSccmPreReqs
 
