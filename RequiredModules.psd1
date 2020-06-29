@@ -19,6 +19,7 @@
     'DscResource.AnalyzerRules' = 'latest'
     xDscResourceDesigner        = 'latest'
     'DscResource.DocGenerator'  = 'latest'
+    PSDepend                    = '0.3.2'
 
     # Build dependent modules
     'DscResource.Common'        = 'latest'
