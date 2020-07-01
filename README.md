@@ -91,6 +91,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMPullDistributionPoint**: Provides a resource for modifying a distribution point
   and making the distribution point a Pull Distribution Point.
 - **CMSiteMaintenance**: Provides a resource for modifying the Site Maintenance tasks.
+- **CMSiteSystemServer**: Provides a resource for adding and modifying a Site
+  System Server and its properties.
 
 ### xSccmPreReqs
 
@@ -858,3 +860,33 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMSiteMaintenance_MaintenanceTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_MaintenanceTask_Enabled.ps1)
 - [CMSiteMaintenance_SummaryTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_SummaryTask_Enabled.ps1)
 - [CMSiteMaintenance_UpdateAppCatTablesTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_UpdateAppCatTablesTask_Enabled.ps1)
+
+### CMSiteSystemServer
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SiteSystemServer** _(Key)_: Specifies the name of the site system server.
+- **[String] PublicFqdn** _(Write)_: Specifies the public FQDN of the site server.
+  Setting PublicFqdn = '' will disable the PublicFqdn setting.
+- **[Boolean] FdmOperation** _(Write)_: Indicates whether the site system server
+  is required to initiate connections to this site system.
+- **[Boolean] UseSiteServerAccount** _(Write)_: Indicates that the install uses
+  the site server's computer account to install the site system.
+- **[String] AccountName** _(Write)_: Specifies the account name for installing
+  the site system.
+- **[Boolean] EnableProxy** _(Write)_: Indicates whether to enable a proxy server
+  to use when the server synchronizes information from the Internet.
+- **[String] ProxyServerName** _(Write)_: Specifies the name of a proxy server.
+  Use a fully qualified domain name FQDN, short name, or IPv4/IPv6 address.
+- **[UInt32] ProxyServerPort** _(Write)_: Specifies the proxy server port number
+  to use when connecting to the Internet.
+- **[String] ProxyAccessAccount** _(Write)_: Specifies the credentials to use
+  to authenticate with the proxy server.
+- **[String] Ensure** _(Write)_: Specifies whether the system site
+  server is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMSiteSystemServer Examples
+
+- [CMSiteSystemServer_Present](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Present.ps1)
+- [CMSiteSystemServer_Absent](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Absent.ps1)
