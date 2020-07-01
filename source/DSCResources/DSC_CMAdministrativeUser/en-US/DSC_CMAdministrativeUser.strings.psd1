@@ -17,4 +17,7 @@ ConvertFrom-StringData @'
     AllParam             = Unable to add the All scopes setting via Desired State Configuration, All can be used for new account only.
     RemoveAll            = Unable to remove the All scope via Desired State Configuration.
     ModifyAll            = Unable to modify scope with Desired State Configuration as it is currently set to All.
+    RolesInEx            = RolesToExclude and RolesToInclude contain to same entry {0}, remove from one of the arrays.
+    ScopesInEx           = ScopesToExclude and ScopesToInclude contain to same entry {0}, remove from one of the arrays.
+    CollectionsInEx      = CollectionsToExclude and CollectionsToInclude contain to same {0}, remove from one of the arrays.
 '@

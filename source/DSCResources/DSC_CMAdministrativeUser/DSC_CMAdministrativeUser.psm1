@@ -46,11 +46,17 @@ function Get-TargetResource
         {
             if ($item.CategoryTypeID -eq 29)
             {
-                $scope += $item.CategoryName
+                if ($scope -notcontains $item.CategoryName)
+                {
+                    $scope += $item.CategoryName
+                }
             }
             elseif ($item.CategoryTypeId -eq 1)
             {
-                $collections += $item.CategoryName
+                if ($collections -notcontains $item.CategoryName)
+                {
+                    $collections += $item.CategoryName
+                }
             }
         }
 
@@ -176,6 +182,17 @@ function Set-TargetResource
         {
             if ($Roles -or $RolesToInclude -or $RolesToExclude)
             {
+                if ($RolesToInclude -and $RolesToExclude)
+                {
+                    foreach ($item in $RolesToInclude)
+                    {
+                        if ($RolesToExclude -contains $item)
+                        {
+                            throw ($script:localizedData.RolesInEx -f $item)
+                        }
+                    }
+                }
+
                 $rolesArray = @{
                     Match        = $Roles
                     Include      = $RolesToInclude
@@ -191,7 +208,7 @@ function Set-TargetResource
                     {
                         if (Get-CMSecurityRole -Name $roleCheck)
                         {
-                            $rolesAdd += $roleCheck
+                            [array]$rolesAdd += $roleCheck
                         }
                         else
                         {
@@ -203,6 +220,17 @@ function Set-TargetResource
 
             if ($Scopes -or $ScopesToInclude -or $ScopesToExclude)
             {
+                if ($ScopesToInclude -and $ScopesToExclude)
+                {
+                    foreach ($item in $ScopesToInclude)
+                    {
+                        if ($ScopesToExclude -contains $item)
+                        {
+                            throw ($script:localizedData.ScopesInEx -f $item)
+                        }
+                    }
+                }
+
                 $scopesArray = @{
                     Match        = $Scopes
                     Include      = $ScopesToInclude
@@ -218,7 +246,7 @@ function Set-TargetResource
                     {
                         if (Get-CMSecurityScope -Name $scopeCheck)
                         {
-                            $scopesAdd += $scopeCheck
+                            [array]$scopesAdd += $scopeCheck
                         }
                         else
                         {
@@ -230,6 +258,17 @@ function Set-TargetResource
 
             if ($Collections -or $CollectionsToInclude -or $CollectionsToExclude)
             {
+                if ($CollectionsToInclude -and $CollectionsToExclude)
+                {
+                    foreach ($item in $CollectionsToInclude)
+                    {
+                        if ($CollectionsToExclude -contains $item)
+                        {
+                            throw ($script:localizedData.CollectionsInEx -f $item)
+                        }
+                    }
+                }
+
                 $collectionsArray = @{
                     Match        = $Collections
                     Include      = $CollectionsToInclude
@@ -245,7 +284,7 @@ function Set-TargetResource
                     {
                         if (Get-CMCollection -Name $collectionCheck)
                         {
-                            $collectionsAdd += $collectionCheck
+                            [array]$collectionsAdd += $collectionCheck
                         }
                         else
                         {
@@ -503,6 +542,18 @@ function Test-TargetResource
         {
             if ($Roles -or $RolesToInclude -or $RolesToExclude)
             {
+                if ($RolesToInclude -and $RolesToExclude)
+                {
+                    foreach ($item in $RolesToInclude)
+                    {
+                        if ($RolesToExclude -contains $item)
+                        {
+                            Write-Warning -Message ($script:localizedData.RolesInEx -f $item)
+                            $result = $false
+                        }
+                    }
+                }
+
                 $rolesArray = @{
                     Match        = $Roles
                     Include      = $RolesToInclude
@@ -535,6 +586,18 @@ function Test-TargetResource
 
             if ($Scopes -or $ScopesToInclude -or $ScopesToExclude)
             {
+                if ($ScopesToInclude -and $ScopesToExclude)
+                {
+                    foreach ($item in $ScopesToInclude)
+                    {
+                        if ($ScopesToExclude -contains $item)
+                        {
+                            Write-Warning -Message ($script:localizedData.ScopesInEx -f $item)
+                            $result = $false
+                        }
+                    }
+                }
+
                 $scopesArray = @{
                     Match        = $Scopes
                     Include      = $ScopesToInclude
@@ -582,6 +645,18 @@ function Test-TargetResource
 
             if ($Collections -or $CollectionsToInclude -or $CollectionsToExclude)
             {
+                if ($CollectionsToInclude -and $CollectionsToExclude)
+                {
+                    foreach ($item in $CollectionsToInclude)
+                    {
+                        if ($CollectionsToExclude -contains $item)
+                        {
+                            Write-Warning -Message ($script:localizedData.CollectionsInEx -f $item)
+                            $result = $false
+                        }
+                    }
+                }
+
                 $collectionsArray = @{
                     Match        = $Collections
                     Include      = $CollectionsToInclude

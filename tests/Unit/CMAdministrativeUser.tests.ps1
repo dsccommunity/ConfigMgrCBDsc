@@ -305,10 +305,34 @@ try
                         ScopesToExclude = 'All'
                     }
 
+                    $dupRoles = @{
+                        SiteCode       = 'Lab'
+                        AdminName      = 'contoso\User'
+                        RolesToInclude = 'Full Administrator'
+                        RolesToExclude = 'Full Administrator'
+                    }
+
+                    $dupScopes = @{
+                        SiteCode        = 'Lab'
+                        AdminName       = 'contoso\User'
+                        ScopesToInclude = 'Default'
+                        ScopesToExclude = 'Default'
+                    }
+
+                    $dupCollections = @{
+                        SiteCode             = 'Lab'
+                        AdminName            = 'contoso\User'
+                        CollectionsToInclude = 'Test1'
+                        CollectionsToExclude = 'Test1'
+                    }
+
                     $modifyAllScope = 'Unable to modify scope with Desired State Configuration as it is currently set to All'
                     $newUserNoRoleMsg = 'When administrative user does not exist, at least 1 valid role must be specified.'
                     $addAllScopes = 'Unable to add the All scopes setting via Desired State Configuration, All can be used for new account only.'
                     $removeAllScopes = 'Unable to remove the All scope via Desired State Configuration.'
+                    $rolesInEx = 'RolesToExclude and RolesToInclude contain to same entry Full Administrator, remove from one of the arrays.'
+                    $scopesInEx = 'ScopesToExclude and ScopesToInclude contain to same entry Default, remove from one of the arrays.'
+                    $collInEx = 'CollectionsToExclude and CollectionsToInclude contain to same Test1, remove from one of the arrays.'
 
                     Mock -CommandName Get-CMSecurityRole
                     Mock -CommandName Get-CMSecurityScope
@@ -457,6 +481,69 @@ try
                     Assert-MockCalled Remove-CMCollectionFromAdministrativeUser -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 }
+
+                It 'Should throw when RolesToInclude and RolesToExclude have duplicate settings' {
+                    Mock -CommandName Get-CMSecurityScope -MockWith { $true }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+
+                    { Set-TargetResource @dupRoles } | Should -Throw -ExpectedMessage $rolesInEx
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMSecurityRoleToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityRoleFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMSecurityScopeToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityScopeFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw when ScopesToInclude and ScopesToExclude have duplicate settings' {
+                    Mock -CommandName Get-CMSecurityScope -MockWith { $true }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+
+                    { Set-TargetResource @dupScopes } | Should -Throw -ExpectedMessage $scopesInEx
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMSecurityRoleToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityRoleFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMSecurityScopeToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityScopeFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw when CollectionsToInclude and CollectionsToExclude have duplicate settings' {
+                    Mock -CommandName Get-CMSecurityScope -MockWith { $true }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+
+                    { Set-TargetResource @dupCollections } | Should -Throw -ExpectedMessage $collInEx
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMSecurityRoleToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityRoleFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMSecurityScopeToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityScopeFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromAdministrativeUser -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                }
             }
         }
 
@@ -549,6 +636,17 @@ try
                         ScopesToInclude = 'All'
                     }
 
+                    $inputDupIncludeExclude = @{
+                        SiteCode             = 'Lab'
+                        AdminName            = 'contoso\User'
+                        RolesToInclude       = 'Full Administrator'
+                        RolesToExclude       = 'Full Administrator'
+                        ScopesToInclude      = 'Default'
+                        ScopesToExclude      = 'Default'
+                        CollectionsToInclude = 'Test1'
+                        CollectionsToExclude = 'Test1'
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
                 }
 
@@ -578,6 +676,10 @@ try
 
                 It 'Should return desired result false when trying to add All Scope with warning' {
                     Test-TargetResource @inputChangeAllScope | Should -Be $false
+                }
+
+                It 'Should return desired result false when include and exclude contain duplicate settings' {
+                    Test-TargetResource @inputDupIncludeExclude | Should -Be $false
                 }
             }
 
