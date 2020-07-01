@@ -578,7 +578,6 @@ function Test-TargetResource
         {
             if ($Roles -or $RolesToInclude -or $RolesToExclude)
             {
-
                 $rolesArray = @{
                     Match        = $Roles
                     Include      = $RolesToInclude
