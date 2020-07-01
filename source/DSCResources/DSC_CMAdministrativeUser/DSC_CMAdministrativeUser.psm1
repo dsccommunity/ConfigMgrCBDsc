@@ -115,7 +115,7 @@ function Get-TargetResource
         Specifies an array of names for the collections desired to be removed from an administrative user.
 
     .PARAMETER Ensure
-        Specifies if the administrative User is to be present or absent.
+        Specifies if the administrative user is to be present or absent.
 #>
 function Set-TargetResource
 {
@@ -463,7 +463,7 @@ function Set-TargetResource
         Specifies an array of names for the collections desired to be removed from an administrative user.
 
     .PARAMETER Ensure
-        Specifies if the administrative User is to be present or absent.
+        Specifies if the administrative user is to be present or absent.
 #>
 function Test-TargetResource
 {

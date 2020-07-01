@@ -171,7 +171,7 @@ try
                     }
 
                     Mock -CommandName Get-CMSecurityRole -MockWith { $true }
-                    Mock -CommandName Get-CMSecurityScope -MockWith { $true}
+                    Mock -CommandName Get-CMSecurityScope -MockWith { $true }
                     Mock -CommandName Get-CMCollection -MockWith { $true }
                 }
 
