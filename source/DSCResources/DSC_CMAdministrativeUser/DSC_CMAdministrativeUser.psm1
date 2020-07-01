@@ -528,6 +528,42 @@ function Test-TargetResource
 
     if ($Ensure -eq 'Present')
     {
+        if ($RolesToInclude -and $RolesToExclude)
+        {
+            foreach ($item in $RolesToInclude)
+            {
+                if ($RolesToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.RolesInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
+        if ($ScopesToInclude -and $ScopesToExclude)
+        {
+            foreach ($item in $ScopesToInclude)
+            {
+                if ($ScopesToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.ScopesInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
+        if ($CollectionsToInclude -and $CollectionsToExclude)
+        {
+            foreach ($item in $CollectionsToInclude)
+            {
+                if ($CollectionsToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.CollectionsInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
         if ($state.Ensure -eq 'Absent')
         {
             if ([string]::IsNullOrEmpty($Roles) -and [string]::IsNullOrEmpty($RolesToInclude))
@@ -542,17 +578,6 @@ function Test-TargetResource
         {
             if ($Roles -or $RolesToInclude -or $RolesToExclude)
             {
-                if ($RolesToInclude -and $RolesToExclude)
-                {
-                    foreach ($item in $RolesToInclude)
-                    {
-                        if ($RolesToExclude -contains $item)
-                        {
-                            Write-Warning -Message ($script:localizedData.RolesInEx -f $item)
-                            $result = $false
-                        }
-                    }
-                }
 
                 $rolesArray = @{
                     Match        = $Roles
@@ -586,18 +611,6 @@ function Test-TargetResource
 
             if ($Scopes -or $ScopesToInclude -or $ScopesToExclude)
             {
-                if ($ScopesToInclude -and $ScopesToExclude)
-                {
-                    foreach ($item in $ScopesToInclude)
-                    {
-                        if ($ScopesToExclude -contains $item)
-                        {
-                            Write-Warning -Message ($script:localizedData.ScopesInEx -f $item)
-                            $result = $false
-                        }
-                    }
-                }
-
                 $scopesArray = @{
                     Match        = $Scopes
                     Include      = $ScopesToInclude
@@ -645,18 +658,6 @@ function Test-TargetResource
 
             if ($Collections -or $CollectionsToInclude -or $CollectionsToExclude)
             {
-                if ($CollectionsToInclude -and $CollectionsToExclude)
-                {
-                    foreach ($item in $CollectionsToInclude)
-                    {
-                        if ($CollectionsToExclude -contains $item)
-                        {
-                            Write-Warning -Message ($script:localizedData.CollectionsInEx -f $item)
-                            $result = $false
-                        }
-                    }
-                }
-
                 $collectionsArray = @{
                     Match        = $Collections
                     Include      = $CollectionsToInclude
