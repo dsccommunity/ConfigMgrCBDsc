@@ -233,6 +233,15 @@ try
 
             Context 'When running Set-TargetResource should throw' {
                 BeforeEach {
+                    $includeExclude = @{
+                        SiteCode                    = 'Lab'
+                        DistributionPointGroup      = 'Group1'
+                        DistributionPointsToExclude = 'DP02.contoso.com'
+                        DistributionPointsToInclude = 'DP02.contoso.com'
+                        Ensure                      = 'Present'
+                    }
+
+                    $distroInEx = 'DistributionPointsToInclude and DistributionPointsToExclude contain to same entry DP02.contoso.com, remove from one of the arrays.'
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
                 }
 
@@ -247,6 +256,20 @@ try
                     Assert-MockCalled New-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
                     Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when DistributionPointInclude and Exclude have the same Distribution Point' {
+                    Mock -CommandName Get-CMDistributionPoint
+
+                    { Set-TargetResource @includeExclude } | Should -Throw -ExpectedMessage $distroInEx
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 }
@@ -311,6 +334,14 @@ try
                         Ensure                 = 'Present'
                     }
 
+                    $includeExclude = @{
+                        SiteCode                    = 'Lab'
+                        DistributionPointGroup      = 'Group1'
+                        DistributionPointsToExclude = 'DP02.contoso.com'
+                        DistributionPointsToInclude = 'DP02.contoso.com'
+                        Ensure                      = 'Present'
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
                 }
 
@@ -336,6 +367,10 @@ try
 
                 It 'Should return desired result false when get returns present and expected absent' {
                     Test-TargetResource @groupAbsent | Should -Be $false
+                }
+
+                It 'Shoud return desired result false when DistributionPointToInclude and Exclude contain the same DistributionPoint' {
+                    Test-TargetResource @includeExclude | Should -Be $false
                 }
             }
 

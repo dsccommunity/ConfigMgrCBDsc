@@ -124,6 +124,18 @@ function Set-TargetResource
 
         if ($Ensure -eq 'Present')
         {
+            if ($PSBoundParameters.ContainsKey('DistributionPointsToInclude') -and
+                $PSBoundParameters.ContainsKey('DistributionPointsToExclude'))
+            {
+                foreach ($item in $DistributionPointsToInclude)
+                {
+                    if ($DistributionPointsToExclude -contains $item)
+                    {
+                        throw ($script:localizedData.DistroInEx -f $item)
+                    }
+                }
+            }
+
             if ($state.Ensure -eq 'Absent')
             {
                 Write-Verbose -Message ($script:localizedData.AddGroup -f $DistributionPointGroup)
@@ -259,6 +271,19 @@ function Test-TargetResource
 
     if ($Ensure -eq 'Present')
     {
+        if ($PSBoundParameters.ContainsKey('DistributionPointsToInclude') -and
+            $PSBoundParameters.ContainsKey('DistributionPointsToExclude'))
+        {
+            foreach ($item in $DistributionPointsToInclude)
+            {
+                if ($DistributionPointsToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.DistroInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
         if ($state.Ensure -eq 'Absent')
         {
             Write-Verbose -Message ($script:localizedData.GroupMissing -f $DistributionPointGroup)

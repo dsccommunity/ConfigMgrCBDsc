@@ -11,4 +11,5 @@ ConvertFrom-StringData @'
     RemoveDistro         = Removing {0} Distribution Point from Distribution Point Group {1}.
     RemoveGroup          = Removing {0} Distribution Point Group.
     ErrorGroup           = Distribution Point: {0} does not exist.
+    DistroInEx           = DistributionPointsToInclude and DistributionPointsToExclude contain to same entry {0}, remove from one of the arrays.
 '@
