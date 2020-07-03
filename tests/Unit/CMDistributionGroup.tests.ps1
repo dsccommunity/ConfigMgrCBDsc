@@ -2,7 +2,7 @@
 param ()
 
 $script:dscModuleName   = 'ConfigMgrCBDsc'
-$script:dscResourceName = 'DSC_CMDistributionPointGroup'
+$script:dscResourceName = 'DSC_CMDistributionGroup'
 
 $script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 
@@ -33,7 +33,7 @@ function Invoke-TestCleanup
 try
 {
     InModuleScope $script:dscResourceName {
-        Describe 'ConfigMgrCBDsc - DSC_CMDistributionPointGroup\Get-TargetResource' -Tag 'Get' {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
                 $distributionPointGroup = @{
                     MemberCount = 0
@@ -53,26 +53,26 @@ try
                 )
 
                 $getInput = @{
-                    SiteCode               = 'Lab'
-                    DistributionPointGroup = 'Group1'
+                    SiteCode          = 'Lab'
+                    DistributionGroup = 'Group1'
                 }
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
 
-            Context 'When retrieving Collection settings' {
+            Context 'When retrieving Distribution Group settings' {
 
                 It 'Should return desired result when group exists and contains Distribution Points' {
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $distributionPoint }
 
                     $result = Get-TargetResource @getInput
-                    $result                        | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
-                    $result.DistributionPointGroup | Should -Be -ExpectedValue 'Group1'
-                    $result.DistributionPoints     | Should -Be -ExpectedValue 'DP01.contoso.com','DP02.contoso.com'
-                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
+                    $result                    | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode           | Should -Be -ExpectedValue 'Lab'
+                    $result.DistributionGroup  | Should -Be -ExpectedValue 'Group1'
+                    $result.DistributionPoints | Should -Be -ExpectedValue 'DP01.contoso.com','DP02.contoso.com'
+                    $result.Ensure             | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result when group exists and does not contain Distribution Points' {
@@ -80,11 +80,11 @@ try
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $null }
 
                     $result = Get-TargetResource @getInput
-                    $result                        | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
-                    $result.DistributionPointGroup | Should -Be -ExpectedValue 'Group1'
-                    $result.DistributionPoints     | Should -Be -ExpectedValue $null
-                    $result.Ensure                 | Should -Be -ExpectedValue 'Present'
+                    $result                    | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode           | Should -Be -ExpectedValue 'Lab'
+                    $result.DistributionGroup  | Should -Be -ExpectedValue 'Group1'
+                    $result.DistributionPoints | Should -Be -ExpectedValue $null
+                    $result.Ensure             | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result when group is absent' {
@@ -92,39 +92,39 @@ try
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $null }
 
                     $result = Get-TargetResource @getInput
-                    $result                        | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode               | Should -Be -ExpectedValue 'Lab'
-                    $result.DistributionPointGroup | Should -Be -ExpectedValue 'Group1'
-                    $result.DistributionPoints     | Should -Be -ExpectedValue $null
-                    $result.Ensure                 | Should -Be -ExpectedValue 'Absent'
+                    $result                    | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode           | Should -Be -ExpectedValue 'Lab'
+                    $result.DistributionGroup  | Should -Be -ExpectedValue 'Group1'
+                    $result.DistributionPoints | Should -Be -ExpectedValue $null
+                    $result.Ensure             | Should -Be -ExpectedValue 'Absent'
                 }
             }
         }
 
-        Describe 'ConfigMgrCBDsc - DSC_CMDistributionPointGroup\Set-TargetResource' -Tag 'Set' {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
                 $getReturnPresent = @{
-                    SiteCode               = 'Lab'
-                    DistributionPointGroup = 'Group1'
-                    DistributionPoints     = @('DP01.contoso.com','DP02.contoso.com')
-                    Ensure                 = 'Present'
+                    SiteCode           = 'Lab'
+                    DistributionGroup  = 'Group1'
+                    DistributionPoints = @('DP01.contoso.com','DP02.contoso.com')
+                    Ensure             = 'Present'
                 }
 
                 $groupPresentMatch = @{
-                    SiteCode               = 'Lab'
-                    DistributionPointGroup = 'Group1'
-                    DistributionPoints     = 'DP03.contoso.com'
+                    SiteCode           = 'Lab'
+                    DistributionGroup  = 'Group1'
+                    DistributionPoints = 'DP03.contoso.com'
                 }
 
                 $groupPresent = @{
-                    SiteCode               = 'Lab'
-                    DistributionPointGroup = 'Group1'
-                    Ensure                 = 'Present'
+                    SiteCode          = 'Lab'
+                    DistributionGroup = 'Group1'
+                    Ensure            = 'Present'
                 }
 
                 $groupPresentAddMultiple = @{
                     SiteCode                    = 'Lab'
-                    DistributionPointGroup      = 'Group1'
+                    DistributionGroup           = 'Group1'
                     DistributionPointsToInclude = 'DP03.contoso.com','DP04.contoso.com'
                 }
 
@@ -139,10 +139,10 @@ try
             Context 'When Set-TargetResource runs successfully when get returns absent' {
                 BeforeEach {
                     $getReturnAbsent = @{
-                        SiteCode               = 'Lab'
-                        DistributionPointGroup = 'Group1'
-                        DistributionPoints     = $null
-                        Ensure                 = 'Absent'
+                        SiteCode           = 'Lab'
+                        DistributionGroup  = 'Group1'
+                        DistributionPoints = $null
+                        Ensure             = 'Absent'
                     }
 
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
@@ -180,9 +180,9 @@ try
             Context 'When Set-TargetResource runs successfully when get returns present' {
                 BeforeEach {
                     $groupAbsent = @{
-                        SiteCode               = 'Lab'
-                        DistributionPointGroup = 'Group1'
-                        Ensure                 = 'Absent'
+                        SiteCode          = 'Lab'
+                        DistributionGroup = 'Group1'
+                        Ensure            = 'Absent'
                     }
 
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
@@ -235,7 +235,7 @@ try
                 BeforeEach {
                     $includeExclude = @{
                         SiteCode                    = 'Lab'
-                        DistributionPointGroup      = 'Group1'
+                        DistributionGroup           = 'Group1'
                         DistributionPointsToExclude = 'DP02.contoso.com'
                         DistributionPointsToInclude = 'DP02.contoso.com'
                         Ensure                      = 'Present'
@@ -276,18 +276,18 @@ try
             }
         }
 
-        Describe 'ConfigMgrCBDsc - DSC_CMDistributionPointGroup\Test-TargetResource' -Tag 'Test' {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
                 $groupAbsent = @{
-                    SiteCode               = 'Lab'
-                    DistributionPointGroup = 'Group1'
-                    Ensure                 = 'Absent'
+                    SiteCode          = 'Lab'
+                    DistributionGroup = 'Group1'
+                    Ensure            = 'Absent'
                 }
 
                 $groupPresent = @{
-                    SiteCode               = 'Lab'
-                    DistributionPointGroup = 'Group1'
-                    Ensure                 = 'Present'
+                    SiteCode          = 'Lab'
+                    DistributionGroup = 'Group1'
+                    Ensure            = 'Present'
                 }
 
                 Mock -CommandName Set-Location
@@ -297,46 +297,46 @@ try
             Context 'When running Test-TargetResource and get returns present' {
                 BeforeEach {
                     $getReturnPresent = @{
-                        SiteCode               = 'Lab'
-                        DistributionPointGroup = 'Group1'
-                        DistributionPoints     = @('DP01.contoso.com','DP02.contoso.com')
-                        Ensure                 = 'Present'
+                        SiteCode           = 'Lab'
+                        DistributionGroup  = 'Group1'
+                        DistributionPoints = @('DP01.contoso.com','DP02.contoso.com')
+                        Ensure             = 'Present'
                     }
 
                     $groupPresentMatch = @{
-                        SiteCode               = 'Lab'
-                        DistributionPointGroup = 'Group1'
-                        DistributionPoints     = 'DP03.contoso.com'
+                        SiteCode           = 'Lab'
+                        DistributionGroup  = 'Group1'
+                        DistributionPoints = 'DP03.contoso.com'
                     }
 
                     $groupPresentInclude = @{
                         SiteCode                    = 'Lab'
-                        DistributionPointGroup      = 'Group1'
+                        DistributionGroup           = 'Group1'
                         DistributionPointsToInclude = 'DP03.contoso.com'
                     }
 
                     $groupPresentExclude = @{
                         SiteCode                    = 'Lab'
-                        DistributionPointGroup      = 'Group1'
+                        DistributionGroup           = 'Group1'
                         DistributionPointsToExclude = 'DP02.contoso.com'
                     }
 
                     $groupPresentWarningMatch = @{
                         SiteCode                    = 'Lab'
-                        DistributionPointGroup      = 'Group1'
+                        DistributionGroup           = 'Group1'
                         DistributionPoints          = 'DP02.contoso.com'
                         DistributionPointsToInclude = 'DP03.contoso.com'
                     }
 
                     $groupPresent = @{
-                        SiteCode               = 'Lab'
-                        DistributionPointGroup = 'Group1'
-                        Ensure                 = 'Present'
+                        SiteCode          = 'Lab'
+                        DistributionGroup = 'Group1'
+                        Ensure            = 'Present'
                     }
 
                     $includeExclude = @{
                         SiteCode                    = 'Lab'
-                        DistributionPointGroup      = 'Group1'
+                        DistributionGroup           = 'Group1'
                         DistributionPointsToExclude = 'DP02.contoso.com'
                         DistributionPointsToInclude = 'DP02.contoso.com'
                         Ensure                      = 'Present'
@@ -377,10 +377,10 @@ try
             Context 'When running Test-TargetResource and get returns absent' {
                 BeforeEach {
                     $getReturnAbsent = @{
-                        SiteCode               = 'Lab'
-                        DistributionPointGroup = 'Group1'
-                        DistributionPoints     = $null
-                        Ensure                 = 'Absent'
+                        SiteCode           = 'Lab'
+                        DistributionGroup  = 'Group1'
+                        DistributionPoints = $null
+                        Ensure             = 'Absent'
                     }
 
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }

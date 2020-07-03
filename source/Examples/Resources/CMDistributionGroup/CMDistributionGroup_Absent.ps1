@@ -8,11 +8,11 @@ Configuration Example
 
     Node localhost
     {
-        CMDistributionPointGroup ExampleSettings
+        CMDistributionGroup ExampleSettings
         {
-            SiteCode               = 'Lab'
-            DistributionPointGroup = 'DistroGroup1'
-            Ensure                 = 'Absent'
+            SiteCode          = 'Lab'
+            DistributionGroup = 'DistroGroup1'
+            Ensure            = 'Absent'
         }
     }
 }

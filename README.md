@@ -861,23 +861,22 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMSiteMaintenance_SummaryTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_SummaryTask_Enabled.ps1)
 - [CMSiteMaintenance_UpdateAppCatTablesTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_UpdateAppCatTablesTask_Enabled.ps1)
 
-### CMDistributionPointGroup
+### CMDistributionGroup
 
-- **[String] DistributionPointGroup** _(Key)_: Specifies the distribution point
-  group name.
+- **[String] DistributionGroup** _(Key)_: Specifies the Distribution Group name.
 - **[String] SiteCode** _(Required)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] DistributionPoints[]** _(Write)_: Specifies an array of distribution
-  points to match to the distribution point group.
+- **[String] DistributionPoints[]** _(Write)_: Specifies an array of Distribution
+  Points to match to the Distribution Group.
 - **[String] DistributionPointsToInclude[]** _(Write)_: Specifies an array of
-  distribution points to add to the distribution point group.
+  Distribution Points to add to the Distribution Group.
 - **[String] DistributionPointsToExclude[]** _(Write)_: Specifies an array of
-  distribution points to remove from the distribution point group.
-- **[String] Ensure** _(Write)_: Specifies whether the distribution point group
+  Distribution Points to remove from the Distribution Group.
+- **[String] Ensure** _(Write)_: Specifies whether the Distribution Group
   is present or absent.
   - Values include: { Present | Absent }
 
-#### CMDistributionPointGroup Examples
+#### CMDistributionGroup Examples
 
-- [CMDistributionPointGroup_Present](Source\Examples\Resources\CMDistributionPointGroup\CMDistributionPointGroup_Present.ps1)
-- [CMDistributionPointGroup_Absent](Source\Examples\Resources\CMDistributionPointGroup\CMDistributionPointGroup_Absent.ps1)
+- [CMDistributionGroup_Present](Source\Examples\Resources\CMDistributionGroup\CMDistributionGroup_Present.ps1)
+- [CMDistributionGroup_Absent](Source\Examples\Resources\CMDistributionGroup\CMDistributionGroup_Absent.ps1)

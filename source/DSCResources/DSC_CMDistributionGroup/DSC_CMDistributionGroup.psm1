@@ -13,8 +13,8 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
     .PARAMETER SiteCode
         Specifies the site code for Configuration Manager site.
 
-    .PARAMETER DistributionPointGroup
-        Specifies the Distribution Point Group name.
+    .PARAMETER DistributionGroup
+        Specifies the Distribution Group name.
 #>
 function Get-TargetResource
 {
@@ -28,18 +28,18 @@ function Get-TargetResource
 
         [Parameter(Mandatory = $true)]
         [String]
-        $DistributionPointGroup
+        $DistributionGroup
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
-    $groupStatus = Get-CMDistributionPointGroup -Name $DistributionPointGroup
+    $groupStatus = Get-CMDistributionPointGroup -Name $DistributionGroup
 
     if ($groupStatus)
     {
-        $dplist = Get-CMDistributionPoint -DistributionPointGroupName $DistributionPointGroup
+        $dplist = Get-CMDistributionPoint -DistributionPointGroupName $DistributionGroup
         $dpMembers = @()
 
         foreach ($dp in $dplist)
@@ -55,10 +55,10 @@ function Get-TargetResource
     }
 
     return @{
-        SiteCode               = $SiteCode
-        DistributionPointGroup = $DistributionPointGroup
-        DistributionPoints     = $dpMembers
-        Ensure                 = $group
+        SiteCode           = $SiteCode
+        DistributionGroup  = $DistributionGroup
+        DistributionPoints = $dpMembers
+        Ensure             = $group
     }
 }
 
@@ -69,20 +69,20 @@ function Get-TargetResource
     .PARAMETER SiteCode
         Specifies the site code for Configuration Manager site.
 
-    .PARAMETER DistributionPointGroup
-        Specifies the Distribution Point Group name.
+    .PARAMETER DistributionGroup
+        Specifies the Distribution Group name.
 
     .PARAMETER DistributionPoints
-        Specifies an array of distribution points to match to the distribution point group.
+        Specifies an array of Distribution Points to match to the Distribution Group.
 
     .PARAMETER DistributionPointsToInclude
-        Specifies an array of distribution points to add to the distribution point group.
+        Specifies an array of Distribution Points to add to the Distribution Group.
 
     .PARAMETER DistributionPointsToExclude
-        Specifies an array of distribution points to remove from the distribution point group.
+        Specifies an array of Distribution Points to remove from the Distribution Group.
 
     .PARAMETER Ensure
-        Specifies if the Distribution Point Group is to be present or absent.
+        Specifies if the Distribution Group is to be present or absent.
 #>
 function Set-TargetResource
 {
@@ -95,7 +95,7 @@ function Set-TargetResource
 
         [Parameter(Mandatory = $true)]
         [String]
-        $DistributionPointGroup,
+        $DistributionGroup,
 
         [Parameter()]
         [String[]]
@@ -120,11 +120,12 @@ function Set-TargetResource
 
     try
     {
-        $state = Get-TargetResource -SiteCode $SiteCode -DistributionPointGroup $DistributionPointGroup
+        $state = Get-TargetResource -SiteCode $SiteCode -DistributionGroup $DistributionGroup
 
         if ($Ensure -eq 'Present')
         {
-            if ($PSBoundParameters.ContainsKey('DistributionPointsToInclude') -and
+            if (-not $PSBoundParameters.ContainsKey('DistributionPoints') -and
+                $PSBoundParameters.ContainsKey('DistributionPointsToInclude') -and
                 $PSBoundParameters.ContainsKey('DistributionPointsToExclude'))
             {
                 foreach ($item in $DistributionPointsToInclude)
@@ -138,8 +139,8 @@ function Set-TargetResource
 
             if ($state.Ensure -eq 'Absent')
             {
-                Write-Verbose -Message ($script:localizedData.AddGroup -f $DistributionPointGroup)
-                New-CMDistributionPointGroup -Name $DistributionPointGroup
+                Write-Verbose -Message ($script:localizedData.AddGroup -f $DistributionGroup)
+                New-CMDistributionPointGroup -Name $DistributionGroup
             }
 
             if ($DistributionPoints -or $DistributionPointsToInclude -or $DistributionPointsToExclude)
@@ -161,10 +162,10 @@ function Set-TargetResource
                         {
                             $addParam = @{
                                 DistributionPointName      = $add
-                                DistributionPointGroupName = $DistributionPointGroup
+                                DistributionPointGroupName = $DistributionGroup
                             }
 
-                            Write-Verbose -Message ($script:localizedData.AddDistro -f $add, $DistributionPointGroup)
+                            Write-Verbose -Message ($script:localizedData.AddDistro -f $add, $DistributionGroup)
                             Add-CMDistributionPointToGroup @addParam
                         }
                         else
@@ -180,10 +181,10 @@ function Set-TargetResource
                     {
                         $removeParam = @{
                             DistributionPointName      = $remove
-                            DistributionPointGroupName = $DistributionPointGroup
+                            DistributionPointGroupName = $DistributionGroup
                         }
 
-                        Write-Verbose -Message ($script:localizedData.RemoveDistro -f $remove, $DistributionPointGroup)
+                        Write-Verbose -Message ($script:localizedData.RemoveDistro -f $remove, $DistributionGroup)
                         Remove-CMDistributionPointFromGroup @removeParam
                     }
                 }
@@ -191,8 +192,8 @@ function Set-TargetResource
         }
         elseif ($state.Ensure -eq 'Present')
         {
-            Write-Verbose -Message ($script:localizedData.RemoveGroup -f $DistributionPointGroup)
-            Remove-CMDistributionPointGroup -Name $DistributionPointGroup -Force
+            Write-Verbose -Message ($script:localizedData.RemoveGroup -f $DistributionGroup)
+            Remove-CMDistributionPointGroup -Name $DistributionGroup -Force
         }
 
         if ($errorMsg)
@@ -217,20 +218,20 @@ function Set-TargetResource
     .PARAMETER SiteCode
         Specifies the site code for Configuration Manager site.
 
-    .PARAMETER DistributionPointGroup
-        Specifies the Distribution Point Group name.
+    .PARAMETER DistributionGroup
+        Specifies the Distribution Group name.
 
     .PARAMETER DistributionPoints
-        Specifies an array of distribution points to match to the distribution point group.
+        Specifies an array of Distribution Points to match to the Distribution Group.
 
     .PARAMETER DistributionPointsToInclude
-        Specifies an array of distribution points to add to the distribution point group.
+        Specifies an array of Distribution Points to add to the Distribution Group.
 
     .PARAMETER DistributionPointsToExclude
-        Specifies an array of distribution points to remove from the distribution point group.
+        Specifies an array of Distribution Points to remove from the Distribution Group.
 
     .PARAMETER Ensure
-        Specifies if the Distribution Point Group is to be present or absent.
+        Specifies if the Distribution Group is to be present or absent.
 #>
 function Test-TargetResource
 {
@@ -244,7 +245,7 @@ function Test-TargetResource
 
         [Parameter(Mandatory = $true)]
         [String]
-        $DistributionPointGroup,
+        $DistributionGroup,
 
         [Parameter()]
         [String[]]
@@ -266,12 +267,21 @@ function Test-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode -DistributionPointGroup $DistributionPointGroup
+    $state = Get-TargetResource -SiteCode $SiteCode -DistributionGroup $DistributionGroup
     $result = $true
 
     if ($Ensure -eq 'Present')
     {
-        if ($PSBoundParameters.ContainsKey('DistributionPointsToInclude') -and
+        if ($PSBoundParameters.ContainsKey('DistributionPoints'))
+        {
+            if ($PSBoundParameters.ContainsKey('DistributionPointsToInclude') -or
+                $PSBoundParameters.ContainsKey('DistributionPointsToExclude'))
+            {
+                Write-Warning -Message $script:localizedData.ParamIgnore
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey('DistributionPoints') -and
+            $PSBoundParameters.ContainsKey('DistributionPointsToInclude') -and
             $PSBoundParameters.ContainsKey('DistributionPointsToExclude'))
         {
             foreach ($item in $DistributionPointsToInclude)
@@ -286,20 +296,11 @@ function Test-TargetResource
 
         if ($state.Ensure -eq 'Absent')
         {
-            Write-Verbose -Message ($script:localizedData.GroupMissing -f $DistributionPointGroup)
+            Write-Verbose -Message ($script:localizedData.GroupMissing -f $DistributionGroup)
             $result = $false
         }
         elseif ($DistributionPoints -or $DistributionPointsToInclude -or $DistributionPointsToExclude)
         {
-            if ($PSBoundParameters.ContainsKey('DistributionPoints'))
-            {
-                if ($PSBoundParameters.ContainsKey('DistributionPointsToInclude') -or
-                    $PSBoundParameters.ContainsKey('DistributionPointsToExclude'))
-                {
-                    Write-Warning -Message $script:localizedData.ParamIgnore
-                }
-            }
-
             $distroArray = @{
                 Match        = $DistributionPoints
                 Include      = $DistributionPointsToInclude
