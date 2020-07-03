@@ -51,7 +51,13 @@ function Get-TargetResource
                 'ProxyName'                 { $proxyServer = $check.Value2 }
                 'ProxyServerPort'           { [UInt32]$proxyPort = $check.Value }
                 'ProxyUserName'             { $proxyUser = $check.Value2 }
+                'AnonymousProxyAccess'      { $anon = $check.Value }
             }
+        }
+
+        if ($anon -eq 1)
+        {
+            $proxyUser = $null
         }
 
         $status = 'Present'
@@ -112,7 +118,7 @@ function Get-TargetResource
 
     .PARAMETER ProxyAccessAccount
         Specifies the credentials to use to authenticate with the proxy server.
-        Do not use user principal name (UPN) format.
+        Do not use user principal name (UPN) format. Setting $ProxyAccessAccount = '' will remove the account.
 
     .PARAMETER Ensure
         Specifies whether the site system server is to be present or absent.  When removing the role, all other site system roles
@@ -221,7 +227,7 @@ function Set-TargetResource
                     if ($param.Value -ne $state[$param.Key])
                     {
                         Write-Verbose -Message ($script:localizedData.SetSetting -f $param.Key, $param.Value)
-                        $proxybad = $true
+                        $proxyBad = $true
                     }
                 }
             }
@@ -250,15 +256,18 @@ function Set-TargetResource
 
                 if ($PSBoundParameters.ContainsKey('ProxyAccessAccount'))
                 {
-                    $account = Get-CMAccount -UserName $ProxyAccessAccount
-
-                    if ([string]::IsNullOrEmpty($account))
+                    if (-not [string]::IsNullOrEmpty($ProxyAccessAccount))
                     {
-                        throw ($script:localizedData.BadProxyAccess -f $ProxyAccessAccount)
-                    }
+                        $account = Get-CMAccount -UserName $ProxyAccessAccount
 
-                    $buildingParams += @{
-                        ProxyAccessAccount = $account
+                        if ([string]::IsNullOrEmpty($account))
+                        {
+                            throw ($script:localizedData.BadProxyAccess -f $ProxyAccessAccount)
+                        }
+
+                        $buildingParams += @{
+                            ProxyAccessAccount = $account
+                        }
                     }
                 }
 
@@ -340,7 +349,7 @@ function Set-TargetResource
 
     .PARAMETER ProxyAccessAccount
         Specifies the credentials to use to authenticate with the proxy server.
-        Do not use user principal name (UPN) format.
+        Do not use user principal name (UPN) format. Setting $ProxyAccessAccount = '' will remove the account.
 
     .PARAMETER Ensure
         Specifies whether the site system server is to be present or absent.  When removing the role, all other site system roles
@@ -444,7 +453,15 @@ function Test-TargetResource
             {
                 if ($proxyCheck -contains $param.Key)
                 {
-                    if ($param.Value -ne $state[$param.Key])
+                    if ($param.Key -eq 'ProxyAccessAccount' -and $param.Value -eq '')
+                    {
+                        if (-not [string]::IsNullOrEmpty($state.ProxyAccessAccount))
+                        {
+                            Write-Verbose -Message ($script:localizedData.ProxyCheck -f $param.Key, $param.Value, $state[$param.Key])
+                            $proxyBad = $true
+                        }
+                    }
+                    elseif ($param.Value -ne $state[$param.Key])
                     {
                         Write-Verbose -Message ($script:localizedData.ProxyCheck -f $param.Key, $param.Value, $state[$param.Key])
                         $proxybad = $true

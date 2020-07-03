@@ -882,6 +882,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   to use when connecting to the Internet.
 - **[String] ProxyAccessAccount** _(Write)_: Specifies the credentials to use
   to authenticate with the proxy server.
+  Setting ProxyAccessAccount = '' will reset the proxy to use system account.
 - **[String] Ensure** _(Write)_: Specifies whether the system site
   server is present or absent.
   - Values include: { Present | Absent }

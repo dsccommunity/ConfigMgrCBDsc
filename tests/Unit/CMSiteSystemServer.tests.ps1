@@ -47,6 +47,55 @@ try
                     RoleCount     = 1
                     Props         = @(
                         @{
+                            PropertyName = 'AnonymousProxyAccess'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'FDMOperation'
+                            Value        = 1
+                        }
+                        @{
+                            PropertyName = 'ProxyName'
+                            Value2       = 'Proxy.contoso.com'
+                        }
+                        @{
+                            PropertyName = 'ProxyServerPort'
+                            Value        = 443
+                        }
+                        @{
+                            PropertyName = 'ProxyUserName'
+                            Value2       = 'contoso\ProxyUser'
+                        }
+                        @{
+                            PropertyName = 'Server Remote Public Name'
+                            Value1       = 'SS01.contoso.com'
+                        }
+                        @{
+                            PropertyName = 'UseMachineAccount'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'UseProxy'
+                            Value        = 1
+                        }
+                        @{
+                            PropertyName = 'UserName'
+                            Value2       = 'contoso\Account'
+                        }
+                    )
+                }
+
+                $siteServerReturnAnon = @{
+                    SiteCode      = 'Lab'
+                    RoleName      = 'SMS Site Server'
+                    NetworkOSPath = '\\SS01.contoso.com'
+                    RoleCount     = 1
+                    Props         = @(
+                        @{
+                            PropertyName = 'AnonymousProxyAccess'
+                            Value        = 1
+                        }
+                        @{
                             PropertyName = 'FDMOperation'
                             Value        = 1
                         }
@@ -108,6 +157,25 @@ try
                     $result.ProxyServerName      | Should -Be -ExpectedValue 'Proxy.contoso.com'
                     $result.ProxyServerPort      | Should -Be -ExpectedValue 443
                     $result.ProxyAccessAccount   | Should -Be -ExpectedValue 'contoso\ProxyUser'
+                    $result.Ensure               | Should -Be -ExpectedValue 'Present'
+                    $result.RoleCount            | Should -Be -ExpectedValue 1
+                }
+
+                It 'Should return desired result when a site system and no proxy account' {
+                    Mock -CommandName Get-CMSiteSystemServer -MockWith { $siteServerReturnAnon }
+
+                    $result = Get-TargetResource @getInput
+                    $result                      | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode             | Should -Be -ExpectedValue 'Lab'
+                    $result.SiteSystemServer     | Should -Be -ExpectedValue 'SS01.contoso.com'
+                    $result.PublicFqdn           | Should -Be -ExpectedValue 'SS01.contoso.com'
+                    $result.FdmOperation         | Should -Be -ExpectedValue $true
+                    $result.UseSiteServerAccount | Should -Be -ExpectedValue $false
+                    $result.AccountName          | Should -Be -ExpectedValue 'contoso\Account'
+                    $result.EnableProxy          | Should -Be -ExpectedValue $true
+                    $result.ProxyServerName      | Should -Be -ExpectedValue 'Proxy.contoso.com'
+                    $result.ProxyServerPort      | Should -Be -ExpectedValue 443
+                    $result.ProxyAccessAccount   | Should -Be -ExpectedValue $null
                     $result.Ensure               | Should -Be -ExpectedValue 'Present'
                     $result.RoleCount            | Should -Be -ExpectedValue 1
                 }
@@ -467,6 +535,14 @@ try
                         ProxyServerPort    = 80
                     }
 
+                    $proxyAccessAccount = @{
+                        SiteCode           = 'Lab'
+                        SiteSystemServer   = 'SS01.contoso.com'
+                        ProxyAccessAccount = ''
+                        EnableProxy        = $true
+                        ProxyServerPort    = 80
+                    }
+
                     $proxySettingsNoPort = @{
                         SiteCode           = 'Lab'
                         SiteSystemServer   = 'SS01.contoso.com'
@@ -518,6 +594,10 @@ try
 
                 It 'Should return desired result false with no EnableProxy and setting a proxy settings that does not match' {
                     Test-TargetResource @proxySettingNoEnableProxy | Should -Be $false
+                }
+
+                It 'Should return desired result false with resetting proxy access account to system account' {
+                    Test-TargetResource @proxyAccessAccount | Should -Be $false
                 }
 
                 It 'Should return desired result false when expecting absent but is present' {

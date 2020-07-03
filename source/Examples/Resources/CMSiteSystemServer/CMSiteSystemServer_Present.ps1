@@ -35,5 +35,19 @@ Configuration Example
             FdmOperation         = $true
             Ensure               = 'Present'
         }
+
+        CMSiteSystemServer SS03Server
+        {
+            SiteCode             = 'Lab'
+            SiteSystemServer     = 'SS03.contoso.com'
+            UseSiteServerAccount = $true
+            PublicFqdn           = ''
+            EnableProxy          = $false
+            ProxyServerName      = 'CA01.contoso.com'
+            ProxyAccessAccount   = ''
+            ProxyServerPort      = 443
+            FdmOperation         = $true
+            Ensure               = 'Present'
+        }
     }
 }
