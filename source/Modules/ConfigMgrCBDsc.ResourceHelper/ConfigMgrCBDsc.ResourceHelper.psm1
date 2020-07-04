@@ -407,6 +407,115 @@ function ConvertTo-AnyCimInstance
         -Property $property -ClientOnly
 }
 
+<#
+    .SYNOPSIS
+        Returns the boundary ID based on Value and Type of boundary specified.
+    .PARAMETER Match
+        Specifies an array of values to validate if missing or extra settings compared to current state.
+    .PARAMETER Include
+        Specifies an array of values to validate if missing from current state.
+    .PARAMETER Exclude
+        Specifies an array of values to validate if extra compared to current state.
+    .PARAMETER CurrentState
+        Specifies an array to compare against for match, include, or exclude.
+#>
+function Compare-MultipleCompares
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter()]
+        [AllowEmptyString()]
+        [String[]]
+        $Match,
+
+        [Parameter()]
+        [AllowEmptyString()]
+        [String[]]
+        $Include,
+
+        [Parameter()]
+        [AllowEmptyString()]
+        [String[]]
+        $Exclude,
+
+        [Parameter()]
+        [String[]]
+        $CurrentState
+    )
+
+    $missing = @()
+    $remove = @()
+
+    if (-not [string]::IsNullOrEmpty($Match))
+    {
+        $type = 'Match'
+
+        if ($null -eq $CurrentState)
+        {
+            $missing = $Match
+        }
+        else
+        {
+            $compares = Compare-Object -ReferenceObject $Match -DifferenceObject $CurrentState
+
+            foreach ($compare in $compares)
+            {
+                if ($compare.SideIndicator -eq '<=')
+                {
+                    $missing += $compare.InputObject
+                }
+                else
+                {
+                    $remove += $compare.InputObject
+                }
+            }
+        }
+    }
+    else
+    {
+        if (-not [string]::IsNullOrEmpty($Include))
+        {
+            $type = 'Include'
+
+            foreach ($item in $Include)
+            {
+               if ($CurrentState -notcontains $item)
+               {
+                    $missing += $item
+               }
+            }
+        }
+
+        if (-not [string]::IsNullOrEmpty($Exclude))
+        {
+            if ($type -eq 'Include')
+            {
+                $type = 'Include, Exclude'
+            }
+            else
+            {
+                $type = 'Exclude'
+            }
+
+            foreach ($item in $Exclude)
+            {
+                if ($CurrentState -contains $item)
+                {
+                    $remove += ($CurrentState | Where-Object -FilterScript {$_ -eq $item})
+                }
+            }
+        }
+    }
+
+    return @{
+        Type         = $type
+        Missing      = $missing
+        Remove       = $remove
+        CurrentState = $CurrentState
+    }
+}
+
 Export-ModuleMember -Function @(
     'Import-ConfigMgrPowerShellModule'
     'Convert-CidrToIP'
@@ -416,4 +525,5 @@ Export-ModuleMember -Function @(
     'Get-BoundaryInfo'
     'ConvertTo-ScheduleInterval'
     'ConvertTo-AnyCimInstance'
+    'Compare-MultipleCompares'
 )

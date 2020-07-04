@@ -1,0 +1,10 @@
+[ClassVersion("1.0.0"), FriendlyName("CMDistributionPointGroupMembers")]
+class DSC_CMDistributionPointGroupMembers : OMI_BaseResource
+{
+    [Key, Description("Specifies the Distribution Point to modify Distribution Point Group membership.")] String DistributionPoint;
+    [Required, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Write, Description("Specifies an array of Distribution Groups to match on the Distribution Point.")] String DistributionGroups[];
+    [Write, Description("Specifies an array of Distribution Groups to add to the Distribution Point.")] String DistributionGroupsToInclude[];
+    [Write, Description("Specifies an array of Distribution Groups to remove from the Distribution Point.")] String DistributionGroupsToExclude[];
+    [Read, Description("Specifies if the Distribution Point role is installed.")] String DPStatus;
+};

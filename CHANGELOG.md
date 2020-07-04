@@ -40,6 +40,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMPullDistributionPoint Resource
 - Added ConvertTo-AnyCimInstance to the ResourceHelper
 - Added CMSiteMaintenance Resource
+- Added CMDistributionPointGroupMembers Resource
+- Added Compare-MultipleCompares to the ResourceHelper
 
 ### Changed
 

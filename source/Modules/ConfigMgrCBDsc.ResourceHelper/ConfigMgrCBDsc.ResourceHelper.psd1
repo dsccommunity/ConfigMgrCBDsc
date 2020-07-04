@@ -41,6 +41,7 @@
         'Get-BoundaryInfo'
         'ConvertTo-ScheduleInterval'
         'ConvertTo-AnyCimInstance'
+        'Compare-MultipleCompares'
     )
 
     # Cmdlets to export from this module
