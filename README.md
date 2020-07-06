@@ -91,6 +91,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMPullDistributionPoint**: Provides a resource for modifying a distribution point
   and making the distribution point a Pull Distribution Point.
 - **CMSiteMaintenance**: Provides a resource for modifying the Site Maintenance tasks.
+- **CMAdministrativeUser**:  Provides a resource for adding, removing, and configuring
+  administrative users.
 
 ### xSccmPreReqs
 
@@ -858,3 +860,35 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - [CMSiteMaintenance_MaintenanceTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_MaintenanceTask_Enabled.ps1)
 - [CMSiteMaintenance_SummaryTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_SummaryTask_Enabled.ps1)
 - [CMSiteMaintenance_UpdateAppCatTablesTask_Enabled](Source\Examples\Resources\CMSiteMaintenance\CMSiteMaintenance_UpdateAppCatTablesTask_Enabled.ps1)
+
+### CMAdministrativeUser
+
+- **[String] AdminName** _(Key)_: Specifies the name of the administrator account.
+- **[String] SiteCode** _(Required)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Roles[]** _(Write)_: Specifies an array of names for the roles
+  desired to be assigned to an administrative user.
+- **[String] RolesToInclude[]** _(Write)_: Specifies an array of names for the
+  roles desired to be added to an administrative user.
+- **[String] RolesToExclude[]** _(Write)_: Specifies an array of names for the
+  roles desired to be removed from an administrative user.
+- **[String] Scopes[]** _(Write)_: Specifies an array of names for the scopes
+  desired to be assigned to an administrative user.
+- **[String] ScopesToInclude[]** _(Write)_: Specifies an array of names for the
+  scopes desired to be added to an administrative user.
+- **[String] ScopesToExclude[]** _(Write)_: Specifies an array of names for the
+  scopes desired to be removed from an administrative user.
+- **[String] Collections[]** _(Write)_: Specifies an array of names for the
+  collections desired to be assigned to an administrative user.
+- **[String] CollectionsToInclude[]** _(Write)_: Specifies an array of names for
+  the collections desired to be added to an administrative user.
+- **[String] CollectionsToExclude[]** _(Write)_: Specifies an array of names for
+  the collections desired to be removed from an administrative user.
+- **[String] Ensure** _(Write)_: Specifies whether the administrative user
+  is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMAdministrativeUser Examples
+
+- [CMAdministrativeUser_Absent](Source\Examples\Resources\CMAdministrativeUser\CMAdministrativeUser_Absent.ps1)
+- [CMAdministrativeUser_Present](Source\Examples\Resources\CMAdministrativeUser\CMAdministrativeUser_Present.ps1)
