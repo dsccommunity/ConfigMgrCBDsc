@@ -93,6 +93,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMSiteMaintenance**: Provides a resource for modifying the Site Maintenance tasks.
 - **CMAdministrativeUser**:  Provides a resource for adding, removing, and configuring
   administrative users.
+- **CMDistributionGroup**: Provides a resource for creating Distribution Point
+  Groups and adding Distribution Points to the group.
 
 ### xSccmPreReqs
 
@@ -892,3 +894,23 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMAdministrativeUser_Absent](Source\Examples\Resources\CMAdministrativeUser\CMAdministrativeUser_Absent.ps1)
 - [CMAdministrativeUser_Present](Source\Examples\Resources\CMAdministrativeUser\CMAdministrativeUser_Present.ps1)
+
+### CMDistributionGroup
+
+- **[String] DistributionGroup** _(Key)_: Specifies the Distribution Group name.
+- **[String] SiteCode** _(Required)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] DistributionPoints[]** _(Write)_: Specifies an array of Distribution
+  Points to match to the Distribution Group.
+- **[String] DistributionPointsToInclude[]** _(Write)_: Specifies an array of
+  Distribution Points to add to the Distribution Group.
+- **[String] DistributionPointsToExclude[]** _(Write)_: Specifies an array of
+  Distribution Points to remove from the Distribution Group.
+- **[String] Ensure** _(Write)_: Specifies whether the Distribution Group
+  is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMDistributionGroup Examples
+
+- [CMDistributionGroup_Present](Source\Examples\Resources\CMDistributionGroup\CMDistributionGroup_Present.ps1)
+- [CMDistributionGroup_Absent](Source\Examples\Resources\CMDistributionGroup\CMDistributionGroup_Absent.ps1)
