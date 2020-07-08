@@ -13,6 +13,7 @@ Configuration Example
         {
             SiteCode       = 'Lab'
             BoundaryGroup  = 'TestGroup'
+            SiteSystems     = 'DP01.contoso.com'
             Boundaries     = @(
                 DSC_CMBoundaryGroupsBoundaries
                 {

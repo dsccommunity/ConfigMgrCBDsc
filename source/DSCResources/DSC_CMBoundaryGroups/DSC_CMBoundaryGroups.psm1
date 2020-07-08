@@ -46,6 +46,16 @@ function Get-TargetResource
             $cimBoundaries = ConvertTo-CimBoundaries -InputObject $groupMembers
         }
 
+        $serverPath = (Get-CMBoundaryGroupSiteSystem -ID $groupID).ServerNalPath
+
+        if ($serverPath)
+        {
+            foreach ($Item in $serverPath)
+            {
+                [array]$mappings += $item.TrimEnd('\').Split('\')[-1]
+            }
+        }
+
         $status = 'Present'
     }
     else
@@ -57,6 +67,7 @@ function Get-TargetResource
         SiteCode      = $SiteCode
         BoundaryGroup = $BoundaryGroup
         Boundaries    = $cimBoundaries
+        SiteSystems   = $mappings
         Ensure        = $status
     }
 }
@@ -69,16 +80,25 @@ function Get-TargetResource
         Specifies the SiteCode for the Configuration Manager site.
 
     .PARAMETER BoundaryGroup
-        Specifies the boundary group name.
+        Specifies the Boundary Group name.
 
     .Parameter Boundaries
         Specifies an array of boundaries to add or remove.
 
     .Parameter BoundaryAction
-        Specifies the boundaries are to match, add, or remove Boundaries from the boundary group.
+        Specifies the boundaries are to match, add, or remove Boundaries from the Boundary Group.
+
+    .Parameter SiteSystems
+        Specifies an array of SiteSystems to match on the Boundary Group.
+
+    .Parameter SiteSystemsToInclude
+        Specifies an array of SiteSystems to add to the Boundary Group.
+
+    .Parameter SiteSystemsToRemove
+        Specifies an array of SiteSystems to remove from the Boundary Group.
 
     .Parameter Ensure
-        Specifies if the boundary group is to be absent or present.
+        Specifies if the Boundary Group is to be absent or present.
 #>
 function Set-TargetResource
 {
@@ -103,6 +123,18 @@ function Set-TargetResource
         $BoundaryAction = 'Add',
 
         [Parameter()]
+        [String[]]
+        $SiteSystems,
+
+        [Parameter()]
+        [String[]]
+        $SiteSystemsToInclude,
+
+        [Parameter()]
+        [String[]]
+        $SiteSystemsToExclude,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -117,6 +149,19 @@ function Set-TargetResource
 
         if ($Ensure -eq 'Present')
         {
+            if (-not $PSBoundParameters.ContainsKey('SiteSystems') -and
+                $PSBoundParameters.ContainsKey('SiteSystemsToInclude') -and
+                $PSBoundParameters.ContainsKey('SiteSystemsToExclude'))
+            {
+                foreach ($item in $SiteSystemsToInclude)
+                {
+                    if ($SiteSystemsToExclude -contains $item)
+                    {
+                        throw ($script:localizedData.SiteInEx -f $item)
+                    }
+                }
+            }
+
             if ($state.Ensure -eq 'Absent')
             {
                 Write-Verbose -Message ($script:localizedData.CreateBoundaryGroup -f $BoundaryGroup)
@@ -234,6 +279,50 @@ function Set-TargetResource
                     }
                 }
             }
+
+            if ($SiteSystems -or $SiteSystemsToInclude -or $SiteSystemsToExclude)
+            {
+                $systemsArray = @{
+                    Match        = $SiteSystems
+                    Include      = $SiteSystemsToInclude
+                    Exclude      = $SiteSystemsToExclude
+                    CurrentState = $state.SiteSystems
+                }
+
+                $systemsCompare = Compare-MultipleCompares @systemsArray
+
+                if ($systemsCompare.Missing)
+                {
+                    foreach ($add in $systemsCompare.Missing)
+                    {
+                        if (Get-CMSiteSystemServer -SiteSystemServerName $add -SiteCode $siteCode)
+                        {
+                            [array]$addSystems += $add
+                        }
+                        else
+                        {
+                            [array]$errorMsg += $add
+                        }
+                    }
+
+                    if ($addSystems)
+                    {
+                        Write-Verbose -Message ($script:localizedData.SystemMissing -f ($addSystems | Out-String))
+                        Set-CMBoundaryGroup -Name $BoundaryGroup -AddSiteSystemServerName $addSystems
+                    }
+                }
+
+                if ($systemsCompare.Remove)
+                {
+                    Write-Verbose -Message ($script:localizedData.SystemRemove -f ($systemsCompare.Remove | Out-String))
+                    Set-CMBoundaryGroup -Name $BoundaryGroup  -RemoveSiteSystemServerName $systemsCompare.Remove
+                }
+
+                if ($errorMsg)
+                {
+                    throw ($script:localizedData.SiteSystemMissing -f ($errorMsg | Out-String))
+                }
+            }
         }
         elseif ($state.Ensure -eq 'Present')
         {
@@ -259,16 +348,25 @@ function Set-TargetResource
         Specifies the SiteCode for the Configuration Manager site.
 
     .PARAMETER BoundaryGroup
-        Specifies the boundary group name.
+        Specifies the Boundary Group name.
 
     .Parameter Boundaries
         Specifies an array of boundaries to add or remove.
 
     .Parameter BoundaryAction
-        Specifies the boundaries are to match, add, or remove Boundaries from the boundary group.
+        Specifies the boundaries are to match, add, or remove Boundaries from the Boundary Group.
+
+    .Parameter SiteSystems
+        Specifies an array of SiteSystems to match on the Boundary Group.
+
+    .Parameter SiteSystemsToInclude
+        Specifies an array of SiteSystems to add to the Boundary Group.
+
+    .Parameter SiteSystemsToRemove
+        Specifies an array of SiteSystems to remove from the Boundary Group.
 
     .Parameter Ensure
-        Specifies if the boundary group is to be absent or present.
+        Specifies if the Boundary Group is to be absent or present.
 #>
 function Test-TargetResource
 {
@@ -294,6 +392,18 @@ function Test-TargetResource
         $BoundaryAction = 'Add',
 
         [Parameter()]
+        [String[]]
+        $SiteSystems,
+
+        [Parameter()]
+        [String[]]
+        $SiteSystemsToInclude,
+
+        [Parameter()]
+        [String[]]
+        $SiteSystemsToExclude,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -306,6 +416,28 @@ function Test-TargetResource
 
     if ($Ensure -eq 'Present')
     {
+        if ($PSBoundParameters.ContainsKey('SiteSystems'))
+        {
+            if ($PSBoundParameters.ContainsKey('SiteSystemsToInclude') -or
+                $PSBoundParameters.ContainsKey('SiteSystemsToExclude'))
+            {
+                Write-Warning -Message $script:localizedData.ParamIgnore
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey('SiteSystems') -and
+            $PSBoundParameters.ContainsKey('SiteSystemsToInclude') -and
+            $PSBoundParameters.ContainsKey('SiteSystemsToExclude'))
+        {
+            foreach ($item in $SiteSystemsToInclude)
+            {
+                if ($SiteSystemsToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.SiteInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
         if ($state.Ensure -eq 'Absent')
         {
             Write-Verbose -Message ($script:localizedData.BoundaryGroupMissing -f $BoundaryGroup)
@@ -376,6 +508,30 @@ function Test-TargetResource
                             }
                         }
                     }
+                }
+            }
+
+            if ($SiteSystems -or $SiteSystemsToInclude -or $SiteSystemsToExclude)
+            {
+                $systemsArray = @{
+                    Match        = $SiteSystems
+                    Include      = $SiteSystemsToInclude
+                    Exclude      = $SiteSystemsToExclude
+                    CurrentState = $state.SiteSystems
+                }
+
+                $systemsCompare = Compare-MultipleCompares @systemsArray
+
+                if ($systemsCompare.Missing)
+                {
+                    Write-Verbose -Message ($script:localizedData.SystemMissing -f ($systemsCompare.Missing | Out-String))
+                    $result = $false
+                }
+
+                if ($systemsCompare.Remove)
+                {
+                    Write-Verbose -Message ($script:localizedData.SystemRemove -f ($systemsCompare.Remove | Out-String))
+                    $result = $false
                 }
             }
         }

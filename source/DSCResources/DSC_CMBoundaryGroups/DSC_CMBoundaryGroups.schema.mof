@@ -2,10 +2,13 @@
 class DSC_CMBoundaryGroups : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
-    [Key, Description("Specifies the name of the boundary group.")] String BoundaryGroup;
+    [Key, Description("Specifies the name of the Boundary Group.")] String BoundaryGroup;
     [Write, EmbeddedInstance("DSC_CMBoundaryGroupsBoundaries"), Description("Specifies an array of boundaries to add or remove.")] String Boundaries[];
-    [Write, Description("Specifies the boundaries are to match, add, or remove Boundaries from the boundary group."), ValueMap{"Match","Add","Remove"}, Values{"Match","Add","Remove"}] String BoundaryAction;
-    [Write, Description("Specifies whether the boundary group is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Write, Description("Specifies the boundaries are to match, add, or remove boundaries from the Boundary Group."), ValueMap{"Match","Add","Remove"}, Values{"Match","Add","Remove"}] String BoundaryAction;
+    [Write, Description("Specifies an array of SiteSystems to match on the Boundary Group.")] String SiteSystems[];
+    [Write, Description("Specifies an array of SiteSystems to add to the Boundary Group.")] String SiteSystemsToInclude[];
+    [Write, Description("Specifies an array of SiteSystems to remove from the Boundary Group.")] String SiteSystemsToExclude[];
+    [Write, Description("Specifies whether the Boundary Group is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };
 
 [ClassVersion("1.0.0")]
