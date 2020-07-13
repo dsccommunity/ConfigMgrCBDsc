@@ -270,6 +270,12 @@ try
                         Ensure             = 'Present'
                     }
 
+                    $disableProxy = @{
+                        SiteCode         = 'Lab'
+                        SiteSystemServer = 'SS01.contoso.com'
+                        EnableProxy      = $false
+                    }
+
                     Mock -CommandName Get-CMAccount -MockWith { $true }
                 }
 
@@ -323,6 +329,19 @@ try
                     Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMSiteSystemServer -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMSiteSystemServer -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected command when disabling proxy' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+
+                    Set-TargetResource @disableProxy
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSiteSystemServer -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMSiteSystemServer -Exactly -Times 0 -Scope It
                 }
             }
 

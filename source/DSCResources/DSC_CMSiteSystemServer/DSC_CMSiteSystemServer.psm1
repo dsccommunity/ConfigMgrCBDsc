@@ -242,45 +242,54 @@ function Set-TargetResource
 
             if ($proxyBad)
             {
-                $buildingParams += @{
-                    EnableProxy     = $true
-                    ProxyServerName = $ProxyServerName
-                }
-
-                if ($PSBoundParameters.ContainsKey('ProxyServerPort'))
+                if ($EnableProxy -eq $true)
                 {
                     $buildingParams += @{
-                        ProxyServerPort = $ProxyServerPort
+                        EnableProxy     = $true
+                        ProxyServerName = $ProxyServerName
                     }
-                }
 
-                if ($PSBoundParameters.ContainsKey('ProxyAccessAccount'))
-                {
-                    if (-not [string]::IsNullOrEmpty($ProxyAccessAccount))
+                    if ($PSBoundParameters.ContainsKey('ProxyServerPort'))
                     {
-                        $account = Get-CMAccount -UserName $ProxyAccessAccount
-
-                        if ([string]::IsNullOrEmpty($account))
-                        {
-                            throw ($script:localizedData.BadProxyAccess -f $ProxyAccessAccount)
-                        }
-
                         $buildingParams += @{
-                            ProxyAccessAccount = $account
+                            ProxyServerPort = $ProxyServerPort
                         }
                     }
-                }
 
-                if ((-not $PSBoundParameters.ContainsKey('ProxyServerPort')) -and
-                    (-not [string]::IsNullOrEmpty($state.ProxyServerPort) -and $state.ProxyServerPort -ne 80))
-                {
-                    Write-Warning -Message ($script:localizedData.NoProxyPort -f $state.ProxyServerPort)
-                }
+                    if ($PSBoundParameters.ContainsKey('ProxyAccessAccount'))
+                    {
+                        if (-not [string]::IsNullOrEmpty($ProxyAccessAccount))
+                        {
+                            $account = Get-CMAccount -UserName $ProxyAccessAccount
 
-                if (-not $PSBoundParameters.ContainsKey('ProxyAccessAccount') -and
-                    -not [string]::IsNullOrEmpty($state.ProxyAccessAccount))
+                            if ([string]::IsNullOrEmpty($account))
+                            {
+                                throw ($script:localizedData.BadProxyAccess -f $ProxyAccessAccount)
+                            }
+
+                            $buildingParams += @{
+                                ProxyAccessAccount = $account
+                            }
+                        }
+                    }
+
+                    if ((-not $PSBoundParameters.ContainsKey('ProxyServerPort')) -and
+                        (-not [string]::IsNullOrEmpty($state.ProxyServerPort) -and $state.ProxyServerPort -ne 80))
+                    {
+                        Write-Warning -Message ($script:localizedData.NoProxyPort -f $state.ProxyServerPort)
+                    }
+
+                    if (-not $PSBoundParameters.ContainsKey('ProxyAccessAccount') -and
+                        -not [string]::IsNullOrEmpty($state.ProxyAccessAccount))
+                    {
+                        Write-Warning -Message ($script:localizedData.NoProxyAccessAccount -f $state.ProxyAccessAccount)
+                    }
+                }
+                else
                 {
-                    Write-Warning -Message ($script:localizedData.NoProxyAccessAccount -f $state.ProxyAccessAccount)
+                    $buildingParams += @{
+                        EnableProxy = $false
+                    }
                 }
             }
 
