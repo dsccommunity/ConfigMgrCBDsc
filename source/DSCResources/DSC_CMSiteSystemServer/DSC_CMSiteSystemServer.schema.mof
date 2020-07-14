@@ -1,0 +1,16 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSiteSystemServer")]
+class DSC_CMSiteSystemServer : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the name of the site system server.")] String SiteSystemServer;
+    [Write, Description("Specifies the public FQDN of the site server.")] String PublicFqdn;
+    [Write, Description("Indicates whether the site system server is required to initiate connections to this site system.")] Boolean FdmOperation;
+    [Write, Description("Indicates that the install uses the site server's computer account to install the site system.")] Boolean UseSiteServerAccount;
+    [Write, Description("Specifies the account name for installing the site system.")] String AccountName;
+    [Write, Description("Indicates whether to enable a proxy server to use when the server synchronizes information from the Internet.")] Boolean EnableProxy;
+    [Write, Description("Specifies the name of a proxy server. Use a fully qualified domain name FQDN, short name, or IPv4/IPv6 address.")] String ProxyServerName;
+    [Write, Description("Specifies the proxy server port number to use when connecting to the Internet.")] UInt32 ProxyServerPort;
+    [Write, Description("Specifies the credentials to use to authenticate with the proxy server. Do not use user principal name UPN format.")] String ProxyAccessAccount;
+    [Write, Description("Specifies whether the site system server is to be present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Read, Description("Specifies the count of roles on the site system server.")] String RoleCount;
+};
