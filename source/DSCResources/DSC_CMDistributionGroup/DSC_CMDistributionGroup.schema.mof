@@ -6,5 +6,8 @@ class DSC_CMDistributionGroup : OMI_BaseResource
     [Write, Description("Specifies an array of Distribution Points to match to the Distribution Group.")] String DistributionPoints[];
     [Write, Description("Specifies an array of Distribution Points to add to the Distribution Group.")] String DistributionPointsToInclude[];
     [Write, Description("Specifies an array of Distribution Points to remove from the Distribution Group.")] String DistributionPointsToExclude[];
+    [Write, Description("Specifies an array of Security Scopes to match to the Distribution Group.")] String SecurityScopes[];
+    [Write, Description("Specifies an array of Security Scopes to add to the Distribution Group.")] String SecurityScopesToInclude[];
+    [Write, Description("Specifies an array of Security Scopes to remove from the Distribution Group.")] String SecurityScopesToExclude[];
     [Write, Description("Specifies whether the Distribution Group is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };
