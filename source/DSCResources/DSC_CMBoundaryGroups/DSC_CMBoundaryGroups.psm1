@@ -102,7 +102,7 @@ function Get-TargetResource
     .Parameter SiteSystemsToInclude
         Specifies an array of SiteSystems to add to the Boundary Group.
 
-    .Parameter SiteSystemsToRemove
+    .Parameter SiteSystemsToExclude
         Specifies an array of SiteSystems to remove from the Boundary Group.
 
     .PARAMETER SecurityScopes
@@ -438,7 +438,7 @@ function Set-TargetResource
     .Parameter SiteSystemsToInclude
         Specifies an array of SiteSystems to add to the Boundary Group.
 
-    .Parameter SiteSystemsToRemove
+    .Parameter SiteSystemsToExclude
         Specifies an array of SiteSystems to remove from the Boundary Group.
 
     .PARAMETER SecurityScopes
