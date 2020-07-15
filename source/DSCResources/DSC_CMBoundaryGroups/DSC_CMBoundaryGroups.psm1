@@ -35,18 +35,18 @@ function Get-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
-    $groupId = (Get-CMBoundaryGroup -Name $BoundaryGroup).GroupId
+    $groupId = Get-CMBoundaryGroup -Name $BoundaryGroup
 
     if ($groupId)
     {
-        $groupMembers = Get-CMBoundary -BoundaryGroupId $groupId
+        $groupMembers = Get-CMBoundary -BoundaryGroupId $groupId.GroupId
 
         if ($groupMembers)
         {
             $cimBoundaries = ConvertTo-CimBoundaries -InputObject $groupMembers
         }
 
-        $serverPath = (Get-CMBoundaryGroupSiteSystem -ID $groupID).ServerNalPath
+        $serverPath = (Get-CMBoundaryGroupSiteSystem -ID $groupId.GroupId).ServerNalPath
 
         if ($serverPath)
         {
@@ -54,6 +54,13 @@ function Get-TargetResource
             {
                 [array]$mappings += $item.TrimEnd('\').Split('\')[-1]
             }
+        }
+
+        $scopeObject = Get-CMObjectSecurityScope -InputObject $groupId
+
+        foreach ($item in $scopeObject)
+        {
+            [array]$scopes += $item.CategoryName
         }
 
         $status = 'Present'
@@ -64,11 +71,12 @@ function Get-TargetResource
     }
 
     return @{
-        SiteCode      = $SiteCode
-        BoundaryGroup = $BoundaryGroup
-        Boundaries    = $cimBoundaries
-        SiteSystems   = $mappings
-        Ensure        = $status
+        SiteCode       = $SiteCode
+        BoundaryGroup  = $BoundaryGroup
+        Boundaries     = $cimBoundaries
+        SiteSystems    = $mappings
+        SecurityScopes = $scopes
+        Ensure         = $status
     }
 }
 
@@ -96,6 +104,15 @@ function Get-TargetResource
 
     .Parameter SiteSystemsToRemove
         Specifies an array of SiteSystems to remove from the Boundary Group.
+
+    .PARAMETER SecurityScopes
+        Specifies an array of Security Scopes to match to the Boundary Group.
+
+    .PARAMETER SecurityScopesToInclude
+        Specifies an array of Security Scopes to add to the Boundary Group.
+
+    .PARAMETER SecurityScopesToExclude
+        Specifies an array of Security Scopes to remove from the Boundary Group.
 
     .Parameter Ensure
         Specifies if the Boundary Group is to be absent or present.
@@ -135,6 +152,18 @@ function Set-TargetResource
         $SiteSystemsToExclude,
 
         [Parameter()]
+        [String[]]
+        $SecurityScopes,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToInclude,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToExclude,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -158,6 +187,19 @@ function Set-TargetResource
                     if ($SiteSystemsToExclude -contains $item)
                     {
                         throw ($script:localizedData.SiteInEx -f $item)
+                    }
+                }
+            }
+
+            if (-not $PSBoundParameters.ContainsKey('SecurityScopes') -and
+                $PSBoundParameters.ContainsKey('SecurityScopesToInclude') -and
+                $PSBoundParameters.ContainsKey('SecurityScopesToExclude'))
+            {
+                foreach ($item in $SecurityScopesToInclude)
+                {
+                    if ($SecurityScopesToExclude -contains $item)
+                    {
+                        throw ($script:localizedData.ScopeInEx -f $item)
                     }
                 }
             }
@@ -272,11 +314,6 @@ function Set-TargetResource
                             $errorMsg += ($script:localizedData.BoundaryAbsent -f $item.Type, $item.Value)
                         }
                     }
-
-                    if ($errorMsg)
-                    {
-                        throw $errorMsg
-                    }
                 }
             }
 
@@ -301,7 +338,7 @@ function Set-TargetResource
                         }
                         else
                         {
-                            [array]$errorMsg += $add
+                            $errorMsg += ($script:localizedData.SiteSystemMissing -f $add)
                         }
                     }
 
@@ -317,10 +354,44 @@ function Set-TargetResource
                     Write-Verbose -Message ($script:localizedData.SystemRemove -f ($systemsCompare.Remove | Out-String))
                     Set-CMBoundaryGroup -Name $BoundaryGroup  -RemoveSiteSystemServerName $systemsCompare.Remove
                 }
+            }
 
-                if ($errorMsg)
+            if ($SecurityScopes -or $SecurityScopesToInclude -or $SecurityScopesToExclude)
+            {
+                $bgObject = Get-CMBoundaryGroup -Name $BoundaryGroup
+
+                $scopesArray = @{
+                    Match        = $SecurityScopes
+                    Include      = $SecurityScopesToInclude
+                    Exclude      = $SecurityScopesToExclude
+                    CurrentState = $state.SecurityScopes
+                }
+
+                $scopesCompare = Compare-MultipleCompares @scopesArray
+
+                if ($scopesCompare.Missing)
                 {
-                    throw ($script:localizedData.SiteSystemMissing -f ($errorMsg | Out-String))
+                    foreach ($add in $scopesCompare.Missing)
+                    {
+                        if (Get-CMSecurityScope -Name $add)
+                        {
+                            Write-Verbose -Message ($script:localizedData.AddScope -f $add, $BoundaryGroup)
+                            Add-CMObjectSecurityScope -Name $add -InputObject $bgObject
+                        }
+                        else
+                        {
+                            $errorMsg += ($script:localizedData.SecurityScopeMissing -f $add)
+                        }
+                    }
+                }
+
+                if ($scopesCompare.Remove)
+                {
+                    foreach ($remove in $scopesCompare.Remove)
+                    {
+                        Write-Verbose -Message ($script:localizedData.RemoveScope -f $remove, $BoundaryGroup)
+                        Remove-CMObjectSecurityScope -Name $remove -InputObject $bgObject
+                    }
                 }
             }
         }
@@ -328,6 +399,11 @@ function Set-TargetResource
         {
             Write-Verbose -Message ($script:localizedData.BoundaryGroupDelete -f $BoundaryGroup)
             Remove-CMBoundaryGroup -Name $BoundaryGroup
+        }
+
+        if ($errorMsg)
+        {
+            throw ($script:localizedData.SiteSystemMissing -f ($errorMsg | Out-String))
         }
     }
     catch
@@ -364,6 +440,15 @@ function Set-TargetResource
 
     .Parameter SiteSystemsToRemove
         Specifies an array of SiteSystems to remove from the Boundary Group.
+
+    .PARAMETER SecurityScopes
+        Specifies an array of Security Scopes to match to the Boundary Group.
+
+    .PARAMETER SecurityScopesToInclude
+        Specifies an array of Security Scopes to add to the Boundary Group.
+
+    .PARAMETER SecurityScopesToExclude
+        Specifies an array of Security Scopes to remove from the Boundary Group.
 
     .Parameter Ensure
         Specifies if the Boundary Group is to be absent or present.
@@ -404,6 +489,18 @@ function Test-TargetResource
         $SiteSystemsToExclude,
 
         [Parameter()]
+        [String[]]
+        $SecurityScopes,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToInclude,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToExclude,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -433,6 +530,28 @@ function Test-TargetResource
                 if ($SiteSystemsToExclude -contains $item)
                 {
                     Write-Warning -Message ($script:localizedData.SiteInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
+        if ($PSBoundParameters.ContainsKey('SecurityScopes'))
+        {
+            if ($PSBoundParameters.ContainsKey('SecurityScopesToInclude') -or
+                $PSBoundParameters.ContainsKey('SecurityScopesToExclude'))
+            {
+                Write-Warning -Message $script:localizedData.ParamIgnoreScopes
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey('SecurityScopes') -and
+            $PSBoundParameters.ContainsKey('SecurityScopesToInclude') -and
+            $PSBoundParameters.ContainsKey('SecurityScopesToExclude'))
+        {
+            foreach ($item in $SecurityScopesToInclude)
+            {
+                if ($SecurityScopesToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.ScopeInEx -f $item)
                     $result = $false
                 }
             }
@@ -531,6 +650,30 @@ function Test-TargetResource
                 if ($systemsCompare.Remove)
                 {
                     Write-Verbose -Message ($script:localizedData.SystemRemove -f ($systemsCompare.Remove | Out-String))
+                    $result = $false
+                }
+            }
+
+            if ($SecurityScopes -or $SecurityScopesToInclude -or $SecurityScopesToExclude)
+            {
+                $scopeArray = @{
+                    Match        = $SecurityScopes
+                    Include      = $SecurityScopesToInclude
+                    Exclude      = $SecurityScopesToExclude
+                    CurrentState = $state.SecurityScopes
+                }
+
+                $scopeCompare = Compare-MultipleCompares @scopeArray
+
+                if ($scopeCompare.Missing)
+                {
+                    Write-Verbose -Message ($script:localizedData.ScopeMissing -f ($scopeCompare.Missing | Out-String))
+                    $result = $false
+                }
+
+                if ($scopeCompare.Remove)
+                {
+                    Write-Verbose -Message ($script:localizedData.ScopeRemove -f ($scopeCompare.Remove | Out-String))
                     $result = $false
                 }
             }

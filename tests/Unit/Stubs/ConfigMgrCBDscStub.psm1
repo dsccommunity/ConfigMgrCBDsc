@@ -10899,7 +10899,7 @@ function Get-CMObjectSecurityScope
     param
     (
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [System.Object]
+        [Hashtable]
         ${InputObject},
 
         [Parameter(ParameterSetName='FilterByName')]
@@ -30426,7 +30426,7 @@ function Remove-CMObjectSecurityScope
         ${Id},
 
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [System.Object[]]
+        [Hashtable[]]
         ${InputObject},
 
         [Parameter(ParameterSetName='ByName', Mandatory=$true, Position=0)]
@@ -43423,7 +43423,7 @@ function Set-CMObjectSecurityScope
     param
     (
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [System.Object[]]
+        [Hashtable[]]
         ${InputObject},
 
         [Parameter(Mandatory=$true)]

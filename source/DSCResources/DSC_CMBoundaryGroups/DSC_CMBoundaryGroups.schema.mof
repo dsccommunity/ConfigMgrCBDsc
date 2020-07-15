@@ -8,6 +8,9 @@ class DSC_CMBoundaryGroups : OMI_BaseResource
     [Write, Description("Specifies an array of SiteSystems to match on the Boundary Group.")] String SiteSystems[];
     [Write, Description("Specifies an array of SiteSystems to add to the Boundary Group.")] String SiteSystemsToInclude[];
     [Write, Description("Specifies an array of SiteSystems to remove from the Boundary Group.")] String SiteSystemsToExclude[];
+    [Write, Description("Specifies an array of Security Scopes to match to the Boundary Group.")] String SecurityScopes[];
+    [Write, Description("Specifies an array of Security Scopes to add to the Boundary Group.")] String SecurityScopesToInclude[];
+    [Write, Description("Specifies an array of Security Scopes to remove from the Boundary Group.")] String SecurityScopesToExclude[];
     [Write, Description("Specifies whether the Boundary Group is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
 };
 

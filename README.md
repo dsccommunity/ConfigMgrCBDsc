@@ -463,6 +463,12 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   to add to the Boundary Group.
 - **[String] SiteSystemsToExclude[]** _(Write): Specifies an array of Site Systems
   to remove from the Boundary Group.
+- **[String] SecurityScopes[]** _(Write): Specifies an array of Security Scopes
+  to match for the Boundary Group.
+- **[String] SecurityScopesToInclude[]** _(Write): Specifies an array of Security
+  Scopes to add to the Boundary Group.
+- **[String] SecurityScopesToExclude[]** _(Write): Specifies an array of Security
+  Scopes to remove from the Boundary Group.
 - **[String] Ensure** _(Write)_: Specifies status of the Boundary Group is to be
   present or absent.
   - Values include: { Present | Absent }

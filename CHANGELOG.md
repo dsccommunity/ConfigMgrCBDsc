@@ -61,8 +61,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added UDP 1434 to the defaults for the xSCCMPreReqs.
 - Fixed newline in the CMIniFile resource.
 - Removed WSUS top level feature.
-- Added SiteSystems, SiteSystemsToInclude, and SiteSystemsToExclude to
-  CMBoundaryGroup resource
+- Added SiteSystems, SiteSystemsToInclude, and SiteSystemsToExclude and SecurityScopes,
+  SecurityScopesToInclude, SecurityScopesToExclude to CMBoundaryGroup resource.
 
 ### Removed
 
