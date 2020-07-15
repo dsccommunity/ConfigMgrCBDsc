@@ -97,6 +97,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Groups and adding Distribution Points to the group.
 - **CMSiteSystemServer**: Provides a resource for adding and modifying a Site
   System Server and its properties.
+- **CMSecurityScopes**: Provides a resource for adding and removing Security
+  Scopes.  Note: If the Security Scope is currently InUse and assigned DSC will
+  not remove the Security Scope.
 
 ### xSccmPreReqs
 
@@ -947,3 +950,20 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMSiteSystemServer_Present](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Present.ps1)
 - [CMSiteSystemServer_Absent](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Absent.ps1)
+
+### CMSecurityScopes
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SecurityScopeName** _(Key)_: Specifies the Security Scope name.
+- **[String] Description** _(Write)_: Specifies the description of the Security Scope.
+- **[String] Ensure** _(Write)_: Specifies whether the Security Scope
+  is present or absent.
+  - Values include: { Present | Absent }
+- **[Boolean] InUse** _(Read)_: Specifies if the Security Scope is
+  currently in use.
+
+#### CMSecurityScopes Examples
+
+- [CMSecurityScopes_Present](Source\Examples\Resources\CMSecurityScopes\CMSecurityScopes_Present.ps1)
+- [CMSecurityScopes_Absent](Source\Examples\Resources\CMSecurityScopes\CMSecurityScopes_Absent.ps1)

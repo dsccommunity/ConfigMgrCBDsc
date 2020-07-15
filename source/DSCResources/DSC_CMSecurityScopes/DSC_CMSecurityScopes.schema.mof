@@ -1,0 +1,9 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSecurityScopes")]
+class DSC_CMSecurityScopes : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the Security Scope Name.")] String SecurityScopeName;
+    [Write, Description("Specifies the description of the Security Scope.")] String Description;
+    [Write, Description("Specifies whether the Security Scope is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Read, Description("Specifies if the Security Scope is currently in use.")] Boolean InUse;
+};
