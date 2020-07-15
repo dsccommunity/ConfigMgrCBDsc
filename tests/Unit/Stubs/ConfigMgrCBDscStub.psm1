@@ -45243,8 +45243,7 @@ function Set-CMSiteSystemServer
 
         [Parameter(ParameterSetName='SearchByNameMandatory')]
         [Parameter(ParameterSetName='SearchByValueMandatory')]
-        [PSTypeName('IResultObject#SMS_SCI_Reserved')]
-        [System.Object]
+        [string]
         ${ProxyAccessAccount},
 
         [Parameter(ParameterSetName='SearchByValueMandatory', Mandatory=$true, ValueFromPipeline=$true)]
