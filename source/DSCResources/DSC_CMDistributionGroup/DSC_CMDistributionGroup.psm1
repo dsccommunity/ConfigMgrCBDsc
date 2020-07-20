@@ -47,6 +47,13 @@ function Get-TargetResource
             $dpMembers += $dp.NetworkOSPath.SubString(2)
         }
 
+        $scopeObject = Get-CMObjectSecurityScope -InputObject $groupStatus
+
+        foreach ($item in $scopeObject)
+        {
+            [array]$scopes += $item.CategoryName
+        }
+
         $group = 'Present'
     }
     else
@@ -58,6 +65,7 @@ function Get-TargetResource
         SiteCode           = $SiteCode
         DistributionGroup  = $DistributionGroup
         DistributionPoints = $dpMembers
+        SecurityScopes     = $scopes
         Ensure             = $group
     }
 }
@@ -80,6 +88,15 @@ function Get-TargetResource
 
     .PARAMETER DistributionPointsToExclude
         Specifies an array of Distribution Points to remove from the Distribution Group.
+
+    .PARAMETER SecurityScopes
+        Specifies an array of Security Scopes to match to the Distribution Group.
+
+    .PARAMETER SecurityScopesToInclude
+        Specifies an array of Security Scopes to add to the Distribution Group.
+
+    .PARAMETER SecurityScopesToExclude
+        Specifies an array of Security Scopes to remove from the Distribution Group.
 
     .PARAMETER Ensure
         Specifies if the Distribution Group is to be present or absent.
@@ -110,6 +127,18 @@ function Set-TargetResource
         $DistributionPointsToExclude,
 
         [Parameter()]
+        [String[]]
+        $SecurityScopes,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToInclude,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToExclude,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -137,6 +166,19 @@ function Set-TargetResource
                 }
             }
 
+            if (-not $PSBoundParameters.ContainsKey('SecurityScopes') -and
+                $PSBoundParameters.ContainsKey('SecurityScopesToInclude') -and
+                $PSBoundParameters.ContainsKey('SecurityScopesToExclude'))
+            {
+                foreach ($item in $SecurityScopesToInclude)
+                {
+                    if ($SecurityScopesToExclude -contains $item)
+                    {
+                        throw ($script:localizedData.ScopeInEx -f $item)
+                    }
+                }
+            }
+
             if ($state.Ensure -eq 'Absent')
             {
                 Write-Verbose -Message ($script:localizedData.AddGroup -f $DistributionGroup)
@@ -156,6 +198,7 @@ function Set-TargetResource
 
                 if ($distroCompare.Missing)
                 {
+                    $distro = 'Distribution Point'
                     foreach ($add in $distroCompare.Missing)
                     {
                         if (Get-CMDistributionPoint -Name $add)
@@ -170,7 +213,7 @@ function Set-TargetResource
                         }
                         else
                         {
-                            $errorMsg += ($script:localizedData.ErrorGroup -f $add)
+                            $errorMsg += ($script:localizedData.ErrorGroup -f $distro, $add)
                         }
                     }
                 }
@@ -186,6 +229,47 @@ function Set-TargetResource
 
                         Write-Verbose -Message ($script:localizedData.RemoveDistro -f $remove, $DistributionGroup)
                         Remove-CMDistributionPointFromGroup @removeParam
+                    }
+                }
+            }
+
+            if ($SecurityScopes -or $SecurityScopesToInclude -or $SecurityScopesToExclude)
+            {
+                $dgObject = Get-CMDistributionPointGroup -Name $DistributionGroup
+
+                $scopesArray = @{
+                    Match        = $SecurityScopes
+                    Include      = $SecurityScopesToInclude
+                    Exclude      = $SecurityScopesToExclude
+                    CurrentState = $state.SecurityScopes
+                }
+
+                $scopesCompare = Compare-MultipleCompares @scopesArray
+
+                if ($scopesCompare.Missing)
+                {
+                    $scopeError = 'Security Scope'
+
+                    foreach ($add in $scopesCompare.Missing)
+                    {
+                        if (Get-CMSecurityScope -Name $add)
+                        {
+                            Write-Verbose -Message ($script:localizedData.AddScope -f $add, $DistributionGroup)
+                            Add-CMObjectSecurityScope -Name $add -InputObject $dgObject
+                        }
+                        else
+                        {
+                            $errorMsg += ($script:localizedData.ErrorGroup -f $scopeError, $add)
+                        }
+                    }
+                }
+
+                if ($scopesCompare.Remove)
+                {
+                    foreach ($remove in $scopesCompare.Remove)
+                    {
+                        Write-Verbose -Message ($script:localizedData.RemoveScope -f $remove, $DistributionGroup)
+                        Remove-CMObjectSecurityScope -Name $remove -InputObject $dgObject
                     }
                 }
             }
@@ -230,6 +314,15 @@ function Set-TargetResource
     .PARAMETER DistributionPointsToExclude
         Specifies an array of Distribution Points to remove from the Distribution Group.
 
+    .PARAMETER SecurityScopes
+        Specifies an array of Security Scopes to match to the Distribution Group.
+
+    .PARAMETER SecurityScopesToInclude
+        Specifies an array of Security Scopes to add to the Distribution Group.
+
+    .PARAMETER SecurityScopesToExclude
+        Specifies an array of Security Scopes to remove from the Distribution Group.
+
     .PARAMETER Ensure
         Specifies if the Distribution Group is to be present or absent.
 #>
@@ -258,6 +351,18 @@ function Test-TargetResource
         [Parameter()]
         [String[]]
         $DistributionPointsToExclude,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopes,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToInclude,
+
+        [Parameter()]
+        [String[]]
+        $SecurityScopesToExclude,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -294,32 +399,81 @@ function Test-TargetResource
             }
         }
 
+        if ($PSBoundParameters.ContainsKey('SecurityScopes'))
+        {
+            if ($PSBoundParameters.ContainsKey('SecurityScopesToInclude') -or
+                $PSBoundParameters.ContainsKey('SecurityScopesToExclude'))
+            {
+                Write-Warning -Message $script:localizedData.ParamIgnoreScopes
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey('SecurityScopes') -and
+            $PSBoundParameters.ContainsKey('SecurityScopesToInclude') -and
+            $PSBoundParameters.ContainsKey('SecurityScopesToExclude'))
+        {
+            foreach ($item in $SecurityScopesToInclude)
+            {
+                if ($SecurityScopesToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.DistroInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
         if ($state.Ensure -eq 'Absent')
         {
             Write-Verbose -Message ($script:localizedData.GroupMissing -f $DistributionGroup)
             $result = $false
         }
-        elseif ($DistributionPoints -or $DistributionPointsToInclude -or $DistributionPointsToExclude)
+        else
         {
-            $distroArray = @{
-                Match        = $DistributionPoints
-                Include      = $DistributionPointsToInclude
-                Exclude      = $DistributionPointsToExclude
-                CurrentState = $state.DistributionPoints
+            if ($DistributionPoints -or $DistributionPointsToInclude -or $DistributionPointsToExclude)
+            {
+                $distroArray = @{
+                    Match        = $DistributionPoints
+                    Include      = $DistributionPointsToInclude
+                    Exclude      = $DistributionPointsToExclude
+                    CurrentState = $state.DistributionPoints
+                }
+
+                $distroCompare = Compare-MultipleCompares @distroArray
+
+                if ($distroCompare.Missing)
+                {
+                    Write-Verbose -Message ($script:localizedData.DistroMissing -f ($distroCompare.Missing | Out-String))
+                    $result = $false
+                }
+
+                if ($distroCompare.Remove)
+                {
+                    Write-Verbose -Message ($script:localizedData.DistroRemove -f ($distroCompare.Remove | Out-String))
+                    $result = $false
+                }
             }
 
-            $distroCompare = Compare-MultipleCompares @distroArray
-
-            if ($distroCompare.Missing)
+            if ($SecurityScopes -or $SecurityScopesToInclude -or $SecurityScopesToExclude)
             {
-                Write-Verbose -Message ($script:localizedData.DistroMissing -f ($distroCompare.Missing | Out-String))
-                $result = $false
-            }
+                $scopeArray = @{
+                    Match        = $SecurityScopes
+                    Include      = $SecurityScopesToInclude
+                    Exclude      = $SecurityScopesToExclude
+                    CurrentState = $state.SecurityScopes
+                }
 
-            if ($distroCompare.Remove)
-            {
-                Write-Verbose -Message ($script:localizedData.DistroRemove -f ($distroCompare.Remove | Out-String))
-                $result = $false
+                $scopeCompare = Compare-MultipleCompares @scopeArray
+
+                if ($scopeCompare.Missing)
+                {
+                    Write-Verbose -Message ($script:localizedData.ScopeMissing -f ($scopeCompare.Missing | Out-String))
+                    $result = $false
+                }
+
+                if ($scopeCompare.Remove)
+                {
+                    Write-Verbose -Message ($script:localizedData.ScopeRemove -f ($scopeCompare.Remove | Out-String))
+                    $result = $false
+                }
             }
         }
     }
