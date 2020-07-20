@@ -410,12 +410,16 @@ function ConvertTo-AnyCimInstance
 <#
     .SYNOPSIS
         Returns the boundary ID based on Value and Type of boundary specified.
+
     .PARAMETER Match
         Specifies an array of values to validate if missing or extra settings compared to current state.
+
     .PARAMETER Include
         Specifies an array of values to validate if missing from current state.
+
     .PARAMETER Exclude
         Specifies an array of values to validate if extra compared to current state.
+
     .PARAMETER CurrentState
         Specifies an array to compare against for match, include, or exclude.
 #>

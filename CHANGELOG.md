@@ -40,8 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMPullDistributionPoint Resource
 - Added ConvertTo-AnyCimInstance to the ResourceHelper
 - Added CMSiteMaintenance Resource
-- Added CMDistributionPointGroupMembers Resource
+- Added CMAdministrativeUser Resource
 - Added Compare-MultipleCompares to the ResourceHelper
+- Added CMDistributionGroup Resource
+- Added CMSiteSystemServer Resource
+- Added CMDistributionPointGroupMembers Resource
 
 ### Changed
 
@@ -60,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added UDP 1434 to the defaults for the xSCCMPreReqs.
 - Fixed newline in the CMIniFile resource.
 - Removed WSUS top level feature.
+- Added Security Scopes to CMDistributionGroup Resource
 
 ### Removed
 
