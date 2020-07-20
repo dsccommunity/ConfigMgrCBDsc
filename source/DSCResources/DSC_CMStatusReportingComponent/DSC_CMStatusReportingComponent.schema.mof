@@ -1,0 +1,17 @@
+[ClassVersion("1.0.0"), FriendlyName("CMStatusReportingComponent")]
+class DSC_CMStatusReportingComponent: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Write, Description("Indicates whether a client log is checked.")] Boolean ClientLogChecked;
+    [Write, Description("Indicates whether a client log failure is checked.")] Boolean ClientLogFailureChecked;
+    [Write, Description("Specifies a client log type."),ValueMap{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"},Values{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"}] String ClientLogType;
+    [Write, Description("Indicates whether a client report is checked.")] Boolean ClientReportChecked;
+    [Write, Description("Indicates whether a client failure is checked.")] Boolean ClientReportFailureChecked;
+    [Write, Description("Specifies a client report type."),ValueMap{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"},Values{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"}] String ClientReportType;
+    [Write, Description("Indicates whether a server log is checked.")] Boolean ServerLogChecked;
+    [Write, Description("Indicates whether a server log failure is checked.")] Boolean ServerLogFailureChecked;
+    [Write, Description("Specifies a server log type."),ValueMap{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"},Values{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"}] String ServerLogType;
+    [Write, Description("Indicates whether a server report is checked.")] Boolean ServerReportChecked;
+    [Write, Description("Indicates whether a server report failure is checked.")] Boolean ServerReportFailureChecked;
+    [Write, Description("Specifies a server report type."),ValueMap{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"},Values{"AllMilestones","AllMilestonesAndAllDetails","ErrorAndWarningMilestones","ErrorMilestones"}] String ServerReportType;
+};
