@@ -908,6 +908,12 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Distribution Points to add to the Distribution Group.
 - **[String] DistributionPointsToExclude[]** _(Write)_: Specifies an array of
   Distribution Points to remove from the Distribution Group.
+- **[String] SecurityScopes[]** _(Write)_: Specifies an array of Security Scopes
+  to match to the Distribution Group.
+- **[String] SecurityScopesToInclude[]** _(Write)_: Specifies an array of
+  Security Scopes to add to the Distribution Group.
+- **[String] SecurityScopesToExclude[]** _(Write)_: Specifies an array of
+  Security Scopes to remove from the Distribution Group.
 - **[String] Ensure** _(Write)_: Specifies whether the Distribution Group
   is present or absent.
   - Values include: { Present | Absent }
