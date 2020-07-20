@@ -20,6 +20,7 @@ Configuration Example
             SiteCode           = 'Lab'
             DistributionGroup  = 'DistroGroup2'
             DistributionPoints = 'DP01.contoso.com','DP02.contoso.com'
+            SecurityScopes     = 'Scope1','Scope2'
             Ensure             = 'Present'
         }
 
@@ -28,6 +29,7 @@ Configuration Example
             SiteCode                    = 'Lab'
             DistributionGroup           = 'DistroGroup3'
             DistributionPointsToInclude = 'DP01.contoso.com','DP02.contoso.com'
+            SecurityScopesToInclude     = 'Scope1','Scope2'
             Ensure                      = 'Present'
         }
 
@@ -36,6 +38,7 @@ Configuration Example
             SiteCode                    = 'Lab'
             DistributionGroup           = 'DistroGroup4'
             DistributionPointsToExclude = 'DP01.contoso.com'
+            SecurityScopesToExclude     = 'Scope1'
             Ensure                      = 'Present'
         }
     }
