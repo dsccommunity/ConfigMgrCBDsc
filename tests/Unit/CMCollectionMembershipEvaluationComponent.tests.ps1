@@ -82,12 +82,12 @@ try
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
+                Mock -CommandName Get-TargetResource -MockWith { $getReturn }
                 Mock -CommandName Set-CMCollectionMembershipEvaluationComponent
             }
 
             Context 'When Set-TargetResource runs successfully' {
                 It 'Should call expected commands when changing settings' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturn }
 
                     Set-TargetResource @getReturnMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -99,7 +99,6 @@ try
 
             Context 'When Set-TargetResource throws' {
                 It 'Should call expected commands and throw when Set-CMCollectionMembershipEvaluationComponent throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturn }
                     Mock -CommandName Set-CMCollectionMembershipEvaluationComponent -MockWith { throw }
 
                     { Set-TargetResource @getReturnMismatch } | Should -Throw

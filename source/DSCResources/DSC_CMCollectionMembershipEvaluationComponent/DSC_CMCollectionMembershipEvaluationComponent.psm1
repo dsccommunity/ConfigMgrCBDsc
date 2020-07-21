@@ -29,8 +29,8 @@ function Get-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
-    $component = (Get-CMCollectionMembershipEvaluationComponent -SiteCode $SiteCode).props
-    $evalMins = ($component | Where-Object -FilterScript {$_.PropertyName -eq 'Incremental Interval'}).value
+    $component = (Get-CMCollectionMembershipEvaluationComponent -SiteCode $SiteCode).Props
+    $evalMins = ($component | Where-Object -FilterScript {$_.PropertyName -eq 'Incremental Interval'}).Value
 
     return @{
         SiteCode       = $SiteCode
