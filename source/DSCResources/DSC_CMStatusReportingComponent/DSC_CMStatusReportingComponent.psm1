@@ -32,7 +32,7 @@ function Get-TargetResource
     $clientComponentStatus = Get-CMStatusReportingComponent -SiteCode $SiteCode | Where-Object -FilterScript {$_.ItemName -eq 'Client Component Status Reporting'}
     $serverComponentStatus = Get-CMStatusReportingComponent -SiteCode $SiteCode | Where-Object -FilterScript {$_.ItemName -eq 'Server Component Status Reporting'}
 
-    foreach ($prop in $clientComponentStatus.props)
+    foreach ($prop in $clientComponentStatus.Props)
     {
         switch ($prop.PropertyName)
         {
@@ -67,7 +67,7 @@ function Get-TargetResource
         }
     }
 
-    foreach ($prop in $serverComponentStatus.props)
+    foreach ($prop in $serverComponentStatus.Props)
     {
         switch ($prop.PropertyName)
         {
@@ -238,22 +238,22 @@ function Set-TargetResource
 
     try
     {
-        if ((($state.ClientLogChecked -eq $false) -and ($null -eq $ClientLogChecked) -and ($ClientLogType -or $ClientLogFailureChecked)) -or (($ClientLogChecked -eq $false) -and ($clientLogType -or $ClientLogFailureChecked)))
+        if (($ClientLogChecked -eq $false) -and ($clientLogType -or $ClientLogFailureChecked))
         {
             throw $script:localizedData.CLogThrow
         }
 
-        if ((($state.ClientReportChecked -eq $false) -and ($null -eq $ClientReportChecked) -and ($ClientReportType -or $ClientReportFailureChecked)) -or (($ClientReportChecked -eq $false) -and ($ClientReportType -or $ClientReportFailureChecked)))
+        if (($ClientReportChecked -eq $false) -and ($ClientReportType -or $ClientReportFailureChecked))
         {
             throw $script:localizedData.CReportThrow
         }
 
-        if ((($state.ServerLogChecked -eq $false) -and ($null -eq $ServerLogChecked) -and ($ServerLogType -or $ServerLogFailureChecked)) -or (($ServerLogChecked -eq $false) -and ($ServerLogType -or $ServerLogFailureChecked)))
+        if (($ServerLogChecked -eq $false) -and ($ServerLogType -or $ServerLogFailureChecked))
         {
             throw $script:localizedData.SLogThrow
         }
 
-        if ((($state.ServerReportChecked -eq $false) -and ($null -eq $ServerReportChecked) -and ($ServerReportType -or $ServerReportFailureChecked)) -or (($ServerReportChecked -eq $false) -and ($ServerReportType -or $ServerReportFailureChecked)))
+        if (($ServerReportChecked -eq $false) -and ($ServerReportType -or $ServerReportFailureChecked))
         {
             throw $script:localizedData.SReportThrow
         }
@@ -263,9 +263,9 @@ function Set-TargetResource
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-        if ($evalList -contains $param.key)
+        if ($evalList -contains $param.Key)
             {
-                if ($param.Value -ne $state[$param.key])
+                if ($param.Value -ne $state[$param.Key])
                 {
                     Write-Verbose -Message ($script:localizedData.SettingValue -f $param.Key, $param.Value)
                     $buildingParams += @{
