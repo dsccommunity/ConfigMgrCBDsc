@@ -69,6 +69,7 @@
         'CMAdministrativeUser'
         'CMDistributionGroup'
         'CMSiteSystemServer'
+        'CMCollectionMembershipEvaluationComponent'
     )
 
     <#
@@ -85,7 +86,7 @@
             'SccmSqlSetup','SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups',
             'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
             'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint',
-            'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer')
+            'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer','CollectionMembershipEvaluationComponent')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

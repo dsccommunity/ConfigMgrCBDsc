@@ -97,6 +97,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Groups and adding Distribution Points to the group.
 - **CMSiteSystemServer**: Provides a resource for adding and modifying a Site
   System Server and its properties.
+- **CMCollectionMembershipEvaluationComponent**: Provides a resource for modifying
+  the SCCM Collection Membership Evaluation Component.
 
 ### xSccmPreReqs
 
@@ -953,3 +955,14 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMSiteSystemServer_Present](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Present.ps1)
 - [CMSiteSystemServer_Absent](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Absent.ps1)
+
+### CMCollectionMembershipEvaluationComponent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[UInt32] EvaluationMins** _(Write)_: Indicates the CM Collection Membership
+  Evaluation Component interval in minutes.
+
+#### CMCollectionMembershipEvaluationComponent Examples
+
+- [CMCollectionMembershipEvaluationComponent_Example](Source\Examples\Resources\CMSiteSystemServer\CMCollectionMembershipEvaluationComponent_Example.ps1)

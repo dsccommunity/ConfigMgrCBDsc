@@ -44,6 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Compare-MultipleCompares to the ResourceHelper
 - Added CMDistributionGroup Resource
 - Added CMSiteSystemServer Resource
+- Added CMCMCollectionMembershipEvaluationComponent Resource
 
 ### Changed
 
