@@ -965,4 +965,4 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 #### CMCollectionMembershipEvaluationComponent Examples
 
-- [CMCollectionMembershipEvaluationComponent_Example](Source\Examples\Resources\CMSiteSystemServer\CMCollectionMembershipEvaluationComponent_Example.ps1)
+- [CMCollectionMembershipEvaluationComponent_Example](Source\Examples\Resources\CMCollectionMembershipEvaluationComponent\CMCollectionMembershipEvaluationComponent_Example.ps1)
