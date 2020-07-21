@@ -83,7 +83,7 @@ function Get-TargetResource
 function Set-TargetResource
 {
     [CmdletBinding()]
-    Param
+    param
     (
         [Parameter(Mandatory = $true)]
         [String]
@@ -98,6 +98,7 @@ function Set-TargetResource
         $Description,
 
         [Parameter()]
+        [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
     )
@@ -165,7 +166,7 @@ function Test-TargetResource
 {
     [CmdletBinding()]
     [OutputType([System.Boolean])]
-    Param
+    param
     (
         [Parameter(Mandatory = $true)]
         [String]
@@ -180,6 +181,7 @@ function Test-TargetResource
         $Description,
 
         [Parameter()]
+        [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
     )

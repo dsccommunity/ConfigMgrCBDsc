@@ -210,7 +210,7 @@ try
 
             Context 'When running Set-TargetResource throws' {
                 BeforeEach {
-                    $scopeError = 'The current scope is in use and will not be able to be deleted.'
+                    $scopeError = 'The Security Scope is in use and will not be deleted.'
                 }
 
                 It 'Should throw and call expected commands creating a Security Scope' {
