@@ -49,7 +49,8 @@ try
                 }
 
                 $getInput = @{
-                    SiteCode = 'Lab'
+                    SiteCode       = 'Lab'
+                    EvaluationMins = 5
                 }
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule

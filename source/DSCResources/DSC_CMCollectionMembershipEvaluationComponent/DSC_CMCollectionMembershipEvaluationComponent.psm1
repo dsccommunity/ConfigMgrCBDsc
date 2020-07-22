@@ -12,7 +12,10 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .PARAMETER SiteCode
         Specifies the site code for Configuration Manager site.
+    .PARAMETER EvaluationMins
+        Indicates the CM Collection Membership Evaluation Component interval in minutes.
 
+        Note: Not used in Get-TargetResource
 #>
 function Get-TargetResource
 {
@@ -22,7 +25,12 @@ function Get-TargetResource
     (
         [Parameter(Mandatory = $true)]
         [String]
-        $SiteCode
+        $SiteCode,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateRange(1,1440)]
+        [UInt32]
+        $EvaluationMins
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
@@ -57,7 +65,7 @@ function Set-TargetResource
         [String]
         $SiteCode,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [ValidateRange(1,1440)]
         [UInt32]
         $EvaluationMins
@@ -66,7 +74,7 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode
+    $state = Get-TargetResource -SiteCode $SiteCode -EvaluationMins $EvaluationMins
 
     try
     {
@@ -113,7 +121,7 @@ function Test-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode
+    $state = Get-TargetResource -SiteCode $SiteCode -EvaluationMins $EvaluationMins
     $result = $true
 
     if ($EvaluationMins -ne $state.EvaluationMins)
