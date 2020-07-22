@@ -12,6 +12,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .PARAMETER SiteCode
         Specifies the site code for Configuration Manager site.
+
     .PARAMETER EvaluationMins
         Indicates the CM Collection Membership Evaluation Component interval in minutes.
 
