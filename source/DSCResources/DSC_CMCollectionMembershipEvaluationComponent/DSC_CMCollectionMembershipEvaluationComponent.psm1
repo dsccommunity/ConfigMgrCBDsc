@@ -69,7 +69,6 @@ function Set-TargetResource
         [ValidateRange(1,1440)]
         [UInt32]
         $EvaluationMins
-
     )
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
