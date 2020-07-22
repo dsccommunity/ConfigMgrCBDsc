@@ -106,14 +106,14 @@ function Set-TargetResource
 #>
 function Test-TargetResource
 {
-    [CmdletBinding(Mandatory = $true)]
+    [CmdletBinding()]
     param
     (
         [Parameter(Mandatory = $true)]
         [String]
         $SiteCode,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [ValidateRange(1,1440)]
         [UInt32]
         $EvaluationMins
