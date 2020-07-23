@@ -13,6 +13,8 @@ Configuration Example
         {
             SiteCode       = 'Lab'
             BoundaryGroup  = 'TestGroup'
+            SiteSystems    = @('DP01.contoso.com','PR01.contoso.com')
+            SecurityScopes = @('Scope1','Scope2')
             Boundaries     = @(
                 DSC_CMBoundaryGroupsBoundaries
                 {

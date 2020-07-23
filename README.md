@@ -457,13 +457,25 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] BoundaryGroup** _(Key)_: Specifies the name of the boundary group.
-- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of boundaries
-  to add or remove from the boundary group.
-- **[String] BoundaryAction** _(Write)_: Specifies the boundaries are to match,
-  add, or remove Boundaries from the boundary group
+- **[String] BoundaryGroup** _(Key)_: Specifies the name of the Boundary Group.
+- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of Boundaries
+  to add or remove from the Boundary Group.
+- **[String] BoundaryAction** _(Write)_: Specifies the Boundaries are to match,
+  add, or remove Boundaries from the Boundary Group
   - Values include: { Match | Add | Remove }
-- **[String] Ensure** _(Write)_: Specifies status of the collection is to be
+- **[String] SiteSystems[]** _(Write): Specifies an array of Site Systems to match
+  for the Boundary Group.
+- **[String] SiteSystemsToInclude[]** _(Write): Specifies an array of Site Systems
+  to add to the Boundary Group.
+- **[String] SiteSystemsToExclude[]** _(Write): Specifies an array of Site Systems
+  to remove from the Boundary Group.
+- **[String] SecurityScopes[]** _(Write): Specifies an array of Security Scopes
+  to match for the Boundary Group.
+- **[String] SecurityScopesToInclude[]** _(Write): Specifies an array of Security
+  Scopes to add to the Boundary Group.
+- **[String] SecurityScopesToExclude[]** _(Write): Specifies an array of Security
+  Scopes to remove from the Boundary Group.
+- **[String] Ensure** _(Write)_: Specifies status of the Boundary Group is to be
   present or absent.
   - Values include: { Present | Absent }
 
