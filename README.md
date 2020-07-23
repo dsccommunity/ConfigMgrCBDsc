@@ -97,6 +97,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Groups and adding Distribution Points to the group.
 - **CMSiteSystemServer**: Provides a resource for adding and modifying a Site
   System Server and its properties.
+- **CMStatusReportingComponent**: Provides a resource for modifying the Status
+  Reporting Component and its properties.
 
 ### xSccmPreReqs
 
@@ -965,3 +967,38 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMSiteSystemServer_Present](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Present.ps1)
 - [CMSiteSystemServer_Absent](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Absent.ps1)
+
+### CMStatusReportingComponent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] ClientLogChecked** _(Write)_: Indicates whether a client log is checked.
+- **[Boolean] ClientLogFailureChecked** _(Write)_: Indicates whether a client log
+  failure is checked.
+- **[String] ClientLogType** _(Write)_: Specifies a client log type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+- **[Boolean] ClientReportChecked** _(Write)_: Indicates whether a client report
+  is checked.
+- **[Boolean] ClientReportFailureChecked** _(Write)_: Indicates whether a client
+  failure is checked.
+- **[String] ClientReportType** _(Write)_: Specifies a client report type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+- **[Boolean] ServerLogChecked** _(Write)_: Indicates whether a server log is checked.
+- **[Boolean] ServerLogFailureChecked** _(Write)_: Indicates whether a server log
+  failure is checked.
+- **[String] ServerLogType** _(Write)_: Specifies a server log type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+- **[Boolean] ServerReportChecked** _(Write)_: Indicates whether a server report
+  is checked.
+- **[Boolean] ServerReportFailureChecked** _(Write)_: Indicates whether a server
+  report failure is checked.
+- **[String] ServerReportType** _(Write)_: Specifies a server report type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+
+#### CMStatusReportingComponent Examples
+
+- [CMStatusReportingComponent_Example](Source\Examples\Resources\CMStatusReportingComponent\CMStatusReportingComponent_Example.ps1)
