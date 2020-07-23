@@ -99,6 +99,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   System Server and its properties.
 - **CMStatusReportingComponent**: Provides a resource for modifying the Status
   Reporting Component and its properties.
+- **CMCollectionMembershipEvaluationComponent**: Provides a resource for modifying
+  the SCCM Collection Membership Evaluation Component.
 
 ### xSccmPreReqs
 
@@ -990,3 +992,14 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 #### CMStatusReportingComponent Examples
 
 - [CMStatusReportingComponent_Example](Source\Examples\Resources\CMStatusReportingComponent\CMStatusReportingComponent_Example.ps1)
+
+### CMCollectionMembershipEvaluationComponent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[UInt32] EvaluationMins** _(Required)_: Indicates the CM Collection Membership
+  Evaluation Component interval in minutes.
+
+#### CMCollectionMembershipEvaluationComponent Examples
+
+- [CMCollectionMembershipEvaluationComponent_Example](Source\Examples\Resources\CMCollectionMembershipEvaluationComponent\CMCollectionMembershipEvaluationComponent_Example.ps1)
