@@ -101,6 +101,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Reporting Component and its properties.
 - **CMCollectionMembershipEvaluationComponent**: Provides a resource for modifying
   the SCCM Collection Membership Evaluation Component.
+- **CMDistributionPointGroupMembers**: Provides a resource for adding Distribution
+  Groups to Distribution Points. This resource will not create Distribution Points
+  or Distribution Groups.
 
 ### xSccmPreReqs
 
@@ -1015,3 +1018,21 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 #### CMCollectionMembershipEvaluationComponent Examples
 
 - [CMCollectionMembershipEvaluationComponent_Example](Source\Examples\Resources\CMCollectionMembershipEvaluationComponent\CMCollectionMembershipEvaluationComponent_Example.ps1)
+
+### CMDistributionPointGroupMembers
+
+- **[String] DistributionPoint** _(Key)_: Specifies the Distribution Point to modify
+  Distribution Point Group membership.
+- **[String] SiteCode** _(Required)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] DistributionGroups[]** _(Write)_: Specifies an array of Distribution
+  Groups to match on the Distribution Point.
+- **[String] DistributionGroupsToInclude[]** _(Write)_: Specifies an array of
+  Distribution Groups to add to the Distribution Point.
+- **[String] DistributionGroupsToExclude[]** _(Write)_: Specifies an array of
+  Distribution Groups to remove from the Distribution Point.
+- **[String] DPStatus** _(Read)_: Specifies if the DP role is installed.
+
+#### CMDistributionPointGroupMembers Example
+
+- [CMDistributionPointGroupMembers](Source\Examples\Resources\CMDistributionPointGroupMembers\CMDistributionPointGroupMembers.ps1)

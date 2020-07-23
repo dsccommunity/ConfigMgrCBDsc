@@ -46,6 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMSiteSystemServer Resource
 - Added CMStatusReportingComponent Resource
 - Added CMCMCollectionMembershipEvaluationComponent Resource
+- Added CMDistributionPointGroupMembers Resource
 
 ### Changed
 
