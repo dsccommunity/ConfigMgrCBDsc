@@ -79,7 +79,7 @@ function Get-TargetResource
     .PARAMETER DistributionPoint
         Specifies the Distribution Point to modify Distribution Point Group membership.
 
-    .PARAMETER DistrubtionGroups
+    .PARAMETER DistributionGroups
         Specifies an array of Distribution Groups to match on the Distribution Point.
 
     .PARAMETER DistributionGroupsToInclude
@@ -211,7 +211,7 @@ function Set-TargetResource
     .PARAMETER DistributionPoint
         Specifies the Distribution Point to modify Distribution Point Group membership.
 
-    .PARAMETER DistrubtionGroups
+    .PARAMETER DistributionGroups
         Specifies an array of Distribution Groups to match on the Distribution Point.
 
     .PARAMETER DistributionGroupsToInclude

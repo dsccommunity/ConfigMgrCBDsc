@@ -97,6 +97,10 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Groups and adding Distribution Points to the group.
 - **CMSiteSystemServer**: Provides a resource for adding and modifying a Site
   System Server and its properties.
+- **CMStatusReportingComponent**: Provides a resource for modifying the Status
+  Reporting Component and its properties.
+- **CMCollectionMembershipEvaluationComponent**: Provides a resource for modifying
+  the SCCM Collection Membership Evaluation Component.
 - **CMDistributionPointGroupMembers**: Provides a resource for adding Distribution
   Groups to Distribution Points. This resource will not create Distribution Points
   or Distribution Groups.
@@ -456,13 +460,25 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] BoundaryGroup** _(Key)_: Specifies the name of the boundary group.
-- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of boundaries
-  to add or remove from the boundary group.
-- **[String] BoundaryAction** _(Write)_: Specifies the boundaries are to match,
-  add, or remove Boundaries from the boundary group
+- **[String] BoundaryGroup** _(Key)_: Specifies the name of the Boundary Group.
+- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of Boundaries
+  to add or remove from the Boundary Group.
+- **[String] BoundaryAction** _(Write)_: Specifies the Boundaries are to match,
+  add, or remove Boundaries from the Boundary Group
   - Values include: { Match | Add | Remove }
-- **[String] Ensure** _(Write)_: Specifies status of the collection is to be
+- **[String] SiteSystems[]** _(Write): Specifies an array of Site Systems to match
+  for the Boundary Group.
+- **[String] SiteSystemsToInclude[]** _(Write): Specifies an array of Site Systems
+  to add to the Boundary Group.
+- **[String] SiteSystemsToExclude[]** _(Write): Specifies an array of Site Systems
+  to remove from the Boundary Group.
+- **[String] SecurityScopes[]** _(Write): Specifies an array of Security Scopes
+  to match for the Boundary Group.
+- **[String] SecurityScopesToInclude[]** _(Write): Specifies an array of Security
+  Scopes to add to the Boundary Group.
+- **[String] SecurityScopesToExclude[]** _(Write): Specifies an array of Security
+  Scopes to remove from the Boundary Group.
+- **[String] Ensure** _(Write)_: Specifies status of the Boundary Group is to be
   present or absent.
   - Values include: { Present | Absent }
 
@@ -956,6 +972,52 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMSiteSystemServer_Present](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Present.ps1)
 - [CMSiteSystemServer_Absent](Source\Examples\Resources\CMSiteSystemServer\CMSiteSystemServer_Absent.ps1)
+
+### CMStatusReportingComponent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] ClientLogChecked** _(Write)_: Indicates whether a client log is checked.
+- **[Boolean] ClientLogFailureChecked** _(Write)_: Indicates whether a client log
+  failure is checked.
+- **[String] ClientLogType** _(Write)_: Specifies a client log type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+- **[Boolean] ClientReportChecked** _(Write)_: Indicates whether a client report
+  is checked.
+- **[Boolean] ClientReportFailureChecked** _(Write)_: Indicates whether a client
+  failure is checked.
+- **[String] ClientReportType** _(Write)_: Specifies a client report type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+- **[Boolean] ServerLogChecked** _(Write)_: Indicates whether a server log is checked.
+- **[Boolean] ServerLogFailureChecked** _(Write)_: Indicates whether a server log
+  failure is checked.
+- **[String] ServerLogType** _(Write)_: Specifies a server log type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+- **[Boolean] ServerReportChecked** _(Write)_: Indicates whether a server report
+  is checked.
+- **[Boolean] ServerReportFailureChecked** _(Write)_: Indicates whether a server
+  report failure is checked.
+- **[String] ServerReportType** _(Write)_: Specifies a server report type.
+  - Values include: { AllMilestones | AllMilestonesAndAllDetails |
+  ErrorAndWarningMilestones | ErrorMilestones }
+
+#### CMStatusReportingComponent Examples
+
+- [CMStatusReportingComponent_Example](Source\Examples\Resources\CMStatusReportingComponent\CMStatusReportingComponent_Example.ps1)
+
+### CMCollectionMembershipEvaluationComponent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[UInt32] EvaluationMins** _(Required)_: Indicates the CM Collection Membership
+  Evaluation Component interval in minutes.
+
+#### CMCollectionMembershipEvaluationComponent Examples
+
+- [CMCollectionMembershipEvaluationComponent_Example](Source\Examples\Resources\CMCollectionMembershipEvaluationComponent\CMCollectionMembershipEvaluationComponent_Example.ps1)
 
 ### CMDistributionPointGroupMembers
 

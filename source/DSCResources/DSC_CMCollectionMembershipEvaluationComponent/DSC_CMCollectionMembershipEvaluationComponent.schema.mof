@@ -1,0 +1,6 @@
+[ClassVersion("1.0.0"), FriendlyName("CMCollectionMembershipEvaluationComponent")]
+class DSC_CMCollectionMembershipEvaluationComponent: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Required, Description("Indicates the CM Collection Membership Evaluation Component interval in minutes.")] UInt32 EvaluationMins;
+};
