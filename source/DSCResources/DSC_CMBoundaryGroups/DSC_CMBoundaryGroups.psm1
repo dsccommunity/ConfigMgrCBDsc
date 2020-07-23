@@ -50,7 +50,7 @@ function Get-TargetResource
 
         if ($serverPath)
         {
-            foreach ($Item in $serverPath)
+            foreach ($item in $serverPath)
             {
                 [array]$mappings += $item.TrimEnd('\').Split('\')[-1]
             }
@@ -82,7 +82,7 @@ function Get-TargetResource
 
 <#
     .SYNOPSIS
-        This will test the desired state.
+        This will set the desired state.
 
     .PARAMETER SiteCode
         Specifies the SiteCode for the Configuration Manager site.
@@ -91,10 +91,10 @@ function Get-TargetResource
         Specifies the Boundary Group name.
 
     .Parameter Boundaries
-        Specifies an array of boundaries to add or remove.
+        Specifies an array of Boundaries to add or remove.
 
     .Parameter BoundaryAction
-        Specifies the boundaries are to match, add, or remove Boundaries from the Boundary Group.
+        Specifies the Boundaries are to match, add, or remove Boundaries from the Boundary Group.
 
     .Parameter SiteSystems
         Specifies an array of SiteSystems to match on the Boundary Group.
@@ -200,6 +200,20 @@ function Set-TargetResource
                     if ($SecurityScopesToExclude -contains $item)
                     {
                         throw ($script:localizedData.ScopeInEx -f $item)
+                    }
+                }
+            }
+
+            if (-not $PSBoundParameters.ContainsKey('SecurityScopes') -and
+                -not $PSBoundParameters.ContainsKey('SecurityScopesToInclude') -and
+                $PSBoundParameters.ContainsKey('SecurityScopesToExclude'))
+            {
+                if ($state.SecurityScopes.Count -eq $SecurityScopesToExclude.Count)
+                {
+                    $excludeAll = Compare-Object -ReferenceObject $state.SecurityScopes -DifferenceObject $SecurityScopesToExclude
+                    if ([string]::IsNullOrEmpty($excludeAll))
+                    {
+                        throw ($script:localizedData.ScopeExcludeAll)
                     }
                 }
             }
@@ -403,7 +417,7 @@ function Set-TargetResource
 
         if ($errorMsg)
         {
-            throw ($script:localizedData.SiteSystemMissing -f ($errorMsg | Out-String))
+            throw ($errorMsg | Out-String)
         }
     }
     catch
@@ -427,10 +441,10 @@ function Set-TargetResource
         Specifies the Boundary Group name.
 
     .Parameter Boundaries
-        Specifies an array of boundaries to add or remove.
+        Specifies an array of Boundaries to add or remove.
 
     .Parameter BoundaryAction
-        Specifies the boundaries are to match, add, or remove Boundaries from the Boundary Group.
+        Specifies the Boundaries are to match, add, or remove Boundaries from the Boundary Group.
 
     .Parameter SiteSystems
         Specifies an array of SiteSystems to match on the Boundary Group.

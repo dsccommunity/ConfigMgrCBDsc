@@ -37,180 +37,6 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        <#$moduleResourceName = 'ConfigMgrCBDsc - DSC_CMBoundaryGroups'
-
-         Get-TargetResource input and output
-        $getInput = @{
-            SiteCode      = 'Lab'
-            BoundaryGroup = 'TestGroup'
-        }
-
-        $getBoundaryGroupOutput = @{
-            Name    = 'TestGroup'
-            GroupID = 16777229
-        }
-
-        $getBoundaryOutput = @(
-            @{
-                BoundaryId   = 16777231
-                BoundaryType = 3
-                Value        = '10.1.1.1-10.1.1.255'
-            }
-            @{
-                BoundaryId   = 16777232
-                BoundaryType = 0
-                Value        = '10.1.3.0'
-            }
-            @{
-                BoundaryId   = 16777233
-                BoundaryType = 2
-                Value        = 'First-Site'
-            }
-        )
-
-        $mockBoundaryMembers = @(
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = '10.1.1.1-10.1.1.255'
-                    'Type'  = 'IPRange'
-                } `
-                -ClientOnly
-            ),
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = '10.1.3.0'
-                    'Type'  = 'IPSubnet'
-                } `
-                -ClientOnly
-            ),
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = 'First-Site'
-                    'Type'  = 'ADSite'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $mockInputBoundaryRange = @(
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = '10.1.1.1-10.1.1.255'
-                    'Type'  = 'IPRange'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $mockInputBoundarySubnet = @(
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = '10.1.3.1/24'
-                    'Type'  = 'IPSubnet'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $mockOutputBoundarySubnet = @(
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = '10.1.3.0'
-                    'Type'  = 'IPSubnet'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $mockInputBoundaryADSite = @(
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = 'First-Site'
-                    'Type'  = 'ADSite'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $mockInputBoundaryADSiteAdd = @(
-            (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
-                -Namespace root/microsoft/Windows/DesiredStateConfiguration `
-                -Property @{
-                    'Value' = 'Second-Site'
-                    'Type'  = 'ADSite'
-                } `
-                -ClientOnly
-            )
-        )
-
-        $setTestInputMatch = @{
-            SiteCode       = 'Lab'
-            BoundaryGroup  = 'TestGroup'
-            Boundaries     = $mockInputBoundaryRange
-            BoundaryAction = 'Match'
-        }
-
-        $setTestInputAdd = @{
-            SiteCode       = 'Lab'
-            BoundaryGroup  = 'TestGroup'
-            Boundaries     = $mockInputBoundarySubnet
-            BoundaryAction = 'Add'
-        }
-
-        $setTestInputAddValue = @{
-            SiteCode       = 'Lab'
-            BoundaryGroup  = 'TestGroup'
-            Boundaries     = $mockInputBoundaryADSiteAdd
-            BoundaryAction = 'Add'
-        }
-
-        $setTestInputRemove = @{
-            SiteCode       = 'Lab'
-            BoundaryGroup  = 'TestGroup'
-            Boundaries     = $mockInputBoundarySubnet
-            BoundaryAction = 'Remove'
-        }
-
-        $getReturn = @{
-            Site          = 'Lab'
-            BoundaryGroup = 'TestGroup'
-            Boundaries    = $mockBoundaryMembers
-            Ensure        = 'Present'
-        }
-
-        $setTestInputGroupOnly = @{
-            Site          = 'Lab'
-            BoundaryGroup = 'TestGroup'
-            Ensure        = 'Present'
-        }
-
-        $setTestInputGroupOnlyAbsent = @{
-            Site          = 'Lab'
-            BoundaryGroup = 'TestGroup'
-            Ensure        = 'Absent'
-        }
-
-        $getReturnNoBoundaries = @{
-            Site          = 'Lab'
-            BoundaryGroup = 'TestGroup'
-            Boundaries    = $null
-            Ensure        = 'Present'
-        }
-
-        $getReturnAbsent = @{
-            Site          = 'Lab'
-            BoundaryGroup = 'TestGroup'
-            Boundaries    = $null
-            Ensure        = 'Absent'
-        }#>
-
         Describe 'ConfigMgrCBDsc - DSC_CMBoundaryGroups\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
                 $getInput = @{
@@ -531,8 +357,17 @@ try
                     SecurityScopesToExclude = 'Scope2'
                 }
 
+                $scopesExclude = @{
+                    SiteCode                = 'Lab'
+                    BoundaryGroup           = 'TestGroup'
+                    SecurityScopesToExclude = 'Scope1','Scope2'
+                }
+
                 $siteInEx = 'SiteSystemsToInclude and SiteSystemsToExclude contain the same member DP02.contoso.com.'
                 $scopeInEx = 'SecurityScopesToInclude and SecurityScopesToExclude contain to same entry Scope2, remove from one of the arrays.'
+                $scopesExcludeAll = 'Boundary Groups must have at least 1 Security Scope assigned, SecurityScopesToExclude is currently set to remove all Security Scopes.'
+                $siteSystemError = 'The Site Systems specified does not exist: DP03.contoso.com.'
+                $scopeError = 'The Security Scope specified does not exist: Scope3.'
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
@@ -739,7 +574,7 @@ try
                     Mock -CommandName Get-BoundaryInfo
                     Mock -CommandName Get-CMSiteSystemServer -MockWith { $null }
 
-                    { Set-TargetResource @includeSiteSystems } | Should -Throw -ExpectedMessage 't'
+                    { Set-TargetResource @includeSiteSystems } | Should -Throw -ExpectedMessage $siteSystemError
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -811,7 +646,7 @@ try
                     Mock -CommandName Get-CMSiteSystemServer
                     Mock -CommandName Get-CMSecurityScope -MockWith { $null }
 
-                    { Set-TargetResource @includeScopes } | Should -Throw -ExpectedMessage 't'
+                    { Set-TargetResource @includeScopes } | Should -Throw -ExpectedMessage $scopeError
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -825,6 +660,29 @@ try
                     Assert-MockCalled Set-CMBoundaryGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw and call expected commands when SecurityScopesToExclude removes all assigned scopes.' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturn }
+                    Mock -CommandName Convert-BoundariesIPSubnets
+                    Mock -CommandName Get-BoundaryInfo
+
+                    { Set-TargetResource @scopesExclude } | Should -Throw -ExpectedMessage $scopesExcludeAll
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMBoundaryGroup -Exactly  -Times 0 -Scope It
+                    Assert-MockCalled Add-CMBoundaryToGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Convert-BoundariesIPSubnets -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-BoundaryInfo -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMBoundaryFromGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                 }
@@ -1017,7 +875,6 @@ try
             }
 
             Context 'When running Test-TargetResource' {
-
                 It 'Should return desired result false when boundaries do not match with Match specified' {
                     Mock -CommandName Get-TargetResource -Mockwith { $getReturn }
                     Mock -CommandName Convert-BoundariesIPSubnets -MockWith { $mockInputBoundaryRange  }

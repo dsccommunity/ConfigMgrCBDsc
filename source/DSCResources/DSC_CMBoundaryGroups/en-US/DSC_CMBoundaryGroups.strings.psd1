@@ -22,4 +22,5 @@ ConvertFrom-StringData @'
     ScopeRemove          = NOTMATCH:  Boundary Group expected the following Scopes to be absent: {0}.
     AddScope             = Adding Security Scope {0} to {1}.
     RemoveScope          = Removing Security Scope {0} from {1}.
+    ScopeExcludeAll      = Boundary Groups must have at least 1 Security Scope assigned, SecurityScopesToExclude is currently set to remove all Security Scopes.
 '@

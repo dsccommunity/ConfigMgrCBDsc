@@ -454,10 +454,10 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
 - **[String] BoundaryGroup** _(Key)_: Specifies the name of the Boundary Group.
-- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of boundaries
+- **[EmbeddedInstance] Boundaries** _(Write)_: Specifies an array of Boundaries
   to add or remove from the Boundary Group.
-- **[String] BoundaryAction** _(Write)_: Specifies the boundaries are to match,
-  add, or remove boundaries from the Boundary Group
+- **[String] BoundaryAction** _(Write)_: Specifies the Boundaries are to match,
+  add, or remove Boundaries from the Boundary Group
   - Values include: { Match | Add | Remove }
 - **[String] SiteSystems[]** _(Write): Specifies an array of Site Systems to match
   for the Boundary Group.
