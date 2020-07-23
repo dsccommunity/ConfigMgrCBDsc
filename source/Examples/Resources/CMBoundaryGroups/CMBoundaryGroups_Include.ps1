@@ -11,9 +11,11 @@ Configuration Example
     {
         CMBoundaryGroups ExampleSettings
         {
-            SiteCode       = 'Lab'
-            BoundaryGroup  = 'TestGroup'
-            Boundaries     = @(
+            SiteCode                = 'Lab'
+            BoundaryGroup           = 'TestGroup'
+            SiteSystemsToInclude    = @('DP01.contoso.com','PR01.contoso.com')
+            SecurityScopesToInclude = 'Scope1','Scope2'
+            Boundaries              = @(
                 DSC_CMBoundaryGroupsBoundaries
                 {
                     Value = '10.1.1.1/24'
@@ -30,7 +32,7 @@ Configuration Example
                     Type  = 'AdSite'
                 }
             )
-            BoundaryAction = 'Add'
+            BoundaryAction          = 'Add'
         }
     }
 }

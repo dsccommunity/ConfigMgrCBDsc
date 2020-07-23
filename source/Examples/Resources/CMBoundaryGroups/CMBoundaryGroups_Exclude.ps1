@@ -11,9 +11,11 @@ Configuration Example
     {
         CMBoundaryGroups ExampleSettings
         {
-            SiteCode       = 'Lab'
-            BoundaryGroup  = 'TestGroup'
-            Boundaries     = @(
+            SiteCode                = 'Lab'
+            BoundaryGroup           = 'TestGroup'
+            SiteSystemsToExclude    = @('DP01.contoso.com','DP02.contoso.com')
+            SecurityScopesToExclude = @('Scope1','Scope2')
+            Boundaries              = @(
                 DSC_CMBoundaryGroupsBoundaries
                 {
                     Value = '10.1.1.1/24'
@@ -30,7 +32,7 @@ Configuration Example
                     Type  = 'AdSite'
                 }
             )
-            BoundaryAction = 'Remove'
+            BoundaryAction          = 'Remove'
         }
     }
 }
