@@ -877,7 +877,7 @@ try
             Context 'When running Test-TargetResource' {
                 It 'Should return desired result false when boundaries do not match with Match specified' {
                     Mock -CommandName Get-TargetResource -Mockwith { $getReturn }
-                    Mock -CommandName Convert-BoundariesIPSubnets -MockWith { $mockInputBoundaryRange  }
+                    Mock -CommandName Convert-BoundariesIPSubnets -MockWith { $mockInputBoundaryRange }
 
                     Test-TargetResource @setTestInputMatch | Should -Be $false
                 }
