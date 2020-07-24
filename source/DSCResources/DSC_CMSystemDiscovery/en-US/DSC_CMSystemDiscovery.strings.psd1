@@ -16,4 +16,5 @@ ConvertFrom-StringData @'
     MissingDeltaDiscovery = When changing delta schedule, delta schedule must be enabled.
     ADIgnore              = ADContainers was specified, ADContainersInclude and ADContainersExclude will be ignored.
     ContainersInEx        = ADContainersToToExclude and ADContainersToToInclude contain to same entry {0}, remove from one of the arrays.
+    DeltaNoInterval       = DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery.
 '@

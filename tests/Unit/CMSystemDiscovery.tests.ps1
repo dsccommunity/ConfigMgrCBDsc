@@ -484,6 +484,12 @@ try
 
                     $adContainersExclude = 'LDAP://OU=Test1,DC=contoso,DC=com'
 
+                    $enableDeltaThrow = @{
+                        SiteCode             = 'Lab'
+                        Enabled              = $true
+                        EnableDeltaDiscovery = $true
+                    }
+
                     $inputParamsIncludeExcludeThrow = @{
                         SiteCode              = 'Lab'
                         Enabled               = $true
@@ -492,6 +498,7 @@ try
                     }
 
                     $excludeThrow = "ADContainersToToExclude and ADContainersToToInclude contain to same entry $adContainersExclude, remove from one of the arrays."
+                    $enableDeltaThrowMsg = "DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery."
 
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
                 }
@@ -515,6 +522,19 @@ try
                     Mock -CommandName Set-CMDiscoveryMethod
 
                     { Set-TargetResource @inputParamsIncludeExcludeThrow } | Should -Throw -ExpectedMessage $excludeThrow
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected when enabling delta discovery without specifying an interval' {
+                    Mock -CommandName Get-TargetResource -MockWith { $inputDeltaThrow }
+                    Mock -CommandName New-CMSchedule
+                    Mock -CommandName Set-CMDiscoveryMethod
+
+                    { Set-TargetResource @enableDeltaThrow } | Should -Throw -ExpectedMessage $enableDeltaThrowMsg
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -743,6 +763,18 @@ try
                         ScheduleInterval = 'Days'
                     }
 
+                    $disableDelta = @{
+                        SiteCode             = 'Lab'
+                        Enabled              = $true
+                        EnableDeltaDiscovery = $false
+                    }
+
+                    $enableDelta = @{
+                        SiteCode             = 'Lab'
+                        Enabled              = $true
+                        EnableDeltaDiscovery = $true
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardNoSchedule }
                 }
 
@@ -760,6 +792,12 @@ try
 
                 It 'Should return desired result false when input param is setting schedule is count is missing' {
                     Test-TargetResource @inputParamsBadSchedule | Should -Be $false
+                }
+
+                It 'Should return desired result false when enabling delta discovery without interval' {
+                    Mock -CommandName Get-TargetResource -MockWith { $disableDelta }
+
+                    Test-TargetResource @enableDelta | Should -Be $false
                 }
             }
         }

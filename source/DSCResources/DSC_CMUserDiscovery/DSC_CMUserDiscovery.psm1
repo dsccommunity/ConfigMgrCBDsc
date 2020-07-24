@@ -189,6 +189,12 @@ function Set-TargetResource
                 throw $script:localizedData.IntervalCount
             }
 
+            if (($EnableDeltaDiscovery -eq $true -and $State.EnableDeltaDiscovery -eq $false) -and
+                (-not $PSBoundParameters.ContainsKey('DeltaDiscoveryMins')))
+            {
+                throw $script:localizedData.DeltaNoInterval
+            }
+
             if ($ADContainersToInclude -and $ADContainersToExclude)
             {
                 foreach ($item in $ADContainersToInclude)
@@ -458,6 +464,12 @@ function Test-TargetResource
                     $result = $false
                 }
             }
+        }
+
+        if (($EnableDeltaDiscovery -eq $true -and $State.EnableDeltaDiscovery -eq $false) -and
+                (-not $PSBoundParameters.ContainsKey('DeltaDiscoveryMins')))
+        {
+            Write-Warning -Message $script:localizedData.DeltaNoInterval
         }
 
         if ($ADContainersToInclude -and $ADContainersToExclude)
