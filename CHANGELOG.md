@@ -64,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed newline in the CMIniFile resource.
 - Removed WSUS top level feature.
 - Added Security Scopes to CMDistributionGroup Resource
+- Updated CMSystemDiscovery Resource to add needed throw and warn messages.
 
 ### Removed
 
