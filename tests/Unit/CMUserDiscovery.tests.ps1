@@ -33,7 +33,6 @@ function Invoke-TestCleanup
 try
 {
     InModuleScope $script:dscResourceName {
-
         Describe "ConfigMgrCBDsc - DSC_CMUserDiscovery\Get-TargetResource" -Tag 'Get' {
             BeforeAll {
                 $getInput = @{
@@ -416,7 +415,6 @@ try
 
             Context 'When running Set-TargetResource should throw' {
                 BeforeEach {
-
                     $inputParamsBadSchedule = @{
                         SiteCode         = 'Lab'
                         Enabled          = $true
@@ -431,7 +429,6 @@ try
                     }
 
                     $deltaThrow = 'When changing delta schedule, delta schedule must be enabled.'
-
                     $scheduleThrow = "Invalid parameter usage specifying an Interval and didn't specify count."
 
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }

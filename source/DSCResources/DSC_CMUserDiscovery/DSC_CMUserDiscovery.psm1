@@ -183,7 +183,8 @@ function Set-TargetResource
                 throw $script:localizedData.MissingDeltaDiscovery
             }
 
-            if (($PSBoundParameters.ContainsKey('ScheduleInterval') -and $PSBoundParameters.ScheduleInterval -ne 'None') -and (-not $PSBoundParameters.ContainsKey('ScheduleCount')))
+            if (($PSBoundParameters.ContainsKey('ScheduleInterval') -and $PSBoundParameters.ScheduleInterval -ne 'None') -and
+                (-not $PSBoundParameters.ContainsKey('ScheduleCount')))
             {
                 throw $script:localizedData.IntervalCount
             }
@@ -316,13 +317,10 @@ function Set-TargetResource
                 Set-CMDiscoveryMethod -ActiveDirectoryUserDiscovery -SiteCode $SiteCode @buildingParams
             }
         }
-        else
+        elseif ($state.Enabled -eq $true)
         {
-            if ($state.Enabled -eq $true)
-            {
-                Write-Verbose -Message $script:localizedData.SetDisabled
-                Set-CMDiscoveryMethod -ActiveDirectoryUserDiscovery -Enabled $false -SiteCode $SiteCode
-            }
+            Write-Verbose -Message $script:localizedData.SetDisabled
+            Set-CMDiscoveryMethod -ActiveDirectoryUserDiscovery -Enabled $false -SiteCode $SiteCode
         }
     }
     catch
@@ -513,13 +511,10 @@ function Test-TargetResource
             }
         }
     }
-    else
+    elseif ($state.Enabled -eq $true)
     {
-        if ($state.Enabled -eq $true)
-        {
-            Write-Verbose -Message $script:localizedData.TestDisabled
-            $result = $false
-        }
+        Write-Verbose -Message $script:localizedData.TestDisabled
+        $result = $false
     }
 
     Write-Verbose -Message ($script:localizedData.TestState -f $result)
