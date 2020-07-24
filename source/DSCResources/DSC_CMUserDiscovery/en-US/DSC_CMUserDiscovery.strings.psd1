@@ -15,6 +15,6 @@ ConvertFrom-StringData @'
     AddADContainer        = Adding AD Container: {0}.
     RemoveADContainer     = Removing AD Container: {0}.
     SetDisabled           = Setting User Discovery to disabled.
-    ContainersInEx        = ADContainersToToExclude and ADContainersToToInclude contain to same entry {0}, remove from one of the arrays.
+    ContainersInEx        = ADContainersToExclude and ADContainersToInclude contain to same entry {0}, remove from one of the arrays.
     DeltaNoInterval       = DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery.
 '@

@@ -229,7 +229,7 @@ function Set-TargetResource
                 throw $script:localizedData.IntervalCount
             }
 
-            if (($EnableDeltaDiscovery -eq $true -and $State.EnableDeltaDiscovery -eq $false) -and
+            if (($EnableDeltaDiscovery -eq $true -and $state.EnableDeltaDiscovery -eq $false) -and
                 (-not $PSBoundParameters.ContainsKey('DeltaDiscoveryMins')))
             {
                 throw $script:localizedData.DeltaNoInterval
@@ -543,7 +543,7 @@ function Test-TargetResource
             }
         }
 
-        if (($EnableDeltaDiscovery -eq $true -and $State.EnableDeltaDiscovery -eq $false) -and
+        if (($EnableDeltaDiscovery -eq $true -and $state.EnableDeltaDiscovery -eq $false) -and
                 (-not $PSBoundParameters.ContainsKey('DeltaDiscoveryMins')))
         {
             Write-Warning -Message $script:localizedData.DeltaNoInterval

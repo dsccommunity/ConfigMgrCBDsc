@@ -253,7 +253,6 @@ try
 
             Context 'When Set-TargetResource runs successfully' {
                 BeforeEach {
-
                     $inputParamsDisable = @{
                         SiteCode = 'Lab'
                         Enabled  = $false
