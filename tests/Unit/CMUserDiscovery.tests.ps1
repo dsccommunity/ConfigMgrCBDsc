@@ -444,7 +444,7 @@ try
 
                     $deltaThrow = 'When changing delta schedule, delta schedule must be enabled.'
                     $scheduleThrow = "Invalid parameter usage specifying an Interval and didn't specify count."
-                    $excludeThrow = "ADContainersToToExclude and ADContainersToToInclude contain to same entry LDAP://OU=Test1,DC=contoso,DC=com, remove from one of the arrays."
+                    $excludeThrow = "ADContainersToExclude and ADContainersToInclude contain to same entry $adContainersExclude, remove from one of the arrays."
                     $enableDeltaThrowMsg = "DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery."
 
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
