@@ -1,0 +1,13 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSecurityRoles")]
+class DSC_CMSecurityRoles : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the Security Role Name.")] String SecurityRoleName;
+    [Write, Description("Specifies the description of the Security Role.")] String Description;
+    [Write, Description("Specifies the path the Security Role xml file to evaluate and import.")] String XmlPath;
+    [Write, Description("Specifies if the Security Roles does not match the xml this will overwrite the policy.")] Boolean Overwrite;
+    [Write, Description("Specifies additional settings in the xml will be appended to the current Security Role.")] Boolean Append;
+    [Write, Description("Specifies whether the Security Role is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Read, Description("Specifies the configurations of the Security Role.")] String Operation;
+    [Read, Description("Specifies the accounts associated with the Security Role.")] String UsersAssigned[];
+};

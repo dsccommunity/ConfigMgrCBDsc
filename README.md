@@ -1056,3 +1056,31 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMSecurityScopes_Present](Source\Examples\Resources\CMSecurityScopes\CMSecurityScopes_Present.ps1)
 - [CMSecurityScopes_Absent](Source\Examples\Resources\CMSecurityScopes\CMSecurityScopes_Absent.ps1)
+
+### CMSecurityRoles
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] SecurityRoleName** _(Key)_: Specifies the Security Role name.
+- **[String] Description** _(Write)_: Specifies the description of the Security Role.
+- **[String] XmlPath** _(Write)_: Specifies the path the Security Role xml file
+  to evaluate and import.
+- **[Boolean] OverWrite** _(Write)_: Specifies if the Security Roles does not match
+  the xml this will overwrite the policy.
+- **[Boolean] Append** _(Write)_: Specifies additional settings in the xml will
+  be appended to the current Security Role. If append is used a new xml file will
+  be created merging current settings with the additional settings in the xml. Any
+  settings that are currently configured and in the xml will match the settings specified
+  in the xml file. The original XML file will be renamed and be updated with a date
+  time stamp and renamed to .old.
+- **[String] Ensure** _(Write)_: Specifies whether the Security Role
+  is present or absent.
+  - Values include: { Present | Absent }
+- **[String] Operation** _(Read)_: Specifies the configurations of the Security Role.
+- **[String] UsersAssigned[]** _(Read)_: Specifies the accounts associated with the
+  Security Role.
+
+#### CMSecurityRoles Examples
+
+- [CMSecurityRoles_Present](Source\Examples\Resources\CMSecurityRoles\CMSecurityRoles_Present.ps1)
+- [CMSecurityRoles_Absent](Source\Examples\Resources\CMSecurityRoles\CMSecurityRoles_Absent.ps1)
