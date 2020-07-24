@@ -132,6 +132,7 @@ function Set-TargetResource
         $Append = $false,
 
         [Parameter()]
+        [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
     )
@@ -347,6 +348,7 @@ function Test-TargetResource
         $Append = $false,
 
         [Parameter()]
+        [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
     )
