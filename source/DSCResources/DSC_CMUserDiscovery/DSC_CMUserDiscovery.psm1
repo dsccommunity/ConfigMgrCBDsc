@@ -447,7 +447,7 @@ function Test-TargetResource
         {
             if ($ScheduleInterval -ne 'None' -and -not $PSBoundParameters.ContainsKey('ScheduleCount'))
             {
-                Write-Verbose -Message $script:localizedData.IntervalCount
+                Write-Warning -Message $script:localizedData.IntervalCount
                 $result = $false
             }
             else

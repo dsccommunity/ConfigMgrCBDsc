@@ -497,7 +497,7 @@ try
                         ADContainersToExclude = $adContainersExclude
                     }
 
-                    $excludeThrow = "ADContainersToToExclude and ADContainersToToInclude contain to same entry $adContainersExclude, remove from one of the arrays."
+                    $excludeThrow = "ADContainersToToExclude and ADContainersToToInclude contain to same entry LDAP://OU=Test1,DC=contoso,DC=com, remove from one of the arrays."
                     $enableDeltaThrowMsg = "DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery."
 
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
