@@ -107,6 +107,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMSecurityScopes**: Provides a resource for adding and removing Security
   Scopes.  Note: If the Security Scope is currently in use and assigned, DSC will
   not remove the Security Scope.
+- **CMSecurityRoles**: Provides a resource for adding and removing Security
+  Roles.  Note: If the Security Role is currently assigned to an administrator,
+  DSC will not remove the Security Role.
 
 ### xSccmPreReqs
 
