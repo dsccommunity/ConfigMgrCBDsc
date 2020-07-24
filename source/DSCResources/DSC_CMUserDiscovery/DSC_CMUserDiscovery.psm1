@@ -189,6 +189,17 @@ function Set-TargetResource
                 throw $script:localizedData.IntervalCount
             }
 
+            if ($ADContainersToInclude -and $ADContainersToExclude)
+            {
+                foreach ($item in $ADContainersToInclude)
+                {
+                    if ($ADContainersToExclude -contains $item)
+                    {
+                        throw ($script:localizedData.ContainersInEx -f $item)
+                    }
+                }
+            }
+
             $paramsToCheck = @('Enabled','EnableDeltaDiscovery','DeltaDiscoveryMins')
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
@@ -445,6 +456,17 @@ function Test-TargetResource
                 {
                     Write-Verbose -Message ($script:localizedData.UCountTest -f $ScheduleCount, $State.ScheduleCount)
                     $result = $false
+                }
+            }
+        }
+
+        if ($ADContainersToInclude -and $ADContainersToExclude)
+        {
+            foreach ($item in $ADContainersToInclude)
+            {
+                if ($ADContainersToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.ContainersInEx -f $item)
                 }
             }
         }

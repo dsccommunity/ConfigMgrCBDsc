@@ -428,8 +428,18 @@ try
                         DeltaDiscoveryMins   = 60
                     }
 
+                    $adContainersExclude = 'LDAP://OU=Test1,DC=contoso,DC=com'
+
+                    $inputParamsIncludeExcludeThrow = @{
+                        SiteCode              = 'Lab'
+                        Enabled               = $true
+                        ADContainersToInclude = $adContainersExclude
+                        ADContainersToExclude = $adContainersExclude
+                    }
+
                     $deltaThrow = 'When changing delta schedule, delta schedule must be enabled.'
                     $scheduleThrow = "Invalid parameter usage specifying an Interval and didn't specify count."
+                    $excludeThrow = "ADContainersToToExclude and ADContainersToToInclude contain to same entry $adContainersExclude, remove from one of the arrays."
 
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
                 }
@@ -440,6 +450,19 @@ try
                     Mock -CommandName Set-CMDiscoveryMethod
 
                     { Set-TargetResource @inputParamsBadSchedule } | Should -Throw -ExpectedMessage $scheduleThrow
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected when specifying the same container in include and exclude' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
+                    Mock -CommandName New-CMSchedule
+                    Mock -CommandName Set-CMDiscoveryMethod
+
+                    { Set-TargetResource @inputParamsIncludeExcludeThrow } | Should -Throw -ExpectedMessage $excludeThrow
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -597,11 +620,22 @@ try
                         ADContainersToExclude = $adContainersExclude
                     }
 
+                    $inputParamsIncludeExclude = @{
+                        SiteCode              = 'Lab'
+                        Enabled               = $true
+                        ADContainersToInclude = $adContainersExclude
+                        ADContainersToExclude = $adContainersExclude
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
                 }
 
                 It 'Should return desired result true when User Discovery settings match' {
                     Test-TargetResource @iputAllParamsMatch | Should -Be $true
+                }
+
+                It 'Should return desired result false when ad containers mismatch' {
+                    Test-TargetResource @inputParamsIncludeExclude | Should -Be $false
                 }
 
                 It 'Should return desired result false when delta schedule mismatch' {
