@@ -145,20 +145,35 @@ function Set-TargetResource
     {
         if ($Ensure -eq 'Present')
         {
-            if ($PSBoundParameters.ContainsKey('XmlPath') -and ($OverWrite -eq $true -or $Append -eq $true))
+            if ($PSBoundParameters.ContainsKey('XmlPath'))
             {
-                [xml]$xmlFile = Get-Content -Path $XmlPath
-                $xmlContent = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role/Operations/Operation")
-                $xmlName = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role").RoleName
-
-                if ([string]::IsNullOrEmpty($xmlContent) -or [string]::IsNullOrEmpty($xmlName))
+                try
+                {
+                    [xml]$xmlFile = Get-Content -Path $XmlPath
+                }
+                catch
                 {
                     throw $script:localizedData.InvalidXmlThow
                 }
 
-                if ($xmlName -ne $SecurityRoleName)
+                if (-not [string]::IsNullOrEmpty($xmlFile))
                 {
-                    throw $script:localizedData.XmlNameMismatch
+                    $xmlContent = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role/Operations/Operation")
+                    $xmlName = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role").RoleName
+
+                    if ([string]::IsNullOrEmpty($xmlContent) -or [string]::IsNullOrEmpty($xmlName))
+                    {
+                        throw $script:localizedData.InvalidXmlThow
+                    }
+
+                    if ($xmlName -ne $SecurityRoleName)
+                    {
+                        throw $script:localizedData.XmlNameMismatch
+                    }
+                }
+                else
+                {
+                    throw $script:localizedData.InvalidXmlThow
                 }
             }
 
@@ -374,7 +389,6 @@ function Test-TargetResource
             if ($PSBoundParameters.ContainsKey('XmlPath') -and $OverWrite -eq $false -and $Append -eq $false)
             {
                 Write-Warning -Message $script:localizedData.XmlFileNoOverwrite
-                $result = $false
             }
 
             if ($PSBoundParameters.ContainsKey('XmlPath') -and ($OverWrite -eq $true -or $Append -eq $true))
@@ -384,75 +398,91 @@ function Test-TargetResource
                     Write-Warning -Message $script:localizedData.OverwriteAppend
                 }
 
-                [xml]$xmlFile = Get-Content -Path $XmlPath
-                $xmlContent = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role/Operations/Operation")
-                $xmlName = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role").RoleName
-
-                if ([string]::IsNullOrEmpty($xmlContent) -or [string]::IsNullOrEmpty($xmlName))
+                try
                 {
-                    Write-Warning -Message ($script:localizedData.InvalidXml -f $XmlPath)
-                    $result = $false
+                    [xml]$xmlFile = Get-Content -Path $XmlPath
                 }
-                else
+                catch
                 {
-                    if ($xmlName -ne $SecurityRoleName)
+                    $invalid = $true
+                }
+
+                if (-not [string]::IsNullOrEmpty($xmlFile) -and $invalid -ne $true)
+                {
+                    $xmlContent = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role/Operations/Operation")
+                    $xmlName = $xmlFile.SelectNodes("/SMS_Roles/SMS_Role").RoleName
+
+                    if ([string]::IsNullOrEmpty($xmlContent) -or [string]::IsNullOrEmpty($xmlName))
                     {
-                        Write-Warning -Message $script:localizedData.XmlNameMismatch
-                    }
-
-                    if ($state.Operation)
-                    {
-                        $convert = $state.Operation.TrimEnd(';').Split(';')
-                        $object = @{}
-                        foreach ($item in $convert)
-                        {
-                            $sitem = $item.Split('=')
-
-                            $object += @{
-                                $sitem[0] = $sitem[1]
-                            }
-                        }
-
-                        foreach ($item in $xmlContent)
-                        {
-                            if ($object.ContainsKey($item.ObjectTypeID))
-                            {
-                                if ($object[$item.ObjectTypeID] -ne $item.GrantedOperations)
-                                {
-                                    Write-Verbose -Message ($script:localizedData.SettingsMismatch -f $item.ObjectTypeId,$item.GrantedOperations,$object[$item.ObjectTypeID])
-                                    $result = $false
-                                }
-                            }
-                            else
-                            {
-                                Write-Verbose -Message ($script:localizedData.MissingSettings -f $item.ObjectTypeId,$item.GrantedOperations)
-                                $result = $false
-                            }
-                        }
-
-                        foreach ($item in $object.GetEnumerator())
-                        {
-                            if ($xmlContent.ObjectTypeId -notcontains $item.Name)
-                            {
-                                if ($Append -eq $true)
-                                {
-                                    $action = 'appended'
-                                }
-                                else
-                                {
-                                    $action = 'over written'
-                                    $result = $false
-                                }
-
-                                Write-Warning -Message ($script:localizedData.AdditionalSettings -f $SecurityRoleName,$action,$item.Name,$item.Value)
-                            }
-                        }
+                        Write-Warning -Message ($script:localizedData.InvalidXml -f $XmlPath)
+                        $result = $false
                     }
                     else
                     {
-                        Write-Verbose -Message $script:localizedData.MissingGetConfig
-                        $result = $false
+                        if ($xmlName -ne $SecurityRoleName)
+                        {
+                            Write-Warning -Message $script:localizedData.XmlNameMismatch
+                        }
+
+                        if ($state.Operation)
+                        {
+                            $convert = $state.Operation.TrimEnd(';').Split(';')
+                            $object = @{}
+                            foreach ($item in $convert)
+                            {
+                                $sitem = $item.Split('=')
+
+                                $object += @{
+                                    $sitem[0] = $sitem[1]
+                                }
+                            }
+
+                            foreach ($item in $xmlContent)
+                            {
+                                if ($object.ContainsKey($item.ObjectTypeID))
+                                {
+                                    if ($object[$item.ObjectTypeID] -ne $item.GrantedOperations)
+                                    {
+                                        Write-Verbose -Message ($script:localizedData.SettingsMismatch -f $item.ObjectTypeId,$item.GrantedOperations,$object[$item.ObjectTypeID])
+                                        $result = $false
+                                    }
+                                }
+                                else
+                                {
+                                    Write-Verbose -Message ($script:localizedData.MissingSettings -f $item.ObjectTypeId,$item.GrantedOperations)
+                                    $result = $false
+                                }
+                            }
+
+                            foreach ($item in $object.GetEnumerator())
+                            {
+                                if ($xmlContent.ObjectTypeId -notcontains $item.Name)
+                                {
+                                    if ($Append -eq $true)
+                                    {
+                                        $action = 'appended'
+                                    }
+                                    else
+                                    {
+                                        $action = 'over written'
+                                        $result = $false
+                                    }
+
+                                    Write-Warning -Message ($script:localizedData.AdditionalSettings -f $SecurityRoleName,$action,$item.Name,$item.Value)
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Write-Verbose -Message $script:localizedData.MissingGetConfig
+                            $result = $false
+                        }
                     }
+                }
+                else
+                {
+                    Write-Warning -Message ($script:localizedData.InvalidXml -f $XmlPath)
+                    $result = $false
                 }
             }
 

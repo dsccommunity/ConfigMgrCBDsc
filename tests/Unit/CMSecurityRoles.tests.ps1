@@ -332,14 +332,14 @@ try
 
                 It 'Should call expected commands when overwrite and append are false' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnNoOperations }
-                    Mock -CommandName Get-Content
+                    Mock -CommandName Get-Content -MockWith { $roleXmlDif }
 
                     Set-TargetResource @inputPresent
                     Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-Content -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-Content -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-ChildItem -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-Date -Exactly -Times 0 -Scope It
                     Assert-MockCalled Rename-Item -Exactly -Times 0 -Scope It
@@ -361,7 +361,7 @@ try
 
                     $missingXml = 'Role does not exist and will not be able to create role without specifying a valid XML.'
 
-                    $roleXmlMalformed = '
+                    [xml]$roleXmlMalformed = '
                         <SMS_Role>
                             <SMS_Roles RoleDescription="Test Description" RoleName="Test Role" CopiedFromID="SMS0001R">
                                 <Operation>
@@ -386,6 +386,8 @@ try
                             </SMS_Role>
                         </SMS_Roles>
                     '
+
+                    $nonXml = 'a'
 
                     $nameMismatch = 'The name specified in the xml does not match the name specified in the parameters.'
 
@@ -419,6 +421,46 @@ try
                     Mock -CommandName Test-Path -MockWith { $true }
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
                     Mock -CommandName Get-Content -MockWith { $roleXmlMalformed }
+
+                    { Set-TargetResource @inputPresentAppend } | Should -Throw -ExpectedMessage $invalidXml
+                    Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-Content -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-ChildItem -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-Date -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Rename-Item -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Import-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityRole -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands and throw when non xml file is specified' {
+                    Mock -CommandName Test-Path -MockWith { $true }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+                    Mock -CommandName Get-Content -MockWith { $nonXml }
+
+                    { Set-TargetResource @inputPresentAppend } | Should -Throw -ExpectedMessage $invalidXml
+                    Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-Content -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-ChildItem -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-Date -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Rename-Item -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Import-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityRole -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands and throw when xml is a null file' {
+                    Mock -CommandName Test-Path -MockWith { $true }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+                    Mock -CommandName Get-Content -MockWith { $null }
 
                     { Set-TargetResource @inputPresentAppend } | Should -Throw -ExpectedMessage $invalidXml
                     Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
@@ -567,6 +609,7 @@ try
                         </SMS_Roles>
                     </SMS_Role>
                 '
+                $nonXml = 'a'
 
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -682,6 +725,20 @@ try
                     Mock -CommandName Get-Content
 
                     Test-TargetResource @inputAbsent | Should -Be $false
+                }
+
+                It 'Should return desired result false when xml file is null' {
+                    Mock -CommandName Get-TargetResource { $getReturnPresent }
+                    Mock -CommandName Get-Content
+
+                    Test-TargetResource @inputPresentOverwrite | Should -Be $false
+                }
+
+                It 'Should return desired result false when none xml formatted file' {
+                    Mock -CommandName Get-TargetResource { $getReturnPresent }
+                    Mock -CommandName Get-Content -MockWith { $nonXml }
+
+                    Test-TargetResource @inputPresentOverwrite | Should -Be $false
                 }
             }
         }
