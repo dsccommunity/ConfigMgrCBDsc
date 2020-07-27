@@ -48,6 +48,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMCMCollectionMembershipEvaluationComponent Resource
 - Added CMDistributionPointGroupMembers Resource
 - Added CMSecurityScopes Resource
+- Added CMUserDiscovery Resource
 
 ### Changed
 
@@ -69,6 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Security Scopes to CMDistributionGroup Resource
 - Added SiteSystems, SiteSystemsToInclude, and SiteSystemsToExclude and SecurityScopes,
   SecurityScopesToInclude, SecurityScopesToExclude to CMBoundaryGroup resource.
+- Updated CMSystemDiscovery Resource to add needed throw and warn messages.
 
 ### Removed
 

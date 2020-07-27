@@ -2,7 +2,7 @@
 param ()
 
 $script:dscModuleName   = 'ConfigMgrCBDsc'
-$script:dscResourceName = 'DSC_CMSystemDiscovery'
+$script:dscResourceName = 'DSC_CMUserDiscovery'
 
 $script:moduleRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 
@@ -33,8 +33,7 @@ function Invoke-TestCleanup
 try
 {
     InModuleScope $script:dscResourceName {
-
-        Describe "ConfigMgrCBDsc - DSC_CMSystemDiscovery\Get-TargetResource" -Tag 'Get' {
+        Describe "ConfigMgrCBDsc - DSC_CMUserDiscovery\Get-TargetResource" -Tag 'Get' {
             BeforeAll {
                 $getInput = @{
                     SiteCode = 'Lab'
@@ -58,22 +57,6 @@ try
                         @{
                             PropertyName = 'Settings'
                             Value1       = 'Active'
-                        }
-                        @{
-                            PropertyName = 'Enable Filtering Expired Logon'
-                            Value        = 1
-                        }
-                        @{
-                            PropertyName = 'Days Since Last Logon'
-                            Value        = 20
-                        }
-                        @{
-                            PropertyName = 'Enable Filtering Expired Password'
-                            Value        = 1
-                        }
-                        @{
-                            PropertyName = 'Days Since Last Password Set'
-                            Value        = 40
                         }
                     )
                     PropLists = @(
@@ -108,22 +91,6 @@ try
                         @{
                             PropertyName = 'Settings'
                             Value1       = 'Active'
-                        }
-                        @{
-                            PropertyName = 'Enable Filtering Expired Logon'
-                            Value        = 1
-                        }
-                        @{
-                            PropertyName = 'Days Since Last Logon'
-                            Value        = 20
-                        }
-                        @{
-                            PropertyName = 'Enable Filtering Expired Password'
-                            Value        = 1
-                        }
-                        @{
-                            PropertyName = 'Days Since Last Password Set'
-                            Value        = 40
                         }
                     )
                     PropLists = @(
@@ -185,71 +152,59 @@ try
                 Mock -CommandName Set-Location
             }
 
-            Context 'When retrieving Collection settings' {
+            Context 'When retrieving User Discovery settings' {
 
                 It 'Should return desired result when delta schedule returns hour' {
-                    Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getCMDiscoveryEnabled  }
+                    Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getCMDiscoveryEnabled }
                     Mock -CommandName ConvertTo-ScheduleInterval -MockWith { $intervalDays }
                     Mock -CommandName Convert-CMSchedule -MockWith { $cmScheduleHours }
 
                     $result = Get-TargetResource @getInput
-                    $result                                 | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                        | Should -Be -ExpectedValue 'Lab'
-                    $result.Enabled                         | Should -Be -ExpectedValue $true
-                    $result.EnableDeltaDiscovery            | Should -Be -ExpectedValue $true
-                    $result.DeltaDiscoveryMins              | Should -Be -ExpectedValue 60
-                    $result.EnableFilteringExpiredLogon     | Should -Be -ExpectedValue $true
-                    $result.TimeSinceLastLogonDays          | Should -Be -ExpectedValue 20
-                    $result.EnableFilteringExpiredPassword  | Should -Be -ExpectedValue $true
-                    $result.TimeSinceLastPasswordUpdateDays | Should -Be -ExpectedValue 40
-                    $result.ADContainers                    | Should -Be -ExpectedValue $adContainersReturn
-                    $result.ScheduleInterval                | Should -Be -ExpectedValue 'Days'
-                    $result.ScheduleCount                   | Should -Be -ExpectedValue 7
+                    $result                      | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode             | Should -Be -ExpectedValue 'Lab'
+                    $result.Enabled              | Should -Be -ExpectedValue $true
+                    $result.EnableDeltaDiscovery | Should -Be -ExpectedValue $true
+                    $result.DeltaDiscoveryMins   | Should -Be -ExpectedValue 60
+                    $result.ADContainers         | Should -Be -ExpectedValue $adContainersReturn
+                    $result.ScheduleInterval     | Should -Be -ExpectedValue 'Days'
+                    $result.ScheduleCount        | Should -Be -ExpectedValue 7
                 }
 
                 It 'Should return desired result when delta schedule returns minutes' {
-                    Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getCMDiscoveryEnabled  }
+                    Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getCMDiscoveryEnabled }
                     Mock -CommandName ConvertTo-ScheduleInterval -MockWith { $intervalHours }
                     Mock -CommandName Convert-CMSchedule -MockWith { $cmScheduleMins }
 
                     $result = Get-TargetResource @getInput
-                    $result                                 | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                        | Should -Be -ExpectedValue 'Lab'
-                    $result.Enabled                         | Should -Be -ExpectedValue $true
-                    $result.EnableDeltaDiscovery            | Should -Be -ExpectedValue $true
-                    $result.DeltaDiscoveryMins              | Should -Be -ExpectedValue 45
-                    $result.EnableFilteringExpiredLogon     | Should -Be -ExpectedValue $true
-                    $result.TimeSinceLastLogonDays          | Should -Be -ExpectedValue 20
-                    $result.EnableFilteringExpiredPassword  | Should -Be -ExpectedValue $true
-                    $result.TimeSinceLastPasswordUpdateDays | Should -Be -ExpectedValue 40
-                    $result.ADContainers                    | Should -Be -ExpectedValue $adContainersReturn
-                    $result.ScheduleInterval                | Should -Be -ExpectedValue 'Hours'
-                    $result.ScheduleCount                   | Should -Be -ExpectedValue 5
+                    $result                      | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode             | Should -Be -ExpectedValue 'Lab'
+                    $result.Enabled              | Should -Be -ExpectedValue $true
+                    $result.EnableDeltaDiscovery | Should -Be -ExpectedValue $true
+                    $result.DeltaDiscoveryMins   | Should -Be -ExpectedValue 45
+                    $result.ADContainers         | Should -Be -ExpectedValue $adContainersReturn
+                    $result.ScheduleInterval     | Should -Be -ExpectedValue 'Hours'
+                    $result.ScheduleCount        | Should -Be -ExpectedValue 5
                 }
 
                 It 'Should return desired result when delta discovery is disabled' {
-                    Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getCMDiscoveryDisabled  }
+                    Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getCMDiscoveryDisabled }
                     Mock -CommandName ConvertTo-ScheduleInterval -MockWith { $intervalNone }
                     Mock -CommandName Convert-CMSchedule
 
                     $result = Get-TargetResource @getInput
-                    $result                                 | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                        | Should -Be -ExpectedValue 'Lab'
-                    $result.Enabled                         | Should -Be -ExpectedValue $true
-                    $result.EnableDeltaDiscovery            | Should -Be -ExpectedValue $false
-                    $result.DeltaDiscoveryMins              | Should -Be -ExpectedValue $null
-                    $result.EnableFilteringExpiredLogon     | Should -Be -ExpectedValue $true
-                    $result.TimeSinceLastLogonDays          | Should -Be -ExpectedValue 20
-                    $result.EnableFilteringExpiredPassword  | Should -Be -ExpectedValue $true
-                    $result.TimeSinceLastPasswordUpdateDays | Should -Be -ExpectedValue 40
-                    $result.ADContainers                    | Should -Be -ExpectedValue $adContainersReturn
-                    $result.ScheduleInterval                | Should -Be -ExpectedValue 'None'
-                    $result.ScheduleCount                   | Should -Be -ExpectedValue $null
+                    $result                      | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode             | Should -Be -ExpectedValue 'Lab'
+                    $result.Enabled              | Should -Be -ExpectedValue $true
+                    $result.EnableDeltaDiscovery | Should -Be -ExpectedValue $false
+                    $result.DeltaDiscoveryMins   | Should -Be -ExpectedValue $null
+                    $result.ADContainers         | Should -Be -ExpectedValue $adContainersReturn
+                    $result.ScheduleInterval     | Should -Be -ExpectedValue 'None'
+                    $result.ScheduleCount        | Should -Be -ExpectedValue $null
                 }
             }
         }
 
-        Describe "ConfigMgrCBDsc - DSC_CMSystemDiscovery\Set-TargetResource" -Tag 'Set' {
+        Describe "ConfigMgrCBDsc - DSC_CMUserDiscovery\Set-TargetResource" -Tag 'Set' {
             BeforeAll {
                 $adContainersReturn = @(
                     'LDAP://OU=Test,DC=contoso,DC=com'
@@ -257,31 +212,23 @@ try
                 )
 
                 $getTargetResourceStandardReturn = @{
-                    SiteCode                        = 'Lab'
-                    Enabled                         = $true
-                    EnableDeltaDiscovery            = $true
-                    DeltaDiscoveryMins              = [UInt32]60
-                    EnableFilteringExpiredLogon     = $true
-                    TimeSinceLastLogonDays          = [UInt32]20
-                    EnableFilteringExpiredPassword  = $true
-                    TimeSinceLastPasswordUpdateDays = [UInt32]40
-                    ADContainers                    = $adContainersReturn
-                    ScheduleInterval                = 'Days'
-                    ScheduleCount                   = 7
+                    SiteCode             = 'Lab'
+                    Enabled              = $true
+                    EnableDeltaDiscovery = $true
+                    DeltaDiscoveryMins   = [UInt32]60
+                    ADContainers         = $adContainersReturn
+                    ScheduleInterval     = 'Days'
+                    ScheduleCount        = 7
                 }
 
                 $getTargetResourceStandardNoSchedule = @{
-                    SiteCode                        = 'Lab'
-                    Enabled                         = $true
-                    EnableDeltaDiscovery            = $true
-                    DeltaDiscoveryMins              = 60
-                    EnableFilteringExpiredLogon     = $true
-                    TimeSinceLastLogonDays          = 20
-                    EnableFilteringExpiredPassword  = $true
-                    TimeSinceLastPasswordUpdateDays = 40
-                    ADContainers                    = $adContainersReturn
-                    ScheduleInterval                = 'None'
-                    ScheduleCount                   = $null
+                    SiteCode             = 'Lab'
+                    Enabled              = $true
+                    EnableDeltaDiscovery = $true
+                    DeltaDiscoveryMins   = 60
+                    ADContainers         = $adContainersReturn
+                    ScheduleInterval     = 'None'
+                    ScheduleCount        = $null
                 }
 
                 $inputParamsHours = @{
@@ -306,7 +253,6 @@ try
 
             Context 'When Set-TargetResource runs successfully' {
                 BeforeEach {
-
                     $inputParamsDisable = @{
                         SiteCode = 'Lab'
                         Enabled  = $false
@@ -361,7 +307,7 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
                 }
 
-                It 'Should call expected commands for disabling System Discovery' {
+                It 'Should call expected commands for disabling User Discovery' {
                     Mock -CommandName New-CMSchedule
 
                     Set-TargetResource @inputParamsDisable
@@ -458,7 +404,7 @@ try
                     Mock -CommandName New-CMSchedule -MockWith { $cmScheduleDays }
 
                     Set-TargetResource @inputParamsHours
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -ModuleName DSC_CMSystemDiscovery -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
@@ -468,7 +414,6 @@ try
 
             Context 'When running Set-TargetResource should throw' {
                 BeforeEach {
-
                     $inputParamsBadSchedule = @{
                         SiteCode         = 'Lab'
                         Enabled          = $true
@@ -497,6 +442,8 @@ try
                         ADContainersToExclude = $adContainersExclude
                     }
 
+                    $deltaThrow = 'When changing delta schedule, delta schedule must be enabled.'
+                    $scheduleThrow = "Invalid parameter usage specifying an Interval and didn't specify count."
                     $excludeThrow = "ADContainersToExclude and ADContainersToInclude contain to same entry $adContainersExclude, remove from one of the arrays."
                     $enableDeltaThrowMsg = "DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery."
 
@@ -508,7 +455,7 @@ try
                     Mock -CommandName New-CMSchedule
                     Mock -CommandName Set-CMDiscoveryMethod
 
-                    { Set-TargetResource @inputParamsBadSchedule } | Should -Throw
+                    { Set-TargetResource @inputParamsBadSchedule } | Should -Throw -ExpectedMessage $scheduleThrow
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -596,7 +543,7 @@ try
             }
         }
 
-        Describe "ConfigMgrCBDsc - DSC_CMSystemDiscovery\Test-TargetResource" -Tag 'Test' {
+        Describe "ConfigMgrCBDsc - DSC_CMUserDiscovery\Test-TargetResource" -Tag 'Test' {
             BeforeAll {
                 $adContainersReturn = @(
                     'LDAP://OU=Test,DC=contoso,DC=com'
@@ -604,31 +551,23 @@ try
                 )
 
                 $getTargetResourceStandardReturn = @{
-                    SiteCode                        = 'Lab'
-                    Enabled                         = $true
-                    EnableDeltaDiscovery            = $true
-                    DeltaDiscoveryMins              = [UInt32]60
-                    EnableFilteringExpiredLogon     = $true
-                    TimeSinceLastLogonDays          = [UInt32]20
-                    EnableFilteringExpiredPassword  = $true
-                    TimeSinceLastPasswordUpdateDays = [UInt32]40
-                    ADContainers                    = $adContainersReturn
-                    ScheduleInterval                = 'Days'
-                    ScheduleCount                   = 7
+                    SiteCode             = 'Lab'
+                    Enabled              = $true
+                    EnableDeltaDiscovery = $true
+                    DeltaDiscoveryMins   = [UInt32]60
+                    ADContainers         = $adContainersReturn
+                    ScheduleInterval     = 'Days'
+                    ScheduleCount        = 7
                 }
 
                 $getTargetResourceStandardNoSchedule = @{
-                    SiteCode                        = 'Lab'
-                    Enabled                         = $true
-                    EnableDeltaDiscovery            = $true
-                    DeltaDiscoveryMins              = 60
-                    EnableFilteringExpiredLogon     = $true
-                    TimeSinceLastLogonDays          = 20
-                    EnableFilteringExpiredPassword  = $true
-                    TimeSinceLastPasswordUpdateDays = 40
-                    ADContainers                    = $adContainersReturn
-                    ScheduleInterval                = 'None'
-                    ScheduleCount                   = $null
+                    SiteCode             = 'Lab'
+                    Enabled              = $true
+                    EnableDeltaDiscovery = $true
+                    DeltaDiscoveryMins   = 60
+                    ADContainers         = $adContainersReturn
+                    ScheduleInterval     = 'None'
+                    ScheduleCount        = $null
                 }
 
                 $inputParamsHours = @{
@@ -659,17 +598,13 @@ try
                     $adContainersExclude = 'LDAP://OU=Test1,DC=contoso,DC=com'
 
                     $iputAllParamsMatch = @{
-                        SiteCode                        = 'Lab'
-                        Enabled                         = $true
-                        EnableDeltaDiscovery            = $true
-                        DeltaDiscoveryMins              = 60
-                        EnableFilteringExpiredLogon     = $true
-                        TimeSinceLastLogonDays          = 20
-                        EnableFilteringExpiredPassword  = $true
-                        TimeSinceLastPasswordUpdateDays = 40
-                        ADContainers                    = $adContainersReturn
-                        ScheduleInterval                = 'Days'
-                        ScheduleCount                   = 7
+                        SiteCode             = 'Lab'
+                        Enabled              = $true
+                        EnableDeltaDiscovery = $true
+                        DeltaDiscoveryMins   = 60
+                        ADContainers         = $adContainersReturn
+                        ScheduleInterval     = 'Days'
+                        ScheduleCount        = 7
                     }
 
                     $inputParamsDeltaMismatch = @{
@@ -714,7 +649,7 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
                 }
 
-                It 'Should return desired result true when system discovery settings match' {
+                It 'Should return desired result true when User Discovery settings match' {
                     Test-TargetResource @iputAllParamsMatch | Should -Be $true
                 }
 
@@ -726,31 +661,31 @@ try
                     Test-TargetResource @inputParamsDeltaMismatch | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery schedules do not match' {
+                It 'Should return desired result false when User Discovery schedules do not match' {
                     Test-TargetResource @inputParamsHours | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery desires none schedule to be set' {
+                It 'Should return desired result false when User Discovery desires none schedule to be set' {
                     Test-TargetResource @inputParamsNoSchedule | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery ADContainers are not correct add and remove' {
+                It 'Should return desired result false when User Discovery ADContainers are not correct add and remove' {
                     Test-TargetResource @inputParamsADContainersMismatch | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery ADContainers and ADContainersExclude are specified' {
+                It 'Should return desired result false when User Discovery ADContainers and ADContainersExclude are specified' {
                     Test-TargetResource @inputParamsADContainersMultiple | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery ADContainersInclude are not correct' {
+                It 'Should return desired result false when User Discovery ADContainersInclude are not correct' {
                     Test-TargetResource @inputParamsADContainersInclude | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery ADContainersExclude is not correct' {
+                It 'Should return desired result false when User Discovery ADContainersExclude is not correct' {
                     Test-TargetResource @inputParamsADContainersExclude | Should -Be $false
                 }
 
-                It 'Should return desired result false when system discovery set to Enabled and expected value disabled' {
+                It 'Should return desired result false when User Discovery set to Enabled and expected value disabled' {
                     Test-TargetResource @inputParamsDisable | Should -Be $false
                 }
             }
