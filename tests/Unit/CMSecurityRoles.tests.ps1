@@ -165,6 +165,12 @@ try
                     Append           = $true
                 }
 
+                $inputAbsent = @{
+                    SiteCode         = 'Lab'
+                    SecurityRoleName = 'Test Role'
+                    Ensure           = 'Absent'
+                }
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName Rename-Item
@@ -189,10 +195,13 @@ try
                         SecurityRoleName = 'Test Role'
                     }
 
-                    $inputAbsent = @{
+                    $getReturnNoAdmins = @{
                         SiteCode         = 'Lab'
                         SecurityRoleName = 'Test Role'
-                        Ensure           = 'Absent'
+                        Description      = 'Test description'
+                        Operation        = '1=2241187;2=268435457;4=268435457;'
+                        UsersAssigned    = $null
+                        Ensure           = 'Present'
                     }
 
                     [xml]$roleXmlDif = '
@@ -293,7 +302,7 @@ try
                 }
 
                 It 'Should call expected commands when removing Security Role' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnNoAdmins }
                     Mock -CommandName Get-Content
 
                     Set-TargetResource @inputAbsent
@@ -387,8 +396,17 @@ try
                         </SMS_Roles>
                     '
 
-                    $nonXml = 'a'
+                    $getReturnAdmin = @{
+                        SiteCode         = 'Lab'
+                        SecurityRoleName = 'Test Role'
+                        Description      = 'Test description'
+                        Operation        = '1=2241187;2=268435457;4=268435457;'
+                        UsersAssigned    = 'contoso\TestUser2'
+                        Ensure           = 'Present'
+                    }
 
+                    $adminThrow = 'Deleting this role will affect the following Administrators: contoso\TestUser2'
+                    $nonXml = 'a'
                     $nameMismatch = 'The name specified in the xml does not match the name specified in the parameters.'
 
                     Mock -CommandName Get-ChildItem
@@ -488,6 +506,25 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-Content -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-ChildItem -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-Date -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Rename-Item -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Import-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSecurityRole -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMSecurityRole -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands and throw when removing and Security Scope has admins assigned' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAdmin }
+                    Mock -CommandName Get-Content
+
+                    { Set-TargetResource @inputAbsent } | Should -Throw -ExpectedMessage $adminThrow
+                    Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-Content -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-ChildItem -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-Date -Exactly -Times 0 -Scope It
                     Assert-MockCalled Rename-Item -Exactly -Times 0 -Scope It

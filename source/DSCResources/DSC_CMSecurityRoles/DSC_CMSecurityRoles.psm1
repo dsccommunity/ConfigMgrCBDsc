@@ -287,7 +287,7 @@ function Set-TargetResource
         {
             if ($state.UsersAssigned)
             {
-                Write-Warning -Message ($script:localizedData.RoleDeleteAdmin -f ($state.UsersAssigned | Out-String))
+                throw ($script:localizedData.RoleDeleteAdmin -f ($state.UsersAssigned | Out-String))
             }
 
             Write-Verbose -Message ($script:localizedData.DeleteRole -f $SecurityRoleName)
