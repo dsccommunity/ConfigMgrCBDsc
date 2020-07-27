@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to remove Security Roles to Configuration Manager.
+        A DSC configuration script to remove Security Roles from Configuration Manager.
 #>
 Configuration Example
 {

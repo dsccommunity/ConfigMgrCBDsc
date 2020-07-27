@@ -107,6 +107,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMSecurityScopes**: Provides a resource for adding and removing Security
   Scopes.  Note: If the Security Scope is currently in use and assigned, DSC will
   not remove the Security Scope.
+- **CMUserDiscovery**: Provides a resource to manage the Configuration Manager
+  User Discovery method.
 - **CMSecurityRoles**: Provides a resource for adding and removing Security
   Roles.  Note: If the Security Role is currently assigned to an administrator,
   DSC will not remove the Security Role.
@@ -1059,6 +1061,40 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 - [CMSecurityScopes_Present](Source\Examples\Resources\CMSecurityScopes\CMSecurityScopes_Present.ps1)
 - [CMSecurityScopes_Absent](Source\Examples\Resources\CMSecurityScopes\CMSecurityScopes_Absent.ps1)
+
+### CMUserDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Key)_: Specifies the enablement of the User
+  Discovery method. If settings is set to $false no other value provided will be
+  evaluated for compliance.
+- **[Boolean] EnableDeltaDiscovery** _(Write)_: Indicates whether Configuration
+  Manager discovers resources created or modified in AD DS since the last
+  discovery cycle.
+- **[UInt32] DeltaDiscoveryMins** _(Write)_: Specifies the number of minutes for
+  the delta discovery.
+- **[String] ADContainers[]** _(Write)_: Specifies an array of names of Active Directory
+  containers to match to the discovery.
+- **[String] ADContainersToInclude[]** _(Write)_: Specifies an array of names of
+  Active Directory containers to add to the discovery.
+- **[String] ADContainersToExclude[]** _(Write)_: Specifies an array of names of
+  Active Directory containers to exclude to the discovery.
+- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
+  event recurs in hours and days.
+  - Values include: { None| Days| Hours | Minutes }
+- **[UInt32] ScheduleCount** _(Write)_: Specifies how often the recur interval
+  is run. If hours are specified the max value is 23. Anything over 23 will result
+  in 23 to be set. If days are specified the max value is 31. Anything over 31 will
+  result in 31 being set.
+
+#### CMUserDiscovery Examples
+
+- [CMUserDiscovery_Disabled](Source\Examples\Resources\CMUserDiscovery\CMUserDiscovery_Disabled.ps1)
+- [CMUserDiscovery_Enabled](Source\Examples\Resources\CMUserDiscovery\CMUserDiscovery_Enabled.ps1)
+- [CMUserDiscovery_Exclude](Source\Examples\Resources\CMUserDiscovery\CMUserDiscovery_Exclude.ps1)
+- [CMUserDiscovery_Include](Source\Examples\Resources\CMUserDiscovery\CMUserDiscovery_Include.ps1)
+- [CMUserDiscovery_ScheduleNone](Source\Examples\Resources\CMUserDiscovery\CMUserDiscovery_ScheduleNone.ps1)
 
 ### CMSecurityRoles
 

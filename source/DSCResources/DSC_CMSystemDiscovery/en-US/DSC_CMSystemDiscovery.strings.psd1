@@ -15,4 +15,6 @@ ConvertFrom-StringData @'
     SetDisabled           = Setting System Discovery to disabled.
     MissingDeltaDiscovery = When changing delta schedule, delta schedule must be enabled.
     ADIgnore              = ADContainers was specified, ADContainersInclude and ADContainersExclude will be ignored.
+    ContainersInEx        = ADContainersToExclude and ADContainersToInclude contain to same entry {0}, remove from one of the arrays.
+    DeltaNoInterval       = DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery.
 '@

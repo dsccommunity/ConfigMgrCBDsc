@@ -52,7 +52,7 @@ function Get-TargetResource
             {
                 if ($user.RoleNames -Contains $SecurityRoleName)
                 {
-                    [array]$adminUsers += $user.logonName
+                    [array]$adminUsers += $user.LogonName
                 }
             }
         }
@@ -200,10 +200,10 @@ function Set-TargetResource
                         $object = @{}
                         foreach ($item in $convert)
                         {
-                            $sitem = $item.Split('=')
+                            $sItem = $item.Split('=')
 
                             $object += @{
-                                $sitem[0] = $sitem[1]
+                                $sItem[0] = $sItem[1]
                             }
                         }
 
@@ -269,7 +269,7 @@ function Set-TargetResource
 
             if ($applyXml)
             {
-                Import-CMSecurityRole -XmlFileName $XmlPath -Overwrite $true
+                Import-CMSecurityRole -XmlFileName $XmlPath -OverWrite $true
             }
 
             if ($PSBoundParameters.ContainsKey('Description'))
@@ -377,7 +377,7 @@ function Test-TargetResource
     {
         if ($state.Ensure -eq 'Absent')
         {
-            if ([string]::IsNullOrEmpty($XMLPath))
+            if ([string]::IsNullOrEmpty($XmlPath))
             {
                 Write-Warning -Message $script:localizedData.AbsentRoleXmlMissing
             }
@@ -430,10 +430,10 @@ function Test-TargetResource
                             $object = @{}
                             foreach ($item in $convert)
                             {
-                                $sitem = $item.Split('=')
+                                $sItem = $item.Split('=')
 
                                 $object += @{
-                                    $sitem[0] = $sitem[1]
+                                    $sItem[0] = $sItem[1]
                                 }
                             }
 

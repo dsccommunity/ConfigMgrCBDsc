@@ -73,6 +73,7 @@
         'CMCollectionMembershipEvaluationComponent'
         'CMDistributionPointGroupMembers'
         'CMSecurityScopes'
+        'CMUserDiscovery'
         'CMSecurityRoles'
     )
 
@@ -91,7 +92,7 @@
             'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
             'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint',
             'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
-            'DistributionPointGroupMembers','SecurityScopes','SecurityRoles')
+            'DistributionPointGroupMembers','SecurityScopes','UserDiscovery','SecurityRoles')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

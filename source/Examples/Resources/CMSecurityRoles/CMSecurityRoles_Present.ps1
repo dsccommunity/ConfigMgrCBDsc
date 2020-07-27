@@ -8,7 +8,7 @@ Configuration Example
 
     Node localhost
     {
-        CMSecurityRoles ExampleSettingsOverwrite
+        CMSecurityRoles ExampleSettingsOverWrite
         {
             SiteCode          = 'Lab'
             SecurityRoleName  = 'Field Services'

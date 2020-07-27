@@ -14,7 +14,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER Enabled
-        Specifies the enablement of the System discovery method.
+        Specifies the enablement of the User Discovery method.
 #>
 function Get-TargetResource
 {
@@ -35,24 +35,20 @@ function Get-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
-    $systemDiscovery = Get-CMDiscoveryMethod -Name ActiveDirectorySystemDiscovery -SiteCode $SiteCode
+    $userDiscovery = Get-CMDiscoveryMethod -Name ActiveDirectoryUserDiscovery -SiteCode $SiteCode
 
-    foreach ($prop in $systemDiscovery.Props)
+    foreach ($prop in $userDiscovery.Props)
     {
         switch ($prop.PropertyName)
         {
-            'Settings'                          { $enabledStatus = ($prop.Value1 -eq 'Active') }
-            'Full Sync Schedule'                { $systemSchedule = $prop.Value1 }
-            'Enable Incremental Sync'           { $deltaEnabled = $prop.Value }
-            'Startup Schedule'                  { $systemDelta = $prop.Value1 }
-            'Enable Filtering Expired Logon'    { $lastLogonEnabled = $prop.Value }
-            'Days Since Last Logon'             { $lastLogon = $prop.Value }
-            'Enable Filtering Expired Password' { $lastPasswordEnabled = $prop.Value }
-            'Days Since Last Password Set'      { $lastPassword = $prop.Value }
+            'Settings'                { $enabledStatus = ($prop.Value1 -eq 'Active') }
+            'Full Sync Schedule'      { $userSchedule = $prop.Value1 }
+            'Enable Incremental Sync' { $deltaEnabled = $prop.Value }
+            'Startup Schedule'        { $userDelta = $prop.Value1 }
         }
     }
 
-    $adContainersList = ($systemDiscovery.Proplists | Where-Object -FilterScript {$_.PropertyListName -eq 'AD Containers'}).Values
+    $adContainersList = ($userDiscovery.Proplists | Where-Object -FilterScript {$_.PropertyListName -eq 'AD Containers'}).Values
     foreach ($line in $adContainersList)
     {
         if ($line -match 'LDAP://')
@@ -63,38 +59,34 @@ function Get-TargetResource
 
     if ($deltaEnabled -eq 0)
     {
-        $systemSchedule = $systemDelta
-        $systemDelta = $null
+        $userSchedule = $userDelta
+        $userDelta = $null
     }
 
-    $scheduleConvert = ConvertTo-ScheduleInterval -ScheduleString $systemSchedule
+    $scheduleConvert = ConvertTo-ScheduleInterval -ScheduleString $userSchedule
 
-    if (-not [string]::IsNullOrEmpty($systemDelta))
+    if (-not [string]::IsNullOrEmpty($userDelta))
     {
-        $sDelta = Convert-CMSchedule -ScheduleString $systemDelta
+        $uDelta = Convert-CMSchedule -ScheduleString $userDelta
 
-        if ($sDelta.HourSpan -eq 1)
+        if ($uDelta.HourSpan -eq 1)
         {
             $syncDelta = 60
         }
         else
         {
-            $syncDelta = $sDelta.MinuteSpan
+            $syncDelta = $uDelta.MinuteSpan
         }
     }
 
     return @{
-        SiteCode                        = $SiteCode
-        Enabled                         = $enabledStatus
-        ScheduleInterval                = $scheduleConvert.Interval
-        ScheduleCount                   = $scheduleConvert.Count
-        EnableDeltaDiscovery            = $deltaEnabled
-        DeltaDiscoveryMins              = $syncDelta
-        EnableFilteringExpiredLogon     = $lastLogonEnabled
-        TimeSinceLastLogonDays          = $lastLogon
-        EnableFilteringExpiredPassword  = $lastPasswordEnabled
-        TimeSinceLastPasswordUpdateDays = $lastPassword
-        ADContainers                    = $adContainerArray
+        SiteCode             = $SiteCode
+        Enabled              = $enabledStatus
+        ScheduleInterval     = $scheduleConvert.Interval
+        ScheduleCount        = $scheduleConvert.Count
+        EnableDeltaDiscovery = $deltaEnabled
+        DeltaDiscoveryMins   = $syncDelta
+        ADContainers         = $adContainerArray
     }
 }
 
@@ -106,7 +98,7 @@ function Get-TargetResource
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER Enabled
-        Specifies the enablement of the System discovery method.
+        Specifies the enablement of the User Discovery method.
 
     .PARAMETER EnableDeltaDiscovery
         Indicates whether Configuration Manager discovers resources created or modified in AD DS
@@ -115,22 +107,6 @@ function Get-TargetResource
 
     .PARAMETER DeltaDiscoveryMins
         Specifies the number of minutes for the delta discovery.
-
-    .PARAMETER EnableFilteringExpiredLogon
-        Indicates whether Configuration Manager discovers only computers that have logged onto a
-        domain within a specified number of days. Specify the number of days by using the
-        TimeSinceLastLogonDays parameter.
-
-    .PARAMETER TimeSinceLastLogonDays
-        Specify the number of days for EnableFilteringExpiredLogon.
-
-    .PARAMETER EnableFilteringExpiredPassword
-        Indicates whether Configuration Manager discovers only computers that have updated their computer
-        account password within a specified number of days. Specify the number of days by using the
-        TimeSinceLastPasswordUpdateDays parameter.
-
-    .PARAMETER TimeSinceLastPasswordUpdateDays
-        Specify the number of days for EnableFilteringExpiredPassword.
 
     .PARAMETER ADContainers
         Specifies an array of names of Active Directory containers to match to the discovery.
@@ -168,22 +144,6 @@ function Set-TargetResource
         [ValidateRange(1,60)]
         [UInt32]
         $DeltaDiscoveryMins,
-
-        [Parameter()]
-        [Boolean]
-        $EnableFilteringExpiredLogon,
-
-        [Parameter()]
-        [UInt32]
-        $TimeSinceLastLogonDays,
-
-        [Parameter()]
-        [Boolean]
-        $EnableFilteringExpiredPassword,
-
-        [Parameter()]
-        [UInt32]
-        $TimeSinceLastPasswordUpdateDays,
 
         [Parameter()]
         [String[]]
@@ -246,8 +206,7 @@ function Set-TargetResource
                 }
             }
 
-            $paramsToCheck = @('Enabled','EnableDeltaDiscovery','DeltaDiscoveryMins','EnableFilteringExpiredLogon',
-                           'TimeSinceLastLogonDays','EnableFilteringExpiredPassword','TimeSinceLastPasswordUpdateDays')
+            $paramsToCheck = @('Enabled','EnableDeltaDiscovery','DeltaDiscoveryMins')
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
@@ -267,13 +226,13 @@ function Set-TargetResource
             {
                 if ($ScheduleInterval -ne $state.ScheduleInterval)
                 {
-                    Write-Verbose -Message ($script:localizedData.SIntervalSet -f $ScheduleInterval)
+                    Write-Verbose -Message ($script:localizedData.UIntervalSet -f $ScheduleInterval)
                     $setSchedule = $true
                 }
 
                 if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountSet -f $ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.UCountSet -f $ScheduleCount)
                     $setSchedule = $true
                 }
 
@@ -372,16 +331,13 @@ function Set-TargetResource
 
             if ($buildingParams)
             {
-                Set-CMDiscoveryMethod -ActiveDirectorySystemDiscovery -SiteCode $SiteCode @buildingParams
+                Set-CMDiscoveryMethod -ActiveDirectoryUserDiscovery -SiteCode $SiteCode @buildingParams
             }
         }
-        else
+        elseif ($state.Enabled -eq $true)
         {
-            if ($state.Enabled -eq $true)
-            {
-                Write-Verbose -Message $script:localizedData.SetDisabled
-                Set-CMDiscoveryMethod -ActiveDirectorySystemDiscovery -Enabled $false -SiteCode $SiteCode
-            }
+            Write-Verbose -Message $script:localizedData.SetDisabled
+            Set-CMDiscoveryMethod -ActiveDirectoryUserDiscovery -Enabled $false -SiteCode $SiteCode
         }
     }
     catch
@@ -402,7 +358,7 @@ function Set-TargetResource
         Specifies the site code for Configuration Manager site.
 
     .PARAMETER Enabled
-        Specifies the enablement of the System discovery method.
+        Specifies the enablement of the User Discovery method.
 
     .PARAMETER EnableDeltaDiscovery
         Indicates whether Configuration Manager discovers resources created or modified in AD DS
@@ -411,22 +367,6 @@ function Set-TargetResource
 
     .PARAMETER DeltaDiscoveryMins
         Specifies the number of minutes for the delta discovery.
-
-    .PARAMETER EnableFilteringExpiredLogon
-        Indicates whether Configuration Manager discovers only computers that have logged onto a
-        domain within a specified number of days. Specify the number of days by using the
-        TimeSinceLastLogonDays parameter.
-
-    .PARAMETER TimeSinceLastLogonDays
-        Specify the number of days for EnableFilteringExpiredLogon.
-
-    .PARAMETER EnableFilteringExpiredPassword
-        Indicates whether Configuration Manager discovers only computers that have updated their computer
-        account password within a specified number of days. Specify the number of days by using the
-        TimeSinceLastPasswordUpdateDays parameter.
-
-    .PARAMETER TimeSinceLastPasswordUpdateDays
-        Specify the number of days for EnableFilteringExpiredPassword.
 
     .PARAMETER ADContainers
         Specifies an array of names of Active Directory containers to match to the discovery.
@@ -467,22 +407,6 @@ function Test-TargetResource
         $DeltaDiscoveryMins,
 
         [Parameter()]
-        [Boolean]
-        $EnableFilteringExpiredLogon,
-
-        [Parameter()]
-        [UInt32]
-        $TimeSinceLastLogonDays,
-
-        [Parameter()]
-        [Boolean]
-        $EnableFilteringExpiredPassword,
-
-        [Parameter()]
-        [UInt32]
-        $TimeSinceLastPasswordUpdateDays,
-
-        [Parameter()]
         [String[]]
         $ADContainers,
 
@@ -514,8 +438,7 @@ function Test-TargetResource
         $testParams = @{
             CurrentValues = $state
             DesiredValues = $PSBoundParameters
-            ValuesToCheck = @('Enabled','EnableDeltaDiscovery','DeltaDiscoveryMins','EnableFilteringExpiredLogon',
-                              'TimeSinceLastLogonDays','EnableFilteringExpiredPassword','TimeSinceLastPasswordUpdateDays')
+            ValuesToCheck = @('Enabled','EnableDeltaDiscovery','DeltaDiscoveryMins')
         }
 
         $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
@@ -531,13 +454,13 @@ function Test-TargetResource
             {
                 if ($ScheduleInterval -ne $state.SCheduleInterval)
                 {
-                    Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $State.ScheduleInterval)
+                    Write-Verbose -Message ($script:localizedData.UIntervalTest -f $ScheduleInterval, $State.ScheduleInterval)
                     $result = $false
                 }
 
                 if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountTest -f $ScheduleCount, $State.ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.UCountTest -f $ScheduleCount, $State.ScheduleCount)
                     $result = $false
                 }
             }
@@ -622,13 +545,10 @@ function Test-TargetResource
             }
         }
     }
-    else
+    elseif ($state.Enabled -eq $true)
     {
-        if ($state.Enabled -eq $true)
-        {
-            Write-Verbose -Message $script:localizedData.TestDisabled
-            $result = $false
-        }
+        Write-Verbose -Message $script:localizedData.TestDisabled
+        $result = $false
     }
 
     Write-Verbose -Message ($script:localizedData.TestState -f $result)
