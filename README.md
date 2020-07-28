@@ -212,6 +212,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **[String] InstallSharedWowDir** : Specifies the installation directory for
   32-bit shared components. Supported only on a 64-bit system.
   Default Value: 'C:\Program Files (x86)\Microsoft SQL Server'
+- **[String] InstanceDir** : Specifies the installation path for SQL Server
+  instance files.
+  Default Value: 'C:\Program Files\Microsoft SQL Server'
 - **[String] RSSvcStartupType** : Specifies the startup mode for Reporting Services.
   Default Value: 'Automatic'
 - **[String] AgtSvcStartupType** : Specifies the startup mode for the SQL Server
