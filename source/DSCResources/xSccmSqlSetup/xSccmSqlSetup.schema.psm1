@@ -29,6 +29,9 @@
     .PARAMETER InstallSharedWowDir
         Specifies the installation directory for 32-bit shared components. Supported only on a 64-bit system.
 
+    .PARAMETER InstanceDir
+        Specifies the installation path for SQL Server instance files.
+
     .PARAMETER RSSvcStartupType
         Specifies the startup mode for Reporting Services.
 
@@ -135,6 +138,11 @@ Configuration xSccmSqlSetup
         [ValidateNotNullorEmpty()]
         [String]
         $InstallSharedWowDir = 'C:\Program Files (x86)\Microsoft SQL Server',
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [String]
+        $InstanceDir = 'C:\Program Files\Microsoft SQL Server',
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
@@ -267,6 +275,7 @@ Configuration xSccmSqlSetup
         Features            = $Features
         InstallSharedDir    = $InstallSharedDir
         InstallSharedWowDir = $InstallSharedWowDir
+        InstanceDir         = $InstanceDir
         InstanceName        = $SqlInstanceName
         SQLSvcAccount       = $SqlServiceCredential
         AgtSvcAccount       = $SqlAgentServiceCredential

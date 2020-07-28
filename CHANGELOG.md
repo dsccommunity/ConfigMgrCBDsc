@@ -72,6 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added SiteSystems, SiteSystemsToInclude, and SiteSystemsToExclude and SecurityScopes,
   SecurityScopesToInclude, SecurityScopesToExclude to CMBoundaryGroup resource.
 - Updated CMSystemDiscovery Resource to add needed throw and warn messages.
+- Added InstanceDir parameter to SQL composite.
 
 ### Removed
 
