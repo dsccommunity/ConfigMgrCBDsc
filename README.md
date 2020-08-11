@@ -1,5 +1,6 @@
 # ConfigMgrCBDsc
 
+Test
 This module contains DSC resources for the management and
 configuration of Microsoft System Center Configuration Manager Current Branch (ConfigMgrCB).
 
