@@ -162,7 +162,12 @@ function Set-TargetResource
                         }
 
                         Write-Verbose -Message ($script:localizedData.AddDistroGroup -f $add, $DistributionPoint)
-                        Add-CMDistributionPointToGroup @addParams
+                        $dpGroupAdd = Add-DPToDPGroup @addParams
+
+                        if ($dpGroupAdd -eq $false)
+                        {
+                            $errorMsg += ($script:localizedData.GroupAddError -f $DistributionPoint, $add)
+                        }
                     }
                     else
                     {

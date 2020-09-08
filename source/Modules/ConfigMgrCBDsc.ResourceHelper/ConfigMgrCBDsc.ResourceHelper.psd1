@@ -42,6 +42,7 @@
         'ConvertTo-ScheduleInterval'
         'ConvertTo-AnyCimInstance'
         'Compare-MultipleCompares'
+        'Add-DPToDPGroup'
     )
 
     # Cmdlets to export from this module

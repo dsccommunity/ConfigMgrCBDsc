@@ -569,4 +569,33 @@ InModuleScope $script:subModuleName {
             }
         }
     }
+
+    Describe "ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Add-DPToDPGroup" {
+        BeforeAll {
+            $inputParam = @{
+                DistributionPointName      = 'DP01.contoso.com'
+                DistributionPointGroupName = 'TestGroup1'
+            }
+
+            Mock -CommandName Start-Sleep
+        }
+
+        Context 'When return is as expected' {
+            It 'Should return desired result for when DP is added to the group' {
+                Mock -CommandName Add-CMDistributionPointToGroup
+
+                Add-DPToDPGroup @inputParam | Should -Be $true
+                Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
+                Assert-MockCalled Start-Sleep -Exactly -Times 0 -Scope It
+            }
+
+            It 'Should return desired result for when DP is added to the group' {
+                Mock -CommandName Add-CMDistributionPointToGroup -MockWith { throw }
+
+                Add-DPToDPGroup @inputParam | Should -Be $false
+                Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 12 -Scope It
+                Assert-MockCalled Start-Sleep -Exactly -Times 12 -Scope It
+            }
+        }
+    }
 }
