@@ -7,6 +7,11 @@ data LocalizedData
 '@
 }
 
+$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+Import-Module -Name $script:dscResourceCommonPath
+
+$script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
+
 <#
     .SYNOPSIS
         Import Configuration Manager module commands.
@@ -520,6 +525,55 @@ function Compare-MultipleCompares
     }
 }
 
+<#
+    .SYNOPSIS
+        Adds the Distribution Point to the Distribution Point Group.
+
+    .PARAMETER DistributionPointName
+        Specifies the Distribution Point to modify Distribution Point Group membership.
+
+    .PARAMETER DistributionPointGroupName
+        Specifies a Distribution Group to add to the Distribution Point.
+#>
+function Add-DPToDPGroup
+{
+    [OutputType([System.Boolean])]
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $DistributionPointName,
+
+        [Parameter(Mandatory = $true)]
+        [String]
+        $DistributionPointGroupName
+    )
+
+    $count = 0
+    $success = $false
+
+    do
+    {
+        try
+        {
+            Write-Verbose -Message ($script:localizedData.AddDP -f $DistributionPointName, $DistributionPointGroupName) -Verbose
+            Add-CMDistributionPointToGroup -DistributionPointName $DistributionPointName -DistributionPointGroupName $DistributionPointGroupName
+            $success = $true
+            $count = 12
+        }
+        catch
+        {
+            Write-Warning -Message ($script:localizedData.Wait -f $DistributionPointName) -Verbose
+            Start-Sleep -Seconds 10
+            $count ++
+        }
+    }
+    until ($count -eq 12)
+
+    return $success
+}
+
 Export-ModuleMember -Function @(
     'Import-ConfigMgrPowerShellModule'
     'Convert-CidrToIP'
@@ -530,4 +584,5 @@ Export-ModuleMember -Function @(
     'ConvertTo-ScheduleInterval'
     'ConvertTo-AnyCimInstance'
     'Compare-MultipleCompares'
+    'Add-DPToDPGroup'
 )

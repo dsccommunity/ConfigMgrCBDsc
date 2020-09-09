@@ -9,4 +9,5 @@ ConvertFrom-StringData @'
     ParamIgnore          = DistributionGroups was specifed, ignoring DistributionGroupsToInclude and DistributionGroupsToExclude.
     ErrorGroup           = Distribution Groups: {0} does not exist.
     ErrorBoth            = Distribution Group: {0} is a member of the include group and exclude group.
+    GroupAddError        = Unable to add the Distribution Point: {0} to Group: {1}.
 '@

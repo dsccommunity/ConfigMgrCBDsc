@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMSecurityScopes Resource
 - Added CMUserDiscovery Resource
 - Added CMSecurityRoles Resource
+- Added Add-DPToDPGroup to the ResourceHelper
 
 ### Changed
 
@@ -80,3 +81,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed Historic Changelog
 
 ### Fixed
+
+- Fixed issue when adding a Distribution Point to Distribution Group immediately
+  after adding the Distribution Point would error saying invalid Distribution Point.

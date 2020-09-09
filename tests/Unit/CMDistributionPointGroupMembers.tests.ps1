@@ -157,7 +157,6 @@ try
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
-                Mock -CommandName Add-CMDistributionPointToGroup
                 Mock -CommandName Remove-CMDistributionPointFromGroup
             }
 
@@ -175,28 +174,31 @@ try
                         DistributionGroupsToExclude = 'TestGroup1'
                     }
 
+                    Mock -CommandName Add-DPToDPGroup -MockWith { $true }
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $true }
                 }
 
                 It 'Should call expected commands when groups match' {
                     Mock -CommandName Get-TargetResource -MockWith { $dpReturnPresent }
+
                     Set-TargetResource @groupInputMatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands when groups do not match' {
                     Mock -CommandName Get-TargetResource -MockWith { $dpReturnPresent }
+
                     Set-TargetResource @groupInput
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 1 -Scope It
                 }
 
@@ -208,7 +210,7 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
                 }
 
@@ -220,7 +222,7 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 1 -Scope It
                 }
             }
@@ -234,10 +236,12 @@ try
                         DistributionGroupsToExclude = 'TestGroup1'
                     }
 
-                    Mock -CommandName Get-CMDistributionPointGroup -MockWith { $null }
+                    $dpGroupAddError = "Unable to add the Distribution Point: DP01.contoso.com to Group: TestGroup2."
+                    Mock -CommandName Add-DPToDPGroup
                 }
 
                 It 'Should call expected commands when DP is absent and throws' {
+                    Mock -CommandName Get-CMDistributionPointGroup -MockWith { $null }
                     Mock -CommandName Get-TargetResource -MockWith { $dpAbsent }
 
                     { Set-TargetResource @groupInputMatch } | Should -Throw
@@ -245,11 +249,12 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands when Include and Exclude contain same group and throws' {
+                    Mock -CommandName Get-CMDistributionPointGroup -MockWith { $null }
                     Mock -CommandName Get-TargetResource -MockWith { $dpReturnPresent }
 
                     { Set-TargetResource @includeExclude } | Should -Throw
@@ -257,11 +262,12 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands when mismatch and group does not exist' {
+                    Mock -CommandName Get-CMDistributionPointGroup -MockWith { $null }
                     Mock -CommandName Get-TargetResource -MockWith { $dpReturnPresent }
 
                     { Set-TargetResource @groupInput } | Should -Throw
@@ -269,10 +275,23 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 1 -Scope It
                 }
 
+                It 'Should call expected commands when DP errors while adding to group' {
+                    Mock -CommandName Get-TargetResource -MockWith { $dpReturnPresent }
+                    Mock -CommandName Get-CMDistributionPointGroup -MockWith { $true }
+                    Mock -CommandName Add-DPToDPGroup -MockWith { $false }
+
+                    { Set-TargetResource @groupInput } | Should -Throw -ExpectedMessage $dpGroupAddError
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-DPToDPGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 1 -Scope It
+                }
             }
         }
 
