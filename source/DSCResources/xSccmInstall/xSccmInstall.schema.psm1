@@ -13,6 +13,9 @@
 
     .PARAMETER SccmInstallAccount
         Specifies the credentials to use for the SCCM install.
+
+    .PARAMETER Version
+        Specifies the version of SCCM that will be installed.
 #>
 Configuration xSCCMInstall
 {
@@ -34,18 +37,32 @@ Configuration xSCCMInstall
 
         [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
-        $SccmInstallAccount
+        $SccmInstallAccount,
+
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('1902', '1906', '1910', '2002', '2006', '2010')]
+        [UInt32]
+        $Version
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
 
+    if ($Version -lt 1910)
+    {
+        $prefix = 'System Center'
+    }
+    else
+    {
+        $prefix = 'Microsoft Endpoint'
+    }
+
     if ($SccmServerType -eq 'CAS')
     {
-        $productName = 'System Center Configuration Manager Central Administration Site Setup'
+        $productName = "$prefix Configuration Manager Central Administration Site Setup"
     }
     if ($SccmServerType -eq 'Primary')
     {
-        $productName = 'System Center Configuration Manager Primary Site Setup'
+        $productName = "$prefix Configuration Manager Primary Site Setup"
     }
 
     Package SCCM
