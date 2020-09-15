@@ -177,6 +177,12 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 
 ### xSccmInstall
 
+**Note**
+
+If you installed SCCM on version 1906 or earlier, the registry key on the SCCM
+server won't change on upgrade and you won't need to change the version here if
+you are using apply and auto correct.
+
 - **[String] SetupExePath** _(Required)_: Specifies the path to the setup.exe
   for SCCM.
 - **[String] IniFile** _(Required)_: Specifies the path of the ini file, to include
@@ -186,6 +192,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   - Values: { CAS | Primary }
 - **[PSCredential] SccmInstallAccount** _(Required)_: Specifies the credentials to
   use for the SCCM install.
+- **[UInt32] Version** _(Required)_: Specifies the version of SCCM that will be installed.
 
 #### xSccmInstall Examples
 
