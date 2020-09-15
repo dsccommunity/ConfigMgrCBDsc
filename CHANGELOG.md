@@ -74,7 +74,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   SecurityScopesToInclude, SecurityScopesToExclude to CMBoundaryGroup resource.
 - Updated CMSystemDiscovery Resource to add needed throw and warn messages.
 - Added InstanceDir parameter to SQL composite.
-- Updated the xSCCMInstall resource accounting for the name change on versions
+- Updated the xSCCMInstall resource accounting for the product name change on versions
   1910 and greater.
 
 ### Removed

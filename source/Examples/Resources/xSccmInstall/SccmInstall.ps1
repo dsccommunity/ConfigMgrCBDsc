@@ -23,7 +23,7 @@ Configuration Example
             SetupExePath       = 'C:\Temp\SCCMInstall\SMSSETUP\BIN\X64'
             IniFile            = 'C:\temp\Lab-CAS-Test.ini'
             SccmServerType     = 'CAS'
-            Version            = '1902'
+            Version            = 1902
             SccmInstallAccount = $SccmInstallAccount
         }
     }
