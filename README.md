@@ -9,6 +9,8 @@ Starting with version 1910 Configuration Manager is now part of [Microsoft Endpo
 
 This module has been tested on the following versions:
 
+- Configuration Manager 2006
+- Configuration Manager 2002
 - Configuration Manager 1906
 - Configuration Manager 1902
 
