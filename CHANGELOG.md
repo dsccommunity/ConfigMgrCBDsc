@@ -76,6 +76,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added InstanceDir parameter to SQL composite.
 - Updated the xSCCMInstall resource accounting for the product name change on versions
   1910 and greater.
+- Updated ReadMe with latest versions of ConfigMgr that the module has been
+  tested on.
 
 ### Removed
 
