@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMUserDiscovery Resource
 - Added CMSecurityRoles Resource
 - Added Add-DPToDPGroup to the ResourceHelper
+- Added CMClientPushSettings Resource
 
 ### Changed
 
