@@ -3,7 +3,8 @@
 <#
     .DESCRIPTION
         This configuration will install the prerequistes that are need for SCCM, install SQL, create the ini file
-        needed for the SCCM install, and install SCCM.
+        needed for the SCCM install, and install SCCM. This will also perform a basic configuration on the Primary
+        Site Server.
 
     .NOTES
         Ensure the SCCM install is not on a drive that is specified for xSccmPreReqs NoSmsOnDrives.
@@ -554,7 +555,7 @@ Configuration PrimaryInstall
 $ConfigurationData = @{
     AllNodes = @(
         @{
-            NodeName                    = '*'
+            NodeName                    = 'Localhost'
             PSDscAllowDomainUser        = $true
             PSDscAllowPlainTextPassword = $true
         }
