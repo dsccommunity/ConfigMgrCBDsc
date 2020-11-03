@@ -7,10 +7,18 @@
         Site Server.
 
     .NOTES
+        Having AD set up is a pre-requisite. Please ensure the appropriate accounts are created and nested as desired.
+        ADK, MDT, SQL, and SCCM source media are required in order to use this example.
+        Please examine the Import-DscResource statements and ensure that the appropriate modules are installed.
+        Replace the line items specified with entries appropriate to your environment.
         Ensure the SCCM install is not on a drive that is specified for xSccmPreReqs NoSmsOnDrives.
         Ensure the SQLInstall SqlPort is not the same as SQLSSBPort in the SCCM ini file.
 
-        This file has been updated to remove identifying information, search replace contoso with the correct domain identifier.
+        This configuration will generate a mof and a meta mof. Please use the Set-DscLocalConfigurationManager
+        commandlet to apply the meta mof first.
+
+        Please note: this example provides no methodology to encrypt the mof file and any credentials will be
+        saved in the mof in plain text.
 #>
 Configuration PrimaryInstall
 {
@@ -55,10 +63,8 @@ Configuration PrimaryInstall
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName xPSDesiredStateConfiguration -ModuleVersion 9.1.0
     Import-DSCResource -ModuleName ComputerManagementDsc -ModuleVersion 8.2.0
     Import-DscResource -ModuleName ConfigMgrCBDsc -ModuleVersion 0.2.0
-    Import-DscResource -ModuleName StorageDsc -ModuleVersion 5.0.0
     Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 14.0.0
     Import-DscResource -ModuleName UpdateServicesDsc -ModuleVersion 1.2.1
     Import-DscResource -ModuleName NetworkingDsc -ModuleVersion 7.4.0.0
@@ -106,7 +112,6 @@ Configuration PrimaryInstall
             AddWindowsFirewallRule = $true
             FirewallProfile        = 'Domain','Private'
             LocalAdministrators    = @('contoso\SCCM-Servers','contoso\SCCM-CMInstall','contoso\Admin')
-            NoSmsOnDrives          = 'c'
             DomainCredential       = $DomainCredential
             AdkInstallPath         = 'C:\Apps\ADK'
             MdtInstallPath         = 'C:\Apps\MDT'
@@ -171,6 +176,8 @@ Configuration PrimaryInstall
             Ensure             = 'Present'
             SQLServer          = "$ServerName\$dbInstanceName"
             ContentDir         = 'C:\Apps\WSUS'
+            Products           = '*'
+            Classifications    = '*'
             UpstreamServerSSL  = $false
             Synchronize        = $false
             DependsOn          = '[File]WSUSUpdates','[WindowsFeatureSet]WSUSFeatures','[Registry]EnableWSUSSelfSignedCert'
@@ -213,12 +220,6 @@ Configuration PrimaryInstall
             DependsOn                 = '[File]CreateIniFolder'
         }
 
-        PendingReboot PreInstall
-        {
-            Name      = 'PreInstall'
-            DependsOn = '[UpdateServicesServer]WSUSConfig'
-        }
-
         xSccmInstall SccmInstall
         {
             SetupExePath       = 'C:\temp\SCCMInstall\SMSSETUP\BIN\X64'
@@ -226,7 +227,7 @@ Configuration PrimaryInstall
             SccmServerType     = 'Primary'
             SccmInstallAccount = $SccmInstallAccount
             Version            = $ConfigMgrVersion
-            DependsOn          = '[PendingReboot]PreInstall','[CMIniFile]CreateSCCMIniFile'
+            DependsOn          = '[CMIniFile]CreateSCCMIniFile'
         }
 
         # Ensuring the machine reboots after SCCM install in order to be sure configurations proceed properly
