@@ -11,6 +11,7 @@
         ADK, MDT, SQL, and SCCM source media are required in order to use this example.
         Please examine the Import-DscResource statements and ensure that the appropriate modules are installed.
         Replace the line items specified with entries appropriate to your environment.
+        Uncomment the block at the bottom for parameters and define the parameters as desired.
         Ensure the SCCM install is not on a drive that is specified for xSccmPreReqs NoSmsOnDrives.
         Ensure the SQLInstall SqlPort is not the same as SQLSSBPort in the SCCM ini file.
 
@@ -552,8 +553,8 @@ Configuration PrimaryInstall
         }
     }
 }
-
-$ConfigurationData = @{
+<#
+$configurationData = @{
     AllNodes = @(
         @{
             NodeName                    = 'Localhost'
@@ -579,4 +580,4 @@ $params = @{
     )
 }
 
-PrimaryInstall -ConfigurationData $ConfigurationData -OutputPath C:\Temp\Primary @params
+PrimaryInstall -ConfigurationData $configurationData -OutputPath C:\Temp\Primary @params#>
