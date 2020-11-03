@@ -1,4 +1,4 @@
-﻿#Requires -Module ConfigMgrCBDsc
+#Requires -Module ConfigMgrCBDsc
 
 <#
     .DESCRIPTION
