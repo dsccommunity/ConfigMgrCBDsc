@@ -78,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   1910 and greater.
 - Updated ReadMe with latest versions of ConfigMgr that the module has been
   tested on.
+- Added DistributionPointInstallIis parameter to CmIniFile #62
 
 ### Removed
 
