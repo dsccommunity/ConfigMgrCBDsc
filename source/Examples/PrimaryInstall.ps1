@@ -54,7 +54,7 @@ Configuration PrimaryInstall
         [System.Management.Automation.PSCredential]
         $SccmInstallAccount,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter()]
         [System.Management.Automation.PSCredential[]]
         $CMAccounts,
 
