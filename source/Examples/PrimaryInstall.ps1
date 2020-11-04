@@ -77,7 +77,7 @@ Configuration PrimaryInstall
             RebootNodeIfNeeded = $true
         }
 
-        $serverShortName = $ServerName.split('.')[0]
+        $serverShortName = $ServerName.Split('.')[0]
 
         if ($serverShortName.Length -gt 4)
         {
@@ -147,14 +147,6 @@ Configuration PrimaryInstall
             DependsOn                 = '[xSccmPreReqs]SCCMPreReqs'
         }
 
-        #Install WSUS features
-        WindowsFeatureSet WSUSFeatures
-        {
-            Name   = 'UpdateServices-Services','UpdateServices-DB','UpdateServices-API','UpdateServices-UI'
-            Ensure = 'Present'
-            Source = 'C:\Windows\WinSxS'
-        }
-
         # WSUS registry value to fix issues with WSUS self-signed certificates
         Registry EnableWSUSSelfSignedCert
         {
@@ -181,7 +173,7 @@ Configuration PrimaryInstall
             Classifications    = '*'
             UpstreamServerSSL  = $false
             Synchronize        = $false
-            DependsOn          = '[File]WSUSUpdates','[WindowsFeatureSet]WSUSFeatures','[Registry]EnableWSUSSelfSignedCert'
+            DependsOn          = '[File]WSUSUpdates','[xSccmPreReqs]SCCMPreReqs','[Registry]EnableWSUSSelfSignedCert'
         }
 
         File CreateIniFolder
@@ -227,7 +219,7 @@ Configuration PrimaryInstall
             IniFile            = 'C:\SetupFiles\Demo.ini'
             SccmServerType     = 'Primary'
             SccmInstallAccount = $SccmInstallAccount
-            Version            = $ConfigMgrVersion
+            Version            = 2006
             DependsOn          = '[CMIniFile]CreateSCCMIniFile'
         }
 
@@ -567,7 +559,6 @@ $configurationData = @{
 $params = @{
     ServerName                = 'PR01.contoso.com'
     SiteCode                  = 'PRI'
-    ConfigMgrVersion          = 1902
     SiteName                  = 'Contoso'
     DomainCredential          = Get-Credential -Username 'contoso\SCCM-CMInstall' -Message 'SCCM Install account'
     SqlServiceCredential      = Get-Credential -Username 'contoso\SCCM-SqlSvc' -Message 'SCCM SQL Service account'
