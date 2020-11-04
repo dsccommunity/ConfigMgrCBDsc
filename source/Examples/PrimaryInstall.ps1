@@ -82,6 +82,11 @@ Configuration PrimaryInstall
         $SiteCode         = 'PRI'
         $SiteName         = 'Contoso'
         $ConfigMgrVersion = 2006
+        $CMAccounts       = @(
+            New-Object System.Management.Automation.PSCredential('contoso\SCCM-Network', $(Convertto-SecureString -AsPlainText -String 'Generic' -Force))
+            New-Object System.Management.Automation.PSCredential('contoso\SCCM-ClientPush', $(Convertto-SecureString -AsPlainText -String 'Generic' -Force))
+            New-Object System.Management.Automation.PSCredential('contoso\SCCM-AdJoin', $(Convertto-SecureString -AsPlainText -String 'Generic' -Force))
+        )
 
         $serverShortName = $ServerName.Split('.')[0]
 
@@ -105,7 +110,7 @@ Configuration PrimaryInstall
             $winPeProductID = '353df250-4ecc-4656-a950-4df93078a5fd'
         }
 
-        #SCCM PreReqs
+        # SCCM PreReqs
         xSccmPreReqs SCCMPreReqs
         {
             InstallAdk             = $true
@@ -253,7 +258,7 @@ Configuration PrimaryInstall
             DependsOn  = '[xSccmInstall]SccmInstall'
         }
 
-        #region ConfigCBMgr configurations
+        # region ConfigCBMgr configurations
         foreach ($account in $CMAccounts)
         {
             CMAccounts "AddingAccount-$($account.Username)"
