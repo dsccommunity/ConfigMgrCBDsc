@@ -11,7 +11,8 @@
         ADK, MDT, SQL, and SCCM source media are required in order to use this example.
         Please examine the Import-DscResource statements and ensure that the appropriate modules are installed.
         Replace the line items specified with entries appropriate to your environment.
-        Uncomment the blocks at the bottom for configuration data and parameters and define the parameters as desired.
+        Uncomment lines 24 and 575. This is only needed to pass tests that aren't designed for a composite configuration.
+        Define the parameters as desired.
         Ensure the SCCM install is not on a drive that is specified for xSccmPreReqs NoSmsOnDrives.
         Ensure the SQLInstall SqlPort is not the same as SQLSSBPort in the SCCM ini file.
 
@@ -21,7 +22,7 @@
         Please note: this example provides no methodology to encrypt the mof file and any credentials will be
         saved in the mof in plain text.
 #>
-Configuration PrimaryInstall
+<#Configuration PrimaryInstall
 {
     [CmdletBinding()]
     param
@@ -76,12 +77,6 @@ Configuration PrimaryInstall
         {
             RebootNodeIfNeeded = $true
         }
-
-        #Remove these 4 lines below for testing. Only needed to pass checks for GitHub
-        $ServerName                = 'PR01.contoso.com'
-        $SiteCode                  = 'PRI'
-        $SiteName                  = 'Contoso'
-        $ConfigMgrVersion          = 2006
 
         $serverShortName = $ServerName.Split('.')[0]
 
@@ -551,7 +546,7 @@ Configuration PrimaryInstall
         }
     }
 }
-<#
+
 $configurationData = @{
     AllNodes = @(
         @{
