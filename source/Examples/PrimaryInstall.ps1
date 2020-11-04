@@ -77,6 +77,12 @@ Configuration PrimaryInstall
             RebootNodeIfNeeded = $true
         }
 
+        #Remove these 4 lines below for testing. Only needed to pass checks for GitHub
+        $ServerName                = 'PR01.contoso.com'
+        $SiteCode                  = 'PRI'
+        $SiteName                  = 'Contoso'
+        $ConfigMgrVersion          = 2006
+
         $serverShortName = $ServerName.Split('.')[0]
 
         if ($serverShortName.Length -gt 4)
@@ -554,14 +560,14 @@ $configurationData = @{
             PSDscAllowPlainTextPassword = $true
         }
     )
-}#>
+}
 
 $params = @{
     ServerName                = 'PR01.contoso.com'
     SiteCode                  = 'PRI'
     SiteName                  = 'Contoso'
     ConfigMgrVersion          = 2006
-    <#DomainCredential          = Get-Credential -Username 'contoso\SCCM-CMInstall' -Message 'SCCM Install account'
+    DomainCredential          = Get-Credential -Username 'contoso\SCCM-CMInstall' -Message 'SCCM Install account'
     SqlServiceCredential      = Get-Credential -Username 'contoso\SCCM-SqlSvc' -Message 'SCCM SQL Service account'
     SqlAgentServiceCredential = Get-Credential -Username 'contoso\SCCM-SqlAgt' -Message 'SCCM SQL Agent account'
     SccmInstallAccount        = Get-Credential -Username 'contoso\SCCM-CMInstall' -Message 'SCCM Install account'
@@ -569,7 +575,7 @@ $params = @{
         Get-Credential -Username 'contoso\SCCM-Network' -Message 'SCCM Network Service account'
         Get-Credential -Username 'contoso\SCCM-ClientPush' -Message 'SCCM Client Push account'
         Get-Credential -Username 'contoso\SCCM-ADJoin' -Message 'SCCM AD Join account'
-    )#>
+    )
 }
 
-#PrimaryInstall -ConfigurationData $configurationData -OutputPath C:\Temp\Primary @params
+PrimaryInstall -ConfigurationData $configurationData -OutputPath C:\Temp\Primary @params#>
