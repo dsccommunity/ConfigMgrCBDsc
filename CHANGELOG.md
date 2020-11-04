@@ -78,6 +78,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   1910 and greater.
 - Updated ReadMe with latest versions of ConfigMgr that the module has been
   tested on.
+- Added an example for a Standalone Primary Site Server and updated required modules
+  to support.
 
 ### Removed
 
