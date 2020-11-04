@@ -11,7 +11,7 @@
         ADK, MDT, SQL, and SCCM source media are required in order to use this example.
         Please examine the Import-DscResource statements and ensure that the appropriate modules are installed.
         Replace the line items specified with entries appropriate to your environment.
-        Uncomment the block at the bottom for parameters and define the parameters as desired.
+        Uncomment the blocks at the bottom for configuration data and parameters and define the parameters as desired.
         Ensure the SCCM install is not on a drive that is specified for xSccmPreReqs NoSmsOnDrives.
         Ensure the SQLInstall SqlPort is not the same as SQLSSBPort in the SCCM ini file.
 
@@ -219,7 +219,7 @@ Configuration PrimaryInstall
             IniFile            = 'C:\SetupFiles\Demo.ini'
             SccmServerType     = 'Primary'
             SccmInstallAccount = $SccmInstallAccount
-            Version            = 2006
+            Version            = $ConfigMgrVersion
             DependsOn          = '[CMIniFile]CreateSCCMIniFile'
         }
 
@@ -554,13 +554,14 @@ $configurationData = @{
             PSDscAllowPlainTextPassword = $true
         }
     )
-}
+}#>
 
 $params = @{
     ServerName                = 'PR01.contoso.com'
     SiteCode                  = 'PRI'
     SiteName                  = 'Contoso'
-    DomainCredential          = Get-Credential -Username 'contoso\SCCM-CMInstall' -Message 'SCCM Install account'
+    ConfigMgrVersion          = 2006
+    <#DomainCredential          = Get-Credential -Username 'contoso\SCCM-CMInstall' -Message 'SCCM Install account'
     SqlServiceCredential      = Get-Credential -Username 'contoso\SCCM-SqlSvc' -Message 'SCCM SQL Service account'
     SqlAgentServiceCredential = Get-Credential -Username 'contoso\SCCM-SqlAgt' -Message 'SCCM SQL Agent account'
     SccmInstallAccount        = Get-Credential -Username 'contoso\SCCM-CMInstall' -Message 'SCCM Install account'
@@ -568,7 +569,7 @@ $params = @{
         Get-Credential -Username 'contoso\SCCM-Network' -Message 'SCCM Network Service account'
         Get-Credential -Username 'contoso\SCCM-ClientPush' -Message 'SCCM Client Push account'
         Get-Credential -Username 'contoso\SCCM-ADJoin' -Message 'SCCM AD Join account'
-    )
+    )#>
 }
 
-PrimaryInstall -ConfigurationData $configurationData -OutputPath C:\Temp\Primary @params#>
+#PrimaryInstall -ConfigurationData $configurationData -OutputPath C:\Temp\Primary @params
