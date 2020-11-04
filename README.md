@@ -1155,13 +1155,13 @@ you are using apply and auto correct.
 - **[Boolean] InstallClientToDomainController** _(Write)_: Specifies whether to use
   automatic site-wide client push installation to install the Configuration Manager
   client software on domain controllers.
-- **[String] InstallationProperty** _(Write)_:Specifies any installation properties
+- **[String] InstallationProperty** _(Write)_: Specifies any installation properties
   to use when installing the Configuration Manager client.
-- **[String] Accounts[]** _(Write)_: Specifies an array of Accounts to match for
-  use with client push.
-- **[String] AccountsToInclude[]** _(Write)_: Specifies an array of Accounts to
+- **[String] Accounts[]** _(Write)_: Specifies an array of accounts to exactly match
+  for use with client push.
+- **[String] AccountsToInclude[]** _(Write)_: Specifies an array of accounts to
   add for use with client push.
-- **[String] AccountsToExclude[]** _(Write)_: Specifies an array of Accounts to
+- **[String] AccountsToExclude[]** _(Write)_: Specifies an array of accounts to
   remove for use with client push.
 
 #### CMSecurityRoles Examples

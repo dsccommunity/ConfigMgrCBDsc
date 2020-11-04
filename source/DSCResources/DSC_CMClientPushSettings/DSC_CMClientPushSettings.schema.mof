@@ -8,7 +8,7 @@ class DSC_CMClientPushSettings : OMI_BaseResource
     [Write, Description("Specifies whether Configuration Manager pushes the client software to workstations.")] Boolean EnableSystemTypeWorkstation;
     [Write, Description("Specifies whether to use automatic site-wide client push installation to install the Configuration Manager client software on domain controllers.")] Boolean InstallClientToDomainController;
     [Write, Description("Specifies any installation properties to use when installing the Configuration Manager client.")] String InstallationProperty;
-    [Write, Description("Specifies an array of Accounts to match for use with client push.")] String Accounts[];
-    [Write, Description("Specifies an array of Accounts to add for use with client push.")] String AccountsToInclude[];
-    [Write, Description("Specifies an array of Accounts to remove for use with client push.")] String AccountsToExclude[];
+    [Write, Description("Specifies an array of accounts to exactly match for use with client push.")] String Accounts[];
+    [Write, Description("Specifies an array of accounts to add for use with client push.")] String AccountsToInclude[];
+    [Write, Description("Specifies an array of accounts to remove for use with client push.")] String AccountsToExclude[];
 };
