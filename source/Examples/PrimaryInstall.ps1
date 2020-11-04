@@ -38,23 +38,23 @@ Configuration PrimaryInstall
         [System.String]
         $SiteCode,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $DomainCredential,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $SqlServiceCredential,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $SqlAgentServiceCredential,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential]
         $SccmInstallAccount,
 
-        [Parameter()]
+        [Parameter(Mandatory = $true)]
         [System.Management.Automation.PSCredential[]]
         $CMAccounts,
 
