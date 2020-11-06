@@ -220,25 +220,108 @@ try
 
             Context 'When Set-TargetResource throws' {
                 BeforeEach {
+                    $excludeAccessAccount = @{
+                        SiteCode                = 'Lab'
+                        AccessAccountsToExclude = @('contoso\Network1')
+                    }
 
+                    $includeAccessAccount = @{
+                        SiteCode                = 'Lab'
+                        AccessAccountsToInclude = @('contoso\Network2')
+                    }
 
-                    $proxyNoServer = 'When EnableProxy equals $True you must at least specify ProxyServerName.'
-                    $proxySettingNoEnable = 'When specifying a proxy setting you must specify EnableProxy = $True.'
-                    $badAccountName = 'AccountName contoso\badaccount does not exist in Configuraion Manager.'
-                    $badProxyAccess = 'ProxyAccessAccount contoso\ProxyUserBad does not exist in Configuraion Manager.'
-                    $siteAndAccount = 'You have specified to use SiteSystemAccount and an Account for site server communications, you can only specify 1 or the other.'
-                    $rolecount = 'Must uninstall all other roles prior to removing the site server component current rolecount: 3.'
+                    $inputAccountOptionsInExMatch = @{
+                        SiteCode                = 'Lab'
+                        AccessAccountsToInclude = @('contoso\Network2')
+                        AccessAccountsToExclude = @('contoso\Network2')
+                    }
+
+                    $inputSpecifyingAllAccountOptions = @{
+                        SiteCode                = 'Lab'
+                        AccessAccounts          = @('contoso\Network1')
+                        AccessAccountsToInclude = @('contoso\Network2')
+                        AccessAccountsToExclude = @('contoso\Network3')
+                    }
+
+                    $computerAccountAndInclude = @{
+                        SiteCode              = 'Lab'
+                        ClientComputerAccount = $true
+                        AccessAccounts        = @('contoso\Network1')
+                    }
+
+                    $computerAccountFalse = @{
+                        SiteCode              = 'Lab'
+                        ClientComputerAccount = $false
+                    }
+
+                    $allAccounts = 'All AccessAccounts would be removed causing the ClientComputerAccount to be set to true causing invalid configuration.'
+                    $accountMissing = 'Account contoso\Network2 is missing from configuration manager unable to add account.'
+                    $includeExcludeMatch = 'AccessAccountsToInclude and AccessAccountsToExclude contain the same member contoso\Network2.'
+                    $paramsInvalid = 'AccessAccounts and AccessAccountsToInclude or AccessAccountToExclude is specified remove AccessAccounts or the include or exclude setting.'
+                    $computerAndAccessAccounts = 'Specifying both ComputerAccount and AccessAccount, these settings can not be specified together.'
+                    $computerAccountNoAccess = 'Setting ClientComputerAccount to false and no access account is currently set or specified.'
+
+                    Mock -CommandName Get-CMAccount
                 }
 
-                It 'Should call expected command when not specifying ProxyServerName' {
-                    Mock -CommandName Get-CMAccount
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+                It 'Should call expected command excluding the all accessaccount' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
 
-                    { Set-TargetResource @proxySettingsNoServerName } | Should -Throw -ExpectedMessage $proxyNoServer
+                    { Set-TargetResource @excludeAccessAccount } | Should -Throw -ExpectedMessage $allAccounts
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected command when CMAccounts returns null' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    { Set-TargetResource @includeAccessAccount } | Should -Throw -ExpectedMessage $accountMissing
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected command when AccessAccountsToInclude and AccessAccountsToExclude contain the same account' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    { Set-TargetResource @inputAccountOptionsInExMatch } | Should -Throw -ExpectedMessage $includeExcludeMatch
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected command all three options for AccessAccounts is specified.' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    { Set-TargetResource @inputSpecifyingAllAccountOptions } | Should -Throw -ExpectedMessage $paramsInvalid
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected command when specifying AccessAccounts and setting ClientComputerAccount to true' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    { Set-TargetResource @computerAccountAndInclude } | Should -Throw -ExpectedMessage $computerAndAccessAccounts
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected command when specifying ClientComputerAccount to false and no access accounts are specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnComputerAccount }
+
+                    { Set-TargetResource @computerAccountFalse } | Should -Throw -ExpectedMessage $computerAccountNoAccess
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
                 }
             }
         }
