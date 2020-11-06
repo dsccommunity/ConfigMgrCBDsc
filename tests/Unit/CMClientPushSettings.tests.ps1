@@ -441,7 +441,7 @@ try
                 BeforeEach {
                     $disableSettings = 'Client push is getting set to disabled or is disabled, unable to set the following settings: EnableSystemTypeConfigurationManager, EnableSystemTypeServer, EnableSystemTypeWorkstation.'
                     $includeExclude = 'AccountsToExclude and AccountsToInclude contain the same setting contoso\Push1.'
-                    $mpError = 'Unable to enable client push settings as no Management Point could be found on Lab site.'
+                    $mpError = 'Unable to enable client push settings, no Management Point could be found on Lab site.'
 
                     $inputDisableServerSetting = @{
                         SiteCode                              = 'Lab'

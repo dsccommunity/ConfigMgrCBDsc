@@ -1156,7 +1156,8 @@ you are using apply and auto correct.
   automatic site-wide client push installation to install the Configuration Manager
   client software on domain controllers.
 - **[String] InstallationProperty** _(Write)_: Specifies any installation properties
-  to use when installing the Configuration Manager client.
+  to use when installing the Configuration Manager client. Note: No validation is
+  performed on the string of text entered and will import as specified.
 - **[String] Accounts[]** _(Write)_: Specifies an array of accounts to exactly match
   for use with client push.
 - **[String] AccountsToInclude[]** _(Write)_: Specifies an array of accounts to

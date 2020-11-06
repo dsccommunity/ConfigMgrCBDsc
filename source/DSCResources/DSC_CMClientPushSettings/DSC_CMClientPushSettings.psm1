@@ -33,7 +33,7 @@ function Get-TargetResource
     switch (($deployTo | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1)
     {
         'Inactive' { $clientPushStatus = $false }
-        'Active'   { $clientPushStatus = $true  }
+        'Active'   { $clientPushStatus = $true }
     }
 
     switch (($deployTo | Where-Object -FilterScript {$_.PropertyName -eq 'Filters'}).Value)
@@ -229,14 +229,14 @@ function Set-TargetResource
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            if ($eval -contains $param.key)
+            if ($eval -contains $param.Key)
             {
-                if ($param.Value -ne $state[$param.key])
+                if ($param.Value -ne $state[$param.Key])
                 {
-                    Write-Verbose -Message ($script:localizedData.ModifySetting -f $param.key, $param.Value)
+                    Write-Verbose -Message ($script:localizedData.ModifySetting -f $param.Key, $param.Value)
 
                     $buildingParams += @{
-                        $param.key = $param.Value
+                        $param.Key = $param.Value
                     }
                 }
             }
