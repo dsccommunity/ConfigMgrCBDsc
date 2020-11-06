@@ -1,6 +1,7 @@
 ConvertFrom-StringData @'
     RetrieveSettingValue  = Getting results for Configuration Manager accounts.
     ComputerAccessAccount = Specifying both ComputerAccount and AccessAccount, these settings can not be specified together.
+    AccountsFalse         = Setting ClientComputerAccount to false and no access account is currently set or specified.
     ParamIgnore           = SiteSystems is specified, ignoring SiteSystemsToInclude and SiteSystemsToExclude.
     AccessAccountsInEx    = AccessAccountsToInclude and AccessAccountsToExclude contain the same member {0}.
     AllAccountsRemoved    = All AccessAccounts are being removed causing the ClientComputerAccount to be set to true.

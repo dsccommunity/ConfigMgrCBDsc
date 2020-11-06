@@ -103,6 +103,7 @@ function Get-TargetResource
 
     .PARAMETER ClientComputerAccount
         Specifies if the computer account should be used instead of Network Access account.
+        Note: Setting to true will remove all network access accounts.
 
     .PARAMETER AccessAccounts
         Specifies an array of accounts to match to the Network Access account list.
@@ -178,19 +179,27 @@ function Set-TargetResource
     {
         $state = Get-TargetResource -SiteCode $SiteCode
 
-        if (($PSBoundParameters.ContainsKey('ClientComputerAccount')) -and
-        ($PSBoundParameters.ContainsKey('AccessAccounts') -or
-        $PSBoundParameters.ContainsKey('AccessAccountsToInclude') -or
-        $PSBoundParameters.ContainsKey('AccessAccountsToExclude')))
+        if (($ClientComputerAccount -eq $true) -and
+            ($PSBoundParameters.ContainsKey('AccessAccounts') -or
+            $PSBoundParameters.ContainsKey('AccessAccountsToInclude')))
         {
-            throw -Message $script:localizedData.ComputerAccessAccount
+            throw $script:localizedData.ComputerAccessAccount
         }
-        elseif ($PSBoundParameters.ContainsKey('AccessAccounts'))
+        elseif (($PSBoundParameters.ContainsKey('ClientComputerAccount') -and
+                $ClientComputerAccount -eq $false) -and
+                (([string]::IsNullOrEmpty($AccessAccounts) -and
+                [string]::IsNullOrEmpty($AccessAccountsToInclude)) -and
+                [string]::IsNullOrEmpty($state.AccessAccounts)))
+        {
+            throw $script:localizedData.AccountsFalse
+        }
+
+        if ($PSBoundParameters.ContainsKey('AccessAccounts'))
         {
             if ($PSBoundParameters.ContainsKey('AccessAccountsToInclude') -or
                 $PSBoundParameters.ContainsKey('AccessAccountsToExclude'))
             {
-                Write-Warning -Message $script:localizedData.ParamIgnore
+                throw $script:localizedData.ParamIgnore
             }
         }
         elseif (-not $PSBoundParameters.ContainsKey('AccessAccounts') -and
@@ -226,68 +235,66 @@ function Set-TargetResource
 
         if (($ClientComputerAccount -eq $true) -and ($state.ClientComputerAccount -eq $false))
         {
-            $setComputer = $true
+            $buildingParams += @{
+                ClientComputerAccount = $null
+            }
         }
 
-        if ($AccessAccounts -or $AccessAccountsToInclude -or $AccessAccountsToExclude)
+        if ($ClientComputerAccount -eq $false)
         {
-            $accountsArray = @{
-                Match        = $AccessAccounts
-                Include      = $AccessAccountsToInclude
-                Exclude      = $AccessAccountsToExclude
-                CurrentState = $state.AccessAccounts
-            }
-
-            $accountCompare = Compare-MultipleCompares @accountsArray
-
-            if ($accountCompare.Missing)
+            if ($AccessAccounts -or $AccessAccountsToInclude -or $AccessAccountsToExclude)
             {
-                $missingAccount = @()
-                foreach ($item in $accountCompare.Missing)
+                $accountsArray = @{
+                    Match        = $AccessAccounts
+                    Include      = $AccessAccountsToInclude
+                    Exclude      = $AccessAccountsToExclude
+                    CurrentState = $state.AccessAccounts
+                }
+
+                $accountCompare = Compare-MultipleCompares @accountsArray
+
+                if ($accountCompare.Missing)
                 {
-                    if (Get-CMAccount -UserName $item)
+                    $missingAccount = @()
+                    foreach ($item in $accountCompare.Missing)
                     {
-                        Write-Verbose -Message ($script:localizedData.AddingAccount -f $item)
-                        $missingAccount += $item
+                        if (Get-CMAccount -UserName $item)
+                        {
+                            Write-Verbose -Message ($script:localizedData.AddingAccount -f $item)
+                            $missingAccount += $item
+                        }
+                        else
+                        {
+                            $errorMsg += ($script:localizedData.CMAccountMissing -f $item)
+                        }
                     }
-                    else
+
+                    if ($missingAccount)
                     {
-                        $errorMsg += ($script:localizedData.CMAccountMissing -f $item)
+                        $buildingParams += @{
+                            AddNetworkAccessAccountName = $missingAccount
+                        }
                     }
                 }
 
-                if ($missingAccount)
+                if ($accountCompare.Remove)
                 {
+                    Write-Verbose -Message ($script:localizedData.CMAccountExtra -f ($accountCompare.Remove | Out-String))
                     $buildingParams += @{
-                        AddNetworkAccessAccountName = $missingAccount
+                        RemoveNetworkAccessAccountName  = $accountCompare.Remove
                     }
-                }
-            }
 
-            if ($accountCompare.Remove)
-            {
-                Write-Verbose -Message ($script:localizedData.CMAccountExtra -f ($accountCompare.Remove | Out-String))
-                $buildingParams += @{
-                    RemoveNetworkAccessAccountName  = $accountCompare.Remove
-                }
-
-                if (($accountCompare.Remove.Count -eq $state.AccessAccounts.Count) -and ($accountCompare.Missing.Count -eq 0))
-                {
-                    throw ($script:localizedData.AllAccountsRemoved)
+                    if (($accountCompare.Remove.Count -eq $state.AccessAccounts.Count) -and ($accountCompare.Missing.Count -eq 0))
+                    {
+                        throw ($script:localizedData.AllAccountsRemoved)
+                    }
                 }
             }
         }
 
         if ($buildingParams)
         {
-            if ($setComputer -eq $true)
-            {
-                Set-CMSoftwareDistributionComponent @buildingParams -ClientComputerAccount
-            }
-            else
-            {
-                Set-CMSoftwareDistributionComponent @buildingParams
-            }
+            Set-CMSoftwareDistributionComponent @buildingParams
         }
 
         if ($errorMsg)
@@ -332,6 +339,7 @@ function Set-TargetResource
 
     .PARAMETER ClientComputerAccount
         Specifies if the computer account should be used instead of Network Access account.
+        Note: Setting to true will remove all network access accounts.
 
     .PARAMETER AccessAccounts
         Specifies an array of accounts to match to the Network Access account list.
@@ -405,14 +413,22 @@ function Test-TargetResource
     $state = Get-TargetResource -SiteCode $SiteCode
     $result = $true
 
-    if (($PSBoundParameters.ContainsKey('ClientComputerAccount')) -and
+    if (($ClientComputerAccount -eq $true) -and
         ($PSBoundParameters.ContainsKey('AccessAccounts') -or
-        $PSBoundParameters.ContainsKey('AccessAccountsToInclude') -or
-        $PSBoundParameters.ContainsKey('AccessAccountsToExclude')))
+        $PSBoundParameters.ContainsKey('AccessAccountsToInclude')))
     {
         Write-Warning -Message $script:localizedData.ComputerAccessAccount
     }
-    elseif ($PSBoundParameters.ContainsKey('AccessAccounts'))
+    elseif (($PSBoundParameters.ContainsKey('ClientComputerAccount') -and
+            $ClientComputerAccount -eq $false) -and
+            (([string]::IsNullOrEmpty($AccessAccounts) -and
+            [string]::IsNullOrEmpty($AccessAccountsToInclude)) -and
+            [string]::IsNullOrEmpty($state.AccessAccounts)))
+    {
+        Write-Warning -Message $script:localizedData.AccountsFalse
+    }
+
+    if ($PSBoundParameters.ContainsKey('AccessAccounts'))
     {
         if ($PSBoundParameters.ContainsKey('AccessAccountsToInclude') -or
             $PSBoundParameters.ContainsKey('AccessAccountsToExclude'))
@@ -443,31 +459,34 @@ function Test-TargetResource
 
     $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
 
-    if ($AccessAccounts -or $AccessAccountsToInclude -or $AccessAccountsToExclude)
+    if ($ClientComputerAccount -eq $false)
     {
-        $accountsArray = @{
-            Match        = $AccessAccounts
-            Include      = $AccessAccountsToInclude
-            Exclude      = $AccessAccountsToExclude
-            CurrentState = $state.AccessAccounts
-        }
-
-        $accountCompare = Compare-MultipleCompares @accountsArray
-
-        if ($accountCompare.Missing)
+        if ($AccessAccounts -or $AccessAccountsToInclude -or $AccessAccountsToExclude)
         {
-            Write-Verbose -Message ($script:localizedData.CMAccountMissing -f ($accountCompare.Missing | Out-String))
-            $result = $false
-        }
+            $accountsArray = @{
+                Match        = $AccessAccounts
+                Include      = $AccessAccountsToInclude
+                Exclude      = $AccessAccountsToExclude
+                CurrentState = $state.AccessAccounts
+            }
 
-        if ($accountCompare.Remove)
-        {
-            Write-Verbose -Message ($script:localizedData.CMAccountExtra -f ($accountCompare.Remove | Out-String))
-            $result = $false
+            $accountCompare = Compare-MultipleCompares @accountsArray
 
-            if (($accountCompare.Remove.Count -eq $state.AccessAccounts.Count) -and ($accountCompare.Missing.Count -eq 0))
+            if ($accountCompare.Missing)
             {
-                Write-Warning -Message ($script:localizedData.AllAccountsRemoved)
+                Write-Verbose -Message ($script:localizedData.CMAccountMissing -f ($accountCompare.Missing | Out-String))
+                $result = $false
+            }
+
+            if ($accountCompare.Remove)
+            {
+                Write-Verbose -Message ($script:localizedData.CMAccountExtra -f ($accountCompare.Remove | Out-String))
+                $result = $false
+
+                if (($accountCompare.Remove.Count -eq $state.AccessAccounts.Count) -and ($accountCompare.Missing.Count -eq 0))
+                {
+                    Write-Warning -Message ($script:localizedData.AllAccountsRemoved)
+                }
             }
         }
     }

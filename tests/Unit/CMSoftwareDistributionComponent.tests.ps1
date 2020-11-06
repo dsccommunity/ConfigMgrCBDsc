@@ -2,7 +2,7 @@
 param ()
 
 $script:dscModuleName   = 'ConfigMgrCBDsc'
-$script:dscResourceName = 'DSC_CMSiteSystemServer'
+$script:dscResourceName = 'DSC_CMSoftwareDistributionComponent'
 
 function Invoke-TestSetup
 {
@@ -38,118 +38,189 @@ try
 {
     InModuleScope $script:dscResourceName {
 
-        Describe 'DSC_CMSiteSystemServer\Get-TargetResource' -Tag 'Get' {
+        Describe 'DSC_CMSoftwareDistributionComponent\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
+                $cmDistroReturn = @(
+                    @{
+                        ComponentName = 'SMS_Distribution_Manager'
+                        Props         = @(
+                            @{
+                                PropertyName = 'Thread Limit'
+                                Value        = 3
+                            }
+                            @{
+                                PropertyName = 'Retry Delay'
+                                Value        = 30
+                            }
+                            @{
+                                PropertyName = 'Package Thread Limit'
+                                Value        = 5
+                            }
+                            @{
+                                PropertyName = 'Number of Retries'
+                                Value        = 100
+                            }
+                        )
+                    }
+                    @{
+                        ComponentName = 'SMS_MULTICAST_SERVICE_POINT'
+                        Props         = @(
+                            @{
+                                PropertyName = 'Retry Delay'
+                                Value        = 60
+                            }
+                            @{
+                                PropertyName = 'Number of Retries'
+                                Value        = 3
+                            }
+                        )
+                    }
+                )
 
+                $cmAccounts = @(
+                    @{
+                        AccountUsage = 'Software Distribution'
+                        UserName     = 'contoso\Network1'
+                    }
+                )
+
+                $getInput = @{
+                    SiteCode = 'Lab'
+                }
+
+                Mock -CommandName Get-CMSoftwareDistributionComponent -MockWith { $cmDistroReturn }
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
 
             Context 'When retrieving site system settings' {
 
-                It 'Should return desired result when a site system' {
-                    Mock -CommandName Get-CMSiteSystemServer -MockWith { $siteServerReturn }
+                It 'Should return desired result when a Network access account is assigned' {
+                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
 
                     $result = Get-TargetResource @getInput
-                    $result                      | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode             | Should -Be -ExpectedValue 'Lab'
-                    $result.MaximumPackageCount     | Should -Be -ExpectedValue 'SS01.contoso.com'
-                    $result.MaximumThreadCountPerPackage           | Should -Be -ExpectedValue 'SS01.contoso.com'
-                    $result.RetryCount         | Should -Be -ExpectedValue $true
-                    $result.DelayBeforeRetryingMins | Should -Be -ExpectedValue $false
-                    $result.MulticastRetryCount          | Should -Be -ExpectedValue 'contoso\Account'
-                    $result.MulticastDelayBeforeRetryingMins | Should -Be -ExpectedValue $true
-                    $result.ComputerAccount                  | Should -Be -ExpectedValue 'Proxy.contoso.com'
-                    $result.AccessAccounts                   | Should -Be -ExpectedValue 443
+                    $result                                  | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode                         | Should -Be -ExpectedValue 'Lab'
+                    $result.MaximumPackageCount              | Should -Be -ExpectedValue 3
+                    $result.MaximumThreadCountPerPackage     | Should -Be -ExpectedValue 5
+                    $result.RetryCount                       | Should -Be -ExpectedValue 100
+                    $result.DelayBeforeRetryingMins          | Should -Be -ExpectedValue 30
+                    $result.MulticastRetryCount              | Should -Be -ExpectedValue 3
+                    $result.MulticastDelayBeforeRetryingMins | Should -Be -ExpectedValue 1
+                    $result.ClientComputerAccount            | Should -Be -ExpectedValue $false
+                    $result.AccessAccounts                   | Should -Be -ExpectedValue @('contoso\Network1')
+                }
+
+                It 'Should return desired result when a Network access account is not assigned' {
+                    Mock -CommandName Get-CMAccount -MockWith { $null }
+
+                    $result = Get-TargetResource @getInput
+                    $result                                  | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode                         | Should -Be -ExpectedValue 'Lab'
+                    $result.MaximumPackageCount              | Should -Be -ExpectedValue 3
+                    $result.MaximumThreadCountPerPackage     | Should -Be -ExpectedValue 5
+                    $result.RetryCount                       | Should -Be -ExpectedValue 100
+                    $result.DelayBeforeRetryingMins          | Should -Be -ExpectedValue 30
+                    $result.MulticastRetryCount              | Should -Be -ExpectedValue 3
+                    $result.MulticastDelayBeforeRetryingMins | Should -Be -ExpectedValue 1
+                    $result.ClientComputerAccount            | Should -Be -ExpectedValue $true
+                    $result.AccessAccounts                   | Should -Be -ExpectedValue $null
                 }
             }
         }
 
-        Describe 'DSC_CMSiteSystemServer\Set-TargetResource' -Tag 'Set' {
+        Describe 'DSC_CMSoftwareDistributionComponent\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
-                $getReturnPresent = @{
-                    SiteCode             = 'Lab'
-                    SiteSystemServer     = 'SS01.contoso.com'
-                    PublicFqdn           = 'SS01.contoso.com'
-                    FdmOperation         = $true
-                    UseSiteServerAccount = $false
-                    AccountName          = 'contoso\account'
-                    EnableProxy          = $true
-                    ProxyServerName      = 'Proxy.contoso.com'
-                    ProxyServerPort      = 443
-                    ProxyAccessAccount   = 'contoso\ProxyUser'
-                    Ensure               = 'Present'
-                    RoleCount            = 1
+                $getReturnAccounts = @{
+                    SiteCode                         = 'Lab'
+                    AccessAccounts                   = @('contoso\Network1')
+                    MaximumPackageCount              = 3
+                    MaximumThreadCountPerPackage     = 5
+                    RetryCount                       = 100
+                    DelayBeforeRetryingMins          = 30
+                    MulticastRetryCount              = 3
+                    MulticastDelayBeforeRetryingMins = 1
+                    ClientComputerAccount            = $false
                 }
 
-                $getReturnAbsent = @{
-                    SiteCode             = 'Lab'
-                    SiteSystemServer     = 'SS01.contoso.com'
-                    PublicFqdn           = 'SS01.contoso.com'
-                    FdmOperation         = $null
-                    UseSiteServerAccount = $null
-                    AccountName          = $null
-                    EnableProxy          = $null
-                    ProxyServerName      = $null
-                    ProxyServerPort      = $null
-                    ProxyAccessAccount   = $null
-                    Ensure               = 'Absent'
-                    RoleCount            = $null
+                $getReturnComputerAccount = @{
+                    SiteCode                         = 'Lab'
+                    AccessAccounts                   = $null
+                    MaximumPackageCount              = 4
+                    MaximumThreadCountPerPackage     = 4
+                    RetryCount                       = 99
+                    DelayBeforeRetryingMins          = 20
+                    MulticastRetryCount              = 2
+                    MulticastDelayBeforeRetryingMins = 2
+                    ClientComputerAccount            = $true
                 }
 
-                $inputAbsent = @{
-                    SiteCode         = 'Lab'
-                    SiteSystemServer = 'SS01.contoso.com'
-                    Ensure           = 'Absent'
+                $inputAccessAccounts = @{
+                    SiteCode                         = 'Lab'
+                    AccessAccounts                   = @('contoso\Network1')
+                    MaximumPackageCount              = 3
+                    MaximumThreadCountPerPackage     = 5
+                    RetryCount                       = 100
+                    DelayBeforeRetryingMins          = 30
+                    MulticastRetryCount              = 3
+                    MulticastDelayBeforeRetryingMins = 1
+                    ClientComputerAccount            = $false
                 }
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
-                Mock -CommandName New-CMSiteSystemServer
-                Mock -CommandName Set-CMSiteSystemServer
-                Mock -CommandName Remove-CMSiteSystemServer
+                Mock -CommandName Set-CMSoftwareDistributionComponent
             }
 
             Context 'When Set-TargetResource runs successfully' {
                 BeforeEach {
-                    $misMatchInput = @{
-                        SiteCode             = 'Lab'
-                        SiteSystemServer     = 'SS01.contoso.com'
-                        PublicFqdn           = ''
-                        FdmOperation         = $false
-                        UseSiteServerAccount = $false
-                        AccountName          = 'contoso\useraccount'
-                        EnableProxy          = $true
-                        ProxyServerName      = 'Proxy1.contoso.com'
-                        Ensure               = 'Present'
+                    $computerAccount = @{
+                        SiteCode              = 'Lab'
+                        ClientComputerAccount = $true
                     }
 
+                    $accountAccessInEx = @{
+                        SiteCode = 'Lab'
+                        AccessAccountsToInclude = @('contoso\Network2')
+                        AccessAccountsToExclude = @('contoso\Network1')
+                    }
                     Mock -CommandName Get-CMAccount -MockWith { $true }
                 }
 
                 It 'Should call expected command when changing settings' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnComputerAccount }
 
-                    Set-TargetResource @misMatchInput
+                    Set-TargetResource @inputAccessAccounts
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Remove-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected command when changing user computer account settings' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Set-TargetResource @computerAccount
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected command when changing accountaccess settings' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Set-TargetResource @accountAccessInEx
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 1 -Scope It
                 }
             }
 
             Context 'When Set-TargetResource throws' {
                 BeforeEach {
-                    $proxySettingsNoServerName = @{
-                        SiteCode           = 'Lab'
-                        SiteSystemServer   = 'SS01.contoso.com'
-                        ProxyAccessAccount = 'contoso\ProxyUser'
-                        EnableProxy        = $true
-                        ProxyServerPort    = 80
-                    }
+
 
                     $proxyNoServer = 'When EnableProxy equals $True you must at least specify ProxyServerName.'
                     $proxySettingNoEnable = 'When specifying a proxy setting you must specify EnableProxy = $True.'
@@ -167,29 +238,82 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Remove-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 1 -Scope It
                 }
             }
         }
 
-        Describe 'DSC_CMSiteSystemServer\Test-TargetResource' -Tag 'Test' {
+        Describe 'DSC_CMSoftwareDistributionComponent\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
-                $testDSCValues = @{
-                    SiteCode             = 'Lab'
-                    SiteSystemServer     = 'SS01.contoso.com'
-                    PublicFqdn           = 'SSO01.contoso.com'
-                    FdmOperation         = $false
-                    UseSiteServerAccount = $false
-                    AccountName          = 'contoso\Accountbad'
+                $getReturnAccounts = @{
+                    SiteCode                         = 'Lab'
+                    AccessAccounts                   = @('contoso\Network1')
+                    MaximumPackageCount              = 3
+                    MaximumThreadCountPerPackage     = 5
+                    RetryCount                       = 100
+                    DelayBeforeRetryingMins          = 30
+                    MulticastRetryCount              = 3
+                    MulticastDelayBeforeRetryingMins = 1
+                    ClientComputerAccount            = $false
                 }
 
-                $absentInput = @{
-                    SiteCode         = 'Lab'
-                    SiteSystemServer = 'SS01.contoso.com'
-                    Ensure           = 'Absent'
+                $getReturnComputerAccount = @{
+                    SiteCode                         = 'Lab'
+                    AccessAccounts                   = $null
+                    MaximumPackageCount              = 4
+                    MaximumThreadCountPerPackage     = 4
+                    RetryCount                       = 99
+                    DelayBeforeRetryingMins          = 20
+                    MulticastRetryCount              = 2
+                    MulticastDelayBeforeRetryingMins = 2
+                    ClientComputerAccount            = $true
+                }
+
+                $inputAccessAccounts = @{
+                    SiteCode                         = 'Lab'
+                    AccessAccounts                   = @('contoso\Network1')
+                    MaximumPackageCount              = 3
+                    MaximumThreadCountPerPackage     = 5
+                    RetryCount                       = 100
+                    DelayBeforeRetryingMins          = 30
+                    MulticastRetryCount              = 3
+                    MulticastDelayBeforeRetryingMins = 1
+                    ClientComputerAccount            = $false
+                }
+
+                $inputClientComputer = @{
+                    SiteCode              = 'Lab'
+                    AccessAccounts        = @('contoso\Network1')
+                    ClientComputerAccount = $true
+                }
+
+                $inputSpecifyingAllAccountOptions = @{
+                    SiteCode                = 'Lab'
+                    AccessAccounts          = @('contoso\Network1')
+                    AccessAccountsToInclude = @('contoso\Network2')
+                    AccessAccountsToExclude = @('contoso\Network3')
+                }
+
+                $inputAccountOptionsInEx = @{
+                    SiteCode                = 'Lab'
+                    AccessAccountsToInclude = @('contoso\Network2')
+                    AccessAccountsToExclude = @('contoso\Network3')
+                }
+
+                $inputAccountOptionsInExMatch = @{
+                    SiteCode                = 'Lab'
+                    AccessAccountsToInclude = @('contoso\Network2')
+                    AccessAccountsToExclude = @('contoso\Network2')
+                }
+
+                $inputAccountExclude = @{
+                    SiteCode                = 'Lab'
+                    AccessAccountsToExclude = @('contoso\Network1')
+                }
+
+                $inputComputerAccessFalse = @{
+                    SiteCode              = 'Lab'
+                    ClientComputerAccount = $false
                 }
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -197,44 +321,53 @@ try
             }
 
             Context 'When Get-TargetResource turns present' {
-                BeforeEach {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+
+                It 'Should return desired result true when settings match' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Test-TargetResource @inputAccessAccounts | Should -Be $true
                 }
 
-                It 'Should return desired result false when non proxy settings do not match' {
-                    Test-TargetResource @testDSCValues | Should -Be $false
+                It 'Should return desired result false when ClientComputerAccount does not match' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnComputerAccount }
+
+                    Test-TargetResource @inputAccessAccounts | Should -Be $false
                 }
 
-                It 'Should return desired result false when when specifying Account and UseSiteServerAccount' {
-                    Test-TargetResource @siteServerAndAccount | Should -Be $false
+                It 'Should return desired result false when ClientComputerAccount does not match and specifying accounts' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Test-TargetResource @inputClientComputer | Should -Be $false
                 }
 
-                It 'Should return desired result true when when proxy settings match' {
-                    Test-TargetResource @proxySettingsMatch | Should -Be $true
+                It 'Should return desired result true when specifying multiple AccessAccount options' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Test-TargetResource @inputSpecifyingAllAccountOptions | Should -Be $true
                 }
 
-                It 'Should return desired result false with no ProxyServerName and settings do not match' {
-                    Test-TargetResource @proxySettingsNoServerName | Should -Be $false
+                It 'Should return desired result false when AccessAccount do not match' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Test-TargetResource @inputAccountOptionsInEx | Should -Be $false
                 }
 
-                It 'Should return desired result false with no proxy port and settings do not match' {
-                    Test-TargetResource @proxySettingsNoPort | Should -Be $false
+                It 'Should return desired result false when AccessAccount include and exclude match' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Test-TargetResource @inputAccountOptionsInExMatch | Should -Be $false
                 }
 
-                It 'Should return desired result false with no proxy access account and settings do not match' {
-                    Test-TargetResource @proxySettingsNoAccessAccount | Should -Be $false
+                It 'Should return desired result false when AccessAccountExclude removing account' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Test-TargetResource @inputAccountExclude | Should -Be $false
                 }
 
-                It 'Should return desired result false with no EnableProxy and setting a proxy settings that does not match' {
-                    Test-TargetResource @proxySettingNoEnableProxy | Should -Be $false
-                }
+                It 'Should return desired result false when specifying ComputerAccess to false and not specifying accessaccount' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnComputerAccount }
 
-                It 'Should return desired result false with resetting proxy access account to system account' {
-                    Test-TargetResource @proxyAccessAccount | Should -Be $false
-                }
-
-                It 'Should return desired result false when expecting absent but is present' {
-                    Test-TargetResource @absentInput | Should -Be $false
+                    Test-TargetResource @inputComputerAccessFalse | Should -Be $false
                 }
             }
         }
