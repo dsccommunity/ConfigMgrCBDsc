@@ -199,7 +199,7 @@ function Set-TargetResource
             if ($PSBoundParameters.ContainsKey('AccessAccountsToInclude') -or
                 $PSBoundParameters.ContainsKey('AccessAccountsToExclude'))
             {
-                throw $script:localizedData.ParamsError
+                Write-Warning -Message $script:localizedData.ParamsError
             }
         }
         elseif (-not $PSBoundParameters.ContainsKey('AccessAccounts') -and

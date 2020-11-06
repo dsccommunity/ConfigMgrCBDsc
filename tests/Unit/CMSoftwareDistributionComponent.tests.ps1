@@ -184,6 +184,14 @@ try
                         AccessAccountsToInclude = @('contoso\Network2')
                         AccessAccountsToExclude = @('contoso\Network1')
                     }
+
+                    $inputSpecifyingAllAccountOptions = @{
+                        SiteCode                = 'Lab'
+                        AccessAccounts          = @('contoso\Network1')
+                        AccessAccountsToInclude = @('contoso\Network2')
+                        AccessAccountsToExclude = @('contoso\Network3')
+                    }
+
                     Mock -CommandName Get-CMAccount -MockWith { $true }
                 }
 
@@ -216,6 +224,16 @@ try
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 1 -Scope It
                 }
+
+                It 'Should call expected command all three options for AccessAccounts is specified.' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
+
+                    Set-TargetResource @inputSpecifyingAllAccountOptions
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
+                }
             }
 
             Context 'When Set-TargetResource throws' {
@@ -234,13 +252,6 @@ try
                         SiteCode                = 'Lab'
                         AccessAccountsToInclude = @('contoso\Network2')
                         AccessAccountsToExclude = @('contoso\Network2')
-                    }
-
-                    $inputSpecifyingAllAccountOptions = @{
-                        SiteCode                = 'Lab'
-                        AccessAccounts          = @('contoso\Network1')
-                        AccessAccountsToInclude = @('contoso\Network2')
-                        AccessAccountsToExclude = @('contoso\Network3')
                     }
 
                     $computerAccountAndInclude = @{
@@ -288,16 +299,6 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
 
                     { Set-TargetResource @inputAccountOptionsInExMatch } | Should -Throw -ExpectedMessage $includeExcludeMatch
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMSoftwareDistributionComponent -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected command all three options for AccessAccounts is specified.' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAccounts }
-
-                    { Set-TargetResource @inputSpecifyingAllAccountOptions } | Should -Throw -ExpectedMessage $paramsInvalid
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
