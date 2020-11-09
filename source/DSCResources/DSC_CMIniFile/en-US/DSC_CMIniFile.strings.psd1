@@ -13,4 +13,5 @@ ConvertFrom-StringData @'
     TestNoMatch              = NOTMATCH: '{0}' - Current Value: '{1}' Target Value: '{2}'
     InDesiredStateMessage    = Ini file is in the desired state.
     NotInDesiredStateMessage = Ini file is NOT in the desired state.
+    DistributionPointError   = If you specify parameter DistributionPoint you need to specify parameter DistributionInstallIis.
 '@

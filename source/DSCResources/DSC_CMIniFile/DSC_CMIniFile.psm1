@@ -71,6 +71,9 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
     .PARAMETER DistributionPointProtocol
         Specifies the protocol to use for the distribution point.
 
+    .PARAMETER DistributionPointInstallIis
+        Specifies whether to install the IIS features when installing the Distribution Point.
+
     .PARAMETER AddServerLanguages
         Specifies the server languages that will be available for the Configuration Manager console, reports,
         and Configuration Manager objects.
@@ -221,6 +224,10 @@ function Get-TargetResource
         [ValidateSet('HTTPS','HTTP')]
         [String]
         $DistributionPointProtocol,
+
+        [Parameter()]
+        [Boolean]
+        $DistributionPointInstallIis,
 
         [Parameter()]
         [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
@@ -433,6 +440,9 @@ function Get-TargetResource
     .PARAMETER DistributionPointProtocol
         Specifies the protocol to use for the distribution point.
 
+    .PARAMETER DistributionPointInstallIis
+        Specifies whether to install the IIS features when installing the Distribution Point.
+
     .PARAMETER AddServerLanguages
         Specifies the server languages that will be available for the Configuration Manager console, reports,
         and Configuration Manager objects.
@@ -584,6 +594,10 @@ function Set-TargetResource
         $DistributionPointProtocol,
 
         [Parameter()]
+        [Boolean]
+        $DistributionPointInstallIis,
+
+        [Parameter()]
         [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddServerLanguages,
@@ -672,15 +686,19 @@ function Set-TargetResource
         $RoleCommunicationProtocol -or $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or
         $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
     {
-        throw ($script:localizedData.PrimaryParameterError)
+        throw $script:localizedData.PrimaryParameterError
     }
     elseif ($CloudConnector -eq $true -and ([string]::IsNullOrEmpty($CloudConnectorServer) -or ($UseProxy -or $UseProxy -eq $false)))
     {
-        throw ($script:localizedData.CloudConnectorError)
+        throw $script:localizedData.CloudConnectorError
     }
     elseif ($UseProxy -eq $true -and ([string]::IsNullOrEmpty($ProxyName) -or [string]::IsNullOrEmpty($ProxyPort)))
     {
-        throw ($script:localizedData.ProxyError)
+        throw $script:localizedData.ProxyError
+    }
+    elseif ($DistributionPoint -and (-not $DistributionPointInstallIis))
+    {
+        throw $script:localizedData.DistributionPointError
     }
 
     $identification = @{
@@ -689,27 +707,28 @@ function Set-TargetResource
         CDLatest = ''
     }
     $options = @{
-        Title                     = '[Options]'
-        ProductID                 = ''
-        SiteCode                  = ''
-        SiteName                  = ''
-        SMSInstallDir             = ''
-        SDKServer                 = ''
-        PrerequisiteComp          = ''
-        PrerequisitePath          = ''
-        AdminConsole              = ''
-        JoinCEIP                  = ''
-        MobileDeviceLanguage      = ''
-        RoleCommunicationProtocol = ''
-        ClientsUsePKICertificate  = ''
-        ManagementPoint           = ''
-        ManagementPointProtocol   = ''
-        DistributionPoint         = ''
-        DistributionPointProtocol = ''
-        AddServerLanguages        = ''
-        AddClientLanguages        = ''
-        DeleteServerLanguages     = ''
-        DeleteClientLanguages     = ''
+        Title                       = '[Options]'
+        ProductID                   = ''
+        SiteCode                    = ''
+        SiteName                    = ''
+        SMSInstallDir               = ''
+        SDKServer                   = ''
+        PrerequisiteComp            = ''
+        PrerequisitePath            = ''
+        AdminConsole                = ''
+        JoinCEIP                    = ''
+        MobileDeviceLanguage        = ''
+        RoleCommunicationProtocol   = ''
+        ClientsUsePKICertificate    = ''
+        ManagementPoint             = ''
+        ManagementPointProtocol     = ''
+        DistributionPoint           = ''
+        DistributionPointProtocol   = ''
+        DistributionPointInstallIis = ''
+        AddServerLanguages          = ''
+        AddClientLanguages          = ''
+        DeleteServerLanguages       = ''
+        DeleteClientLanguages       = ''
     }
     $sqlConfigOptions = @{
         Title           = '[SQLConfigOptions]'
@@ -838,6 +857,9 @@ function Set-TargetResource
 
     .PARAMETER DistributionPointProtocol
         Specifies the protocol to use for the distribution point.
+
+    .PARAMETER DistributionPointInstallIis
+        Specifies whether to install the IIS features when installing the Distribution Point.
 
     .PARAMETER AddServerLanguages
         Specifies the server languages that will be available for the Configuration Manager console, reports,
@@ -991,6 +1013,10 @@ function Test-TargetResource
         $DistributionPointProtocol,
 
         [Parameter()]
+        [Boolean]
+        $DistributionPointInstallIis,
+
+        [Parameter()]
         [ValidateSet('DEU','FRA','RUS','CHS','JPN','CHT','CSY','ESN','HUN','ITA','KOR','NLD','PLK','PTB','PTG','SVE','TRK','ZHH')]
         [String]
         $AddServerLanguages,
@@ -1076,6 +1102,11 @@ function Test-TargetResource
     Write-Verbose -Message ($script:localizedData.InDesiredStateMessage -f $IniFilePath,$IniFilename)
     $iniContent = Get-Content -Path "$IniFilePath\$IniFilename" -ErrorAction SilentlyContinue
     $result = $true
+
+    if ($DistributionPoint -and (-not $DistributionPointInstallIis))
+    {
+        Write-Warning -Message $script:localizedData.DistributionPointError
+    }
 
     if ($iniContent)
     {

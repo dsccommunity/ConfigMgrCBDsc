@@ -332,6 +332,8 @@ you are using apply and auto correct.
 - **DistributionPointProtocol** _(Write)_: Specifies the protocol to use for the
   distribution point.
   - Values include: { HTTPS | HTTP }
+- **DistributionPointInstallIis** _(Write)_: Specifies whether to install the
+  IIS features when installing the Distribution Point.
 - **AddServerLanguages** _(Write)_: Specifies the server languages that will be
   available for the Configuration Manager console, reports, and Configuration
     Manager objects.
