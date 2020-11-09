@@ -24,4 +24,6 @@
     'DscResource.Common'        = 'latest'
     'SqlServerDsc'              = '14.0.0'
     'NetworkingDsc'             = '7.4.0.0'
+    'ComputerManagementDsc'     = '8.2.0'
+    'UpdateServicesDsc'         = '1.2.1'
 }
