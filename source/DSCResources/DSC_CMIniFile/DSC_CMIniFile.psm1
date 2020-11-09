@@ -686,15 +686,15 @@ function Set-TargetResource
         $RoleCommunicationProtocol -or $ClientsUsePKICertificate -or $CCARSiteServer -or $CASRetryInterval -or
         $WaitForCASTimeout) -and $Action -ne 'InstallPrimarySite')
     {
-        throw ($script:localizedData.PrimaryParameterError)
+        throw $script:localizedData.PrimaryParameterError
     }
     elseif ($CloudConnector -eq $true -and ([string]::IsNullOrEmpty($CloudConnectorServer) -or ($UseProxy -or $UseProxy -eq $false)))
     {
-        throw ($script:localizedData.CloudConnectorError)
+        throw $script:localizedData.CloudConnectorError
     }
     elseif ($UseProxy -eq $true -and ([string]::IsNullOrEmpty($ProxyName) -or [string]::IsNullOrEmpty($ProxyPort)))
     {
-        throw ($script:localizedData.ProxyError)
+        throw $script:localizedData.ProxyError
     }
     elseif ($DistributionPoint -and (-not $DistributionPointInstallIis))
     {
