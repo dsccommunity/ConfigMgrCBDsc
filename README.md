@@ -114,6 +114,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMSecurityRoles**: Provides a resource for adding and removing Security
   Roles.  Note: If the Security Role is currently assigned to an administrator,
   DSC will not remove the Security Role.
+- **CMClientPushSettings**: Provides a resource for modifying client push
+  settings.  Note: EnableSystemTypeConfigurationManager, EnableSystemTypeServer,
+  EnableSystemTypeWorkstation can not be configured if client push is disabled.
 
 ### xSccmPreReqs
 
@@ -329,6 +332,8 @@ you are using apply and auto correct.
 - **DistributionPointProtocol** _(Write)_: Specifies the protocol to use for the
   distribution point.
   - Values include: { HTTPS | HTTP }
+- **DistributionPointInstallIis** _(Write)_: Specifies whether to install the
+  IIS features when installing the Distribution Point.
 - **AddServerLanguages** _(Write)_: Specifies the server languages that will be
   available for the Configuration Manager console, reports, and Configuration
     Manager objects.
@@ -1135,3 +1140,35 @@ you are using apply and auto correct.
 
 - [CMSecurityRoles_Present](Source\Examples\Resources\CMSecurityRoles\CMSecurityRoles_Present.ps1)
 - [CMSecurityRoles_Absent](Source\Examples\Resources\CMSecurityRoles\CMSecurityRoles_Absent.ps1)
+
+### CMClientPushSettings
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] EnableAutomaticClientPushInstallation** _(Write)_: Specifies whether
+  Configuration Manager automatically uses client push for discovered computers.
+- **[Boolean] EnableSystemTypeConfigurationManager** _(Write)_: Specifies whether
+  Configuration Manager pushes the client software to Configuration Manager site
+  system servers.
+- **[Boolean] EnableSystemTypeServer** _(Write)_: Specifies whether Configuration
+  Manager pushes the client software to servers.
+- **[Boolean] EnableSystemTypeWorkstation** _(Write)_: Specifies whether Configuration
+  Manager pushes the client software to workstations.
+- **[Boolean] InstallClientToDomainController** _(Write)_: Specifies whether to use
+  automatic site-wide client push installation to install the Configuration Manager
+  client software on domain controllers.
+- **[String] InstallationProperty** _(Write)_: Specifies any installation properties
+  to use when installing the Configuration Manager client. Note: No validation is
+  performed on the string of text entered and will import as specified.
+- **[String] Accounts[]** _(Write)_: Specifies an array of accounts to exactly match
+  for use with client push.
+- **[String] AccountsToInclude[]** _(Write)_: Specifies an array of accounts to
+  add for use with client push.
+- **[String] AccountsToExclude[]** _(Write)_: Specifies an array of accounts to
+  remove for use with client push.
+
+#### CMSecurityRoles Examples
+
+- [CMClientPushSettings_Disabled](Source\Examples\Resources\CMClientPushSettings\CMClientPushSettings_Disabled.ps1)
+- [CMClientPushSettings_Enabled](Source\Examples\Resources\CMClientPushSettings\CMClientPushSettings_Enabled.ps1)
+- [CMClientPushSettings_Include](Source\Examples\Resources\CMClientPushSettings\CMClientPushSettings_Include.ps1)

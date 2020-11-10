@@ -73,6 +73,17 @@ try
         )
 
         $primaryInstallOptionalSettings = @{
+            ManagementPoint             = 'PRI.contoso.com'
+            ManagementPointProtocol     = 'HTTP'
+            DistributionPoint           = 'PRI.contoso.com'
+            DistributionPointInstallIis = $true
+            DistributionPointProtocol   = 'HTTP'
+            CCARSiteServer              = 'CAS.contoso.com'
+            CasRetryInterval            = '30'
+            WaitForCasTimeout           = '30'
+        }
+
+        $primaryInstallOptionalSettingsErr = @{
             ManagementPoint           = 'PRI.contoso.com'
             ManagementPointProtocol   = 'HTTP'
             DistributionPoint         = 'PRI.contoso.com'
@@ -262,6 +273,14 @@ try
                     }
                 }
             }
+
+            Context 'When Set-TargetResource has specifed DistributionPoint but not DistributionPointInstallIss' {
+                $combined = $tests[1] + $optionalParamatersAll + $primaryInstallOptionalSettingsErr
+                $message = 'If you specify parameter DistributionPoint you need to specify parameter DistributionInstallIis.'
+                It 'Should throw' {
+                    { Set-TargetResource @combined } | Should -Throw -ExpectedMessage $message
+                }
+            }
         }
 
         Describe "$moduleResourceName\Test-TargetResource" {
@@ -306,6 +325,13 @@ try
                     It 'Should return false' {
                         Test-TargetResource @test | Should -Be $false
                     }
+                }
+            }
+
+            Context 'When Test-TargetResource has specifed DistributionPoint but not DistributionPointInstallIss' {
+                $combined = $tests[1] + $primaryInstallOptionalSettingsErr
+                It 'Should return false' {
+                    Test-TargetResource @combined | Should -Be $false
                 }
             }
         }
