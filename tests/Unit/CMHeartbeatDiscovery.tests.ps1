@@ -109,6 +109,20 @@ try
                     ScheduleCount    = 6
                 }
 
+                $returnEnabledDaysMax = @{
+                    SiteCode         = 'Lab'
+                    Enabled          = $true
+                    ScheduleInterval = 'Days'
+                    ScheduleCount    = 32
+                }
+
+                $returnEnabledHoursMax = @{
+                    SiteCode         = 'Lab'
+                    Enabled          = $true
+                    ScheduleInterval = 'Hours'
+                    ScheduleCount    = 25
+                }
+
                 $getReturnEnabledDays = @{
                     SiteCode         = 'Lab'
                     Enabled          = $true
@@ -148,6 +162,24 @@ try
                     MinuteSpan     = 0
                 }
 
+                $scheduleConvertDaysMax = @{
+                    DayDuration    = 0
+                    DaySpan        = 31
+                    HourDuration   = 0
+                    HourSpan       = 0
+                    MinuteDuration = 0
+                    MinuteSpan     = 0
+                }
+
+                $scheduleConvertHoursMax = @{
+                    DayDuration    = 0
+                    DaySpan        = 23
+                    HourDuration   = 0
+                    HourSpan       = 0
+                    MinuteDuration = 0
+                    MinuteSpan     = 0
+                }
+
                 $scheduleNoCountThrow = 'Invalid parameter usage must specify ScheduleInterval and ScheduleCount.'
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -174,6 +206,30 @@ try
                     Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMismatch }
 
                     Set-TargetResource @returnEnabledDaysMismatch
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands changing a schedule days exceeds max' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMax }
+
+                    Set-TargetResource @returnEnabledDaysMax
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands changing a schedule hours exceeds max' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnDisabled }
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHoursMax }
+
+                    Set-TargetResource @returnEnabledHoursMax
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -245,6 +301,20 @@ try
                     ScheduleCount    = 6
                 }
 
+                $returnEnabledDaysMax = @{
+                    SiteCode         = 'Lab'
+                    Enabled          = $true
+                    ScheduleInterval = 'Days'
+                    ScheduleCount    = 32
+                }
+
+                $returnEnabledHoursMax = @{
+                    SiteCode         = 'Lab'
+                    Enabled          = $true
+                    ScheduleInterval = 'Hours'
+                    ScheduleCount    = 25
+                }
+
                 $getReturnEnabledDays = @{
                     SiteCode         = 'Lab'
                     Enabled          = $true
@@ -285,6 +355,14 @@ try
 
                 It 'Should return desired result false schedule days mismatch' {
                     Test-TargetResource @returnEnabledDaysMismatch | Should -Be $false
+                }
+
+                It 'Should return desired result false schedule days exceed max' {
+                    Test-TargetResource @returnEnabledDaysMax | Should -Be $false
+                }
+
+                It 'Should return desired result false schedule hours exceed max' {
+                    Test-TargetResource @returnEnabledHoursMax | Should -Be $false
                 }
 
                 It 'Should return desired result false schedule hours mismatch' {
