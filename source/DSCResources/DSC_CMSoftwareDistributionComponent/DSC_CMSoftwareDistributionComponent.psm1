@@ -1,5 +1,5 @@
-$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
-$script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
+$script:dscResourceCommonPath = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath DscResource.Common
+$script:configMgrResourcehelper = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath ConfigMgrCBDsc.ResourceHelper
 
 Import-Module -Name $script:dscResourceCommonPath
 Import-Module -Name $script:configMgrResourcehelper
@@ -28,17 +28,17 @@ function Get-TargetResource
     Set-Location -Path "$($SiteCode):\"
 
     $distroComponent = Get-CMSoftwareDistributionComponent -SiteCode $SiteCode
-    $distroSettings = ($distroComponent | Where-Object -FilterScript {$_.ComponentName -eq 'SMS_DISTRIBUTION_MANAGER'}).Props
-    $distroMultis = ($distroComponent | Where-Object -FilterScript {$_.ComponentName -eq 'SMS_MULTICAST_SERVICE_POINT'}).Props
+    $distroSettings = ($distroComponent | Where-Object -FilterScript { $_.ComponentName -eq 'SMS_DISTRIBUTION_MANAGER' }).Props
+    $distroMultis = ($distroComponent | Where-Object -FilterScript { $_.ComponentName -eq 'SMS_MULTICAST_SERVICE_POINT' }).Props
 
     foreach ($distroSetting in $distroSettings)
     {
         switch ($distroSetting.PropertyName)
         {
-            'Thread Limit'         { $maxPackage    = $distroSetting.Value }
-            'Retry Delay'          { $delay         = $distroSetting.Value }
+            'Thread Limit'         { $maxPackage = $distroSetting.Value }
+            'Retry Delay'          { $delay = $distroSetting.Value }
             'Package Thread Limit' { $packageThread = $distroSetting.Value }
-            'Number of Retries'    { $retry         = $distroSetting.Value }
+            'Number of Retries'    { $retry = $distroSetting.Value }
         }
     }
 
@@ -52,7 +52,7 @@ function Get-TargetResource
         }
     }
 
-    [array]$accounts = (Get-CMAccount -SiteCode $SiteCode | Where-Object -FilterScript {$_.AccountUsage -contains 'Software Distribution'}).UserName
+    [array]$accounts = (Get-CMAccount -SiteCode $SiteCode | Where-Object -FilterScript { $_.AccountUsage -contains 'Software Distribution' }).UserName
 
     if ([string]::IsNullOrEmpty($accounts))
     {
@@ -106,7 +106,7 @@ function Get-TargetResource
         Note: Setting to true will remove all network access accounts.
 
     .PARAMETER AccessAccounts
-        Specifies an array of accounts to match to the Network Access account list.
+        Specifies an array of accounts to exactly match for Network Access list with software distribution.
         If specifying an account the account must already exist in Configuration Manager.
 
     .PARAMETER AccessAccountsToInclude
@@ -342,7 +342,7 @@ function Set-TargetResource
         Note: Setting to true will remove all network access accounts.
 
     .PARAMETER AccessAccounts
-        Specifies an array of accounts to match to the Network Access account list.
+        Specifies an array of accounts to exactly match for Network Access list with software distribution.
         If specifying an account the account must already exist in Configuration Manager.
 
     .PARAMETER AccessAccountsToInclude

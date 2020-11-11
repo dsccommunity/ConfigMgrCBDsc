@@ -54,7 +54,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   required Windows Features, modify Local Administrators group, and create the
   no_sms_on_drive files.
 - **xSccmSqlSetup**: Provides a composite resource to install SQL for SCCM.
-- **xSccmInstall**: Provides a composite reosurce to install SCCM.
+- **xSccmInstall**: Provides a composite resource to install SCCM.
 - **ClientSettings**: Provides a resource to perform configuration of client settings.
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
 - **CMIniFile** This resource allows for the creation of the ini file
@@ -117,6 +117,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMClientPushSettings**: Provides a resource for modifying client push
   settings.  Note: EnableSystemTypeConfigurationManager, EnableSystemTypeServer,
   EnableSystemTypeWorkstation can not be configured if client push is disabled.
+- **CMSoftwareDistributionComponent**: Provides a resource for modifying software
+  distribution component settings.  Also provides the capability to add\remove
+  Network Access Accounts.
 
 ### xSccmPreReqs
 
@@ -1167,8 +1170,44 @@ you are using apply and auto correct.
 - **[String] AccountsToExclude[]** _(Write)_: Specifies an array of accounts to
   remove for use with client push.
 
-#### CMSecurityRoles Examples
+#### CMClientPushSettings Examples
 
 - [CMClientPushSettings_Disabled](Source\Examples\Resources\CMClientPushSettings\CMClientPushSettings_Disabled.ps1)
 - [CMClientPushSettings_Enabled](Source\Examples\Resources\CMClientPushSettings\CMClientPushSettings_Enabled.ps1)
 - [CMClientPushSettings_Include](Source\Examples\Resources\CMClientPushSettings\CMClientPushSettings_Include.ps1)
+
+### CMSoftwareDistributionComponent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[UInt32] MaximumPackageCount** _(Write)_: Specifies a maximum number of packages
+  for concurrent distribution.
+  - Values Range: 1 - 50
+- **[UInt32] MaximumThreadCountPerPackage** _(Write)_: Specifies a maximum thread
+  count per package for concurrent distribution.
+  - Values Range: 1 - 999
+- **[UInt32] RetryCount** _(Write)_: Specifies the retry count for a package distribution.
+  - Values Range: 1 - 1000
+- **[UInt32] DelayBeforeRetryingMins** _(Write)_: Specifies the retry delay, in
+  minutes, for a failed package distribution.
+  - Values Range: 1 - 1440
+- **[UInt32] MulticastRetryCount** _(Write)_: Specifies the retry count for a multicast
+  distribution.
+  - Values Range: 1 - 1000
+- **[UInt32] MulticastDelayBeforeRetryingMins** _(Write)_: Specifies the retry delay,
+  in minutes, for a failed multicast distribution.
+  - Values Range: 1 - 1440
+- **[Boolean] ClientComputerAccount** _(Write)_: Specifies if the computer account
+  should be used instead of Network Access account. Note: Setting to true will remove
+  all network access accounts.
+- **[String] AccessAccounts[]** _(Write)_: Specifies an array of accounts to exactly
+  match for Network Access list with software distribution.
+- **[String] AccessAccountsToInclude[]** _(Write)_: Specifies an array of accounts
+  to add for use with software distribution.
+- **[String] AccessAccountsToExclude[]** _(Write)_: Specifies an array of accounts
+  to remove for use with software distribution.
+
+#### CMSoftwareDistributionComponent Examples
+
+- [CMSoftwareDistributionComponent_AccessAccount](Source\Examples\Resources\CMSoftwareDistributionComponent\CMSoftwareDistributionComponent_AccessAccount.ps1)
+- [CMSoftwareDistributionComponent_Computer](Source\Examples\Resources\CMSoftwareDistributionComponent\CMSoftwareDistributionComponent_Computer.ps1)
