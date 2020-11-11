@@ -117,7 +117,6 @@ function Set-TargetResource
 
             if ($PSBoundParameters.ContainsKey('ScheduleInterval') -and $PSBoundParameters.ContainsKey('ScheduleCount'))
             {
-
                 if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
                 {
                     Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
