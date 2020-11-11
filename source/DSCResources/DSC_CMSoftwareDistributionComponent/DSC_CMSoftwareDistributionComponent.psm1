@@ -72,7 +72,7 @@ function Get-TargetResource
         DelayBeforeRetryingMins          = $delay
         MulticastRetryCount              = $multiRetry
         MulticastDelayBeforeRetryingMins = $multiDelay
-	    ClientComputerAccount            = $computerAccount
+        ClientComputerAccount            = $computerAccount
     }
 }
 
