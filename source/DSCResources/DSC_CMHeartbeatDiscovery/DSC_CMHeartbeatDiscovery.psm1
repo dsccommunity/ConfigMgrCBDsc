@@ -140,7 +140,7 @@ function Set-TargetResource
 
                 if ($scheduleCheck -ne $state.ScheduleCount)
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountSet -f $ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.SCountSet -f $scheduleCheck)
                     $setSchedule = $true
                 }
 
@@ -148,7 +148,7 @@ function Set-TargetResource
                 {
                     $pScheduleSet = @{
                         RecurInterval = $ScheduleInterval
-                        RecurCount    = $ScheduleCount
+                        RecurCount    = $scheduleCheck
                     }
 
                     $pschedule = New-CMSchedule @pScheduleSet
