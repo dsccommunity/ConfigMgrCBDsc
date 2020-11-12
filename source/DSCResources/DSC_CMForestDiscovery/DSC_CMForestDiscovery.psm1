@@ -271,8 +271,7 @@ function Test-TargetResource
         $testParams = @{
             CurrentValues = $state
             DesiredValues = $PSBoundParameters
-            ValuesToCheck = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation',
-                            'EnableFilteringExpiredLogon')
+            ValuesToCheck = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation')
         }
 
         $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
