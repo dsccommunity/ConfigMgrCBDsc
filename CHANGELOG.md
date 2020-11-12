@@ -82,6 +82,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added DistributionPointInstallIis parameter to CmIniFile #62
 - Added an example for a Standalone Primary Site Server and updated required modules
   to support.
+- Updated CMForestDiscovery to remove the unneeded CimInstance for schedule.
 
 ### Removed
 
