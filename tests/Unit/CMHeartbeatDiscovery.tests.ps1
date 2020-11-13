@@ -173,11 +173,11 @@ try
 
                 $scheduleConvertHoursMax = @{
                     DayDuration    = 0
-                    DaySpan        = 23
+                    DaySpan        = 0
                     HourDuration   = 0
                     HourSpan       = 0
                     MinuteDuration = 0
-                    MinuteSpan     = 0
+                    MinuteSpan     = 23
                 }
 
                 $scheduleNoCountThrow = 'Invalid parameter usage must specify ScheduleInterval and ScheduleCount.'
