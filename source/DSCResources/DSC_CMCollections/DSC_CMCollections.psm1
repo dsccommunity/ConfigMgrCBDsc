@@ -1,5 +1,5 @@
-$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
-$script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
+$script:dscResourceCommonPath = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath DscResource.Common
+$script:configMgrResourcehelper = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath ConfigMgrCBDsc.ResourceHelper
 
 Import-Module -Name $script:dscResourceCommonPath
 Import-Module -Name $script:configMgrResourcehelper
@@ -66,39 +66,42 @@ function Get-TargetResource
         {
             $rules = Get-CMUserCollectionQueryMembershipRule -CollectionName $collection.Name | Select-Object QueryExpression, RuleName
             [array]$excludes = (Get-CMUserCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
-            [array]$directMember = (Get-CMUserCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
+            [array]$directMember = (Get-CMUserCollectionDirectMembershipRule -CollectionName $collection.Name).RuleName
+            [array]$directMemberId = (Get-CMUserCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
+            [array]$includeMember = (Get-CMUserCollectionIncludeMembershipRule -CollectionName $collection.Name).RuleName
         }
         else
         {
             $rules = Get-CMDeviceCollectionQueryMembershipRule -CollectionName $collection.Name | Select-Object QueryExpression, RuleName
             [array]$excludes = (Get-CMDeviceCollectionExcludeMembershipRule -CollectionName $collection.Name).RuleName
-            [array]$directMember = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
+            [array]$directMember = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).RuleName
+            [array]$directMemberId = (Get-CMDeviceCollectionDirectMembershipRule -CollectionName $collection.Name).ResourceID
+            [array]$includeMember = (Get-CMDeviceCollectionIncludeMembershipRule -CollectionName $collection.Name).RuleName
         }
 
-        $cSchedule = $collection.RefreshSchedule
+        if ($collection.RefreshType -eq 2 -or $collection.RefreshType -eq 6)
+        {
+            $cSchedule = $collection.RefreshSchedule
 
-        if ($cSchedule.DaySpan -gt 0)
-        {
-            $rInterval = 'Days'
-            $rCount = $cSchedule.DaySpan
-        }
-        elseif ($cSchedule.HourSpan -gt 0)
-        {
-            $rInterval = 'Hours'
-            $rCount = $cSchedule.HourSpan
-        }
-        elseif ($cSchedule.MinuteSpan -gt 0)
-        {
-            $rInterval = 'Minutes'
-            $rCount = $cSchedule.MinuteSpan
-        }
-
-        if ($rInterval)
-        {
-            $schedule = New-CimInstance -ClassName DSC_CMCollectionRefreshSchedule -Property @{
-                RecurInterval = $rInterval
-                RecurCount    = $rCount
-            } -ClientOnly -Namespace 'root/microsoft/Windows/DesiredStateConfiguration'
+            if ($cSchedule.DaySpan -gt 0)
+            {
+                $rInterval = 'Days'
+                $rCount = $cSchedule.DaySpan
+            }
+            elseif ($cSchedule.HourSpan -gt 0)
+            {
+                $rInterval = 'Hours'
+                $rCount = $cSchedule.HourSpan
+            }
+            elseif ($cSchedule.MinuteSpan -gt 0)
+            {
+                $rInterval = 'Minutes'
+                $rCount = $cSchedule.MinuteSpan
+            }
+            else
+            {
+                $rInterval = 'None'
+            }
         }
 
         if ($rules)
@@ -127,11 +130,14 @@ function Get-TargetResource
         Comment                = $collection.Comment
         CollectionType         = $type
         LimitingCollectionName = $collection.LimitToCollectionName
-        RefreshSchedule        = $schedule
+        ScheduleInterval       = $rInterval
+        ScheduleCount          = $rCount
         RefreshType            = $refresh
         QueryRules             = $cimcollection
         ExcludeMembership      = $excludes
         DirectMembership       = $directMember
+        DirectMembershipId     = $directMemberId
+        IncludeMembership      = $includeMember
         Ensure                 = $status
     }
 }
@@ -151,28 +157,35 @@ function Get-TargetResource
 
     .PARAMETER LimitingCollectionName
         Specifies the name of a collection to use as the default scope for this collection.
-        Limiting collection is not evaluated in Test and is only used
-        if the collection needs created.
 
     .PARAMETER Comment
         Specifies a comment for the collection.
 
-    .PARAMETER RefreshSchedule
-        Specifies a schedule that determines when Configuration Manager refreshes the collection.
+    .PARAMETER ScheduleInterval
+        Specifies the time when the scheduled event recurs none, minutes, hours and days.
+
+    .PARAMETER ScheduleCount
+        Specifies how often the recur interval is run. If hours are specified the max value
+        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
+        is 31. Anything over 31 will result in 31 to be set.
 
     .PARAMETER RefreshType
         Specifies how Configuration Manager refreshes the collection.
         Valid values are: Manual, Periodic, Continuous, and Both.
 
-    .PARAMETER QueryRules
-        Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.
-
     .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude members from. If clients are in the excluded collection they will
+        Specifies the collection name to exclude clients from. If clients are in the excluded collection they will
         not be added to the collection.
 
+    .PARAMETER IncludeMembership
+        Specifies the collection name to include clients from. Only clients from the included
+        collections can be added to the collection.
+
     .PARAMETER DirectMembership
-        Specifies the resourceid for the direct membership rule.
+        Specifies the resourceid or name for the direct membership rule.
+
+    .PARAMETER QueryRules
+        Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.
 
     .PARAMETER Ensure
         Specifies if the collection is to be present or absent.
@@ -204,8 +217,13 @@ function Set-TargetResource
         $Comment,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance]
-        $RefreshSchedule,
+        [ValidateSet('None','Minutes','Hours','Days')]
+        [String]
+        $ScheduleInterval,
+
+        [Parameter()]
+        [UInt32]
+        $ScheduleCount,
 
         [Parameter()]
         [ValidateSet('Manual','Periodic','Continuous','Both')]
@@ -213,16 +231,20 @@ function Set-TargetResource
         $RefreshType,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance[]]
-        $QueryRules,
-
-        [Parameter()]
         [String[]]
         $ExcludeMembership,
 
         [Parameter()]
         [String[]]
+        $IncludeMembership,
+
+        [Parameter()]
+        [String[]]
         $DirectMembership,
+
+        [Parameter()]
+        [Microsoft.Management.Infrastructure.CimInstance[]]
+        $QueryRules,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -237,10 +259,37 @@ function Set-TargetResource
     {
         $state = Get-TargetResource -SiteCode $SiteCode -CollectionName $CollectionName -CollectionType $CollectionType
 
+        if ($state.CollectionType -ne $CollectionType)
+        {
+            throw ($script:localizedData.CollectionType -f $CollectionType, $state.CollectionType)
+        }
+
+        if ($PSBoundParameters.ContainsKey('ExcludeMembership') -and $PSBoundParameters.ContainsKey('IncludeMembership'))
+        {
+            foreach ($exclude in $ExcludeMembership)
+            {
+                if ($IncludeMembership -contains $exclude)
+                {
+                    throw ($script:localizedData.RuleConflict -f $exclude)
+                }
+            }
+        }
+
+        if (($PSBoundParameters.ContainsKey('ScheduleInterval')) -and ($ScheduleInterval -ne 'None' -and
+            -not $PSBoundParameters.ContainsKey('ScheduleCount')))
+        {
+            throw $script:localizedData.IntervalCount
+        }
+
         if ($Ensure -eq 'Present')
         {
             if ($state.Ensure -eq 'Absent')
             {
+                if ([string]::IsNullOrEmpty($LimitingCollectionName))
+                {
+                    throw $script:localizedData.MissingLimiting
+                }
+
                 Write-Verbose -Message ($script:localizedData.CollectionCreate -f $CollectionName)
 
                 $newCollection = @{
@@ -256,69 +305,102 @@ function Set-TargetResource
                 Name = $CollectionName
             }
 
-            $itemsForEval = @(
-                @{
-                    Name  = 'Comment'
-                    Value = $Comment
-                }
-                @{
-                    Name  = 'RefreshType'
-                    Value = $RefreshType
-                }
-            )
-
-            foreach ($item in $itemsForEval)
+            if ([string]::IsNullOrEmpty($newCollection))
             {
-                if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
-                {
-                    Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, `
-                        $item.name, $item.Value, $($state[$item.Name]))
+                $paramsToCheck = @('Comment','RefreshType','LimitingCollectionName')
+            }
+            else
+            {
+                $paramsToCheck = @('Comment','RefreshType')
+            }
 
-                    $buildingParams += @{
-                        $item.Name = $item.Value
+            foreach($param in $PSBoundParameters.GetEnumerator())
+            {
+                if ($paramsToCheck -contains $param.Key)
+                {
+                    if ($param.Value -ne $state[$param.Key])
+                    {
+                        Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, `
+                                                $param.Key, $param.Value, $state[$param.Key])
+                        $buildingParams += @{
+                            $param.Key = $param.Value
+                        }
                     }
                 }
             }
 
-            if (-not [string]::IsNullOrEmpty($RefreshSchedule))
+            if (-not [string]::IsNullOrEmpty($ScheduleInterval))
             {
-                $newSchedule = @{
-                    RecurInterval = $RefreshSchedule.RecurInterval
-                    RecurCount    = $RefreshSchedule.RecurCount
-                }
-
-                $desiredRefreshSchedule = New-CMSchedule @newSchedule
-
-                if ($state.RefreshSchedule)
+                if ((($PSBoundParameters.ContainsKey('RefreshType')) -and ($RefreshType -eq 'Periodic' -or $RefreshType -eq 'Both')) -or
+                    (([string]::IsNullOrEmpty($RefreshType)) -and ($state.RefreshType -eq 'Periodic' -or $state.RefreshType -eq 'Both')))
                 {
-                    $cSchedule = @{
-                        RecurInterval = $state.RefreshSchedule.RecurInterval
-                        RecurCount    = $state.RefreshSchedule.RecurCount
+                    if ($ScheduleInterval -ne 'None' -and -not $PSBoundParameters.ContainsKey('ScheduleCount'))
+                    {
+                        throw $script:localizedData.IntervalCount
+                        $result = $false
+                    }
+                    else
+                    {
+                        if ($ScheduleInterval -ne $state.ScheduleInterval)
+                        {
+                            Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $state.ScheduleInterval)
+                            $setSchedule = $true
+                        }
+
+                        if ($ScheduleInterval -ne 'None')
+                        {
+                            if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                            {
+                                Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                                $scheduleCheck = 31
+                            }
+                            elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                            {
+                                Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                                $scheduleCheck = 23
+                            }
+                            elseif ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60)
+                            {
+                                Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                                $scheduleCheck = 59
+                            }
+                            else
+                            {
+                                $scheduleCheck = $ScheduleCount
+                            }
+
+                            if ($ScheduleCount -ne $state.ScheduleCount)
+                            {
+                                Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
+                                $setSchedule = $true
+                            }
+                        }
                     }
 
-                    $currentSchedule = New-CMSchedule @cSchedule
-                    $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
-
-                    foreach ($item in $array)
+                    if ($setSchedule -eq $true)
                     {
-                        if (($desiredRefreshSchedule).$($item) -ne ($currentSchedule).$($item))
+                        if ($ScheduleInterval -eq 'None')
                         {
-                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                                -f $item, $($desiredRefreshSchedule).$($item), $($currentSchedule).$($item))
-                            $setSchedule = $true
+                            $pschedule = New-CMSchedule -Nonrecurring
+                        }
+                        else
+                        {
+                            $pScheduleSet = @{
+                                RecurInterval = $ScheduleInterval
+                                RecurCount    = $setSchedule
+                            }
+
+                            $pschedule = New-CMSchedule @pScheduleSet
+                        }
+
+                        $buildingParams += @{
+                            RefreshSchedule = $pSchedule
                         }
                     }
                 }
                 else
                 {
-                    $setSchedule = $true
-                }
-            }
-
-            if ($setSchedule)
-            {
-                $buildingParams += @{
-                    RefreshSchedule = $desiredRefreshSchedule
+                    Write-Warning -Message $script:localizedData.ScheduleType
                 }
             }
 
@@ -333,22 +415,79 @@ function Set-TargetResource
                 {
                     $excludeRule = @{}
 
-                    if (($null -eq $state.ExcludeMembership) -or ($state.ExcludeMembership -notcontains $member))
+                    if (([string]::IsNullOrEmpty($state.ExcludeMembership)) -or ($state.ExcludeMembership -notcontains $member))
                     {
-                        $excludeRule = @{
-                            CollectionName        = $CollectionName
-                            ExcludeCollectionName = $member
-                        }
-
-                        Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
-
-                        if ($CollectionType -eq 'User')
+                        if ($state.IncludeMembership -contains $member -or $state.QueryRules.RuleName -contains $member -or
+                            $state.DirectMembership -contains $member)
                         {
-                            Add-CMUserCollectionExcludeMembershipRule @excludeRule
+                            [array]$errorMsg += ($script:localizedData.ExcludeError -f $member)
                         }
                         else
                         {
-                            Add-CMDeviceCollectionExcludeMembershipRule @excludeRule
+                            $excludeRule = @{
+                                CollectionName        = $CollectionName
+                                ExcludeCollectionName = $member
+                            }
+
+                            Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
+
+                            if ((Get-CMCollection -Name $member))
+                            {
+                                if ($CollectionType -eq 'User')
+                                {
+                                    Add-CMUserCollectionExcludeMembershipRule @excludeRule
+                                }
+                                else
+                                {
+                                    Add-CMDeviceCollectionExcludeMembershipRule @excludeRule
+                                }
+                            }
+                            else
+                            {
+                                [array]$errorMsg += ($script:localizedData.ExcludeNonAdd -f $member)
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (-not [string]::IsNullOrEmpty($IncludeMembership))
+            {
+                foreach ($member in $IncludeMembership)
+                {
+                    $includeRule = @{}
+
+                    if (([string]::IsNullOrEmpty($state.IncludeMembership)) -or ($state.IncludeMembership -notcontains $member))
+                    {
+                        if ($state.ExcludeMembership -contains $member -or $state.QueryRules.RuleName -contains $member -or
+                            $state.DirectMembership -contains $member)
+                        {
+                            [array]$errorMsg += ($script:localizedData.IncludeError -f $member)
+                        }
+                        else
+                        {
+                            $includeRule = @{
+                                CollectionName        = $CollectionName
+                                IncludeCollectionName = $member
+                            }
+
+                            Write-Verbose -Message ($script:localizedData.IncludeMemberRule -f $CollectionName, $member)
+
+                            if ((Get-CMCollection -Name $member -CollectionType $CollectionType))
+                            {
+                                if ($CollectionType -eq 'User')
+                                {
+                                    Add-CMUserCollectionIncludeMembershipRule @includeRule
+                                }
+                                else
+                                {
+                                    Add-CMDeviceCollectionIncludeMembershipRule @includeRule
+                                }
+                            }
+                            else
+                            {
+                                [array]$errorMsg += ($script:localizedData.IncludeNonAdd -f $member)
+                            }
                         }
                     }
                 }
@@ -358,24 +497,83 @@ function Set-TargetResource
             {
                 foreach ($member in $DirectMembership)
                 {
-                    $directRule = @{}
-
-                    if (($null -eq $state.DirectMembership) -or ($state.DirectMembership -notcontains $member))
+                    if ((-not [string]::IsNullOrEmpty($member)) -and ([string]::IsNullOrEmpty($state.DirectMembership) -or
+                        $state.DirectMembership -notcontains $member) -and ([string]::IsNullOrEmpty($state.DirectMembershipId) -or
+                        $state.DirectMembershipId -notcontains $member))
                     {
-                        $directRule = @{
-                            CollectionName = $CollectionName
-                            ResourceId     = $member
-                        }
+                        $directRule = @{}
 
-                        Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
-
-                        if ($CollectionType -eq 'User')
+                        if ($member -match "^\d+$")
                         {
-                            Add-CMUserCollectionDirectMembershipRule @directRule
+                            $clientName = (Get-CMResource -ResourceId $member -Fast).Name
+
+                            if ($clientName)
+                            {
+                                if ($DirectMembership -contains $clientName)
+                                {
+                                    [array]$errorMsg += ($script:localizedData.DirectConflict -f $member, $clientName)
+                                }
+                                else
+                                {
+                                    $directRule = @{
+                                        CollectionName = $CollectionName
+                                        ResourceId     = $member
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                [array]$errorMsg += ($script:localizedData.InvalidId -f $member)
+                            }
                         }
                         else
                         {
-                            Add-CMDeviceCollectionDirectMembershipRule @directRule
+                            if ($CollectionType -eq 'User')
+                            {
+                                $resourceID = Get-CMUser -Name $member
+
+                                if ($resourceID)
+                                {
+                                    $directRule = @{
+                                        CollectionName = $CollectionName
+                                        ResourceId     = $resourceID.ResourceId
+                                    }
+                                }
+                                else
+                                {
+                                    [array]$errorMsg += ($script:localizedData.DirectNonAdd -f $member)
+                                }
+                            }
+                            else
+                            {
+                                $resourceID = Get-CMDevice -Name $member
+
+                                if ($resourceID)
+                                {
+                                    $directRule = @{
+                                        CollectionName = $CollectionName
+                                        ResourceId     = $resourceID.ResourceId
+                                    }
+                                }
+                                else
+                                {
+                                    [array]$errorMsg += ($script:localizedData.DirectNonAdd -f $member)
+                                }
+                            }
+                        }
+
+                        if ($directRule.Count -ge 1)
+                        {
+                            Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
+
+                            if ($CollectionType -eq 'User')
+                            {
+                                Add-CMUserCollectionDirectMembershipRule @directRule
+                            }
+                            else
+                            {
+                                Add-CMDeviceCollectionDirectMembershipRule @directRule
+                            }
                         }
                     }
                 }
@@ -388,7 +586,7 @@ function Set-TargetResource
                     $importRule = @{}
 
                     if (($null -eq $state.QueryRules) -or
-                       ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
+                        ($state.QueryRules.QueryExpression.Replace(' ','') -notcontains $rule.QueryExpression.Replace(' ','')))
                     {
                         Write-Verbose -Message ($script:localizedData.QueryRule -f $CollectionName, $($rule.QueryExpression))
 
@@ -418,6 +616,11 @@ function Set-TargetResource
                 Remove-CMCollection -Name $CollectionName
             }
         }
+
+        if ($errorMsg)
+        {
+            throw $errorMsg
+        }
     }
     catch
     {
@@ -444,28 +647,35 @@ function Set-TargetResource
 
     .PARAMETER LimitingCollectionName
         Specifies the name of a collection to use as the default scope for this collection.
-        Limiting collection is not evaluated in Test and is only used
-        if the collection needs created.
 
     .PARAMETER Comment
         Specifies a comment for the collection.
 
-    .PARAMETER RefreshSchedule
-        Specifies a schedule that determines when Configuration Manager refreshes the collection.
+    .PARAMETER ScheduleInterval
+        Specifies the time when the scheduled event recurs none, minutes, hours and days.
+
+    .PARAMETER ScheduleCount
+        Specifies how often the recur interval is run. If hours are specified the max value
+        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
+        is 31. Anything over 31 will result in 31 to be set.
 
     .PARAMETER RefreshType
         Specifies how Configuration Manager refreshes the collection.
         Valid values are: Manual, Periodic, Continuous, and Both.
 
-    .PARAMETER QueryRules
-        Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.
-
     .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude members from. If clients are in the excluded collection they will
+        Specifies the collection name to exclude clients from. If clients are in the excluded collection they will
         not be added to the collection.
 
+    .PARAMETER IncludeMembership
+        Specifies the collection name to include clients from. Only clients from the included
+        collections can be added to the collection.
+
     .PARAMETER DirectMembership
-        Specifies the resourceid for the direct membership rule.
+        Specifies the resourceid or name for the direct membership rule.
+
+    .PARAMETER QueryRules
+        Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.
 
     .PARAMETER Ensure
         Specifies if the collection is to be present or absent.
@@ -498,8 +708,13 @@ function Test-TargetResource
         $Comment,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance]
-        $RefreshSchedule,
+        [ValidateSet('None','Minutes','Hours','Days')]
+        [String]
+        $ScheduleInterval,
+
+        [Parameter()]
+        [UInt32]
+        $ScheduleCount,
 
         [Parameter()]
         [ValidateSet('Manual','Periodic','Continuous','Both')]
@@ -507,16 +722,20 @@ function Test-TargetResource
         $RefreshType,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance[]]
-        $QueryRules,
-
-        [Parameter()]
         [String[]]
         $ExcludeMembership,
 
         [Parameter()]
         [String[]]
+        $IncludeMembership,
+
+        [Parameter()]
+        [String[]]
         $DirectMembership,
+
+        [Parameter()]
+        [Microsoft.Management.Infrastructure.CimInstance[]]
+        $QueryRules,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -533,64 +752,92 @@ function Test-TargetResource
     {
         if ($state.Ensure -eq 'Absent')
         {
+            if ([string]::IsNullOrEmpty($LimitingCollectionName))
+            {
+                Write-Warning -Message $script:localizedData.MissingLimiting
+            }
+
             Write-Verbose -Message ($script:localizedData.CollectionAbsent -f $CollectionName)
             $result = $false
         }
         else
         {
-            $itemsForEval = @(
-                @{
-                    Name  = 'Comment'
-                    Value = $Comment
-                }
-                @{
-                    Name  = 'RefreshType'
-                    Value = $RefreshType
-                }
-            )
+            $testParams = @{
+                CurrentValues = $state
+                DesiredValues = $PSBoundParameters
+                ValuesToCheck = @('Comment','RefreshType','LimitingCollectionName')
+            }
 
-            foreach ($item in $itemsForEval)
+            $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
+
+            if ($state.CollectionType -ne $CollectionType)
             {
-                if ((-not [string]::IsNullOrEmpty($item.Value)) -and ($state[$item.Name] -ne $item.Value))
+                Write-Warning -Message ($script:localizedData.CollectionType -f $CollectionType, $state.CollectionType)
+                $result = $false
+            }
+
+            if ($PSBoundParameters.ContainsKey('ExcludeMembership') -and $PSBoundParameters.ContainsKey('IncludeMembership'))
+            {
+                foreach ($exclude in $ExcludeMembership)
                 {
-                    Write-Verbose -Message ($script:localizedData.CollectionSetting -f $CollectionName, `
-                    $item.name, $item.Value, $($state[$item.Name]))
-                    $result = $false
+                    if ($IncludeMembership -contains $exclude)
+                    {
+                        Write-Warning -Message ($script:localizedData.RuleConflict -f $exclude)
+                    }
                 }
             }
 
-            if (-not [string]::IsNullOrEmpty($RefreshSchedule))
+            if ($PSBoundParameters.ContainsKey('ScheduleInterval'))
             {
-                if ($state.RefreshSchedule)
+                if ((($PSBoundParameters.ContainsKey('RefreshType')) -and ($RefreshType -eq 'Periodic' -or $RefreshType -eq 'Both')) -or
+                    (([string]::IsNullOrEmpty($RefreshType)) -and ($state.RefreshType -eq 'Periodic' -or $state.RefreshType -eq 'Both')))
                 {
-                    $newSchedule = @{
-                        RecurInterval = $RefreshSchedule.RecurInterval
-                        RecurCount    = $RefreshSchedule.RecurCount
-                    }
-
-                    $desiredRefreshSchedule = New-CMSchedule @newSchedule
-
-                    $cSchedule = @{
-                        RecurInterval = $state.RefreshSchedule.RecurInterval
-                        RecurCount    = $state.RefreshSchedule.RecurCount
-                    }
-
-                    $currentSchedule = New-CMSchedule @cSchedule
-                    $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT','MinuteDuration','MinuteSpan')
-
-                    foreach ($item in $array)
+                    if ($ScheduleInterval -ne 'None' -and -not $PSBoundParameters.ContainsKey('ScheduleCount'))
                     {
-                        if (($desiredRefreshSchedule).$($item) -ne ($currentSchedule).$($item))
+                        Write-Warning -Message $script:localizedData.IntervalCount
+                        $result = $false
+                    }
+                    else
+                    {
+                        if ($ScheduleInterval -ne $state.ScheduleInterval)
                         {
-                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                                -f $item, $($desiredRefreshSchedule).$($item), $($currentSchedule).$($item))
+                            Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $state.ScheduleInterval)
                             $result = $false
+                        }
+
+                        if ($ScheduleInterval -ne 'None')
+                        {
+                            if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                            {
+                                Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                                $scheduleCheck = 31
+                            }
+                            elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                            {
+                                Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                                $scheduleCheck = 23
+                            }
+                            elseif ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60)
+                            {
+                                Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                                $scheduleCheck = 59
+                            }
+                            else
+                            {
+                                $scheduleCheck = $ScheduleCount
+                            }
+
+                            if ($ScheduleCount -ne $state.ScheduleCount)
+                            {
+                                Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
+                                $result = $false
+                            }
                         }
                     }
                 }
                 else
                 {
-                    $result = $false
+                    Write-Warning -Message $script:localizedData.ScheduleType
                 }
             }
 
@@ -600,7 +847,31 @@ function Test-TargetResource
                 {
                     if (([string]::IsNullOrEmpty($state.ExcludeMembership)) -or ($state.ExcludeMembership -notcontains $member))
                     {
+                        if ($state.IncludeMembership -contains $member -or $state.QueryRules.RuleName -contains $member -or
+                            $state.DirectMembership -contains $member)
+                        {
+                            Write-Warning -Message ($script:localizedData.ExcludeError -f $member)
+                        }
+
                         Write-Verbose -Message ($script:localizedData.ExcludeMemberRule -f $CollectionName, $member)
+                        $result = $false
+                    }
+                }
+            }
+
+            if (-not [string]::IsNullOrEmpty($IncludeMembership))
+            {
+                foreach ($member in $IncludeMembership)
+                {
+                    if (([string]::IsNullOrEmpty($state.IncludeMembership)) -or ($state.IncludeMembership -notcontains $member))
+                    {
+                        if ($state.DirectMembership -contains $member -or $state.QueryRules.RuleName -contains $member -or
+                            $state.ExcludeMembership -contains $member)
+                        {
+                            Write-Warning -Message ($script:localizedData.IncludeError -f $member)
+                        }
+
+                        Write-Verbose -Message ($script:localizedData.IncludeMemberRule -f $CollectionName, $member)
                         $result = $false
                     }
                 }
@@ -610,7 +881,8 @@ function Test-TargetResource
             {
                 foreach ($member in $DirectMembership)
                 {
-                    if (($null -eq $state.DirectMembership) -or ($state.DirectMembership -notcontains $member))
+                    if (([string]::IsNullOrEmpty($state.DirectMembership)) -or ($state.DirectMembership -notcontains $member -and
+                        $state.DirectMembershipId -notcontains $member))
                     {
                         Write-Verbose -Message ($script:localizedData.DirectMemberRule -f $CollectionName, $member)
                         $result = $false

@@ -1,12 +1,31 @@
 ConvertFrom-StringData @'
     RetrieveSettingValue = Getting results for Configuration Manager collection.
-    TestState            = Test-TargetResource compliance check returned: {0}.
-    QueryRule            = {0} collection expected Query rule {1} to be present.
-    DirectMemberRule     = {0} collection expected Direct membership rule {1} to be present.
-    ExcludeMemberRule    = {0} collection expected Exclude membership rule {1} to be present.
+    MissingLimiting      = Collection does not exist and no LimitingCollectionName has been specified.
     CollectionAbsent     = {0} collection is missing expected present.
+    CollectionType       = Desired collection type is {0} and currently is {1}, if specified collection type is correct the collection will need deleted prior to creating a new collection.
+    RuleConflict         = Input for IncludeMembership and ExcludeMembership contain the same entry {0}.
+    IntervalCount        = Invalid parameter usage specifying an Interval and didn't specify count.
+    SIntervalTest        = NOT MATCH: Schedule interval expected: {0} returned {1}.
+    MaxIntervalDays      = The maximum allowed interval is 31 for days. {0} was specified and will result in the interval being set to 31.
+    MaxIntervalHours     = The maximum allowed interval is 23 for hours. {0} was specified and will result in the interval being set to 23.
+    MaxIntervalMins      = The maximum allowed interval is 59 for minutes. {0} was specified and will result in the interval being set to 59.
+    SCountTest           = NOT MATCH: Schedule count expected: {0} returned {1}.
+    ScheduleType         = Schedule was specified however the RefreshType either specified or currently set does not support a schedule to be set, ignoring setting.
+    ExcludeError         = Exclude rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
+    ExcludeMemberRule    = {0} collection expected Exclude membership rule {1} to be present.
+    DirectError          = Direct rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
+    DirectMemberRule     = {0} collection expected Direct membership rule {1} to be present.
+    IncludeError         = Include rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
+    IncludeMemberRule    = {0} collection expected Include membership rule {1} to be present.
+    QueryError           = Query rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
+    QueryRule            = {0} collection expected Query rule {1} to be present.
+    RemoveCollection     = Expected {0} to be absent.
+    TestState            = Test-TargetResource compliance check returned: {0}.
+    DirectConflict       = DirectMembership contains the ResourceID {0} and Name {1} for the same resource.
+    InvalidId            = Unable to find object with resource ID {0}.
     CollectionCreate     = {0} collection is missing, creating collection.
     CollectionSetting    = {0} collection expected {1} to be "{2}" returned "{3}".
-    ScheduleItem         = Schedule item {0} expected {1} returned {2}.
-    RemoveCollection     = Expected {0} to be absent.
+    ExcludeNonAdd        = Collection {0} does not exist and can not be added to exclude membership.
+    IncludeNonAdd        = Collection {0} does not exist and can not be added to include membership.
+    DirectNonAdd         = {0} does not exist and can not be added to as direct membership.
 '@
