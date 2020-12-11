@@ -128,9 +128,9 @@ function Set-TargetResource
             $includeList = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation')
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if ($includeList -contains $param.key)
+                if ($includeList -contains $param.Key)
                 {
-                    if ($param.Value -ne $state[$param.key])
+                    if ($param.Value -ne $state[$param.Key])
                     {
                         Write-Verbose -Message ($script:localizedData.SettingSettings -f $param.Key, $param.Value)
                         $buildingParams += @{
@@ -165,7 +165,7 @@ function Set-TargetResource
 
                 if ($scheduleCheck -ne $state.ScheduleCount)
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountSet -f $ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.SCountSet -f $scheduleCheck)
                     $setSchedule = $true
                 }
 
@@ -173,7 +173,7 @@ function Set-TargetResource
                 {
                     $pScheduleSet = @{
                         RecurInterval = $ScheduleInterval
-                        RecurCount    = $ScheduleCount
+                        RecurCount    = $scheduleCheck
                     }
 
                     $pschedule = New-CMSchedule @pScheduleSet
