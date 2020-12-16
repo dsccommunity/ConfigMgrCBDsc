@@ -259,7 +259,7 @@ function Set-TargetResource
     {
         $state = Get-TargetResource -SiteCode $SiteCode -CollectionName $CollectionName -CollectionType $CollectionType
 
-        if ($state.CollectionType -ne $CollectionType)
+        if ((-not [string]::IsNullOrEmpty($state.CollectionType)) -and ($state.CollectionType -ne $CollectionType))
         {
             throw ($script:localizedData.CollectionType -f $CollectionType, $state.CollectionType)
         }
@@ -334,46 +334,38 @@ function Set-TargetResource
                 if ((($PSBoundParameters.ContainsKey('RefreshType')) -and ($RefreshType -eq 'Periodic' -or $RefreshType -eq 'Both')) -or
                     (([string]::IsNullOrEmpty($RefreshType)) -and ($state.RefreshType -eq 'Periodic' -or $state.RefreshType -eq 'Both')))
                 {
-                    if ($ScheduleInterval -ne 'None' -and -not $PSBoundParameters.ContainsKey('ScheduleCount'))
+                    if ($ScheduleInterval -ne $state.ScheduleInterval)
                     {
-                        throw $script:localizedData.IntervalCount
-                        $result = $false
+                        Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $state.ScheduleInterval)
+                        $setSchedule = $true
                     }
-                    else
+
+                    if ($ScheduleInterval -ne 'None')
                     {
-                        if ($ScheduleInterval -ne $state.ScheduleInterval)
+                        if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
                         {
-                            Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $state.ScheduleInterval)
-                            $setSchedule = $true
+                            Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                            $scheduleCheck = 31
+                        }
+                        elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                        {
+                            Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                            $scheduleCheck = 23
+                        }
+                        elseif ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60)
+                        {
+                            Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                            $scheduleCheck = 59
+                        }
+                        else
+                        {
+                            $scheduleCheck = $ScheduleCount
                         }
 
-                        if ($ScheduleInterval -ne 'None')
+                        if ($ScheduleCount -ne $state.ScheduleCount)
                         {
-                            if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
-                            {
-                                Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
-                                $scheduleCheck = 31
-                            }
-                            elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
-                            {
-                                Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
-                                $scheduleCheck = 23
-                            }
-                            elseif ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60)
-                            {
-                                Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
-                                $scheduleCheck = 59
-                            }
-                            else
-                            {
-                                $scheduleCheck = $ScheduleCount
-                            }
-
-                            if ($ScheduleCount -ne $state.ScheduleCount)
-                            {
-                                Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
-                                $setSchedule = $true
-                            }
+                            Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
+                            $setSchedule = $true
                         }
                     }
 

@@ -15,11 +15,8 @@ Configuration Example
             CollectionType         = 'User'
             LimitingCollectionName = 'All Users'
             Comment                = 'This is a test user collection'
-            RefreshSchedule        = DSC_CMCollectionRefreshSchedule
-            {
-                RecurInterval = 'Days'
-                RecurCount    = '7'
-            }
+            ScheduleInterval       = 'Days'
+            ScheduleCount          = 7
             RefreshType            = 'Both'
             QueryRules             = @(
                 DSC_CMCollectionQueryRules
@@ -43,7 +40,8 @@ Configuration Example
                 }
             )
             ExcludeMembership      = 'TestUserGroup1','TestUserGroup2'
-            DirectMembership       = @('2063597577','2063597582')
+            DirectMembership       = @('2063597577','TestUser1')
+            IncludeMembership      = @('TestUserGroup3','TestUserGroup4')
             Ensure                 = 'Present'
         }
     }

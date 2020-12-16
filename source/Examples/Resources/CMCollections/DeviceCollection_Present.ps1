@@ -15,11 +15,8 @@ Configuration Example
             CollectionType         = 'Device'
             LimitingCollectionName = 'All Systems'
             Comment                = 'This is a test device collection'
-            RefreshSchedule        = DSC_CMCollectionRefreshSchedule
-            {
-                RecurInterval = 'Days'
-                RecurCount    = '7'
-            }
+            ScheduleInterval       = 'Days'
+            ScheduleCount          = 7
             RefreshType            = 'Both'
             QueryRules             = @(
                 DSC_CMCollectionQueryRules
@@ -45,7 +42,8 @@ Configuration Example
                 }
             )
             ExcludeMembership      = 'TestDeviceCollection1','TestDeviceCollection2'
-            DirectMembership       = @('2063597577','2063597582')
+            IncludeMembership      = @('TestDeviceCollection3','TestDeviceCollection4')
+            DirectMembership       = @('2063597577','Device1')
             Ensure                 = 'Present'
         }
     }

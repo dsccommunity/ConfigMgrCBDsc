@@ -82,6 +82,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added DistributionPointInstallIis parameter to CmIniFile #62
 - Added an example for a Standalone Primary Site Server and updated required modules
   to support.
+- Removed CimInstance for the CMCollections schedule.  Added support IncludeMembership
+  for collections.  Added support for adding DirectMembership Rules for users or
+  devices using and Users using ResourceId or Name.
 
 ### Removed
 

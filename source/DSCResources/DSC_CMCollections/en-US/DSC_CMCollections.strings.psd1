@@ -13,11 +13,9 @@ ConvertFrom-StringData @'
     ScheduleType         = Schedule was specified however the RefreshType either specified or currently set does not support a schedule to be set, ignoring setting.
     ExcludeError         = Exclude rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
     ExcludeMemberRule    = {0} collection expected Exclude membership rule {1} to be present.
-    DirectError          = Direct rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
     DirectMemberRule     = {0} collection expected Direct membership rule {1} to be present.
     IncludeError         = Include rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
     IncludeMemberRule    = {0} collection expected Include membership rule {1} to be present.
-    QueryError           = Query rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
     QueryRule            = {0} collection expected Query rule {1} to be present.
     RemoveCollection     = Expected {0} to be absent.
     TestState            = Test-TargetResource compliance check returned: {0}.

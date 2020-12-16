@@ -398,16 +398,24 @@ you are using apply and auto correct.
 - **[String] LimitingCollectionName** _(Write)_: Specifies the name of a
   collection to use as the default scope for this collection.
 - **[String] Comment** _(Write)_: Specifies a comment for the collection.
-- **[EmbeddedInstance] RefreshSchedule** _(Write)_: Specifies containing refresh
-  schedule for Configuration Manager (RecurInterval, RecurCount).
+- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
+  event recurs in never (none), minutes, hours, or days.
+  - Values include: { None| Minutes | Hours | Days }
+- **[String] ScheduleCount** _(Write)_: Specifies how often the recur interval
+  is run. If minutes are specified the above the max value of 59, the will result
+  in the minutes being set to 59. If hours are specified the max value is 23.
+  Anything over 23 will result in 23 to be set. If days are specified the max
+  value is 31. Anything over 31 will result in 31 to be set.
 - **[String] RefreshType** _(Key)_: Specifies how the collection is refreshed.
   { Manual | Periodic | Continuous | Both }.
 - **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the rule
   and the query expression that Configuration Manager uses to update collections.
 - **[String] ExcludeMembership[]** _(Write)_: Specifies the collection name to
   exclude members from.
-- **[String] DirectMembership[]** _(Write)_: Specifies the resource id for the
-  direct membership rule.
+- **[String] DirectMembership[]** _(Write)_: Specifies the resource id or name
+  for the direct membership rule.
+- **[String] IncludeMembership[]** _(Write)_: Specifies the collection to include
+  members from.
 - **[String] Ensure** _(Write)_: Specifies status of the collection is to be
   present or absent.
   - Values include: { Present | Absent }
