@@ -17,4 +17,8 @@ ConvertFrom-StringData @'
     SetDisabled           = Setting User Discovery to disabled.
     ContainersInEx        = ADContainersToExclude and ADContainersToInclude contain to same entry {0}, remove from one of the arrays.
     DeltaNoInterval       = DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery.
+    MaxIntervalDays       = The maximum allowed interval is 31 for days. {0} was specified and will result in the interval being set to 31.
+    MaxIntervalHours      = The maximum allowed interval is 23 for hours. {0} was specified and will result in the interval being set to 23.
+    MaxIntervalMins       = The value specified for minutes must be between 5 and 59. {0} was specified and will result in the interval being set to 59.
+    MinIntervalMins       = The value specified for minutes must be between 5 and 59. {0} was specified and will result in the interval being set to 5.
 '@
