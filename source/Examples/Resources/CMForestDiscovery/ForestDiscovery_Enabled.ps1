@@ -12,11 +12,8 @@ Configuration Example
         {
             SiteCode                                  = 'Lab'
             Enabled                                   = $true
-            PollingSchedule                           = DSC_CMForestDiscoveryPollingSchedule
-            {
-                RecurInterval = 'Days'
-                RecurCount    = '7'
-            }
+            ScheduleInterval                          = 'Days'
+            ScheduleCount                             = 7
             EnableActiveDirectorySiteBoundaryCreation = $false
             EnableSubnetBoundaryCreation              = $true
         }
