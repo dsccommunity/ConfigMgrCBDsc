@@ -82,6 +82,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added DistributionPointInstallIis parameter to CmIniFile #62
 - Added an example for a Standalone Primary Site Server and updated required modules
   to support.
+- Updated CMForestDiscovery to remove the unneeded CimInstance for schedule. Also
+  added warning messages when exceeding max allowed hours or days and setting the
+  value to the default highest available value.
+- Updated CMHeartbeatDiscovery to warn when exceeding max allowed hours or days.
 - Updated CMUserDiscovery to warn when exceeding max allowed hours or days or minutes
   and when specifying under the minimum allowed minutes.
 
