@@ -85,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CMForestDiscovery to remove the unneeded CimInstance for schedule. Also
   added warning messages when exceeding max allowed hours or days and setting the
   value to the default highest available value.
+- Updated CMHeartbeatDiscovery to warn when exceeding max allowed hours or days.
 
 ### Removed
 
