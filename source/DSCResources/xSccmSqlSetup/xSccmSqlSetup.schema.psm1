@@ -191,6 +191,31 @@ Configuration xSccmSqlSetup
 
         [Parameter()]
         [ValidateNotNullorEmpty()]
+        [Uint32]
+        $SqlTempdbFileCount = 1,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [Uint32]
+        $SqlTempdbFileSize = 8,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [Uint32]
+        $SqlTempdbFileGrowth = 64,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [Uint32]
+        $SqlTempdbLogFileSize = 8,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
+        [Uint32]
+        $SqlTempdbLogFileGrowth= 64,
+
+        [Parameter()]
+        [ValidateNotNullorEmpty()]
         [String]
         $UpdateEnabled = $false,
 
@@ -270,27 +295,60 @@ Configuration xSccmSqlSetup
         $finalSqlUserDBLogDir = "$InstallSqlDataDir\MSSQL$version.$SqlInstanceName\MSSQL\Data"
     }
 
-    SqlSetup InstallSql
+    if($version -ge '13')
     {
-        Features            = $Features
-        InstallSharedDir    = $InstallSharedDir
-        InstallSharedWowDir = $InstallSharedWowDir
-        InstanceDir         = $InstanceDir
-        InstanceName        = $SqlInstanceName
-        SQLSvcAccount       = $SqlServiceCredential
-        AgtSvcAccount       = $SqlAgentServiceCredential
-        RSInstallMode       = $RSInstallMode
-        RSSVCStartUpType    = $RSSVCStartUpType
-        AgtSvcStartupType   = $AgtSvcStartupType
-        SQLCollation        = $SqlCollation
-        SQLSysAdminAccounts = $SqlSysAdminAccounts
-        InstallSQLDataDir   = $InstallSqlDataDir
-        SQLUserDBDir        = $finalSqlUserDBDir
-        SQLUserDBLogDir     = $finalSqlUserDBLogDir
-        SQLTempDBDir        = $finalSqlTempDBDir
-        SQLTempDBLogDir     = $finalSqlTempDBLogDir
-        SourcePath          = $SqlInstallPath
-        UpdateEnabled       = $UpdateEnabled
+        SqlSetup InstallSql
+        {
+            Features                = $Features
+            InstallSharedDir        = $InstallSharedDir
+            InstallSharedWowDir     = $InstallSharedWowDir
+            InstanceDir             = $InstanceDir
+            InstanceName            = $SqlInstanceName
+            SQLSvcAccount           = $SqlServiceCredential
+            AgtSvcAccount           = $SqlAgentServiceCredential
+            RSInstallMode           = $RSInstallMode
+            RSSVCStartUpType        = $RSSVCStartUpType
+            AgtSvcStartupType       = $AgtSvcStartupType
+            SQLCollation            = $SqlCollation
+            SQLSysAdminAccounts     = $SqlSysAdminAccounts
+            InstallSQLDataDir       = $InstallSqlDataDir
+            SQLUserDBDir            = $finalSqlUserDBDir
+            SQLUserDBLogDir         = $finalSqlUserDBLogDir
+            SQLTempDBDir            = $finalSQLTempDBDir
+            SQLTempDBLogDir         = $finalSQLTempDBLogDir
+            SQLTempdbFileCount      = $SQLTempdbFileCount
+            SQLTempdbFileSize       = $SQLTempdbFileSize
+            SQLTempdbFileGrowth     = $SQLTempdbFileGrowth
+            SQLTempdbLogFileSize    = $SQLTempdbLogFileSize
+            SQLTempdbLogFileGrowth  = $SQLTempdbLogFileGrowth
+            SourcePath              = $SqlInstallPath
+            UpdateEnabled           = $UpdateEnabled
+        }
+    }
+    else
+    {
+        SqlSetup InstallSql
+        {
+            Features                = $Features
+            InstallSharedDir        = $InstallSharedDir
+            InstallSharedWowDir     = $InstallSharedWowDir
+            InstanceDir             = $InstanceDir
+            InstanceName            = $SqlInstanceName
+            SQLSvcAccount           = $SqlServiceCredential
+            AgtSvcAccount           = $SqlAgentServiceCredential
+            RSInstallMode           = $RSInstallMode
+            RSSVCStartUpType        = $RSSVCStartUpType
+            AgtSvcStartupType       = $AgtSvcStartupType
+            SQLCollation            = $SqlCollation
+            SQLSysAdminAccounts     = $SqlSysAdminAccounts
+            InstallSQLDataDir       = $InstallSqlDataDir
+            SQLUserDBDir            = $finalSqlUserDBDir
+            SQLUserDBLogDir         = $finalSqlUserDBLogDir
+            SQLTempDBDir            = $finalSQLTempDBDir
+            SQLTempDBLogDir         = $finalSQLTempDBLogDir
+            SourcePath              = $SqlInstallPath
+            UpdateEnabled           = $UpdateEnabled
+        }
     }
 
     SqlServerNetwork EnableTcpIp
