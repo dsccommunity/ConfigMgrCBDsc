@@ -310,7 +310,7 @@ Configuration xSccmSqlSetup
         $finalSqlUserDBLogDir = "$InstallSqlDataDir\MSSQL$version.$SqlInstanceName\MSSQL\Data"
     }
 
-    if($version -ge '13')
+    if ($version -ge '13')
     {
         SqlSetup InstallSql
         {
