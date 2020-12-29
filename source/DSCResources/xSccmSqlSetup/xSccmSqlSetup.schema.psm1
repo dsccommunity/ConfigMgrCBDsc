@@ -68,6 +68,21 @@
     .PARAMETER SqlTempDBLogDir
         Specifies the directory for the log files for tempdb.
 
+    .PARAMETER SqlTempdbFileCount
+        Specficies the count of TempDB Files to use. (only sql server 2016 and above)
+
+    .PARAMETER SqlTempdbFileSize
+        Specifies the initial size (MB) of the TempDb Files. (only sql server 2016 and above)
+
+    .PARAMETER SqlTempdbFileGrowth
+        Specifies the size (MB) in which the TempDb files growth. (only sql server 2016 and above)
+
+    .PARAMETER SqlTempdbLogFileSize
+        Specifies the TempDb Log File size (MB). (only sql server 2016 and above)
+
+    .PARAMETER SqlTempdbLogFileGrowth
+        Specifies the size (MB) in which the TempDb Log File growth. (only sql server 2016 and above)
+
     .PARAMETER UpdateEnabled
         Specify whether SQL Server setup should discover and include product updates.
 
@@ -212,7 +227,7 @@ Configuration xSccmSqlSetup
         [Parameter()]
         [ValidateNotNullorEmpty()]
         [Uint32]
-        $SqlTempdbLogFileGrowth= 64,
+        $SqlTempdbLogFileGrowth = 64,
 
         [Parameter()]
         [ValidateNotNullorEmpty()]

@@ -4,6 +4,7 @@ The format is based on and uses the types of changes according to [Keep a Change
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+- Changed xSccmSqlSetup to support TempDB settings for sql server 2016 and above (filecount, autogrowth)
 
 ### Added
 
