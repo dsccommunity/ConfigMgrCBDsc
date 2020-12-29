@@ -251,6 +251,21 @@ you are using apply and auto correct.
 - **[String] SqlTempDBLogDir** : Specifies the directory for the log
   files for tempdb.
   Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
+- **[Uint32] SqlTempdbFileCount** : Specficies the count of TempDB Files
+  to use. (only sql server 2016 and above)
+  Default Value: 1
+- **[Uint32] SqlTempdbFileSize** : Specifies the initial size (MB) of
+  the TempDb Files. (only sql server 2016 and above)
+  Default Value: 8
+- **[Uint32] SqlTempdbFileGrowth** : Specifies the size (MB) in which
+  the TempDb files growth. (only sql server 2016 and above)
+  Default Value: 64
+- **[Uint32] SqlTempdbLogFileSize** : Specifies the TempDb Log File
+  size (MB). (only sql server 2016 and above)
+  Default Value: 8
+- **[Uint32] SqlTempdbLogFileGrowth** : Specifies the size (MB) in which
+  the TempDb Log File growth. (only sql server 2016 and above)
+  Default Value: 64
 - **[String] UpdateEnabled** : Specify whether SQL Server setup should discover
   and include product updates.
   Default Value: $false
