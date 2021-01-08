@@ -220,14 +220,14 @@ function Set-TargetResource
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            if ($eval -contains $param.key)
+            if ($eval -contains $param.Key)
             {
-                if ($param.Value -ne $state[$param.key])
+                if ($param.Value -ne $state[$param.Key])
                 {
-                    Write-Verbose -Message ($script:localizedData.ModifySetting -f $param.key, $param.Value)
+                    Write-Verbose -Message ($script:localizedData.ModifySetting -f $param.Key, $param.Value)
 
                     $buildingParams += @{
-                        $param.key = $param.Value
+                        $param.Key = $param.Value
                     }
                 }
             }
@@ -281,7 +281,7 @@ function Set-TargetResource
                 {
                     Write-Verbose -Message ($script:localizedData.CMAccountExtra -f ($accountCompare.Remove | Out-String))
                     $buildingParams += @{
-                        RemoveNetworkAccessAccountName  = $accountCompare.Remove
+                        RemoveNetworkAccessAccountName = $accountCompare.Remove
                     }
 
                     if (($accountCompare.Remove.Count -eq $state.AccessAccounts.Count) -and ($accountCompare.Missing.Count -eq 0))

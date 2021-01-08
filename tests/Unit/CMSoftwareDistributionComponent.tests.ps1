@@ -266,7 +266,7 @@ try
                     }
 
                     $allAccounts = 'All AccessAccounts would be removed causing the ClientComputerAccount to be set to true causing invalid configuration.'
-                    $accountMissing = 'Account contoso\Network2 is missing from configuration manager unable to add account.'
+                    $accountMissing = 'Account contoso\Network2 is missing from configuration manager, unable to add account.'
                     $includeExcludeMatch = 'AccessAccountsToInclude and AccessAccountsToExclude contain the same member contoso\Network2.'
                     $paramsInvalid = 'AccessAccounts and AccessAccountsToInclude or AccessAccountToExclude is specified remove AccessAccounts or the include or exclude setting.'
                     $computerAndAccessAccounts = 'Specifying both ComputerAccount and AccessAccount, these settings can not be specified together.'
