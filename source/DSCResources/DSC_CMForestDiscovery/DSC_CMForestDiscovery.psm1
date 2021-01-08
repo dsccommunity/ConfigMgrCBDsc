@@ -1,12 +1,12 @@
-$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
-$script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
+$script:dscResourceCommonPath = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath DscResource.Common
+$script:configMgrResourcehelper = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath ConfigMgrCBDsc.ResourceHelper
 
 Import-Module -Name $script:dscResourceCommonPath
 Import-Module -Name $script:configMgrResourcehelper
 
 $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
- <#
+<#
     .SYNOPSIS
         This will return a hashtable of results.
 
@@ -39,27 +39,23 @@ function Get-TargetResource
     Set-Location -Path "$($SiteCode):\"
 
     $forestDiscovery = (Get-CMDiscoveryMethod -Name ActiveDirectoryForestDiscovery -SiteCode $SiteCode).Props
-    $enabledStatus   = (($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1 -eq 'Active')
-    $forestSchedule  = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Startup Schedule'}).Value1
-    $subnetBoundary  = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable Subnet Boundary Creation'}).Value
-    $siteBoundary    = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable AD Site Boundary Creation'}).Value
-
-    $convertCimParam = @{
-        ScheduleString = $forestSchedule
-        CimClassName   = 'DSC_CMForestDiscoveryPollingSchedule'
-    }
-    $syncSchedule = ConvertTo-CimCMScheduleString @convertCimParam
+    $enabledStatus = (($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1 -eq 'Active')
+    $forestSchedule = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Startup Schedule'}).Value1
+    $subnetBoundary = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable Subnet Boundary Creation'}).Value
+    $siteBoundary = ($forestDiscovery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable AD Site Boundary Creation'}).Value
+    $scheduleConvert = ConvertTo-ScheduleInterval -ScheduleString $forestSchedule
 
     return @{
         SiteCode                                  = $SiteCode
         Enabled                                   = $enabledStatus
-        PollingSchedule                           = $syncSchedule
         EnableActiveDirectorySiteBoundaryCreation = $siteBoundary
         EnableSubnetBoundaryCreation              = $subnetBoundary
+        ScheduleInterval                          = $scheduleConvert.Interval
+        ScheduleCount                             = $scheduleConvert.Count
     }
 }
 
- <#
+<#
     .SYNOPSIS
         This will set the desired state.
 
@@ -70,14 +66,19 @@ function Get-TargetResource
         Specifies the enablement of the forest discovery method. If settings is set to $false no other value provided will be
         evaluated for compliance.
 
-    .PARAMETER PollingSchedule
-        Specifies a schedule and determines how often Configuration Manager attempts to discover Active Directory forest.
-
     .PARAMETER EnableActiveDirectorySiteBoundaryCreation
         Indicates whether Configuration Manager creates Active Directory boundaries from AD DS discovery information.
 
     .PARAMETER EnableSubnetBoundaryCreation
         Indicates whether Configuration Manager creates IP address range boundaries from AD DS discovery information.
+
+    .PARAMETER ScheduleInterval
+        Specifies the time when the scheduled event recurs in hours and days.
+
+    .PARAMETER ScheduleCount
+        Specifies how often the recur interval is run. If hours are specified the max value
+        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
+        is 31. Anything over 31 will result in 31 to be set.
 #>
 function Set-TargetResource
 {
@@ -93,16 +94,21 @@ function Set-TargetResource
         $Enabled,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance]
-        $PollingSchedule,
-
-        [Parameter()]
         [Boolean]
         $EnableActiveDirectorySiteBoundaryCreation,
 
         [Parameter()]
         [Boolean]
-        $EnableSubnetBoundaryCreation
+        $EnableSubnetBoundaryCreation,
+
+        [Parameter()]
+        [ValidateSet('Hours','Days')]
+        [String]
+        $ScheduleInterval,
+
+        [Parameter()]
+        [UInt32]
+        $ScheduleCount
     )
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
@@ -113,12 +119,18 @@ function Set-TargetResource
         $state = Get-TargetResource -SiteCode $SiteCode -Enabled $Enabled
         if ($Enabled -eq $true)
         {
+            if (($PSBoundParameters.ContainsKey('ScheduleInterval') -and -not $PSBoundParameters.ContainsKey('ScheduleCount')) -or
+                ($PSBoundParameters.ContainsKey('ScheduleCount') -and -not $PSBoundParameters.ContainsKey('ScheduleInterval')))
+            {
+                throw $script:localizedData.IntervalCount
+            }
+
             $includeList = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation')
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if ($includeList -contains $param.key)
+                if ($includeList -contains $param.Key)
                 {
-                    if ($param.Value -ne $state[$param.key])
+                    if ($param.Value -ne $state[$param.Key])
                     {
                         Write-Verbose -Message ($script:localizedData.SettingSettings -f $param.Key, $param.Value)
                         $buildingParams += @{
@@ -128,38 +140,46 @@ function Set-TargetResource
                 }
             }
 
-            if (-not [string]::IsNullOrEmpty($PollingSchedule))
+            if ($PSBoundParameters.ContainsKey('ScheduleInterval') -and $PSBoundParameters.ContainsKey('ScheduleCount'))
             {
-                $newSchedule = @{
-                    RecurInterval = $PollingSchedule.RecurInterval
-                    RecurCount    = $PollingSchedule.RecurCount
-                }
-
-                $desiredPollingSchedule = New-CMSchedule @newSchedule
-
-                $currentSchedule = @{
-                    RecurInterval = $state.PollingSchedule.RecurInterval
-                    RecurCount    = $state.PollingSchedule.RecurCount
-                }
-
-                $stateSchedule = New-CMSchedule @currentSchedule
-
-                $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-
-                foreach ($item in $array)
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
                 {
-                    if ($desiredPollingSchedule.$($item) -ne $stateSchedule.$($item))
-                    {
-                        Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                            -f $item, $($desiredPollingSchedule.$($item)), $($stateSchedule.$($item)))
-                        $setSchedule = $true
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
+                if ($ScheduleInterval -ne $state.ScheduleInterval)
+                {
+                    Write-Verbose -Message ($script:localizedData.SIntervalSet -f $ScheduleInterval)
+                    $setSchedule = $true
+                }
+
+                if ($scheduleCheck -ne $state.ScheduleCount)
+                {
+                    Write-Verbose -Message ($script:localizedData.SCountSet -f $scheduleCheck)
+                    $setSchedule = $true
+                }
+
+                if ($setSchedule -eq $true)
+                {
+                    $pScheduleSet = @{
+                        RecurInterval = $ScheduleInterval
+                        RecurCount    = $scheduleCheck
                     }
-                }
 
-                if ($setSchedule)
-                {
+                    $pschedule = New-CMSchedule @pScheduleSet
+
                     $buildingParams += @{
-                        PollingSchedule = $desiredPollingSchedule
+                        PollingSchedule = $pSchedule
                     }
                 }
             }
@@ -195,14 +215,19 @@ function Set-TargetResource
         Specifies the enablement of the forest discovery method. If settings is set to $false no other value provided will be
         evaluated for compliance.
 
-    .PARAMETER PollingSchedule
-        Specifies a schedule and determines how often Configuration Manager attempts to discover Active Directory forest.
-
     .PARAMETER EnableActiveDirectorySiteBoundaryCreation
         Indicates whether Configuration Manager creates Active Directory boundaries from AD DS discovery information.
 
     .PARAMETER EnableSubnetBoundaryCreation
         Indicates whether Configuration Manager creates IP address range boundaries from AD DS discovery information.
+
+    .PARAMETER ScheduleInterval
+        Specifies the time when the scheduled event recurs in hours and days.
+
+    .PARAMETER ScheduleCount
+        Specifies how often the recur interval is run. If hours are specified the max value
+        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
+        is 31. Anything over 31 will result in 31 to be set.
 #>
 function Test-TargetResource
 {
@@ -219,16 +244,21 @@ function Test-TargetResource
         $Enabled,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance]
-        $PollingSchedule,
-
-        [Parameter()]
         [Boolean]
         $EnableActiveDirectorySiteBoundaryCreation,
 
         [Parameter()]
         [Boolean]
-        $EnableSubnetBoundaryCreation
+        $EnableSubnetBoundaryCreation,
+
+        [Parameter()]
+        [ValidateSet('Hours','Days')]
+        [String]
+        $ScheduleInterval,
+
+        [Parameter()]
+        [UInt32]
+        $ScheduleCount
     )
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
@@ -238,45 +268,47 @@ function Test-TargetResource
 
     if ($Enabled -eq $true)
     {
-        $includeList = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation')
-        foreach ($param in $PSBoundParameters.GetEnumerator())
-        {
-            if ($includeList -contains $param.key)
-            {
-                if ($param.Value -ne $state[$param.key])
-                {
-                    Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
-                    $result = $false
-                }
-            }
+        $testParams = @{
+            CurrentValues = $state
+            DesiredValues = $PSBoundParameters
+            ValuesToCheck = @('Enabled','EnableActiveDirectorySiteBoundaryCreation','EnableSubnetBoundaryCreation')
         }
 
-        if (-not [string]::IsNullOrEmpty($PollingSchedule))
+        $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
+
+        if (($PSBoundParameters.ContainsKey('ScheduleInterval') -and -not $PSBoundParameters.ContainsKey('ScheduleCount')) -or
+            ($PSBoundParameters.ContainsKey('ScheduleCount') -and -not $PSBoundParameters.ContainsKey('ScheduleInterval')))
         {
-            $newSchedule = @{
-                RecurInterval = $PollingSchedule.RecurInterval
-                RecurCount    = $PollingSchedule.RecurCount
-            }
-
-            $desiredPollingSchedule = New-CMSchedule @newSchedule
-
-            $currentSchedule = @{
-                RecurInterval = $state.PollingSchedule.RecurInterval
-                RecurCount    = $state.PollingSchedule.RecurCount
-            }
-
-            $stateSchedule = New-CMSchedule @currentSchedule
-
-            $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-
-            foreach ($item in $array)
+            Write-Warning -Message $script:localizedData.IntervalCountTest
+            $result = $false
+        }
+        elseif ($PSBoundParameters.ContainsKey('ScheduleInterval') -and $PSBoundParameters.ContainsKey('ScheduleCount'))
+        {
+            if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
             {
-                if ($desiredPollingSchedule.$($item) -ne $stateSchedule.$($item))
-                {
-                    Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                        -f $item, $($desiredPollingSchedule.$($item)), $($stateSchedule.$($item)))
-                    $result = $false
-                }
+                Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                $scheduleCheck = 31
+            }
+            elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+            {
+                Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                $scheduleCheck = 23
+            }
+            else
+            {
+                $scheduleCheck = $ScheduleCount
+            }
+
+            if ($ScheduleInterval -ne $state.ScheduleInterval)
+            {
+                Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $State.ScheduleInterval)
+                $result = $false
+            }
+
+            if ($scheduleCheck -ne $state.ScheduleCount)
+            {
+                Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $State.ScheduleCount)
+                $result = $false
             }
         }
     }

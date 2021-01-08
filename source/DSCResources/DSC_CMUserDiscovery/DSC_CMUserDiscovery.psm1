@@ -224,15 +224,43 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($ScheduleInterval))
             {
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                elseif (($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60) -or ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -le 4))
+                {
+                    if ($ScheduleCount -ge 60)
+                    {
+                        Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 59
+                    }
+                    else
+                    {
+                        Write-Warning -Message ($script:localizedData.MinIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 5
+                    }
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
                 if ($ScheduleInterval -ne $state.ScheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.UIntervalSet -f $ScheduleInterval)
                     $setSchedule = $true
                 }
 
-                if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
+                if (($ScheduleInterval -ne 'None') -and ($scheduleCheck -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.UCountSet -f $ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.UCountSet -f $ScheduleCheck)
                     $setSchedule = $true
                 }
 
@@ -246,7 +274,7 @@ function Set-TargetResource
                     {
                         $pScheduleSet = @{
                             RecurInterval = $ScheduleInterval
-                            RecurCount    = $ScheduleCount
+                            RecurCount    = $ScheduleCheck
                         }
 
                         $pschedule = New-CMSchedule @pScheduleSet
@@ -352,7 +380,7 @@ function Set-TargetResource
 
 <#
     .SYNOPSIS
-        This will set the desired state.
+        This will test the desired state.
 
     .PARAMETER SiteCode
         Specifies the site code for Configuration Manager site.
@@ -447,20 +475,48 @@ function Test-TargetResource
         {
             if ($ScheduleInterval -ne 'None' -and -not $PSBoundParameters.ContainsKey('ScheduleCount'))
             {
-                Write-Warning -Message $script:localizedData.IntervalCount
+                Write-Verbose -Message $script:localizedData.IntervalCount
                 $result = $false
             }
             else
             {
-                if ($ScheduleInterval -ne $state.SCheduleInterval)
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                elseif (($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60) -or ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -le 4))
+                {
+                    if ($ScheduleCount -ge 60)
+                    {
+                        Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 59
+                    }
+                    else
+                    {
+                        Write-Warning -Message ($script:localizedData.MinIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 5
+                    }
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
+                if ($ScheduleInterval -ne $state.ScheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.UIntervalTest -f $ScheduleInterval, $State.ScheduleInterval)
                     $result = $false
                 }
 
-                if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
+                if (($ScheduleInterval -ne 'None') -and ($ScheduleCheck -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.UCountTest -f $ScheduleCount, $State.ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.UCountTest -f $scheduleCheck, $State.ScheduleCount)
                     $result = $false
                 }
             }
