@@ -1,0 +1,15 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSoftwareDistributionComponent")]
+class DSC_CMSoftwareDistributionComponent : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Write, Description("Specifies a maximum number of packages for concurrent distribution.")] UInt32 MaximumPackageCount;
+    [Write, Description("Specifies a maximum thread count per package for concurrent distribution.")] UInt32 MaximumThreadCountPerPackage;
+    [Write, Description("Specifies the retry count for a package distribution.")] UInt32 RetryCount;
+    [Write, Description("Specifies the retry delay, in minutes, for a failed package distribution.")] UInt32 DelayBeforeRetryingMins;
+    [Write, Description("Specifies the retry count for a multicast distribution.")] UInt32 MulticastRetryCount;
+    [Write, Description("Specifies the retry delay, in minutes, for a failed multicast distribution.")] UInt32 MulticastDelayBeforeRetryingMins;
+    [Write, Description("Specifies if the computer account should be used instead of Network Access account.")] Boolean ClientComputerAccount;
+    [Write, Description("Specifies an array of accounts to exactly match for Network Access list with software distribution.")] String AccessAccounts[];
+    [Write, Description("Specifies an array of accounts to add to the Network Access account list.")] String AccessAccountsToInclude[];
+    [Write, Description("Specifies an array of accounts to exclude from the Network Access account list.")] String AccessAccountsToExclude[];
+};
