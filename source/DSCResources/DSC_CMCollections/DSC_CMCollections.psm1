@@ -314,7 +314,7 @@ function Set-TargetResource
                 $paramsToCheck = @('Comment','RefreshType')
             }
 
-            foreach($param in $PSBoundParameters.GetEnumerator())
+            foreach ($param in $PSBoundParameters.GetEnumerator())
             {
                 if ($paramsToCheck -contains $param.Key)
                 {
