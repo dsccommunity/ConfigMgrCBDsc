@@ -451,14 +451,19 @@ you are using apply and auto correct.
 - **[Boolean] Enabled** _(Required)_: Specifies the enablement of the forest
   discovery method. If settings is set to $false no other value provided will be
   evaluated for compliance.
-- **[EmbeddedInstance] PollingSchedule** _(Write)_: Contains the polling
-  schedule for Configuration Manager (RecurInterval, RecurCount).
 - **[Boolean] EnableActiveDirectorySiteBoundaryCreation** _(Write)_: Indicates
   whether Configuration Manager creates Active Directory boundaries from AD DS
   discovery information.
 - **[Boolean] EnableSubnetBoundaryCreation** _(Write)_: Indicates whether
   Configuration Manager creates IP address range boundaries from AD DS discovery
   information.
+- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
+  event recurs in hours and days.
+  - Values include: { Hours | Days }
+- **[String] ScheduleCount** _(Write)_: Specifies how often the recur interval
+  is run. If hours are specified the max value is 23. Anything over 23 will result
+  in 23 to be set. If days are specified the max value is 31. Anything over 31 will
+  result in 31 to be set.
 
 #### CMForestDiscovery Examples
 

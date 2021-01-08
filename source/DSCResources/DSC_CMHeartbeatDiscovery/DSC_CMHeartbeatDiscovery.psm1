@@ -115,17 +115,32 @@ function Set-TargetResource
                 throw $script:localizedData.IntervalCount
             }
 
-            if ($PSBoundParameters.ContainsKey('ScheduleInterval'))
+            if ($PSBoundParameters.ContainsKey('ScheduleInterval') -and $PSBoundParameters.ContainsKey('ScheduleCount'))
             {
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
                 if ($ScheduleInterval -ne $state.ScheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.SIntervalSet -f $ScheduleInterval)
                     $setSchedule = $true
                 }
 
-                if ($ScheduleCount -ne $state.ScheduleCount)
+                if ($scheduleCheck -ne $state.ScheduleCount)
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountSet -f $ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.SCountSet -f $scheduleCheck)
                     $setSchedule = $true
                 }
 
@@ -133,7 +148,7 @@ function Set-TargetResource
                 {
                     $pScheduleSet = @{
                         RecurInterval = $ScheduleInterval
-                        RecurCount    = $ScheduleCount
+                        RecurCount    = $scheduleCheck
                     }
 
                     $pschedule = New-CMSchedule @pScheduleSet
@@ -222,15 +237,30 @@ function Test-TargetResource
 
     if ($PSBoundParameters.ContainsKey('ScheduleInterval') -and $PSBoundParameters.ContainsKey('ScheduleCount'))
     {
-        if ($ScheduleInterval -ne $state.SCheduleInterval)
+        if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+        {
+            Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+            $scheduleCheck = 31
+        }
+        elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+        {
+            Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+            $scheduleCheck = 23
+        }
+        else
+        {
+            $scheduleCheck = $ScheduleCount
+        }
+
+        if ($ScheduleInterval -ne $state.ScheduleInterval)
         {
             Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $State.ScheduleInterval)
             $result = $false
         }
 
-        if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
+        if ($scheduleCheck -ne $state.ScheduleCount)
         {
-            Write-Verbose -Message ($script:localizedData.SCountTest -f $ScheduleCount, $State.ScheduleCount)
+            Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $State.ScheduleCount)
             $result = $false
         }
     }
