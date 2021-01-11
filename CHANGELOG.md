@@ -89,6 +89,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated CMHeartbeatDiscovery to warn when exceeding max allowed hours or days.
 - Updated CMUserDiscovery to warn when exceeding max allowed hours or days or minutes
   and when specifying under the minimum allowed minutes.
+- Updated CMSystemDiscovery to warn when exceeding max allowed hours or days or minutes
+  and when specifying under the minimum allowed minutes.
 
 ### Removed
 

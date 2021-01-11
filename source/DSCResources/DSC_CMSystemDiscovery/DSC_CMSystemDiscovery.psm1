@@ -174,6 +174,7 @@ function Set-TargetResource
         $EnableFilteringExpiredLogon,
 
         [Parameter()]
+        [ValidateRange(14,720)]
         [UInt32]
         $TimeSinceLastLogonDays,
 
@@ -182,6 +183,7 @@ function Set-TargetResource
         $EnableFilteringExpiredPassword,
 
         [Parameter()]
+        [ValidateRange(30,720)]
         [UInt32]
         $TimeSinceLastPasswordUpdateDays,
 
@@ -265,15 +267,43 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($ScheduleInterval))
             {
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                elseif (($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60) -or ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -le 4))
+                {
+                    if ($ScheduleCount -ge 60)
+                    {
+                        Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 59
+                    }
+                    else
+                    {
+                        Write-Warning -Message ($script:localizedData.MinIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 5
+                    }
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
                 if ($ScheduleInterval -ne $state.ScheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.SIntervalSet -f $ScheduleInterval)
                     $setSchedule = $true
                 }
 
-                if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
+                if (($ScheduleInterval -ne 'None') -and ($scheduleCheck -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountSet -f $ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.SCountSet -f $scheduleCheck)
                     $setSchedule = $true
                 }
 
@@ -287,7 +317,7 @@ function Set-TargetResource
                     {
                         $pScheduleSet = @{
                             RecurInterval = $ScheduleInterval
-                            RecurCount    = $ScheduleCount
+                            RecurCount    = $scheduleCheck
                         }
 
                         $pschedule = New-CMSchedule @pScheduleSet
@@ -471,6 +501,7 @@ function Test-TargetResource
         $EnableFilteringExpiredLogon,
 
         [Parameter()]
+        [ValidateRange(14,720)]
         [UInt32]
         $TimeSinceLastLogonDays,
 
@@ -479,6 +510,7 @@ function Test-TargetResource
         $EnableFilteringExpiredPassword,
 
         [Parameter()]
+        [ValidateRange(30,720)]
         [UInt32]
         $TimeSinceLastPasswordUpdateDays,
 
@@ -529,15 +561,43 @@ function Test-TargetResource
             }
             else
             {
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                elseif (($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60) -or ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -le 4))
+                {
+                    if ($ScheduleCount -ge 60)
+                    {
+                        Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 59
+                    }
+                    else
+                    {
+                        Write-Warning -Message ($script:localizedData.MinIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 5
+                    }
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
                 if ($ScheduleInterval -ne $state.SCheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $State.ScheduleInterval)
                     $result = $false
                 }
 
-                if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
+                if (($ScheduleInterval -ne 'None') -and ($scheduleCheck -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountTest -f $ScheduleCount, $State.ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $State.ScheduleCount)
                     $result = $false
                 }
             }
