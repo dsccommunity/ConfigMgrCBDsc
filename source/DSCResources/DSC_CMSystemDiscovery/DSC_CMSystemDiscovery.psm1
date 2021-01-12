@@ -277,7 +277,7 @@ function Set-TargetResource
                     Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
                     $scheduleCheck = 23
                 }
-                elseif (($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60) -or ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -le 4))
+                elseif (($ScheduleInterval -eq 'Minutes') -and ($ScheduleCount -ge 60 -or $ScheduleCount -le 4))
                 {
                     if ($ScheduleCount -ge 60)
                     {
@@ -571,7 +571,7 @@ function Test-TargetResource
                     Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
                     $scheduleCheck = 23
                 }
-                elseif (($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60) -or ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -le 4))
+                elseif (($ScheduleInterval -eq 'Minutes') -and ($ScheduleCount -ge 60 -or $ScheduleCount -le 4))
                 {
                     if ($ScheduleCount -ge 60)
                     {
