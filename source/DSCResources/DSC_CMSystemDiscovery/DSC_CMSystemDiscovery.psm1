@@ -329,73 +329,30 @@ function Set-TargetResource
                 }
             }
 
-            if (($ADContainers) -or ($ADContainersToInclude))
+            if ($ADContainers -or $ADContainersToInclude -or $ADContainersToExclude)
             {
-                if ($ADContainers)
-                {
-                    $includes = $ADContainers
-                }
-                else
-                {
-                    $includes = $ADContainersToInclude
+                $containersArray = @{
+                    Match        = $ADContainers
+                    Include      = $ADContainersToInclude
+                    Exclude      = $ADContainersToExclude
+                    CurrentState = $state.ADContainers
                 }
 
-                foreach ($adContainer in $includes)
-                {
-                    if ($state.ADContainers -notcontains $adContainer)
-                    {
-                        Write-Verbose -Message ($script:localizedData.AddADContainer -f $adContainer)
-                        [array]$addAdContainers += $adContainer
-                    }
-                }
+                $containersCompare = Compare-MultipleCompares @containersArray
 
-                if (-not [string]::IsNullOrEmpty($addAdContainers))
+                if ($containersCompare.Missing)
                 {
+                    Write-Verbose -Message ($script:localizedData.ADContainerMissing -f ($containersCompare.Missing | Out-String))
                     $buildingParams += @{
-                        AddActiveDirectoryContainer = $addAdContainers
+                        AddActiveDirectoryContainer = $containersCompare.Missing
                     }
                 }
-            }
 
-            if (($ADContainers) -or ($ADContainersToExclude))
-            {
-                if (-not [string]::IsNullOrEmpty($state.ADContainers))
+                if ($containersCompare.Remove)
                 {
-                    if ($ADContainers)
-                    {
-                        $excludes = $ADContainers
-                    }
-                    else
-                    {
-                        $excludes = $ADContainersToExclude
-                    }
-
-                    $compares = Compare-Object -ReferenceObject $state.ADContainers -DifferenceObject $excludes -IncludeEqual
-                    foreach ($compare in $compares)
-                    {
-                        if ($ADContainers)
-                        {
-                            if ($compare.SideIndicator -eq '<=')
-                            {
-                                Write-Verbose -Message ($script:localizedData.RemoveADContainer -f $compare.InputObject)
-                                [array]$removeADContainers += $compare.InputObject
-                            }
-                        }
-                        else
-                        {
-                            if ($compare.SideIndicator -eq '==')
-                            {
-                                Write-Verbose -Message ($script:localizedData.RemoveADContainer -f $compare.InputObject)
-                                [array]$removeADContainers += $compare.InputObject
-                            }
-                        }
-                    }
-
-                    if (-not [string]::IsNullOrEmpty($removeADContainers))
-                    {
-                        $buildingParams += @{
-                            RemoveActiveDirectoryContainer = $removeADContainers
-                        }
+                    Write-Verbose -Message ($script:localizedData.ADContainerExtra -f ($containersCompare.Remove | Out-String))
+                    $buildingParams += @{
+                        RemoveActiveDirectoryContainer = $containersCompare.Remove
                     }
                 }
             }
@@ -609,76 +566,49 @@ function Test-TargetResource
             Write-Warning -Message $script:localizedData.DeltaNoInterval
         }
 
-        if ($ADContainersToInclude -and $ADContainersToExclude)
+        if ($PSBoundParameters.ContainsKey('ADContainers'))
+        {
+            if ($PSBoundParameters.ContainsKey('ADContainersToInclude') -or
+                $PSBoundParameters.ContainsKey('ADContainersToExclude'))
+            {
+                Write-Warning -Message $script:localizedData.ADIgnore
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey('ADContainers') -and
+                $PSBoundParameters.ContainsKey('ADContainersToInclude') -and
+                $PSBoundParameters.ContainsKey('ADContainersToExclude'))
         {
             foreach ($item in $ADContainersToInclude)
             {
                 if ($ADContainersToExclude -contains $item)
                 {
                     Write-Warning -Message ($script:localizedData.ContainersInEx -f $item)
-                }
-            }
-        }
-
-        if (($ADContainers) -or ($ADContainersToInclude))
-        {
-            if ($ADContainers)
-            {
-                if ($PSBoundParameters.ContainsKey('ADContainersToInclude') -or
-                   $PSBoundParameters.ContainsKey('ADContainersToExclude'))
-                {
-                    Write-Warning -Message $script:localizedData.ADIgnore
-                }
-                $includes = $ADContainers
-            }
-            else
-            {
-                $includes = $ADContainersToInclude
-            }
-
-            foreach ($adContainer in $includes)
-            {
-                if ($state.ADContainers -notcontains $adContainer)
-                {
-                    Write-Verbose -Message ($script:localizedData.ExpectedADContainer -f $adContainer)
                     $result = $false
                 }
             }
         }
 
-        if (($ADContainers) -or ($ADContainersToExclude))
+        if ($ADContainers -or $ADContainersToInclude -or $ADContainersToExclude)
         {
-            if (-not [string]::IsNullOrEmpty($state.ADContainers))
-            {
-                if ($ADContainers)
-                {
-                    $excludes = $ADContainers
-                }
-                else
-                {
-                    $excludes = $ADContainersToExclude
-                }
+            $containersArray = @{
+                Match        = $ADContainers
+                Include      = $ADContainersToInclude
+                Exclude      = $ADContainersToExclude
+                CurrentState = $state.ADContainers
+            }
 
-                $compares = Compare-Object -ReferenceObject $state.ADContainers -DifferenceObject $excludes -IncludeEqual
-                foreach ($compare in $compares)
-                {
-                    if ($ADContainers)
-                    {
-                        if ($compare.SideIndicator -eq '<=')
-                        {
-                            Write-Verbose -Message ($script:localizedData.ExcludeADContainer -f $compare.InputObject)
-                            $result = $false
-                        }
-                    }
-                    else
-                    {
-                        if ($compare.SideIndicator -eq '==')
-                        {
-                            Write-Verbose -Message ($script:localizedData.ExcludeADContainer -f $compare.InputObject)
-                            $result = $false
-                        }
-                    }
-                }
+            $containersCompare = Compare-MultipleCompares @containersArray
+
+            if ($containersCompare.Missing)
+            {
+                Write-Verbose -Message ($script:localizedData.ADContainerMissing -f ($containersCompare.Missing | Out-String))
+                $result = $false
+            }
+
+            if ($containersCompare.Remove)
+            {
+                Write-Verbose -Message ($script:localizedData.ADContainerExtra -f ($containersCompare.Remove | Out-String))
+                $result = $false
             }
         }
     }

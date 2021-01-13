@@ -1,7 +1,5 @@
 ConvertFrom-StringData @'
     RetrieveSettingValue  = Getting results for Configuration Manager system discovery method.
-    ExpectedADContainer   = Expected AD Container: {0} to be present.
-    ExcludeADContainer    = Expected AD Container: {0} to be absent.
     IntervalCount         = Invalid parameter usage specifying an Interval and didn't specify count.
     SIntervalTest         = NOT MATCH: Schedule interval expected: {0} returned {1}.
     SCountTest            = NOT MATCH: Schedule count expected: {0} returned {1}.
@@ -10,12 +8,12 @@ ConvertFrom-StringData @'
     SetCommonSettings     = Setting {0} to desired setting {1}.
     SIntervalSet          = Setting Schedule interval to {0}.
     SCountSet             = Setting Schedule count to {0}.
-    AddADContainer        = Adding AD Container: {0}.
-    RemoveADContainer     = Removing AD Container: {0}.
     SetDisabled           = Setting System Discovery to disabled.
     MissingDeltaDiscovery = When changing delta schedule, delta schedule must be enabled.
     ADIgnore              = ADContainers was specified, ADContainersInclude and ADContainersExclude will be ignored.
     ContainersInEx        = ADContainersToExclude and ADContainersToInclude contain to same entry {0}, remove from one of the arrays.
+    ADContainerMissing    = AD Container {0} is missing from configuration manager, adding.
+    ADContainerExtra      = AD Container {0} is expected to absent, removing AD Container.
     DeltaNoInterval       = DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery.
     MaxIntervalDays       = The maximum allowed interval is 31 for days. {0} was specified and will result in the interval being set to 31.
     MaxIntervalHours      = The maximum allowed interval is 23 for hours. {0} was specified and will result in the interval being set to 23.
