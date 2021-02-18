@@ -20165,7 +20165,6 @@ function New-CMMaintenanceWindow
         ${IsEnabled},
 
         [Parameter(Mandatory=$true)]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -42791,7 +42790,6 @@ function Set-CMMaintenanceWindow
         ${IsEnabled},
 
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
