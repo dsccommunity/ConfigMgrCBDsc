@@ -11,7 +11,7 @@ ConvertFrom-StringData @'
     MaxIntervalMins      = The maximum allowed interval is 59 for minutes. {0} was specified and will result in the interval being set to 59.
     SCountTest           = NOT MATCH: Schedule count expected: {0} returned {1}.
     ScheduleType         = Schedule was specified however the RefreshType either specified or currently set does not support a schedule to be set, ignoring setting.
-    ExcludeError         = Exclude rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.
+    ExcludeError         = Exclude rule name {0} already exists as a rule name for another query on the collection, rule names must be unique per collection.
     ExcludeMemberRule    = {0} collection expected Exclude membership rule {1} to be present.
     DirectMemberRule     = {0} collection expected Direct membership rule {1} to be present.
     IncludeError         = Include rule name {0} already exists as a rule name for another query on the collection rule names must be unique per collection.

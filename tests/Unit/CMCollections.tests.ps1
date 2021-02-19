@@ -958,10 +958,10 @@ try
                     }
 
                     $userDirectMembership = @{
-                        SiteCode               = 'Lab'
-                        CollectionName         = 'Test'
-                        CollectionType         = 'User'
-                        DirectMembership       = 'User4'
+                        SiteCode         = 'Lab'
+                        CollectionName   = 'Test'
+                        CollectionType   = 'User'
+                        DirectMembership = 'User4'
                     }
 
                     $collectionTypeError = 'Desired collection type is User and currently is Device, if specified collection type is correct the collection will need deleted prior to creating a new collection.'

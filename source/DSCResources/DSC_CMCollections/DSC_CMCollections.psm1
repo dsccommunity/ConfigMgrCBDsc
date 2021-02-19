@@ -362,7 +362,7 @@ function Set-TargetResource
                             $scheduleCheck = $ScheduleCount
                         }
 
-                        if ($ScheduleCount -ne $state.ScheduleCount)
+                        if ($scheduleCheck -ne $state.ScheduleCount)
                         {
                             Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
                             $setSchedule = $true
@@ -379,7 +379,7 @@ function Set-TargetResource
                         {
                             $pScheduleSet = @{
                                 RecurInterval = $ScheduleInterval
-                                RecurCount    = $setSchedule
+                                RecurCount    = $scheduleCheck
                             }
 
                             $pschedule = New-CMSchedule @pScheduleSet
@@ -465,7 +465,7 @@ function Set-TargetResource
 
                             Write-Verbose -Message ($script:localizedData.IncludeMemberRule -f $CollectionName, $member)
 
-                            if ((Get-CMCollection -Name $member -CollectionType $CollectionType))
+                            if (Get-CMCollection -Name $member -CollectionType $CollectionType)
                             {
                                 if ($CollectionType -eq 'User')
                                 {
@@ -819,7 +819,7 @@ function Test-TargetResource
                                 $scheduleCheck = $ScheduleCount
                             }
 
-                            if ($ScheduleCount -ne $state.ScheduleCount)
+                            if ($scheduleCheck -ne $state.ScheduleCount)
                             {
                                 Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
                                 $result = $false
