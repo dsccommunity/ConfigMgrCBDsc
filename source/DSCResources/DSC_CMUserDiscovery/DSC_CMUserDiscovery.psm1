@@ -141,7 +141,7 @@ function Set-TargetResource
         $EnableDeltaDiscovery,
 
         [Parameter()]
-        [ValidateRange(1,60)]
+        [ValidateRange(5,60)]
         [UInt32]
         $DeltaDiscoveryMins,
 
@@ -430,7 +430,7 @@ function Test-TargetResource
         $EnableDeltaDiscovery,
 
         [Parameter()]
-        [ValidateRange(1,60)]
+        [ValidateRange(5,60)]
         [UInt32]
         $DeltaDiscoveryMins,
 
