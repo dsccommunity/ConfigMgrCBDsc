@@ -165,7 +165,7 @@ function Set-TargetResource
         $EnableDeltaDiscovery,
 
         [Parameter()]
-        [ValidateRange(1,60)]
+        [ValidateRange(5,60)]
         [UInt32]
         $DeltaDiscoveryMins,
 
@@ -174,6 +174,7 @@ function Set-TargetResource
         $EnableFilteringExpiredLogon,
 
         [Parameter()]
+        [ValidateRange(14,720)]
         [UInt32]
         $TimeSinceLastLogonDays,
 
@@ -182,6 +183,7 @@ function Set-TargetResource
         $EnableFilteringExpiredPassword,
 
         [Parameter()]
+        [ValidateRange(30,720)]
         [UInt32]
         $TimeSinceLastPasswordUpdateDays,
 
@@ -265,15 +267,43 @@ function Set-TargetResource
 
             if (-not [string]::IsNullOrEmpty($ScheduleInterval))
             {
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                elseif (($ScheduleInterval -eq 'Minutes') -and ($ScheduleCount -ge 60 -or $ScheduleCount -le 4))
+                {
+                    if ($ScheduleCount -ge 60)
+                    {
+                        Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 59
+                    }
+                    else
+                    {
+                        Write-Warning -Message ($script:localizedData.MinIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 5
+                    }
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
                 if ($ScheduleInterval -ne $state.ScheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.SIntervalSet -f $ScheduleInterval)
                     $setSchedule = $true
                 }
 
-                if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
+                if (($ScheduleInterval -ne 'None') -and ($scheduleCheck -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountSet -f $ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.SCountSet -f $scheduleCheck)
                     $setSchedule = $true
                 }
 
@@ -287,7 +317,7 @@ function Set-TargetResource
                     {
                         $pScheduleSet = @{
                             RecurInterval = $ScheduleInterval
-                            RecurCount    = $ScheduleCount
+                            RecurCount    = $scheduleCheck
                         }
 
                         $pschedule = New-CMSchedule @pScheduleSet
@@ -299,73 +329,30 @@ function Set-TargetResource
                 }
             }
 
-            if (($ADContainers) -or ($ADContainersToInclude))
+            if ($ADContainers -or $ADContainersToInclude -or $ADContainersToExclude)
             {
-                if ($ADContainers)
-                {
-                    $includes = $ADContainers
-                }
-                else
-                {
-                    $includes = $ADContainersToInclude
+                $containersArray = @{
+                    Match        = $ADContainers
+                    Include      = $ADContainersToInclude
+                    Exclude      = $ADContainersToExclude
+                    CurrentState = $state.ADContainers
                 }
 
-                foreach ($adContainer in $includes)
-                {
-                    if ($state.ADContainers -notcontains $adContainer)
-                    {
-                        Write-Verbose -Message ($script:localizedData.AddADContainer -f $adContainer)
-                        [array]$addAdContainers += $adContainer
-                    }
-                }
+                $containersCompare = Compare-MultipleCompares @containersArray
 
-                if (-not [string]::IsNullOrEmpty($addAdContainers))
+                if ($containersCompare.Missing)
                 {
+                    Write-Verbose -Message ($script:localizedData.ADContainerMissing -f ($containersCompare.Missing | Out-String))
                     $buildingParams += @{
-                        AddActiveDirectoryContainer = $addAdContainers
+                        AddActiveDirectoryContainer = $containersCompare.Missing
                     }
                 }
-            }
 
-            if (($ADContainers) -or ($ADContainersToExclude))
-            {
-                if (-not [string]::IsNullOrEmpty($state.ADContainers))
+                if ($containersCompare.Remove)
                 {
-                    if ($ADContainers)
-                    {
-                        $excludes = $ADContainers
-                    }
-                    else
-                    {
-                        $excludes = $ADContainersToExclude
-                    }
-
-                    $compares = Compare-Object -ReferenceObject $state.ADContainers -DifferenceObject $excludes -IncludeEqual
-                    foreach ($compare in $compares)
-                    {
-                        if ($ADContainers)
-                        {
-                            if ($compare.SideIndicator -eq '<=')
-                            {
-                                Write-Verbose -Message ($script:localizedData.RemoveADContainer -f $compare.InputObject)
-                                [array]$removeADContainers += $compare.InputObject
-                            }
-                        }
-                        else
-                        {
-                            if ($compare.SideIndicator -eq '==')
-                            {
-                                Write-Verbose -Message ($script:localizedData.RemoveADContainer -f $compare.InputObject)
-                                [array]$removeADContainers += $compare.InputObject
-                            }
-                        }
-                    }
-
-                    if (-not [string]::IsNullOrEmpty($removeADContainers))
-                    {
-                        $buildingParams += @{
-                            RemoveActiveDirectoryContainer = $removeADContainers
-                        }
+                    Write-Verbose -Message ($script:localizedData.ADContainerExtra -f ($containersCompare.Remove | Out-String))
+                    $buildingParams += @{
+                        RemoveActiveDirectoryContainer = $containersCompare.Remove
                     }
                 }
             }
@@ -462,7 +449,7 @@ function Test-TargetResource
         $EnableDeltaDiscovery,
 
         [Parameter()]
-        [ValidateRange(1,60)]
+        [ValidateRange(5,60)]
         [UInt32]
         $DeltaDiscoveryMins,
 
@@ -471,6 +458,7 @@ function Test-TargetResource
         $EnableFilteringExpiredLogon,
 
         [Parameter()]
+        [ValidateRange(14,720)]
         [UInt32]
         $TimeSinceLastLogonDays,
 
@@ -479,6 +467,7 @@ function Test-TargetResource
         $EnableFilteringExpiredPassword,
 
         [Parameter()]
+        [ValidateRange(30,720)]
         [UInt32]
         $TimeSinceLastPasswordUpdateDays,
 
@@ -529,15 +518,43 @@ function Test-TargetResource
             }
             else
             {
+                if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
+                    $scheduleCheck = 31
+                }
+                elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
+                    $scheduleCheck = 23
+                }
+                elseif (($ScheduleInterval -eq 'Minutes') -and ($ScheduleCount -ge 60 -or $ScheduleCount -le 4))
+                {
+                    if ($ScheduleCount -ge 60)
+                    {
+                        Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 59
+                    }
+                    else
+                    {
+                        Write-Warning -Message ($script:localizedData.MinIntervalMins -f $ScheduleCount)
+                        $scheduleCheck = 5
+                    }
+                }
+                else
+                {
+                    $scheduleCheck = $ScheduleCount
+                }
+
                 if ($ScheduleInterval -ne $state.SCheduleInterval)
                 {
                     Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $State.ScheduleInterval)
                     $result = $false
                 }
 
-                if (($ScheduleInterval -ne 'None') -and ($ScheduleCount -ne $state.ScheduleCount))
+                if (($ScheduleInterval -ne 'None') -and ($scheduleCheck -ne $state.ScheduleCount))
                 {
-                    Write-Verbose -Message ($script:localizedData.SCountTest -f $ScheduleCount, $State.ScheduleCount)
+                    Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $State.ScheduleCount)
                     $result = $false
                 }
             }
@@ -549,76 +566,49 @@ function Test-TargetResource
             Write-Warning -Message $script:localizedData.DeltaNoInterval
         }
 
-        if ($ADContainersToInclude -and $ADContainersToExclude)
+        if ($PSBoundParameters.ContainsKey('ADContainers'))
+        {
+            if ($PSBoundParameters.ContainsKey('ADContainersToInclude') -or
+                $PSBoundParameters.ContainsKey('ADContainersToExclude'))
+            {
+                Write-Warning -Message $script:localizedData.ADIgnore
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey('ADContainers') -and
+                $PSBoundParameters.ContainsKey('ADContainersToInclude') -and
+                $PSBoundParameters.ContainsKey('ADContainersToExclude'))
         {
             foreach ($item in $ADContainersToInclude)
             {
                 if ($ADContainersToExclude -contains $item)
                 {
                     Write-Warning -Message ($script:localizedData.ContainersInEx -f $item)
-                }
-            }
-        }
-
-        if (($ADContainers) -or ($ADContainersToInclude))
-        {
-            if ($ADContainers)
-            {
-                if ($PSBoundParameters.ContainsKey('ADContainersToInclude') -or
-                   $PSBoundParameters.ContainsKey('ADContainersToExclude'))
-                {
-                    Write-Warning -Message $script:localizedData.ADIgnore
-                }
-                $includes = $ADContainers
-            }
-            else
-            {
-                $includes = $ADContainersToInclude
-            }
-
-            foreach ($adContainer in $includes)
-            {
-                if ($state.ADContainers -notcontains $adContainer)
-                {
-                    Write-Verbose -Message ($script:localizedData.ExpectedADContainer -f $adContainer)
                     $result = $false
                 }
             }
         }
 
-        if (($ADContainers) -or ($ADContainersToExclude))
+        if ($ADContainers -or $ADContainersToInclude -or $ADContainersToExclude)
         {
-            if (-not [string]::IsNullOrEmpty($state.ADContainers))
-            {
-                if ($ADContainers)
-                {
-                    $excludes = $ADContainers
-                }
-                else
-                {
-                    $excludes = $ADContainersToExclude
-                }
+            $containersArray = @{
+                Match        = $ADContainers
+                Include      = $ADContainersToInclude
+                Exclude      = $ADContainersToExclude
+                CurrentState = $state.ADContainers
+            }
 
-                $compares = Compare-Object -ReferenceObject $state.ADContainers -DifferenceObject $excludes -IncludeEqual
-                foreach ($compare in $compares)
-                {
-                    if ($ADContainers)
-                    {
-                        if ($compare.SideIndicator -eq '<=')
-                        {
-                            Write-Verbose -Message ($script:localizedData.ExcludeADContainer -f $compare.InputObject)
-                            $result = $false
-                        }
-                    }
-                    else
-                    {
-                        if ($compare.SideIndicator -eq '==')
-                        {
-                            Write-Verbose -Message ($script:localizedData.ExcludeADContainer -f $compare.InputObject)
-                            $result = $false
-                        }
-                    }
-                }
+            $containersCompare = Compare-MultipleCompares @containersArray
+
+            if ($containersCompare.Missing)
+            {
+                Write-Verbose -Message ($script:localizedData.ADContainerMissing -f ($containersCompare.Missing | Out-String))
+                $result = $false
+            }
+
+            if ($containersCompare.Remove)
+            {
+                Write-Verbose -Message ($script:localizedData.ADContainerExtra -f ($containersCompare.Remove | Out-String))
+                $result = $false
             }
         }
     }
