@@ -81,27 +81,8 @@ function Get-TargetResource
 
         if ($collection.RefreshType -eq 2 -or $collection.RefreshType -eq 6)
         {
-            $cSchedule = $collection.RefreshSchedule
-
-            if ($cSchedule.DaySpan -gt 0)
-            {
-                $rInterval = 'Days'
-                $rCount = $cSchedule.DaySpan
-            }
-            elseif ($cSchedule.HourSpan -gt 0)
-            {
-                $rInterval = 'Hours'
-                $rCount = $cSchedule.HourSpan
-            }
-            elseif ($cSchedule.MinuteSpan -gt 0)
-            {
-                $rInterval = 'Minutes'
-                $rCount = $cSchedule.MinuteSpan
-            }
-            else
-            {
-                $rInterval = 'None'
-            }
+            $cSchedule = Convert-CMSchedule -InputObject $collection.RefreshSchedule
+            $schedule = Get-CMSchedule -ScheduleString $cSchedule
         }
 
         if ($rules)
@@ -130,8 +111,12 @@ function Get-TargetResource
         Comment                = $collection.Comment
         CollectionType         = $type
         LimitingCollectionName = $collection.LimitToCollectionName
-        ScheduleInterval       = $rInterval
-        ScheduleCount          = $rCount
+        Start                  = $schedule.Start
+        ScheduleType           = $schedule.ScheduleType
+        DayOfWeek              = $schedule.DayofWeek
+        MonthlyWeekOrder       = $schedule.WeekOrder
+        DayofMonth             = $schedule.MonthDay
+        RecurInterval          = $schedule.RecurInterval
         RefreshType            = $refresh
         QueryRules             = $cimcollection
         ExcludeMembership      = $excludes
@@ -161,13 +146,24 @@ function Get-TargetResource
     .PARAMETER Comment
         Specifies a comment for the collection.
 
-    .PARAMETER ScheduleInterval
-        Specifies the time when the scheduled event recurs none, minutes, hours and days.
+    .PARAMETER Start
+        Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.
 
-    .PARAMETER ScheduleCount
-        Specifies how often the recur interval is run. If hours are specified the max value
-        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
-        is 31. Anything over 31 will result in 31 to be set.
+    .PARAMETER ScheduleType
+        Specifies the schedule type for the maintenance window.
+
+    .PARAMETER RecurInterval
+        Specifies how often the ScheduleType is run.
+
+    .PARAMETER MonthlyByWeek
+        Specifies week order for MonthlyByWeek schedule type.
+
+    .PARAMETER DayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
+
+    .PARAMETER DayOfMonth
+        Specifies the day number for MonthlyByDay schedules.
+        Note specifying 0 sets the schedule to run the last day of the month.
 
     .PARAMETER RefreshType
         Specifies how Configuration Manager refreshes the collection.
@@ -217,13 +213,32 @@ function Set-TargetResource
         $Comment,
 
         [Parameter()]
-        [ValidateSet('None','Minutes','Hours','Days')]
         [String]
-        $ScheduleInterval,
+        $Start,
+
+        [Parameter()]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','Hours','Minutes','None')]
+        [String]
+        $ScheduleType,
 
         [Parameter()]
         [UInt32]
-        $ScheduleCount,
+        $RecurInterval,
+
+        [Parameter()]
+        [ValidateSet('First','Second','Third','Fourth','Last')]
+        [String]
+        $MonthlyWeekOrder,
+
+        [Parameter()]
+        [ValidateSet('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')]
+        [String]
+        $DayOfWeek,
+
+        [Parameter()]
+        [ValidateRange(0,31)]
+        [UInt32]
+        $DayOfMonth,
 
         [Parameter()]
         [ValidateSet('Manual','Periodic','Continuous','Both')]
@@ -275,12 +290,6 @@ function Set-TargetResource
             }
         }
 
-        if (($PSBoundParameters.ContainsKey('ScheduleInterval')) -and ($ScheduleInterval -ne 'None' -and
-            -not $PSBoundParameters.ContainsKey('ScheduleCount')))
-        {
-            throw $script:localizedData.IntervalCount
-        }
-
         if ($Ensure -eq 'Present')
         {
             if ($state.Ensure -eq 'Absent')
@@ -329,70 +338,30 @@ function Set-TargetResource
                 }
             }
 
-            if (-not [string]::IsNullOrEmpty($ScheduleInterval))
+            if ($ScheduleType)
             {
-                if ((($PSBoundParameters.ContainsKey('RefreshType')) -and ($RefreshType -eq 'Periodic' -or $RefreshType -eq 'Both')) -or
-                    (([string]::IsNullOrEmpty($RefreshType)) -and ($state.RefreshType -eq 'Periodic' -or $state.RefreshType -eq 'Both')))
+                $valuesToValidate = @('ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
+                foreach ($item in $valuesToValidate)
                 {
-                    if ($ScheduleInterval -ne $state.ScheduleInterval)
+                    if ($PSBoundParameters.ContainsKey($item))
                     {
-                        Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $state.ScheduleInterval)
-                        $setSchedule = $true
-                    }
-
-                    if ($ScheduleInterval -ne 'None')
-                    {
-                        if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
-                        {
-                            Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
-                            $scheduleCheck = 31
-                        }
-                        elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
-                        {
-                            Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
-                            $scheduleCheck = 23
-                        }
-                        elseif ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60)
-                        {
-                            Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
-                            $scheduleCheck = 59
-                        }
-                        else
-                        {
-                            $scheduleCheck = $ScheduleCount
-                        }
-
-                        if ($scheduleCheck -ne $state.ScheduleCount)
-                        {
-                            Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
-                            $setSchedule = $true
-                        }
-                    }
-
-                    if ($setSchedule -eq $true)
-                    {
-                        if ($ScheduleInterval -eq 'None')
-                        {
-                            $pschedule = New-CMSchedule -Nonrecurring
-                        }
-                        else
-                        {
-                            $pScheduleSet = @{
-                                RecurInterval = $ScheduleInterval
-                                RecurCount    = $scheduleCheck
-                            }
-
-                            $pschedule = New-CMSchedule @pScheduleSet
-                        }
-
-                        $buildingParams += @{
-                            RefreshSchedule = $pSchedule
+                        $scheduleCheck += @{
+                            $item = $PSBoundParameters[$item]
                         }
                     }
                 }
-                else
-                {
-                    Write-Warning -Message $script:localizedData.ScheduleType
+
+                $schedResult = Test-CMSchedule @scheduleCheck -State $state
+            }
+
+            if ($schedResult -eq $false)
+            {
+                $sched = Set-CMSchedule @scheduleCheck
+                $newSchedule = New-CMSchedule @sched
+
+                Write-Verbose -Message $script:localizedData.NewSchedule
+                $buildingParams += @{
+                    RefreshSchedule = $newSchedule
                 }
             }
 
@@ -643,13 +612,24 @@ function Set-TargetResource
     .PARAMETER Comment
         Specifies a comment for the collection.
 
-    .PARAMETER ScheduleInterval
-        Specifies the time when the scheduled event recurs none, minutes, hours and days.
+    .PARAMETER Start
+        Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.
 
-    .PARAMETER ScheduleCount
-        Specifies how often the recur interval is run. If hours are specified the max value
-        is 23. Anything over 23 will result in 23 to be set. If days are specified the max value
-        is 31. Anything over 31 will result in 31 to be set.
+    .PARAMETER ScheduleType
+        Specifies the schedule type for the maintenance window.
+
+    .PARAMETER RecurInterval
+        Specifies how often the ScheduleType is run.
+
+    .PARAMETER MonthlyByWeek
+        Specifies week order for MonthlyByWeek schedule type.
+
+    .PARAMETER DayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
+
+    .PARAMETER DayOfMonth
+        Specifies the day number for MonthlyByDay schedules.
+        Note specifying 0 sets the schedule to run the last day of the month.
 
     .PARAMETER RefreshType
         Specifies how Configuration Manager refreshes the collection.
@@ -700,13 +680,32 @@ function Test-TargetResource
         $Comment,
 
         [Parameter()]
-        [ValidateSet('None','Minutes','Hours','Days')]
         [String]
-        $ScheduleInterval,
+        $Start,
+
+        [Parameter()]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','Hours','Minutes','None')]
+        [String]
+        $ScheduleType,
 
         [Parameter()]
         [UInt32]
-        $ScheduleCount,
+        $RecurInterval,
+
+        [Parameter()]
+        [ValidateSet('First','Second','Third','Fourth','Last')]
+        [String]
+        $MonthlyWeekOrder,
+
+        [Parameter()]
+        [ValidateSet('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')]
+        [String]
+        $DayOfWeek,
+
+        [Parameter()]
+        [ValidateRange(0,31)]
+        [UInt32]
+        $DayOfMonth,
 
         [Parameter()]
         [ValidateSet('Manual','Periodic','Continuous','Both')]
@@ -760,7 +759,7 @@ function Test-TargetResource
                 ValuesToCheck = @('Comment','RefreshType','LimitingCollectionName')
             }
 
-            $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
+            $mainState = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
 
             if ($state.CollectionType -ne $CollectionType)
             {
@@ -779,58 +778,20 @@ function Test-TargetResource
                 }
             }
 
-            if ($PSBoundParameters.ContainsKey('ScheduleInterval'))
+            if ($ScheduleType)
             {
-                if ((($PSBoundParameters.ContainsKey('RefreshType')) -and ($RefreshType -eq 'Periodic' -or $RefreshType -eq 'Both')) -or
-                    (([string]::IsNullOrEmpty($RefreshType)) -and ($state.RefreshType -eq 'Periodic' -or $state.RefreshType -eq 'Both')))
+                $valuesToValidate = @('ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
+                foreach ($item in $valuesToValidate)
                 {
-                    if ($ScheduleInterval -ne 'None' -and -not $PSBoundParameters.ContainsKey('ScheduleCount'))
+                    if ($PSBoundParameters.ContainsKey($item))
                     {
-                        Write-Warning -Message $script:localizedData.IntervalCount
-                        $result = $false
-                    }
-                    else
-                    {
-                        if ($ScheduleInterval -ne $state.ScheduleInterval)
-                        {
-                            Write-Verbose -Message ($script:localizedData.SIntervalTest -f $ScheduleInterval, $state.ScheduleInterval)
-                            $result = $false
-                        }
-
-                        if ($ScheduleInterval -ne 'None')
-                        {
-                            if ($ScheduleInterval -eq 'Days' -and $ScheduleCount -ge 32)
-                            {
-                                Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $ScheduleCount)
-                                $scheduleCheck = 31
-                            }
-                            elseif ($ScheduleInterval -eq 'Hours' -and $ScheduleCount -ge 24)
-                            {
-                                Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $ScheduleCount)
-                                $scheduleCheck = 23
-                            }
-                            elseif ($ScheduleInterval -eq 'Minutes' -and $ScheduleCount -ge 60)
-                            {
-                                Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $ScheduleCount)
-                                $scheduleCheck = 59
-                            }
-                            else
-                            {
-                                $scheduleCheck = $ScheduleCount
-                            }
-
-                            if ($scheduleCheck -ne $state.ScheduleCount)
-                            {
-                                Write-Verbose -Message ($script:localizedData.SCountTest -f $scheduleCheck, $state.ScheduleCount)
-                                $result = $false
-                            }
+                        $scheduleCheck += @{
+                            $item = $PSBoundParameters[$item]
                         }
                     }
                 }
-                else
-                {
-                    Write-Warning -Message $script:localizedData.ScheduleType
-                }
+
+                $schedResult = Test-CMSchedule @scheduleCheck -State $state
             }
 
             if (-not [string]::IsNullOrEmpty($ExcludeMembership))
@@ -893,6 +854,15 @@ function Test-TargetResource
                         $result = $false
                     }
                 }
+            }
+
+            if ($mainState -ne $true -or $schedResult -ne $true -or $result -ne $true)
+            {
+                $result = $false
+            }
+            else
+            {
+                $result = $true
             }
         }
     }

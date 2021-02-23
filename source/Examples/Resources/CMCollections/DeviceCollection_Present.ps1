@@ -15,8 +15,10 @@ Configuration Example
             CollectionType         = 'Device'
             LimitingCollectionName = 'All Systems'
             Comment                = 'This is a test device collection'
-            ScheduleInterval       = 'Days'
-            ScheduleCount          = 7
+            ScheduleType           = 'MonthlyByWeek'
+            RecurInterval          = 1
+            MonthlyWeekOrder       = 'Last'
+            DayOfWeek              = 'Friday'
             RefreshType            = 'Both'
             QueryRules             = @(
                 DSC_CMCollectionQueryRules

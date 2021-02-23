@@ -6,8 +6,12 @@ class DSC_CMCollections : OMI_BaseResource
     [Key, Description("Specifies the type of collection."),ValueMap{"User","Device"},Values{"User","Device"}] String CollectionType;
     [Write, Description("Specifies the name of a collection to use as the default scope for this collection.")] String LimitingCollectionName;
     [Write, Description("Specifies a comment for the collection.")] String Comment;
-    [Write, Description("Specifies the time when the schedule event recurs."), ValueMap{"None","Days","Hours","Minutes"}, Values {"None","Days","Hours","Minutes"}] String ScheduleInterval;
-    [Write, Description("Specifies how often the recur interval is run.")] UInt32 ScheduleCount;
+    [Write, Description("Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.")] String Start;
+    [Write, Description("Specifies the schedule type for the maintenance window."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}] String ScheduleType;
+    [Write, Description("Specifies how often the ScheduleType is run.")] UInt32 RecurInterval;
+    [Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String MonthlyWeekOrder;
+    [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
+    [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 DayOfMonth;
     [Write, Description("Specifies how Configuration Manager refreshes the collection."),ValueMap{"Manual","Periodic","Continuous","Both"},Values{"Manual","Periodic","Continuous","Both"}] String RefreshType;
     [Write, Description("Specifies the collection name to exclude members from. If clients are in the excluded collection they will not be added to the collection.")] String ExcludeMembership[];
     [Write, Description("Specifies the collection name to include clients from. Only clients from the included collections can be added to the collection.")] String IncludeMembership[];

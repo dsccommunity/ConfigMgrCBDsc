@@ -401,15 +401,24 @@ you are using apply and auto correct.
 - **[String] LimitingCollectionName** _(Write)_: Specifies the name of a
   collection to use as the default scope for this collection.
 - **[String] Comment** _(Write)_: Specifies a comment for the collection.
-- **[String] ScheduleInterval** _(Write)_: Specifies the time when the scheduled
-  event recurs in never (none), minutes, hours, or days.
-  - Values include: { None| Minutes | Hours | Days }
-- **[String] ScheduleCount** _(Write)_: Specifies how often the recur interval
-  is run. If minutes are specified the above the max value of 59, the will result
-  in the minutes being set to 59. If hours are specified the max value is 23.
-  Anything over 23 will result in 23 to be set. If days are specified the max
-  value is 31. Anything over 31 will result in 31 to be set.
-- **[String] RefreshType** _(Key)_: Specifies how the collection is refreshed.
+- **[String] Start** _(Write)_: Specifies the start date and start time for the maintenance
+  window Month/Day/Year, example 1/1/2020 02:00.
+- **[String] ScheduleType** _(Write)_: Specifies the schedule type for the maintenance
+  window.
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | Hours |
+    Minutes | None }
+- **[UInt32] RecurInterval** _(Write)_: Specifies how often the ScheduleType is run.
+- **[String] MonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
+  schedule type.
+  - Values include: { First | Second | Third | Fourth | Last }
+- **[String] DayOfWeek** _(Write)_: Specifies the day of week name for MonthlyByWeek
+  and Weekly schedules.
+  - Values include: { Sunday | Monday | Tuesday | Wednesday | Thursday | Friday |
+    Saturday }
+- **[UInt32] DayOfMonth** _(Write)_: Specifies the day number for MonthlyByDay schedules.
+  Note specifying 0 sets the schedule to run the last day of the month.
+  - Values Range: 0 - 31
+- **[String] RefreshType** _(Write)_: Specifies how the collection is refreshed.
   { Manual | Periodic | Continuous | Both }.
 - **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the rule
   and the query expression that Configuration Manager uses to update collections.

@@ -112,14 +112,31 @@ try
                     CollectionType        = 2
                     RefreshType           = 6
                     Comment               = 'Test device collection'
+                    #MonthlyByWeek
                     RefreshSchedule       = @{
-                        DayDuration    = 0
-                        DaySpan        = 7
-                        HourDuration   = 0
-                        HourSpan       = 0
-                        MinuteDuration = 0
-                        MinuteSpan     = 0
+                        Day               = 6
+                        DayDuration       = 0
+                        ForNumberOfMonths = 1
+                        HourDuration      = 0
+                        IsGMT             = $false
+                        MinuteDuration    = 0
+                        StartTime         = '2/1/1970 12:00:00 AM'
+                        WeekOrder         = 1
                     }
+                }
+
+                $monthlyByWeekString = '0001200000261200'
+
+                $getMonthlyByWeek = @{
+                    MinuteDuration = $null
+                    RecurInterval  = 1
+                    WeekOrder      = 'First'
+                    HourDuration   = $null
+                    Start          = '2/1/1970 00:00'
+                    DayOfWeek      = 'Friday'
+                    ScheduleType   = 'MonthlyByWeek'
+                    MonthDay       = $null
+                    DayDuration    = $null
                 }
 
                 $deviceCollectionResultMin = @{
@@ -133,25 +150,55 @@ try
                         DaySpan        = 0
                         HourDuration   = 0
                         HourSpan       = 0
+                        IsGMT          = $false
                         MinuteDuration = 0
                         MinuteSpan     = 50
+                        StartTime      = '2/1/1970 12:00:00 AM'
                     }
                 }
 
-                $deviceCollectionResultHour = @{
+                $minScheduleString = '0001200000164000'
+
+                $getMinScheduleReturn = @{
+                    MinuteDuration = $null
+                    RecurInterval  = 50
+                    WeekOrder      = $null
+                    HourDuration   = $null
+                    Start          = '2/1/1970 00:00'
+                    DayOfWeek      = $null
+                    ScheduleType   = 'Minutes'
+                    MonthDay       = $null
+                    DayDuration    = $null
+                }
+
+                $deviceCollectionResultWeekly = @{
                     Name                  = 'Test'
                     LimitToCollectionName = 'All Systems'
                     CollectionType        = 2
                     RefreshType           = 6
                     Comment               = 'Test device collection'
                     RefreshSchedule       = @{
-                        DayDuration    = 0
-                        DaySpan        = 0
-                        HourDuration   = 0
-                        HourSpan       = 10
-                        MinuteDuration = 0
-                        MinuteSpan     = 0
+                        Day              = 6
+                        DayDuration      = 0
+                        ForNumberOfWeeks = 1
+                        HourDuration     = 0
+                        MinuteDuration   = 0
+                        StartTime        = '2/1/1970 12:00:00 AM'
                     }
+                }
+
+                $weeklyScheduleString = '00012000001E2000'
+
+                $getWeeklyScheduleReturn = @{
+                    MinuteDuration = $null
+                    RecurInterval  = 1
+                    WeekOrder      = $null
+                    HourDuration   = $null
+                    Start          = '2/1/1970 00:00'
+                    DayOfWeek      = 'Friday'
+                    ScheduleType   = 'Weekly'
+                    MonthDay       = $null
+                    DayDuration    = $null
                 }
 
                 $deviceCollectionResultRefreshNone = @{
@@ -187,8 +234,24 @@ try
                     RefreshSchedule       = @{
                         DayDuration    = 0
                         HourDuration   = 0
+                        IsGmt          = $false
                         MinuteDuration = 0
+                        StartTime      = '2/1/1970 12:00:00 AM'
                     }
+                }
+
+                $nonScheduleString = '0001200000080000'
+
+                $getNonScheduleReturn = @{
+                    MinuteDuration = $null
+                    RecurInterval  = $null
+                    WeekOrder      = $null
+                    HourDuration   = $null
+                    Start          = '2/1/1970 00:00'
+                    DayOfWeek      = $null
+                    ScheduleType   = 'None'
+                    MonthDay       = $null
+                    DayDuration    = $null
                 }
 
                 $deviceCollectionResultRefreshContinuous = @{
@@ -210,9 +273,25 @@ try
                         DaySpan        = 7
                         HourDuration   = 0
                         HourSpan       = 0
+                        IsGmt          = $false
                         MinuteDuration = 0
                         MinuteSpan     = 0
+                        StartTime      = '2/1/1970 12:00:00 AM'
                     }
+                }
+
+                $daysScheduleString = '0001200000100038'
+
+                $getDayScheduleReturn = @{
+                    MinuteDuration = $null
+                    RecurInterval  = 7
+                    WeekOrder      = $null
+                    HourDuration   = $null
+                    Start          = '2/1/1970 00:00'
+                    DayOfWeek      = $null
+                    ScheduleType   = 'Days'
+                    MonthDay       = $null
+                    DayDuration    = $null
                 }
 
                 $userExcludeResults = @(
@@ -276,8 +355,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.ScheduleInterval       | Should -be -ExpectedValue $null
-                    $result.ScheduleCount          | Should -be -ExpectedValue $null
+                    $result.Start                  | Should -Be -ExpectedValue $null
+                    $result.ScheduleType           | Should -Be -ExpectedValue $null
+                    $result.RecurInterval          | Should -Be -ExpectedValue $null
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'Manual'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.QueryRules.Count       | Should -Be -ExpectedValue 2
@@ -294,6 +377,8 @@ try
                     Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
                     Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
                     Mock -CommandName Get-CMDeviceCollectionIncludeMembershipRule -MockWith { $deviceIncludeResults }
+                    Mock -CommandName Convert-CMSchedule -MockWith { $monthlyByWeekString }
+                    Mock -CommandName Get-CMSchedule -MockWith { $getMonthlyByWeek }
 
                     $result = Get-TargetResource @getDeviceInput
                     $result                        | Should -BeOfType System.Collections.HashTable
@@ -302,8 +387,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.ScheduleInterval       | Should -be -ExpectedValue 'Days'
-                    $result.ScheduleCount          | Should -be -ExpectedValue 7
+                    $result.Start                  | Should -Be -ExpectedValue '2/1/1970 00:00'
+                    $result.ScheduleType           | Should -Be -ExpectedValue 'MonthlyByWeek'
+                    $result.RecurInterval          | Should -Be -ExpectedValue '1'
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue 'Friday'
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue 'First'
                     $result.RefreshType            | Should -Be -ExpectedValue 'Both'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.QueryRules.Count       | Should -Be -ExpectedValue 2
@@ -320,6 +409,8 @@ try
                     Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
                     Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
                     Mock -CommandName Get-CMDeviceCollectionIncludeMembershipRule -MockWith { $deviceIncludeResults }
+                    Mock -CommandName Convert-CMSchedule -MockWith { $nonScheduleString }
+                    Mock -CommandName Get-CMSchedule -MockWith { $getNonScheduleReturn }
 
                     $result = Get-TargetResource @getDeviceInput
                     $result                        | Should -BeOfType System.Collections.HashTable
@@ -328,7 +419,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.ScheduleInterval       | Should -be -ExpectedValue 'None'
+                    $result.Start                  | Should -Be -ExpectedValue '2/1/1970 00:00'
+                    $result.ScheduleType           | Should -Be -ExpectedValue 'None'
+                    $result.RecurInterval          | Should -Be -ExpectedValue $null
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue $null
                     $result.ScheduleCount          | Should -be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'Periodic'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
@@ -354,8 +450,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.ScheduleInterval       | Should -be -ExpectedValue $null
-                    $result.ScheduleCount          | Should -be -ExpectedValue $null
+                    $result.Start                  | Should -Be -ExpectedValue $null
+                    $result.ScheduleType           | Should -Be -ExpectedValue $null
+                    $result.RecurInterval          | Should -Be -ExpectedValue $null
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'Continuous'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.QueryRules.Count       | Should -Be -ExpectedValue 2
@@ -372,6 +472,8 @@ try
                     Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
                     Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
                     Mock -CommandName Get-CMDeviceCollectionIncludeMembershipRule -MockWith { $deviceIncludeResults }
+                    Mock -CommandName Convert-CMSchedule -MockWith { $minScheduleString }
+                    Mock -CommandName Get-CMSchedule -MockWith { $getMinScheduleReturn }
 
                     $result = Get-TargetResource @getDeviceInput
                     $result                        | Should -BeOfType System.Collections.HashTable
@@ -380,8 +482,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.ScheduleInterval       | Should -be -ExpectedValue 'Minutes'
-                    $result.ScheduleCount          | Should -be -ExpectedValue 50
+                    $result.Start                  | Should -Be -ExpectedValue '2/1/1970 00:00'
+                    $result.ScheduleType           | Should -Be -ExpectedValue 'Minutes'
+                    $result.RecurInterval          | Should -Be -ExpectedValue '50'
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'Both'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.QueryRules.Count       | Should -Be -ExpectedValue 2
@@ -392,12 +498,14 @@ try
                     $result.Ensure                 | Should -Be -ExpectedValue 'Present'
                 }
 
-                It 'Should return desired result for device collections with hours schedule' {
-                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResultHour  }
+                It 'Should return desired result for device collections with weekly schedule' {
+                    Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionResultWeekly  }
                     Mock -CommandName Get-CMDeviceCollectionDirectMembershipRule -MockWith { $deviceDirectResult }
                     Mock -CommandName Get-CMDeviceCollectionExcludeMembershipRule -MockWith { $deviceExcludeResults }
                     Mock -CommandName Get-CMDeviceCollectionQueryMembershipRule -MockWith { $deviceQueryResults }
                     Mock -CommandName Get-CMDeviceCollectionIncludeMembershipRule -MockWith { $deviceIncludeResults }
+                    Mock -CommandName Convert-CMSchedule -MockWith { $weeklyScheduleString }
+                    Mock -CommandName Get-CMSchedule -MockWith { $getWeeklyScheduleReturn }
 
                     $result = Get-TargetResource @getDeviceInput
                     $result                        | Should -BeOfType System.Collections.HashTable
@@ -406,8 +514,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test device collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'Device'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Systems'
-                    $result.ScheduleInterval       | Should -be -ExpectedValue 'Hours'
-                    $result.ScheduleCount          | Should -be -ExpectedValue 10
+                    $result.Start                  | Should -Be -ExpectedValue '2/1/1970 00:00'
+                    $result.ScheduleType           | Should -Be -ExpectedValue 'Weekly'
+                    $result.RecurInterval          | Should -Be -ExpectedValue 1
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue 'Friday'
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'Both'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.QueryRules.Count       | Should -Be -ExpectedValue 2
@@ -424,6 +536,8 @@ try
                     Mock -CommandName Get-CMUserCollectionExcludeMembershipRule -MockWith { $userExcludeResults }
                     Mock -CommandName Get-CMUserCollectionQueryMembershipRule -MockWith { $userQueryResults }
                     Mock -CommandName Get-CMUserCollectionIncludeMembershipRule -MockWith { $deviceIncludeResults }
+                    Mock -CommandName Convert-CMSchedule -MockWith { $daysScheduleString }
+                    Mock -CommandName Get-CMSchedule -MockWith { $getDayScheduleReturn }
 
                     $result = Get-TargetResource @getUserInput
                     $result                        | Should -BeOfType System.Collections.HashTable
@@ -432,8 +546,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue 'Test user collection'
                     $result.CollectionType         | Should -Be -ExpectedValue 'User'
                     $result.LimitingCollectionName | Should -Be -ExpectedValue 'All Users'
-                    $result.ScheduleInterval       | Should -be -ExpectedValue 'Days'
-                    $result.ScheduleCount          | Should -be -ExpectedValue 7
+                    $result.Start                  | Should -Be -ExpectedValue '2/1/1970 00:00'
+                    $result.ScheduleType           | Should -Be -ExpectedValue 'Days'
+                    $result.RecurInterval          | Should -Be -ExpectedValue '7'
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue 'Both'
                     $result.QueryRules             | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
                     $result.QueryRules.Count       | Should -Be -ExpectedValue 2
@@ -458,6 +576,12 @@ try
                     $result.Comment                | Should -Be -ExpectedValue $null
                     $result.CollectionType         | Should -Be -ExpectedValue $null
                     $result.LimitingCollectionName | Should -Be -ExpectedValue $null
+                    $result.Start                  | Should -Be -ExpectedValue $null
+                    $result.ScheduleType           | Should -Be -ExpectedValue $null
+                    $result.RecurInterval          | Should -Be -ExpectedValue $null
+                    $result.DayOfMonth             | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek              | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder       | Should -Be -ExpectedValue $null
                     $result.RefreshSchedule        | Should -Be -ExpectedValue $null
                     $result.RefreshType            | Should -Be -ExpectedValue $null
                     $result.QueryRules             | Should -Be -ExpectedValue $null
@@ -546,6 +670,12 @@ try
                     CollectionType         = 'Device'
                     RefreshType            = 'Both'
                     Comment                = 'Test device collection'
+                    Start                  = '2/1/1970 00:00'
+                    ScheduleType           = 'Days'
+                    DayOfWeek              = $null
+                    MonthlyWeekOrder       = $null
+                    DayofMonth             = $null
+                    RecurInterval          = 7
                     ScheduleInterval       = 'Days'
                     ScheduleCount          = 7
                     ExcludeMembership      = @('Test1','Test2')
@@ -590,8 +720,8 @@ try
                         CollectionType         = 'Device'
                         RefreshType            = 'Both'
                         Comment                = 'Test device collection'
-                        ScheduleInterval       = 'Days'
-                        ScheduleCount          = 40
+                        ScheduleType           = 'Days'
+                        RecurInterval          = 40
                         ExcludeMembership      = @('Test1','Test2')
                         DirectMembership       = @('Collection1','2097152001')
                         IncludeMembership      = @('Test3','Test4')
@@ -605,8 +735,8 @@ try
                         CollectionType         = 'Device'
                         RefreshType            = 'Both'
                         Comment                = 'validate this collection'
-                        ScheduleCount          = 70
-                        ScheduleInterval       = 'Minutes'
+                        RecurInterval          = 70
+                        ScheduleType           = 'Minutes'
                     }
 
                     $userMatchCollectionParams = @{
@@ -616,8 +746,8 @@ try
                         CollectionType         = 'User'
                         RefreshType            = 'Both'
                         Comment                = 'Test User collection'
-                        ScheduleCount          = 30
-                        ScheduleInterval       = 'Hours'
+                        RecurInterval          = 30
+                        ScheduleType           = 'Hours'
                         ExcludeMembership      = @('Test1','Test2')
                         DirectMembership       = @('Computer1','2097152001')
                         IncludeMembership      = @('Test3','Test4')
@@ -644,28 +774,27 @@ try
                     }
 
                     $collectionScheduleChange = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'Days'
-                        ScheduleCount    = 4
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'Days'
+                        RecurInterval  = 4
                     }
 
                     $collectionScheduleNone = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'None'
-                        ScheduleCount    = 4
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'None'
+                        RecurInterval  = 10
                     }
 
                     $collectionRefreshType = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        RefreshType      = 'Manual'
-                        ScheduleInterval = 'None'
-                        ScheduleCount    = 4
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        RefreshType    = 'Manual'
+                        ScheduleType   = 'None'
                     }
 
                     Mock -CommandName Get-CMCollection -MockWith { $true }
@@ -833,7 +962,7 @@ try
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMCollection -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMUserCollectionExcludeMembershipRule -Exactly -Times 0 -Scope It
@@ -868,10 +997,10 @@ try
                     }
 
                     $invalidSchedule = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'Days'
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'Days'
                     }
 
                     $includeReturnNull = @{
@@ -966,11 +1095,11 @@ try
 
                     $collectionTypeError = 'Desired collection type is User and currently is Device, if specified collection type is correct the collection will need deleted prior to creating a new collection.'
                     $includeExcludeError = 'Input for IncludeMembership and ExcludeMembership contain the same entry Test1.'
-                    $invalidScheduleError = "Invalid parameter usage specifying an Interval and didn't specify count."
+                    $invalidScheduleError = "Missing RecurInverval setting for the schedule, setting a schedule will fail."
                     $newCollectionError = 'Collection does not exist and no LimitingCollectionName has been specified.'
                     $includeReturnNullError = 'Collection Test1 does not exist and can not be added to include membership.'
                     $excludeReturnNullError = 'Collection Test1 does not exist and can not be added to exclude membership.'
-                    $excludeExistsError = 'Exclude rule name Test3 already exists as a rule name for another query on the collection rule names must be unique per collection.'
+                    $excludeExistsError = 'Exclude rule name Test3 already exists as a rule name for another query on the collection, rule names must be unique per collection.'
                     $includeExistsError = 'Include rule name Test1 already exists as a rule name for another query on the collection rule names must be unique per collection.'
                     $invalidResourceIdError = 'Unable to find object with resource ID 123456789.'
                     $invalidDirectMembership = 'Test1 does not exist and can not be added to as direct membership.'
@@ -1359,8 +1488,12 @@ try
                         CollectionType         = 'Device'
                         RefreshType            = 'Both'
                         Comment                = 'Test device collection'
-                        ScheduleInterval       = 'Days'
-                        ScheduleCount          = 7
+                        ScheduleType           = 'Days'
+                        RecurInterval          = 7
+                        DayOfWeek              = $null
+                        MonthlyWeekOrder       = $null
+                        DayofMonth             = $null
+                        Start                  = '2/1/1970 00:00'
                         ExcludeMembership      = @('Test1','Test2')
                         DirectMembership       = @('Device1','Device2')
                         DirectMembershipId     = @('2097152000','2097152001')
@@ -1376,8 +1509,8 @@ try
                         CollectionType         = 'Device'
                         RefreshType            = 'Both'
                         Comment                = 'Test device collection'
-                        ScheduleInterval       = 'Days'
-                        ScheduleCount          = 7
+                        ScheduleType           = 'Days'
+                        RecurInterval          = 7
                         ExcludeMembership      = @('Test1','Test2')
                         DirectMembership       = @('2097152000','2097152001')
                         QueryRules             = $mockCimDeviceQuery
@@ -1398,41 +1531,44 @@ try
                     }
 
                     $scheduleDaysOver = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'Days'
-                        ScheduleCount    = 40
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'Days'
+                        RecurInterval  = 40
                     }
 
-                    $scheduleHoursOver = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'Hours'
-                        ScheduleCount    = 25
+                    $scheduleWeekly = @{
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'Weekly'
+                        RecurInterval  = 1
+                        DayOfWeek      = 'Monday'
+                        Start          = '1/1/2021 01:00'
                     }
 
-                    $scheduleMinsOver = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'Minutes'
-                        ScheduleCount    = 80
+                    $scheduleMonthlyByDay = @{
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'MonthlyByDay'
+                        RecurInterval  = 1
+                        DayofMonth     = 10
                     }
 
                     $scheduleNoneOver = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'None'
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'None'
                     }
 
                     $scheduleInvalid = @{
-                        SiteCode         = 'Lab'
-                        CollectionName   = 'Test'
-                        CollectionType   = 'Device'
-                        ScheduleInterval = 'Days'
+                        SiteCode       = 'Lab'
+                        CollectionName = 'Test'
+                        CollectionType = 'Device'
+                        ScheduleType   = 'Days'
                     }
 
                     $includeNameMatch = @{
@@ -1476,8 +1612,8 @@ try
                         LimitingCollectionName = 'All Systems'
                         CollectionType         = 'Device'
                         RefreshType            = 'Manual'
-                        ScheduleInterval       = 'Days'
-                        ScheduleCount          = 7
+                        ScheduleType           = 'Days'
+                        RecurInterval          = 7
                     }
 
                     Mock -CommandName Get-TargetResource -MockWith { $deviceGetCollectionResult }
@@ -1499,12 +1635,12 @@ try
                     Test-TargetResource @scheduleDaysOver | Should -Be $false
                 }
 
-                It 'Should return desired result false when hours mismatch' {
-                    Test-TargetResource @scheduleHoursOver | Should -Be $false
+                It 'Should return desired result false when schedule mismatch for weekly' {
+                    Test-TargetResource @scheduleWeekly | Should -Be $false
                 }
 
-                It 'Should return desired result false when minutes mismatch' {
-                    Test-TargetResource @scheduleMinsOver | Should -Be $false
+                It 'Should return desired result false when schedule mismatch for MonthlyByDay' {
+                    Test-TargetResource @scheduleMonthlyByDay | Should -Be $false
                 }
 
                 It 'Should return desired result false when setting none schedule' {

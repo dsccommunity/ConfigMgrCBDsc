@@ -15,8 +15,8 @@ Configuration Example
             CollectionType         = 'User'
             LimitingCollectionName = 'All Users'
             Comment                = 'This is a test user collection'
-            ScheduleInterval       = 'Days'
-            ScheduleCount          = 7
+            ScheduleType           = 'Days'
+            RecurInterval          = 7
             RefreshType            = 'Both'
             QueryRules             = @(
                 DSC_CMCollectionQueryRules

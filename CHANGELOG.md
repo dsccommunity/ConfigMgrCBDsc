@@ -92,6 +92,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed CimInstance for the CMCollections schedule.  Added support IncludeMembership
   for collections.  Added support for adding DirectMembershipRules for users and
   devices using resource name or ResourceId.
+- Added additional schedule types for CMCollections schedules.
+
 
 ### Removed
 

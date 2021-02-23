@@ -5509,7 +5509,6 @@ function Convert-CMSchedule
 
         [Parameter(ParameterSetName='ByToken', Mandatory=$true, Position=0, ValueFromPipeline=$true)]
         [Alias('ScheduleToken')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object[]]
         ${InputObject},
 

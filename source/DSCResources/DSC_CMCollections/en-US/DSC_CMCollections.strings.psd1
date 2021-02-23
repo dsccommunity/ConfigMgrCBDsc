@@ -4,13 +4,6 @@ ConvertFrom-StringData @'
     CollectionAbsent     = {0} collection is missing expected present.
     CollectionType       = Desired collection type is {0} and currently is {1}, if specified collection type is correct the collection will need deleted prior to creating a new collection.
     RuleConflict         = Input for IncludeMembership and ExcludeMembership contain the same entry {0}.
-    IntervalCount        = Invalid parameter usage specifying an Interval and didn't specify count.
-    SIntervalTest        = NOT MATCH: Schedule interval expected: {0} returned {1}.
-    MaxIntervalDays      = The maximum allowed interval is 31 for days. {0} was specified and will result in the interval being set to 31.
-    MaxIntervalHours     = The maximum allowed interval is 23 for hours. {0} was specified and will result in the interval being set to 23.
-    MaxIntervalMins      = The maximum allowed interval is 59 for minutes. {0} was specified and will result in the interval being set to 59.
-    SCountTest           = NOT MATCH: Schedule count expected: {0} returned {1}.
-    ScheduleType         = Schedule was specified however the RefreshType either specified or currently set does not support a schedule to be set, ignoring setting.
     ExcludeError         = Exclude rule name {0} already exists as a rule name for another query on the collection, rule names must be unique per collection.
     ExcludeMemberRule    = {0} collection expected Exclude membership rule {1} to be present.
     DirectMemberRule     = {0} collection expected Direct membership rule {1} to be present.
@@ -23,6 +16,7 @@ ConvertFrom-StringData @'
     InvalidId            = Unable to find object with resource ID {0}.
     CollectionCreate     = {0} collection is missing, creating collection.
     CollectionSetting    = {0} collection expected {1} to be "{2}" returned "{3}".
+    NewSchedule          = Modifying collection schedule.
     ExcludeNonAdd        = Collection {0} does not exist and can not be added to exclude membership.
     IncludeNonAdd        = Collection {0} does not exist and can not be added to include membership.
     DirectNonAdd         = {0} does not exist and can not be added to as direct membership.
