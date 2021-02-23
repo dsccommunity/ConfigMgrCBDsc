@@ -312,6 +312,34 @@ try
                         Enabled  = $false
                     }
 
+                    $returnEnabledDaysMax = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Days'
+                        ScheduleCount    = 32
+                    }
+
+                    $returnEnabledHoursMax = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Hours'
+                        ScheduleCount    = 25
+                    }
+
+                    $returnEnabledMinsMax = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Minutes'
+                        ScheduleCount    = 60
+                    }
+
+                    $returnEnabledMinsMin = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Minutes'
+                        ScheduleCount    = 4
+                    }
+
                     $cmScheduleNull = @{
                         DayDuration    = 0
                         HourDuration   = 0
@@ -340,6 +368,42 @@ try
                         IsGMT          = $false
                         MinuteDuration = 0
                         MinuteSpan     = 0
+                    }
+
+                    $scheduleConvertDaysMax = @{
+                        DayDuration    = 0
+                        DaySpan        = 31
+                        HourDuration   = 0
+                        HourSpan       = 0
+                        MinuteDuration = 0
+                        MinuteSpan     = 0
+                    }
+
+                    $scheduleConvertHoursMax = @{
+                        DayDuration    = 0
+                        DaySpan        = 0
+                        HourDuration   = 0
+                        HourSpan       = 23
+                        MinuteDuration = 0
+                        MinuteSpan     = 0
+                    }
+
+                    $scheduleConvertMinutesMax = @{
+                        DayDuration    = 0
+                        DaySpan        = 0
+                        HourDuration   = 0
+                        HourSpan       = 0
+                        MinuteDuration = 0
+                        MinuteSpan     = 59
+                    }
+
+                    $scheduleConvertMinutesMin = @{
+                        DayDuration    = 0
+                        DaySpan        = 0
+                        HourDuration   = 0
+                        HourSpan       = 0
+                        MinuteDuration = 0
+                        MinuteSpan     = 5
                     }
 
                     $adContainersMismatch = 'LDAP://OU=Test2,DC=contoso,DC=com'
@@ -398,6 +462,50 @@ try
                     Mock -CommandName New-CMSchedule -MockWith { $cmScheduleHours } -ParameterFilter { $RecurInterval -eq 'Hours' }
 
                     Set-TargetResource @inputParamsHours
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands schedule max days' {
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDaysMax }
+
+                    Set-TargetResource @returnEnabledDaysMax
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands schedule max hours' {
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertHoursMax }
+
+                    Set-TargetResource @returnEnabledHoursMax
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands schedule max minutes' {
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertMinutesMax }
+
+                    Set-TargetResource @returnEnabledMinsMax
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands schedule min minutes' {
+                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertMinutesMin }
+
+                    Set-TargetResource @returnEnabledMinsMin
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -672,6 +780,34 @@ try
                         ScheduleCount                   = 7
                     }
 
+                    $returnEnabledDaysMax = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Days'
+                        ScheduleCount    = 32
+                    }
+
+                    $returnEnabledHoursMax = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Hours'
+                        ScheduleCount    = 25
+                    }
+
+                    $returnEnabledMinsMax = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Minutes'
+                        ScheduleCount    = 60
+                    }
+
+                    $returnEnabledMinsMin = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        ScheduleInterval = 'Minutes'
+                        ScheduleCount    = 4
+                    }
+
                     $inputParamsDeltaMismatch = @{
                         SiteCode             = 'Lab'
                         Enabled              = $true
@@ -724,6 +860,22 @@ try
 
                 It 'Should return desired result false when delta schedule mismatch' {
                     Test-TargetResource @inputParamsDeltaMismatch | Should -Be $false
+                }
+
+                It 'Should return desired result false schedule days exceed max' {
+                    Test-TargetResource @returnEnabledDaysMax | Should -Be $false
+                }
+
+                It 'Should return desired result false schedule hours exceed max' {
+                    Test-TargetResource @returnEnabledHoursMax | Should -Be $false
+                }
+
+                It 'Should return desired result false schedule mins exceed max' {
+                    Test-TargetResource @returnEnabledMinsMax | Should -Be $false
+                }
+
+                It 'Should return desired result false schedule mins under minimum' {
+                    Test-TargetResource @returnEnabledMinsMin | Should -Be $false
                 }
 
                 It 'Should return desired result false when system discovery schedules do not match' {
