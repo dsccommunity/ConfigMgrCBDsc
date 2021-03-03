@@ -1216,3 +1216,39 @@ you are using apply and auto correct.
 
 - [CMSoftwareDistributionComponent_AccessAccount](Source\Examples\Resources\CMSoftwareDistributionComponent\CMSoftwareDistributionComponent_AccessAccount.ps1)
 - [CMSoftwareDistributionComponent_Computer](Source\Examples\Resources\CMSoftwareDistributionComponent\CMSoftwareDistributionComponent_Computer.ps1)
+
+### CMFileReplication
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] DestinationSiteCode** _(Key)_: Specifies the destination site for
+  the file replication route by using a site code.
+- **[UInt32] DataBlockSizeKB** _(Write)_: Specifies a data block size, in kilobytes.
+  Used in conjunction with the PulseMode parameter.
+  - Values Range: 1 - 256
+- **[UInt32] DelayBetweenDataBlockSec** _(Write)_: Delay, in seconds, between sending
+  data blocks when PulseMode is used.
+  - Values Range: 1 - 30
+- **[String] FileReplicationAccountName** _(Write)_: Specifies the account that Configuration
+  Manager uses for file replication.
+- **[Boolean] UseSystemAccount** _(Write)_: Specifies if the replication service
+  will use the site system account.
+- **[Boolean] Limited** _(Write)_: Indicates that bandwidth for a file replication
+  route is limited.
+- **[Boolean] PulseMode** _(Write)_: Indicates that file replication uses data block
+  size and delays between transmissions.
+- **[Boolean] Unlimited** _(Write)_: Indicates that bandwidth for a file replication
+  route is unlimited.
+- **[EmbeddedInstance] RateLimitingSchedule[]** _(Write)_: Specifies, as an array
+  of CimInstances, hour ranges and bandwidth percentages for limiting file replication.
+- **[EmbeddedInstance] NetworkLoadSchedule[]** _(Write)_: Specifies, as an array
+  of CimInstances, hour ranges and bandwidth percentages for network load balancing
+  schedule.
+- **[String] Ensure** _(Write)_: Specifies whether the file replication route
+  is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMFileReplication Examples
+
+- [CMFileReplication_Present](Source\Examples\Resources\CMFileReplication\CMFileReplication_Present.ps1)
+- [CMFileReplication_Absent](Source\Examples\Resources\CMFileReplication\CMFileReplication_Absent.ps1)
