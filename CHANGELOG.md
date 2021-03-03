@@ -53,6 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Add-DPToDPGroup to the ResourceHelper
 - Added CMClientPushSettings Resource
 - Added CMSoftwareDistributionComponent Resource
+- Added Get-CMSchedule to the ResourceHelper
+- Added Test-CMSchedule to the ResourceHelper
+- Added Set-CMSchedule to the ResourceHelper
 
 ### Changed
 

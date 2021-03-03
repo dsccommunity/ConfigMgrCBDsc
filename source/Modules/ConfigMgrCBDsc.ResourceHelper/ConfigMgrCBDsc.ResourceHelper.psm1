@@ -702,10 +702,10 @@ function Get-CMSchedule
         This will test the desired state.
 
     .PARAMETER Start
-        Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.
+        Specifies the start date and start time for the schedule Month/Day/Year, example 1/1/2020 02:00.
 
     .PARAMETER ScheduleType
-        Specifies the schedule type for the maintenance window.
+        Specifies the schedule type.
 
     .PARAMETER RecurInterval
         Specifies how often the ScheduleType is run.
@@ -720,10 +720,10 @@ function Get-CMSchedule
         Specifies the day number for MonthlyByDay schedules.
 
     .PARAMETER HourDuration
-        Specifies the duration for the maintenance window in hours, max value 23.
+        Specifies the duration for the schedule in hours, max value 23.
 
     .PARAMETER MinuteDuration
-        Specifies the duration for the maintenance window in minutes, max value 59.
+        Specifies the duration for the schedule in minutes, max value 59.
 
     .PARAMETER State
         Specifies the currently applied schedule.
@@ -946,10 +946,10 @@ function Test-CMSchedule
         This will convert the PSBoundParameters into a hashtable to be used to create a Config Mgr. schedule.
 
     .PARAMETER ScheduleType
-        Specifies the schedule type for the maintenance window.
+        Specifies the schedule type for the schedule.
 
     .PARAMETER Start
-        Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.
+        Specifies the start date and start time for the schedule Month/Day/Year, example 1/1/2020 02:00.
 
     .PARAMETER RecurInterval
         Specifies how often the ScheduleType is run.
@@ -964,10 +964,10 @@ function Test-CMSchedule
         Specifies the day number for MonthlyByDay schedules.
 
     .PARAMETER HourDuration
-        Specifies the duration for the maintenance window in hours, max value 23.
+        Specifies the duration for the schedule in hours, max value 23.
 
     .PARAMETER MinuteDuration
-        Specifies the duration for the maintenance window in minutes, max value 59.
+        Specifies the duration for the schedule in minutes, max value 59.
 
 #>
 function Set-CMSchedule

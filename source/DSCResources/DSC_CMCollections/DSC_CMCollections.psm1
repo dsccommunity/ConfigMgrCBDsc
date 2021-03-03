@@ -147,10 +147,10 @@ function Get-TargetResource
         Specifies a comment for the collection.
 
     .PARAMETER Start
-        Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.
+        Specifies the start date and start time for the collection refresh schedule Month/Day/Year, example 1/1/2020 02:00.
 
     .PARAMETER ScheduleType
-        Specifies the schedule type for the maintenance window.
+        Specifies the schedule type for the collection refresh schedule.
 
     .PARAMETER RecurInterval
         Specifies how often the ScheduleType is run.
@@ -170,11 +170,11 @@ function Get-TargetResource
         Valid values are: Manual, Periodic, Continuous, and Both.
 
     .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude clients from. If clients are in the excluded collection they will
+        Specifies the collection name to exclude. If clients are in the excluded collection they will
         not be added to the collection.
 
     .PARAMETER IncludeMembership
-        Specifies the collection name to include clients from. Only clients from the included
+        Specifies the collection name to include. Only clients from the included
         collections can be added to the collection.
 
     .PARAMETER DirectMembership
@@ -613,10 +613,10 @@ function Set-TargetResource
         Specifies a comment for the collection.
 
     .PARAMETER Start
-        Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.
+        Specifies the start date and start time for the collection refresh schedule Month/Day/Year, example 1/1/2020 02:00.
 
     .PARAMETER ScheduleType
-        Specifies the schedule type for the maintenance window.
+        Specifies the schedule type for the collection refresh schedule.
 
     .PARAMETER RecurInterval
         Specifies how often the ScheduleType is run.
@@ -636,11 +636,11 @@ function Set-TargetResource
         Valid values are: Manual, Periodic, Continuous, and Both.
 
     .PARAMETER ExcludeMembership
-        Specifies the collection name to exclude clients from. If clients are in the excluded collection they will
+        Specifies the collection name to exclude. If clients are in the excluded collection they will
         not be added to the collection.
 
     .PARAMETER IncludeMembership
-        Specifies the collection name to include clients from. Only clients from the included
+        Specifies the collection name to include. Only clients from the included
         collections can be added to the collection.
 
     .PARAMETER DirectMembership

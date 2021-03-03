@@ -401,10 +401,10 @@ you are using apply and auto correct.
 - **[String] LimitingCollectionName** _(Write)_: Specifies the name of a
   collection to use as the default scope for this collection.
 - **[String] Comment** _(Write)_: Specifies a comment for the collection.
-- **[String] Start** _(Write)_: Specifies the start date and start time for the maintenance
-  window Month/Day/Year, example 1/1/2020 02:00.
-- **[String] ScheduleType** _(Write)_: Specifies the schedule type for the maintenance
-  window.
+- **[String] Start** _(Write)_: Specifies the start date and start time for the
+  collection refresh schedule Month/Day/Year, example 1/1/2020 02:00.
+- **[String] ScheduleType** _(Write)_: Specifies the schedule type for the collection
+  refresh schedule.
   - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | Hours |
     Minutes | None }
 - **[UInt32] RecurInterval** _(Write)_: Specifies how often the ScheduleType is run.
@@ -423,11 +423,11 @@ you are using apply and auto correct.
 - **[EmbeddedInstance] QueryRules[]** _(Write)_: Specifies the name of the rule
   and the query expression that Configuration Manager uses to update collections.
 - **[String] ExcludeMembership[]** _(Write)_: Specifies the collection name to
-  exclude members from.
+  exclude.
 - **[String] DirectMembership[]** _(Write)_: Specifies the resource id or name
   for the direct membership rule.
 - **[String] IncludeMembership[]** _(Write)_: Specifies the collection to include
-  members from.
+  members.
 - **[String] Ensure** _(Write)_: Specifies status of the collection is to be
   present or absent.
   - Values include: { Present | Absent }
