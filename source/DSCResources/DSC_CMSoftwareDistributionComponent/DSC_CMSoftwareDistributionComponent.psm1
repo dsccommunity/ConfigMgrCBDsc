@@ -16,6 +16,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 function Get-TargetResource
 {
     [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
     param
     (
         [Parameter(Mandatory = $true)]
@@ -355,6 +356,7 @@ function Set-TargetResource
 function Test-TargetResource
 {
     [CmdletBinding()]
+    [OutputType([System.Boolean])]
     param
     (
         [Parameter(Mandatory = $true)]

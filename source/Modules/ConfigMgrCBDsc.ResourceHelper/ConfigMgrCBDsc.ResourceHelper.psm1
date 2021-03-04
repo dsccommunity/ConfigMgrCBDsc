@@ -574,6 +574,586 @@ function Add-DPToDPGroup
     return $success
 }
 
+<#
+    .SYNOPSIS
+        Converts CMSchedule string. This will return a hashtable of results.
+
+    .PARAMETER ScheduleString
+        Specifies the schedule string.
+#>
+function Get-CMSchedule
+{
+    [CmdletBinding()]
+    [OutputType([System.Collections.Hashtable])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [String]
+        $ScheduleString
+    )
+
+    $schedule = Convert-CMSchedule -ScheduleString $ScheduleString
+
+    if ($schedule)
+    {
+        if ($schedule.StartTime.Minute.ToString().Length -eq 1)
+        {
+            $minTime = "0" + $($schedule.StartTime.Minute)
+        }
+        else
+        {
+            $minTime = $($schedule.StartTime.Minute)
+        }
+
+        if ($schedule.StartTime.Hour.ToString().Length -eq 1)
+        {
+            $hourTime = "0" + $($schedule.StartTime.Hour)
+        }
+        else
+        {
+            $hourTime = $($schedule.StartTime.Hour)
+        }
+
+        $startTime = "$($hourTime):$($minTime)"
+        $startDate = $schedule.StartTime.Date.ToShortDateString()
+
+        if ($schedule.Day)
+        {
+            $day = @('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')[$schedule.Day - 1]
+        }
+
+        $recurSetting = $schedule.SmsProviderObjectPath
+        if ($recurSetting -match 'RecurMonthly')
+        {
+            $interval = $schedule.ForNumberofMonths
+
+            if ($recurSetting -match 'ByDate')
+            {
+                $sched = 'MonthlyByDay'
+                $daySpan = $schedule.MonthDay
+            }
+            elseif ($recurSetting -match 'ByWeekday')
+            {
+                $sched = 'MonthlyByWeek'
+                $numberofweeks = @('Last','First','Second','Third','Fourth')[$schedule.WeekOrder]
+                $dayofWeek = $day
+            }
+        }
+        elseif ($recurSetting -match 'RecurWeekly')
+        {
+            $sched = 'Weekly'
+            $interval = $schedule.ForNumberOfWeeks
+            $dayOfWeek = $day
+        }
+        elseif ($recurSetting -match 'RecurInterval')
+        {
+            if ($schedule.DaySpan)
+            {
+                $sched = 'Days'
+                $interval = $schedule.DaySpan
+            }
+            elseif ($schedule.HourSpan)
+            {
+                $sched = 'Hours'
+                $interval = $schedule.HourSpan
+            }
+            elseif ($schedule.MinuteSpan)
+            {
+                $sched = 'Minutes'
+                $interval = $schedule.MinuteSpan
+            }
+        }
+        elseif ($recurSetting -match 'NonRecurring')
+        {
+            $sched = 'None'
+        }
+
+        if ($schedule.DayDuration -gt 0)
+        {
+            $dayDur = $schedule.DayDuration
+        }
+
+        if ($schedule.HourDuration -gt 0)
+        {
+            $hourDur = $schedule.HourDuration
+        }
+
+        if ($schedule.MinuteDuration -gt 0)
+        {
+            $minDur += $schedule.MinuteDuration
+        }
+    }
+
+    return @{
+        MonthDay       = $daySpan
+        ScheduleType   = $sched
+        RecurInterval  = $interval
+        DayOfWeek      = $day
+        Start          = "$startDate $startTime"
+        WeekOrder      = $numberofweeks
+        DayDuration    = $dayDur
+        HourDuration   = $hourDur
+        MinuteDuration = $minDur
+    }
+}
+
+<#
+    .SYNOPSIS
+        This will test the desired state.
+
+    .PARAMETER Start
+        Specifies the start date and start time for the schedule Month/Day/Year, example 1/1/2020 02:00.
+
+    .PARAMETER ScheduleType
+        Specifies the schedule type.
+
+    .PARAMETER RecurInterval
+        Specifies how often the ScheduleType is run.
+
+    .PARAMETER MonthlyByWeek
+        Specifies week order for MonthlyByWeek schedule type.
+
+    .PARAMETER DayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
+
+    .PARAMETER DayOfMonth
+        Specifies the day number for MonthlyByDay schedules.
+
+    .PARAMETER HourDuration
+        Specifies the duration for the schedule in hours, max value 23.
+
+    .PARAMETER MinuteDuration
+        Specifies the duration for the schedule in minutes, max value 59.
+
+    .PARAMETER State
+        Specifies the currently applied schedule.
+#>
+function Test-CMSchedule
+{
+    [CmdletBinding()]
+    [OutputType([System.Boolean])]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('MonthlyByWeek','MonthlyByDay','Weekly','Days','Hours','Minutes','None')]
+        [String]
+        $ScheduleType,
+
+        [Parameter()]
+        [ValidateRange(5,59)]
+        [UInt32]
+        $MinuteDuration,
+
+        [Parameter()]
+        [ValidateRange(1,23)]
+        [UInt32]
+        $HourDuration,
+
+        [Parameter()]
+        [UInt32]
+        $RecurInterval,
+
+        [Parameter()]
+        [String]
+        $Start,
+
+        [Parameter()]
+        [ValidateSet('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')]
+        [String]
+        $DayOfWeek,
+
+        [Parameter()]
+        [ValidateSet('First','Second','Third','Fourth','Last')]
+        [String]
+        $MonthlyWeekOrder,
+
+        [Parameter()]
+        [ValidateRange(0,31)]
+        [UInt32]
+        $DayOfMonth,
+
+        [Parameter()]
+        [HashTable]
+        $State
+    )
+
+    $variablesToCheck = @('ScheduleType')
+    $result = $true
+
+    if ($PSBoundParameters.ContainsKey('HourDuration'))
+    {
+        $variablesToCheck += @('HourDuration')
+    }
+
+    if ($PSBoundParameters.ContainsKey('MinuteDuration'))
+    {
+        $variablesToCheck += @('MinuteDuration')
+    }
+
+    if ($PSBoundParameters.ContainsKey('Start'))
+    {
+        $startTime = [string]$Start -as [DateTime]
+
+        if ([string]::IsNullOrEmpty($startTime))
+        {
+            Write-Warning -Message ($script:localizedData.StartFormat -f $Start)
+            $result = $false
+        }
+        else
+        {
+            $variablesToCheck += 'Start'
+        }
+    }
+
+    if ($ScheduleType -ne 'None' -and -not $PSBoundParameters.ContainsKey('RecurInterval'))
+    {
+        Write-Warning -Message $script:localizedData.MissingInterval
+        $result = $false
+    }
+    else
+    {
+        if ($ScheduleType -match 'Monthly')
+        {
+            if ($RecurInterval -ge 13)
+            {
+                Write-Warning -Message ($script:localizedData.MaxIntervalMon -f $RecurInterval)
+                $PSBoundParameters.Remove('RecurInterval') | Out-Null
+                $PSBoundParameters.Add('RecurInterval',12)
+            }
+
+            if ($ScheduleType -eq 'MonthlyByWeek')
+            {
+                if ($PSBoundParameters.ContainsKey('MonthlyWeekOrder') -and $PSBoundParameters.ContainsKey('DayOfWeek'))
+                {
+                    $variablesToCheck += @('MonthlyWeekOrder','DayOfWeek','RecurInterval')
+                }
+                else
+                {
+                    Write-Warning -Message $script:localizedData.MonthlyByWeek
+                    $result = $false
+                }
+            }
+            elseif ($scheduleType -eq 'MonthlyByDay')
+            {
+                if ($PSBoundParameters.ContainsKey('DayOfMonth'))
+                {
+                    $variablesToCheck += @('DayOfMonth','RecurInterval')
+                }
+                else
+                {
+                    Write-warning -Message $script:localizedData.MonthlyByDay
+                    $result = $false
+                }
+            }
+        }
+        elseif ($ScheduleType -eq 'Weekly')
+        {
+            if ($RecurInterval -ge 5)
+            {
+                Write-Warning -Message ($script:localizedData.MaxIntervalWeek -f $RecurInterval)
+                $PSBoundParameters.Remove('RecurInterval') | Out-Null
+                $PSBoundParameters.Add('RecurInterval',4)
+            }
+
+            if (-not [string]::IsNullOrEmpty($DayOfWeek))
+            {
+                $variablesToCheck += @('DayOfWeek','RecurInterval')
+            }
+            else
+            {
+                Write-warning -Message $script:localizedData.Weekly
+                $result = $false
+            }
+        }
+        elseif ($ScheduleType -eq 'Days')
+        {
+            if ($RecurInterval)
+            {
+                if ($RecurInterval -ge 32)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $RecurInterval)
+                    $PSBoundParameters.Remove('RecurInterval') | Out-Null
+                    $PSBoundParameters.Add('RecurInterval',31)
+                }
+
+                $variablesToCheck += @('RecurInterval')
+            }
+        }
+        elseif ($ScheduleType -eq 'Hours')
+        {
+            if ($RecurInterval)
+            {
+                if ($RecurInterval -ge 24)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $RecurInterval)
+                    $PSBoundParameters.Remove('RecurInterval') | Out-Null
+                    $PSBoundParameters.Add('RecurInterval',23)
+                }
+
+                $variablesToCheck += @('RecurInterval')
+            }
+        }
+        elseif ($ScheduleType -eq 'Minutes')
+        {
+            if ($RecurInterval)
+            {
+                if ($RecurInterval -ge 60)
+                {
+                    Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $RecurInterval)
+                    $PSBoundParameters.Remove('RecurInterval') | Out-Null
+                    $PSBoundParameters.Add('RecurInterval',59)
+                }
+                elseif ($RecurInterval -le 4)
+                {
+                    Write-Warning -Message ($script:localizedData.MinIntervalMins -f $MinuteDuration)
+                    $PSBoundParameters.Remove('RecurInterval') | Out-Null
+                    $PSBoundParameters.Add('RecurInterval',5)
+                }
+
+                $variablesToCheck += @('RecurInterval')
+            }
+        }
+
+        $testParams = @{
+            CurrentValues = $State
+            DesiredValues = $PSBoundParameters
+            ValuesToCheck = $variablesToCheck
+        }
+
+        $returnState = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
+
+        foreach ($item in $PSBoundParameters.Keys)
+        {
+            if ($variablesToCheck -notcontains $item -and $item -ne 'State')
+            {
+                Write-Warning -Message ($script:localizedData.ExtraSettings -f $item, $ScheduleType)
+            }
+        }
+    }
+
+    if ($returnState -eq $true -and $result -eq $true)
+    {
+        return $true
+    }
+    else
+    {
+        return $false
+    }
+}
+
+<#
+    .SYNOPSIS
+        This will convert the PSBoundParameters into a hashtable to be used to create a Config Mgr. schedule.
+
+    .PARAMETER ScheduleType
+        Specifies the schedule type for the schedule.
+
+    .PARAMETER Start
+        Specifies the start date and start time for the schedule Month/Day/Year, example 1/1/2020 02:00.
+
+    .PARAMETER RecurInterval
+        Specifies how often the ScheduleType is run.
+
+    .PARAMETER MonthlyByWeek
+        Specifies week order for MonthlyByWeek schedule type.
+
+    .PARAMETER DayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
+
+    .PARAMETER DayOfMonth
+        Specifies the day number for MonthlyByDay schedules.
+
+    .PARAMETER HourDuration
+        Specifies the duration for the schedule in hours, max value 23.
+
+    .PARAMETER MinuteDuration
+        Specifies the duration for the schedule in minutes, max value 59.
+
+#>
+function Set-CMSchedule
+{
+    [CmdletBinding()]
+    param
+    (
+        [Parameter(Mandatory = $true)]
+        [ValidateSet('MonthlyByWeek','MonthlyByDay','Weekly','Days','Hours','Minutes','None')]
+        [String]
+        $ScheduleType,
+
+        [Parameter()]
+        [ValidateRange(5,59)]
+        [UInt32]
+        $MinuteDuration,
+
+        [Parameter()]
+        [ValidateRange(1,23)]
+        [UInt32]
+        $HourDuration,
+
+        [Parameter()]
+        [UInt32]
+        $RecurInterval,
+
+        [Parameter()]
+        [String]
+        $Start,
+
+        [Parameter()]
+        [ValidateSet('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')]
+        [String]
+        $DayOfWeek,
+
+        [Parameter()]
+        [ValidateSet('First','Second','Third','Fourth','Last')]
+        $MonthlyWeekOrder,
+
+        [Parameter()]
+        [ValidateRange(0,31)]
+        $DayOfMonth
+    )
+
+    if ($scheduleType -ne 'None' -and -not $PSBoundParameters.ContainsKey('RecurInterval'))
+    {
+        throw $script:localizedData.MissingInterval
+    }
+
+    if ($Start)
+    {
+        $startTime = [string]$Start -as [DateTime]
+
+        if ([string]::IsNullOrEmpty($startTime))
+        {
+            throw ($script:localizedData.StartFormat -f $Start)
+        }
+
+        $params = @{
+            Start = $startTime
+        }
+    }
+
+    if ($HourDuration)
+    {
+        $params += @{
+            DurationInterval = 'Hours'
+            DurationCount    = $HourDuration
+        }
+    }
+
+    if ($MinuteDuration)
+    {
+        $params += @{
+            DurationInterval = 'Minutes'
+            DurationCount    = $MinuteDuration
+        }
+    }
+
+    if ($ScheduleType -Match 'Monthly')
+    {
+        if ($RecurInterval -ge 13)
+        {
+            Write-Warning -Message ($script:localizedData.MaxIntervalMon -f $RecurInterval)
+            $count = 12
+        }
+        else
+        {
+            $count = $RecurInterval
+        }
+
+        $params += @{
+            RecurCount = $count
+        }
+
+        if ($ScheduleType -eq 'MonthlyByWeek')
+        {
+            if (-not $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or -not $PSBoundParameters.ContainsKey('DayOfWeek'))
+            {
+                throw $script:localizedData.MonthlyByWeek
+            }
+
+            $params += @{
+                WeekOrder = $MonthlyWeekOrder
+                DayOfWeek = $DayOfWeek
+            }
+        }
+        elseif ($ScheduleType -eq 'MonthlyByDay')
+        {
+            if (-not $PSBoundParameters.ContainsKey('DayOfMonth'))
+            {
+                throw $script:localizedData.MonthlyByDay
+            }
+
+            $params += @{
+                DayOfMonth = $DayOfMonth
+            }
+        }
+    }
+    elseif ($ScheduleType -eq 'Weekly')
+    {
+        if ($RecurInterval -gt 4)
+        {
+            Write-Warning -Message ($script:localizedData.MaxIntervalWeek -f $RecurInterval)
+            $count = 4
+        }
+        else
+        {
+            $count = $RecurInterval
+        }
+
+        if ([string]::IsNullOrEmpty($DayOfWeek))
+        {
+            throw $script:localizedData.Weekly
+        }
+
+        $params += @{
+            DayOfWeek  = $DayOfWeek
+            RecurCount = $count
+        }
+    }
+    elseif ($ScheduleType -eq 'None')
+    {
+        $params += @{
+            Nonrecurring = $null
+        }
+    }
+    else
+    {
+        if ($ScheduleType -eq 'Days' -and $RecurInterval -ge 32)
+        {
+            Write-Warning -Message ($script:localizedData.MaxIntervalDays -f $RecurInterval)
+            $count = 31
+        }
+        elseif ($ScheduleType -eq 'Hours' -and $RecurInterval -ge 24)
+        {
+            Write-Warning -Message ($script:localizedData.MaxIntervalHours -f $RecurInterval)
+            $count = 23
+        }
+        elseif (($ScheduleType -eq 'Minutes') -and ($RecurInterval -ge 60 -or $RecurInterval -le 4))
+        {
+            if ($RecurInterval -ge 60)
+            {
+                Write-Warning -Message ($script:localizedData.MaxIntervalMins -f $RecurInterval)
+                $count = 59
+            }
+            else
+            {
+                Write-Warning -Message ($script:localizedData.MinIntervalMins -f $RecurInterval)
+                $count = 5
+            }
+        }
+        else
+        {
+            $count = $RecurInterval
+        }
+
+        $params += @{
+            RecurInterval = $ScheduleType
+            RecurCount    = $count
+        }
+    }
+
+    return $params
+}
+
 Export-ModuleMember -Function @(
     'Import-ConfigMgrPowerShellModule'
     'Convert-CidrToIP'
@@ -585,4 +1165,7 @@ Export-ModuleMember -Function @(
     'ConvertTo-AnyCimInstance'
     'Compare-MultipleCompares'
     'Add-DPToDPGroup'
+    'Get-CMSchedule'
+    'Test-CMSchedule'
+    'Set-CMSchedule'
 )

@@ -6,19 +6,19 @@ class DSC_CMCollections : OMI_BaseResource
     [Key, Description("Specifies the type of collection."),ValueMap{"User","Device"},Values{"User","Device"}] String CollectionType;
     [Write, Description("Specifies the name of a collection to use as the default scope for this collection.")] String LimitingCollectionName;
     [Write, Description("Specifies a comment for the collection.")] String Comment;
-    [Write, EmbeddedInstance("DSC_CMCollectionRefreshSchedule"), Description("Hashtable containing refresh schedule for Configuration Manager (RecurInterval, RecurCount)")] String RefreshSchedule;
+    [Write, Description("Specifies the start date and start time for the collection refresh schedule Month/Day/Year, example 1/1/2020 02:00.")] String Start;
+    [Write, Description("Specifies the schedule type for the collection refresh schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}] String ScheduleType;
+    [Write, Description("Specifies how often the ScheduleType is run.")] UInt32 RecurInterval;
+    [Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String MonthlyWeekOrder;
+    [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
+    [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 DayOfMonth;
     [Write, Description("Specifies how Configuration Manager refreshes the collection."),ValueMap{"Manual","Periodic","Continuous","Both"},Values{"Manual","Periodic","Continuous","Both"}] String RefreshType;
+    [Write, Description("Specifies the collection name to exclude. If clients are in the excluded collection they will not be added to the collection.")] String ExcludeMembership[];
+    [Write, Description("Specifies the collection name to include. Only clients from the included collections can be added to the collection.")] String IncludeMembership[];
+    [Write, Description("Specifies the ResourceID or name for the direct membership rule.")] String DirectMembership[];
     [Write, EmbeddedInstance("DSC_CMCollectionQueryRules"), Description("Specifies the name of the rule and the query expression that Configuration Manager uses to update collections.")] String QueryRules[];
-    [Write, Description("Specifies the collection name to exclude members from. If clients are in the excluded collection they will not be added to the collection.")] String ExcludeMembership[];
-    [Write, Description("Specifies the resourceid for the direct membership rule.")] String DirectMembership[];
     [Write, Description("Specifies if the collection is to be present or absent."),ValueMap{"Present","Absent"},Values{"Present","Absent"}] String Ensure;
-};
-
-[ClassVersion("1.0.0")]
-class DSC_CMCollectionRefreshSchedule
-{
-     [Required, Description("Specifies the recur interval of days, hours, or minutes."),ValueMap{"Days","Hours","Minutes"},Values{"Days","Hours","Minutes"}] String RecurInterval;
-     [Required, Description("Specifies how often the recur interval is run.")] UInt32 RecurCount;
+    [Read, Description("Specifies the ResourceID for direct membership rules.")] String DirectMembershipId[];
 };
 
 [ClassVersion("1.0.0")]
