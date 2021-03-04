@@ -78,11 +78,11 @@ Configuration PrimaryInstall
         }
 
         # Hard-coding params to allow tests to pass. Remove these
-        $ServerName       = 'PR01.contoso.com'
-        $SiteCode         = 'PRI'
-        $SiteName         = 'Contoso'
+        $ServerName = 'PR01.contoso.com'
+        $SiteCode = 'PRI'
+        $SiteName = 'Contoso'
         $ConfigMgrVersion = 2006
-        $CMAccounts       = @(
+        $CMAccounts = @(
             New-Object System.Management.Automation.PSCredential('contoso\SCCM-Network', $(Convertto-SecureString -AsPlainText -String 'Generic' -Force))
             New-Object System.Management.Automation.PSCredential('contoso\SCCM-ClientPush', $(Convertto-SecureString -AsPlainText -String 'Generic' -Force))
             New-Object System.Management.Automation.PSCredential('contoso\SCCM-AdJoin', $(Convertto-SecureString -AsPlainText -String 'Generic' -Force))
@@ -101,12 +101,12 @@ Configuration PrimaryInstall
 
         if ($ConfigMgrVersion -lt '1910')
         {
-            $adkProductID   = 'fb450356-9879-4b2e-8dc9-282709286661'
+            $adkProductID = 'fb450356-9879-4b2e-8dc9-282709286661'
             $winPeProductID = 'd8369a05-1f4a-4735-9558-6e131201b1a2'
         }
         else
         {
-            $adkProductID   = '9346016b-6620-4841-8ea4-ad91d3ea02b5'
+            $adkProductID = '9346016b-6620-4841-8ea4-ad91d3ea02b5'
             $winPeProductID = '353df250-4ecc-4656-a950-4df93078a5fd'
         }
 
@@ -177,14 +177,14 @@ Configuration PrimaryInstall
 
         UpdateServicesServer WSUSConfig
         {
-            Ensure             = 'Present'
-            SQLServer          = "$ServerName\$dbInstanceName"
-            ContentDir         = 'C:\Apps\WSUS'
-            Products           = '*'
-            Classifications    = '*'
-            UpstreamServerSSL  = $false
-            Synchronize        = $false
-            DependsOn          = '[File]WSUSUpdates','[xSccmPreReqs]SCCMPreReqs','[Registry]EnableWSUSSelfSignedCert'
+            Ensure            = 'Present'
+            SQLServer         = "$ServerName\$dbInstanceName"
+            ContentDir        = 'C:\Apps\WSUS'
+            Products          = '*'
+            Classifications   = '*'
+            UpstreamServerSSL = $false
+            Synchronize       = $false
+            DependsOn         = '[File]WSUSUpdates','[xSccmPreReqs]SCCMPreReqs','[Registry]EnableWSUSSelfSignedCert'
         }
 
         File CreateIniFolder
@@ -440,7 +440,6 @@ Configuration PrimaryInstall
             DependsOn       = '[Script]RebootAfterSccmSetup'
         }
 
-
         CMCollectionMembershipEvaluationComponent CollectionSettings
         {
             SiteCode             = $SiteCode
@@ -543,12 +542,12 @@ Configuration PrimaryInstall
             TestScript = {
                 return (Test-Path HKLM:\SOFTWARE\Microsoft\SMS\RebbotAfterConfiguration)
             }
-            SetScript = {
+            SetScript  = {
                 New-Item -Path HKLM:\SOFTWARE\Microsoft\SMS\RebbotAfterConfiguration -Force
                 $global:DSCMachineStatus = 1
             }
-            GetScript = { return @{result = 'result'}}
-            DependsOn = $cmAccountsDependsOn,'[CMForestDiscovery]CreateForestDiscovery','[CMSystemDiscovery]CreateSystemDiscovery','[CMNetworkDiscovery]DisableNetworkDiscovery',
+            GetScript  = { return @{result = 'result'}}
+            DependsOn  = $cmAccountsDependsOn,'[CMForestDiscovery]CreateForestDiscovery','[CMSystemDiscovery]CreateSystemDiscovery','[CMNetworkDiscovery]DisableNetworkDiscovery',
                 '[CMHeartbeatDiscovery]CreateHeartbeatDiscovery','[CMUserDiscovery]CreateUserDiscovery','[CMClientStatusSettings]CreateClientStatusSettings',$cmSiteMaintenanceDependsOn,
                 '[CMBoundaryGroups]DemoBoundaryGroup','[CMAdministrativeUser]SiteAdmins','[CMCollectionMembershipEvaluationComponent]CollectionSettings',
                 '[CMStatusReportingComponent]StatusReportingSettings','[Registry]MaxHWMifSize','[CMDistributionPointGroupMembers]DPGroupMembers','[CMManagementPoint]MPInstall',
@@ -583,4 +582,5 @@ $params = @{
     )
 }
 
-PrimaryInstall -ConfigurationData $configurationData -OutputPath C:\Temp\Primary @params#>
+PrimaryInstall -ConfigurationData $configurationData -OutputPath C:\Temp\Primary @params
+#>

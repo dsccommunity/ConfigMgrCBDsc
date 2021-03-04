@@ -43,6 +43,9 @@
         'ConvertTo-AnyCimInstance'
         'Compare-MultipleCompares'
         'Add-DPToDPGroup'
+        'Get-CMSchedule'
+        'Test-CMSchedule'
+        'Set-CMSchedule'
     )
 
     # Cmdlets to export from this module
