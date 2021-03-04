@@ -53,6 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Add-DPToDPGroup to the ResourceHelper
 - Added CMClientPushSettings Resource
 - Added CMSoftwareDistributionComponent Resource
+- Added Get-CMSchedule to the ResourceHelper
+- Added Test-CMSchedule to the ResourceHelper
+- Added Set-CMSchedule to the ResourceHelper
 - Added CMMaintenanceWindows Resource
 
 ### Changed
@@ -89,6 +92,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   value to the default highest available value.
 - Updated CMHeartbeatDiscovery to warn when exceeding max allowed hours or days.
 - Updated CMUserDiscovery to warn when exceeding max allowed hours or days or minutes
+  and when specifying under the minimum allowed minutes.
+- Removed CimInstance for the CMCollections schedule.  Added support IncludeMembership
+  for collections.  Added support for adding DirectMembershipRules for users and
+  devices using resource name or ResourceId.
+- Added additional schedule types for CMCollections schedules.
+- Updated CMSystemDiscovery to warn when exceeding max allowed hours or days or minutes
   and when specifying under the minimum allowed minutes.
 
 ### Removed

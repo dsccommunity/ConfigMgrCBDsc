@@ -1128,44 +1128,44 @@ InModuleScope $script:subModuleName {
 
             It 'Should return desired result for ScheduleType Days over interval limit' {
                 $result = Set-CMSChedule @inputDayOver
-                $result                  | Should -BeOfType System.Collections.HashTable
-                $result.RecurCount       | Should -Be -ExpectedValue 31
-                $result.RecurInterval    | Should -Be -ExpectedValue 'Days'
+                $result               | Should -BeOfType System.Collections.HashTable
+                $result.RecurCount    | Should -Be -ExpectedValue 31
+                $result.RecurInterval | Should -Be -ExpectedValue 'Days'
             }
 
             It 'Should return desired result for ScheduleType Hours' {
                 $result = Set-CMSChedule @inputHour
-                $result                  | Should -BeOfType System.Collections.HashTable
-                $result.RecurCount       | Should -Be -ExpectedValue 12
-                $result.RecurInterval    | Should -Be -ExpectedValue 'Hours'
+                $result               | Should -BeOfType System.Collections.HashTable
+                $result.RecurCount    | Should -Be -ExpectedValue 12
+                $result.RecurInterval | Should -Be -ExpectedValue 'Hours'
             }
 
             It 'Should return desired result for ScheduleType Hours over interval limit' {
                 $result = Set-CMSChedule @inputHourOver
-                $result                  | Should -BeOfType System.Collections.HashTable
-                $result.RecurCount       | Should -Be -ExpectedValue 23
-                $result.RecurInterval    | Should -Be -ExpectedValue 'Hours'
+                $result               | Should -BeOfType System.Collections.HashTable
+                $result.RecurCount    | Should -Be -ExpectedValue 23
+                $result.RecurInterval | Should -Be -ExpectedValue 'Hours'
             }
 
             It 'Should return desired result for ScheduleType Minutes' {
                 $result = Set-CMSChedule @inputMinutes
-                $result                  | Should -BeOfType System.Collections.HashTable
-                $result.RecurCount       | Should -Be -ExpectedValue 30
-                $result.RecurInterval    | Should -Be -ExpectedValue 'Minutes'
+                $result               | Should -BeOfType System.Collections.HashTable
+                $result.RecurCount    | Should -Be -ExpectedValue 30
+                $result.RecurInterval | Should -Be -ExpectedValue 'Minutes'
             }
 
             It 'Should return desired result for ScheduleType Minutes over interval limit' {
                 $result = Set-CMSChedule @inputMinutesOver
-                $result                  | Should -BeOfType System.Collections.HashTable
-                $result.RecurCount       | Should -Be -ExpectedValue 59
-                $result.RecurInterval    | Should -Be -ExpectedValue 'Minutes'
+                $result               | Should -BeOfType System.Collections.HashTable
+                $result.RecurCount    | Should -Be -ExpectedValue 59
+                $result.RecurInterval | Should -Be -ExpectedValue 'Minutes'
             }
 
             It 'Should return desired result for ScheduleType Minutes under interval limit' {
                 $result = Set-CMSChedule @inputMinutesUnder
-                $result                  | Should -BeOfType System.Collections.HashTable
-                $result.RecurCount       | Should -Be -ExpectedValue 5
-                $result.RecurInterval    | Should -Be -ExpectedValue 'Minutes'
+                $result               | Should -BeOfType System.Collections.HashTable
+                $result.RecurCount    | Should -Be -ExpectedValue 5
+                $result.RecurInterval | Should -Be -ExpectedValue 'Minutes'
             }
 
             It 'Should return desired result for ScheduleType None' {
