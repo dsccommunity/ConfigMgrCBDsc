@@ -120,6 +120,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMSoftwareDistributionComponent**: Provides a resource for modifying software
   distribution component settings.  Also provides the capability to add\remove
   Network Access Accounts.
+- **CMFileReplication**: Provides a resource for creating, modifying, or deleting
+  file replication settings in Configuration Manager.
 
 ### xSccmPreReqs
 
