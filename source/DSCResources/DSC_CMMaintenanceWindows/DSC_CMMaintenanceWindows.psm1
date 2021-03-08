@@ -55,7 +55,7 @@ function Get-TargetResource
 
     if ($windows)
     {
-        $type = switch($windows.ServiceWindowType)
+        $type = switch ($windows.ServiceWindowType)
         {
             1 { 'Any' }
             4 { 'SoftwareUpdatesOnly' }
