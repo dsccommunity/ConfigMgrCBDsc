@@ -589,8 +589,23 @@ you are using apply and auto correct.
   Online authentication certificate (.pfx) file. If used, this must be in UNC
   format. Local paths are not allowed. Mutually exclusive with the
   RemoveCertificate parameter.
-- **[EmbeddedInstance] Schedule** _(Write)_: Specifies when the asset
-  intelligence catalog is synchronized. (RecurInterval, RecurCount)
+- **[String] Start** _(Write)_: Specifies the start date and start time for the
+  synchronization schedule Month/Day/Year, example 1/1/2020 02:00.
+- **[String] ScheduleType** _(Write)_: Specifies the schedule type for the synchronization
+  schedule.
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | None }
+- **[UInt32] RecurInterval** _(Write)_: Specifies how often the ScheduleType is run.
+  - Values Range: 0 - 31
+- **[String] MonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
+  schedule type.
+  - Values include: { First | Second | Third | Fourth | Last }
+- **[String] DayOfWeek** _(Write)_: Specifies the day of week name for MonthlyByWeek
+  and Weekly schedules.
+  - Values include: { Sunday | Monday | Tuesday | Wednesday | Thursday | Friday |
+    Saturday }
+- **[UInt32] DayOfMonth** _(Write)_: Specifies the day number for MonthlyByDay schedules.
+  Note specifying 0 sets the schedule to run the last day of the month.
+  - Values Range: 0 - 31
 - **[Boolean] Enable** _(Write)_: Specifies whether the installed asset
   intelligence role is enabled or disabled.
 - **[Boolean] EnableSynchronization** _(Write)_: Specifies whether to

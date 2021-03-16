@@ -98,6 +98,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added additional schedule types for CMCollections schedules.
 - Updated CMSystemDiscovery to warn when exceeding max allowed hours or days or minutes
   and when specifying under the minimum allowed minutes.
+- Updated CMAssetIntelligencePoint to use the helper functions for scheduling.
 
 ### Removed
 

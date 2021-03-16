@@ -51,11 +51,8 @@ function Get-TargetResource
         $syncSchedule = $apProps.PeriodicCatalogUpdateSchedule
         $status       = 'Present'
 
-        $convertCimParam = @{
-            ScheduleString = $syncSchedule
-            CimClassName   = 'DSC_CMAssetIntelligenceSynchronizationSchedule'
-        }
-        $sSchedule = ConvertTo-CimCMScheduleString @convertCimParam
+        $sSchedule = Convert-CMSchedule -InputObject $syncSchedule
+        $schedule = Get-CMSchedule -ScheduleString $sSchedule
     }
     else
     {
@@ -69,7 +66,12 @@ function Get-TargetResource
         CertificateFile       = $cert
         Enable                = $apEnabled
         EnableSynchronization = $syncEnabled
-        Schedule              = $sSchedule
+        Start                 = $schedule.Start
+        ScheduleType          = $schedule.ScheduleType
+        DayOfWeek             = $schedule.DayofWeek
+        MonthlyWeekOrder      = $schedule.WeekOrder
+        DayofMonth            = $schedule.MonthDay
+        RecurInterval         = $schedule.RecurInterval
         Ensure                = $status
     }
 }
@@ -93,8 +95,24 @@ function Get-TargetResource
         If used, this must be in UNC format. Local paths are not allowed.
         Mutually exclusive with the CertificateFile Parameter.
 
-    .PARAMETER Schedule
-        Specifies when the asset intelligence catalog is synchronized.
+    .PARAMETER Start
+        Specifies the start date and start time for the synchronization schedule Month/Day/Year, example 1/1/2020 02:00.
+
+    .PARAMETER ScheduleType
+        Specifies the schedule type for the synchronization schedule.
+
+    .PARAMETER RecurInterval
+        Specifies how often the ScheduleType is run.
+
+    .PARAMETER MonthlyByWeek
+        Specifies week order for MonthlyByWeek schedule type.
+
+    .PARAMETER DayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
+
+    .PARAMETER DayOfMonth
+        Specifies the day number for MonthlyByDay schedules.
+        Note specifying 0 sets the schedule to run the last day of the month.
 
     .PARAMETER Enable
         Specifies whether the installed asset intelligence role is enabled or disabled.
@@ -135,8 +153,33 @@ function Set-TargetResource
         $CertificateFile,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance]
-        $Schedule,
+        [String]
+        $Start,
+
+        [Parameter()]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','None')]
+        [String]
+        $ScheduleType,
+
+        [Parameter()]
+        [ValidateRange(1,31)]
+        [UInt32]
+        $RecurInterval,
+
+        [Parameter()]
+        [ValidateSet('First','Second','Third','Fourth','Last')]
+        [String]
+        $MonthlyWeekOrder,
+
+        [Parameter()]
+        [ValidateSet('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')]
+        [String]
+        $DayOfWeek,
+
+        [Parameter()]
+        [ValidateRange(0,31)]
+        [UInt32]
+        $DayOfMonth,
 
         [Parameter()]
         [Boolean]
@@ -162,7 +205,7 @@ function Set-TargetResource
 
     try
     {
-        if (($Schedule) -and ($EnableSynchronization -eq $false))
+        if (($ScheduleType) -and ($EnableSynchronization -eq $false))
         {
             throw $script:localizedData.ScheduleNoSync
         }
@@ -215,66 +258,30 @@ function Set-TargetResource
                 }
             }
 
-            if (-not [string]::IsNullOrEmpty($Schedule))
+            if ($ScheduleType)
             {
-                if (($state.Ensure -eq 'Absent' -and $Schedule.RecurCount -eq 0) -or
-                   ($Schedule.RecurCount -eq 0 -and $state.Schedule))
+                $valuesToValidate = @('ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
+                foreach ($item in $valuesToValidate)
                 {
-                    $setSchedule = $true
-                    Write-Verbose -Message $script:localizedData.SetNoSchedule
-                }
-                elseif (-not ($state.Schedule) -and ($Schedule.RecurCount -ne 0))
-                {
-                    Write-Verbose -Message ($script:localizedData.SetSchedule `
-                        -f $Schedule.RecurInterval, $Schedule.RecurCount)
-                    $setSchedule = $true
-                }
-                elseif (($state.Schedule) -and ($Schedule.RecurCount -ne 0))
-                {
-                    $newSchedule = @{
-                        RecurInterval = $Schedule.RecurInterval
-                        RecurCount    = $Schedule.RecurCount
-                    }
-
-                    $desiredSchedule = New-CMSchedule @newSchedule
-
-                    $currentSchedule = @{
-                        RecurInterval = $state.Schedule.RecurInterval
-                        RecurCount    = $state.Schedule.RecurCount
-                    }
-
-                    $stateSchedule = New-CMSchedule @currentSchedule
-
-                    $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-
-                    foreach ($item in $array)
+                    if ($PSBoundParameters.ContainsKey($item))
                     {
-                        if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
-                        {
-                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                                -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
-                            $setSchedule = $true
+                        $scheduleCheck += @{
+                            $item = $PSBoundParameters[$item]
                         }
                     }
                 }
 
-                if ($setSchedule -eq $true)
-                {
-                    if ($Schedule.RecurCount -eq 0)
-                    {
-                        $desiredSchedule = New-CMSchedule -Nonrecurring
-                    }
-                    elseif (-not ($state.Schedule))
-                    {
-                        $desiredScheduleSet = @{
-                            RecurInterval = $Schedule.RecurInterval
-                            RecurCount    = $Schedule.RecurCount
-                        }
-                        $desiredSchedule = New-CMSchedule @desiredScheduleSet
-                    }
-                    $buildingParams += @{
-                        Schedule = $desiredSchedule
-                    }
+                $schedResult = Test-CMSchedule @scheduleCheck -State $state
+            }
+
+            if ($schedResult -eq $false)
+            {
+                $sched = Set-CMSchedule @scheduleCheck
+                $newSchedule = New-CMSchedule @sched
+
+                Write-Verbose -Message $script:localizedData.NewSchedule
+                $buildingParams += @{
+                    Schedule = $newSchedule
                 }
             }
 
@@ -323,8 +330,24 @@ function Set-TargetResource
         If used, this must be in UNC format. Local paths are not allowed.
         Mutually exclusive with the CertificateFile Parameter.
 
-    .PARAMETER Schedule
-        Specifies when the asset intelligence catalog is synchronized.
+    .PARAMETER Start
+        Specifies the start date and start time for the synchronization schedule Month/Day/Year, example 1/1/2020 02:00.
+
+    .PARAMETER ScheduleType
+        Specifies the schedule type for the synchronization schedule.
+
+    .PARAMETER RecurInterval
+        Specifies how often the ScheduleType is run.
+
+    .PARAMETER MonthlyByWeek
+        Specifies week order for MonthlyByWeek schedule type.
+
+    .PARAMETER DayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
+
+    .PARAMETER DayOfMonth
+        Specifies the day number for MonthlyByDay schedules.
+        Note specifying 0 sets the schedule to run the last day of the month.
 
     .PARAMETER Enable
         Specifies whether the installed asset intelligence role is enabled or disabled.
@@ -366,8 +389,33 @@ function Test-TargetResource
         $CertificateFile,
 
         [Parameter()]
-        [Microsoft.Management.Infrastructure.CimInstance]
-        $Schedule,
+        [String]
+        $Start,
+
+        [Parameter()]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','None')]
+        [String]
+        $ScheduleType,
+
+        [Parameter()]
+        [ValidateRange(1,31)]
+        [UInt32]
+        $RecurInterval,
+
+        [Parameter()]
+        [ValidateSet('First','Second','Third','Fourth','Last')]
+        [String]
+        $MonthlyWeekOrder,
+
+        [Parameter()]
+        [ValidateSet('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')]
+        [String]
+        $DayOfWeek,
+
+        [Parameter()]
+        [ValidateRange(0,31)]
+        [UInt32]
+        $DayOfMonth,
 
         [Parameter()]
         [Boolean]
@@ -423,47 +471,25 @@ function Test-TargetResource
                 $result = $false
             }
 
-            if (-not [string]::IsNullOrEmpty($Schedule))
+            if ($ScheduleType)
             {
-                if (($Schedule.RecurCount -eq 0) -and ($state.Schedule))
+                $valuesToValidate = @('ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
+                foreach ($item in $valuesToValidate)
                 {
-                    $result = $false
-                    Write-Verbose -Message $script:localizedData.NoSchedule
-                }
-                elseif (-not ($state.Schedule) -and ($Schedule.RecurCount -ne 0))
-                {
-                    Write-Verbose -Message ($script:localizedData.CurrentSchedule `
-                        -f $Schedule.RecurInterval, $Schedule.RecurCount)
-                    $result = $false
-                }
-                elseif (($state.Schedule) -and ($Schedule.RecurCount -ne 0))
-                {
-                    $newSchedule = @{
-                        RecurInterval = $Schedule.RecurInterval
-                        RecurCount    = $Schedule.RecurCount
-                    }
-
-                    $desiredSchedule = New-CMSchedule @newSchedule
-
-                    $currentSchedule = @{
-                        RecurInterval = $state.Schedule.RecurInterval
-                        RecurCount    = $state.Schedule.RecurCount
-                    }
-
-                    $stateSchedule = New-CMSchedule @currentSchedule
-
-                    $array = @('DayDuration','DaySpan','HourDuration','HourSpan','IsGMT')
-
-                    foreach ($item in $array)
+                    if ($PSBoundParameters.ContainsKey($item))
                     {
-                        if ($desiredSchedule.$($item) -ne $stateSchedule.$($item))
-                        {
-                            Write-Verbose -Message ($script:localizedData.ScheduleItem `
-                                -f $item, $($desiredSchedule.$($item)), $($stateSchedule.$($item)))
-                            $result = $false
+                        $scheduleCheck += @{
+                            $item = $PSBoundParameters[$item]
                         }
                     }
                 }
+
+                $schedResult = Test-CMSchedule @scheduleCheck -State $state
+            }
+
+            if ($schedResult -ne $true)
+            {
+                $result = $false
             }
         }
     }

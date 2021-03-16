@@ -8,15 +8,10 @@ ConvertFrom-StringData @'
     CertMismatch         = When specifying a certificate, you can't specify RemoveCertificate as true.
     SiteServerRole       = {0} is not currently a site system server adding site system role.
     NullCertCheck        = Expected no certificate file to be configured, but detected that one is currently configured on {0}.
-    ScheduleItem         = Schedule item {0} expected {1} returned {2}.
     AddAPRole            = Adding Asset Intelligence Synchronization Point role to {0}.
     SettingValue         = Setting value: {0} to {1}.
     RemoveCert           = Removing configured certificate file for site server {0}.
     RemoveAPRole         = Removing Asset Intelligence Synchronization Point role from {0}.
-    NoSchedule           = Expected Schedule to be set to None.
-    CurrentSchedule      = Current Schedule is set to none, desired: {0} {1}.
-    SetNoSchedule        = Setting schedule to none.
-    SetSchedule          = Setting schedule to {0} {1}.
     RoleInstalled        = SiteServerName parameter will be ignored, since role is already installed.
     ServerNameAdd        = Role is not installed, need to specify SiteServerName to add.
     ServerNameRemove     = Role is installed, need to specify SiteServerName to remove.
