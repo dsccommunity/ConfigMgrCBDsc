@@ -6,7 +6,7 @@ Import-Module -Name $script:configMgrResourcehelper
 
 $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
- <#
+<#
     .SYNOPSIS
         This will return a hashtable of results.
 
@@ -18,7 +18,6 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
 
     .Notes
         This role must only be installed on top-level site of the hierarchy.
-
 #>
 function Get-TargetResource
 {
@@ -51,8 +50,7 @@ function Get-TargetResource
         $syncSchedule = $apProps.PeriodicCatalogUpdateSchedule
         $status       = 'Present'
 
-        $sSchedule = Convert-CMSchedule -InputObject $syncSchedule
-        $schedule = Get-CMSchedule -ScheduleString $sSchedule
+        $schedule = Get-CMSchedule -ScheduleString $syncSchedule
     }
     else
     {
@@ -76,7 +74,7 @@ function Get-TargetResource
     }
 }
 
- <#
+<#
     .SYNOPSIS
         This will set the desired state.
 
@@ -272,16 +270,16 @@ function Set-TargetResource
                 }
 
                 $schedResult = Test-CMSchedule @scheduleCheck -State $state
-            }
 
-            if ($schedResult -eq $false)
-            {
-                $sched = Set-CMSchedule @scheduleCheck
-                $newSchedule = New-CMSchedule @sched
+                if ($schedResult -eq $false)
+                {
+                    $sched = Set-CMSchedule @scheduleCheck
+                    $newSchedule = New-CMSchedule @sched
 
-                Write-Verbose -Message $script:localizedData.NewSchedule
-                $buildingParams += @{
-                    Schedule = $newSchedule
+                    Write-Verbose -Message $script:localizedData.NewSchedule
+                    $buildingParams += @{
+                        Schedule = $newSchedule
+                    }
                 }
             }
 
@@ -451,18 +449,17 @@ function Test-TargetResource
         {
             Write-Verbose -Message ($script:localizedData.RoleInstalled)
 
-            $evalList = @('CertificateFile','Enable','EnableSynchronization')
+            $testParams = @{
+                CurrentValues = $state
+                DesiredValues = $PSBoundParameters
+                ValuesToCheck = @('CertificateFile','Enable','EnableSynchronization')
+            }
 
-            foreach ($param in $PSBoundParameters.GetEnumerator())
+            $mainState = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
+
+            if (-not [string]::IsNullOrEmpty($mainState) -and $mainState -eq $false)
             {
-                if ($evalList -contains $param.key)
-                {
-                    if ($param.Value -ne $state[$param.key])
-                    {
-                        Write-Verbose -Message ($script:localizedData.TestSetting -f $param.Key, $param.Value, $state[$param.key])
-                        $result = $false
-                    }
-                }
+                $result = $false
             }
 
             if (($RemoveCertificate) -and (-not [string]::IsNullOrEmpty($state.CertificateFile)))
@@ -485,11 +482,11 @@ function Test-TargetResource
                 }
 
                 $schedResult = Test-CMSchedule @scheduleCheck -State $state
-            }
 
-            if ($schedResult -ne $true)
-            {
-                $result = $false
+                if ($schedResult -ne $true)
+                {
+                    $result = $false
+                }
             }
         }
     }

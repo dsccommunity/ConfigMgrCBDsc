@@ -15,4 +15,5 @@ ConvertFrom-StringData @'
     RoleInstalled        = SiteServerName parameter will be ignored, since role is already installed.
     ServerNameAdd        = Role is not installed, need to specify SiteServerName to add.
     ServerNameRemove     = Role is installed, need to specify SiteServerName to remove.
+    NewSchedule          = Modifying Asset Intelligence Syncrhonization schedule.
 '@
