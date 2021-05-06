@@ -11,5 +11,5 @@ ConvertFrom-StringData @'
     RemoveMW             = Removing maintenance window {0} from Configuration Manager.
     MissingWindow        = Maintenance Window {0} does not exist.
     TestState            = Test-TargetResource compliance check returned: {0}.
-    Absent               = NOTMATCH: Value (type 'System.Boolean') for property Ensure does not match. Current state is 'Present' and desired state is 'Absent'.
+    Absent               = NOTMATCH: Value (type 'System.String') for property Ensure does not match. Current state is 'Present' and desired state is 'Absent'.
 '@

@@ -51,7 +51,8 @@ function Get-TargetResource
         $collect = 'Absent'
     }
 
-    $windows = Get-CMMaintenanceWindow -CollectionName $CollectionName -MaintenanceWindowName $Name
+    $exWindows = Get-CMMaintenanceWindow -CollectionName $CollectionName -MaintenanceWindowName $Name
+    $windows = $exWindows | where-Object -FilterScript {$_.Name -eq $Name}
 
     if ($windows)
     {
@@ -464,7 +465,7 @@ function Test-TargetResource
                 Write-Warning -Message ($script:localizedData.MissingWindowParam -f $Name)
             }
 
-            Write-Warning -Message ($script:localizedData.MissingWindow -f $Name)
+            Write-Verbose -Message ($script:localizedData.MissingWindow -f $Name)
             $result = $false
         }
         else
