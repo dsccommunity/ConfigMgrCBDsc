@@ -86,9 +86,9 @@ function Get-TargetResource
         MinuteDuration     = $schedule.MinuteDuration
         Start              = $schedule.Start
         ScheduleType       = $schedule.ScheduleType
-        DayOfWeek          = $schedule.DayofWeek
+        DayOfWeek          = $schedule.DayOfWeek
         MonthlyWeekOrder   = $schedule.WeekOrder
-        DayofMonth         = $schedule.MonthDay
+        DayOfMonth         = $schedule.MonthDay
         RecurInterval      = $schedule.RecurInterval
         Description        = $windows.Description
         CollectionStatus   = $collect
@@ -162,7 +162,7 @@ function Set-TargetResource
         [Parameter()]
         [ValidateSet('Any','SoftwareUpdatesOnly','TaskSequencesOnly')]
         [String]
-        $ServiceWindowsType = 'Any',
+        $ServiceWindowsType,
 
         [Parameter()]
         [String]
@@ -239,7 +239,7 @@ function Set-TargetResource
                 throw $script:localizedData.MixedDuration
             }
 
-            if ($state.ServiceWindowsType -ne $ServiceWindowsType)
+            if ($PSBoundParameters.ContainsKey('ServiceWindowsType') -and $state.ServiceWindowsType -ne $ServiceWindowsType)
             {
                 Write-Verbose -Message ($script:localizedData.ChangingApplyTo -f $state.ServiceWindowsType, $ServiceWindowsType)
                 $buildingParams += @{
@@ -388,7 +388,7 @@ function Test-TargetResource
         [Parameter()]
         [ValidateSet('Any','SoftwareUpdatesOnly','TaskSequencesOnly')]
         [String]
-        $ServiceWindowsType = 'Any',
+        $ServiceWindowsType,
 
         [Parameter()]
         [String]
