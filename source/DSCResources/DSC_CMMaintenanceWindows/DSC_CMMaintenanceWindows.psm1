@@ -472,6 +472,11 @@ function Test-TargetResource
         {
             $valuesToCheck = @('CollectionName','Name','IsEnabled','Ensure','ServiceWindowsType')
 
+            if (-not $PSBoundParameters.ContainsKey('IsEnabled'))
+            {
+                $PSBoundParameters.Add('IsEnabled',$true)
+            }
+
             $testParams = @{
                 CurrentValues = $state
                 DesiredValues = $PSBoundParameters
