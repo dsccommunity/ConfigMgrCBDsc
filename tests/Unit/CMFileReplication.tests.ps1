@@ -46,12 +46,12 @@ try
                 }
 
                 $replRouteLimited = @{
-                    UnlimitedRateForAll = $false
-                    PropLists = @{
+                    UnlimitedRateForAll  = $false
+                    PropLists            = @{
                         PropertyListName = 'Pulse Mode'
                         Values           = @(0,3,5)
                     }
-                    Props = @(
+                    Props                = @(
                         @{
                             PropertyName = 'Connection Point'
                             Value        = 0
@@ -67,7 +67,7 @@ try
                     )
                     RateLimitingSchedule = @(70,70,70,70,90,90,90,90,90,90,90,90,80,80,80,80,80,80,80,
                                             80,80,80,80,80)
-                    UsageSchedule       = @(
+                    UsageSchedule        = @(
                         @{
                             HourUsage = @(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
                         }
@@ -93,12 +93,12 @@ try
                 }
 
                 $replRoutePulse = @{
-                    UnlimitedRateForAll = $false
-                    PropLists =@{
+                    UnlimitedRateForAll  = $false
+                    PropLists            = @{
                         PropertyListName = 'Pulse Mode'
                         Values           = @(1,3,5)
                     }
-                    Props = @(
+                    Props                = @(
                         @{
                             PropertyName = 'Connection Point'
                             Value        = 0
@@ -114,7 +114,7 @@ try
                     )
                     RateLimitingSchedule = @(100,100,100,100,100,100,100,100,100,100,100,100,100,
                                              100,100,100,100,100,100,100,100,100,100,100)
-                    UsageSchedule       = @(
+                    UsageSchedule        = @(
                         @{
                             HourUsage = @(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)
                         }
@@ -140,12 +140,12 @@ try
                 }
 
                 $replRouteUnlimited = @{
-                    UnlimitedRateForAll = $true
-                    PropLists =@{
+                    UnlimitedRateForAll  = $true
+                    PropLists            = @{
                         PropertyListName = 'Pulse Mode'
                         Values           = @(0,3,5)
                     }
-                    Props = @(
+                    Props                = @(
                         @{
                             PropertyName = 'Connection Point'
                             Value        = 0
@@ -598,11 +598,11 @@ try
             Context 'When running Set-TargetResource should throw' {
                 BeforeEach {
                     $badInput = @{
-                        SiteCode             = 'Lab'
-                        DestinationSiteCode  = 'CAS'
-                        UseSystemAccount     = $true
-                        PulseMode            = $true
-                        Limited              = $true
+                        SiteCode            = 'Lab'
+                        DestinationSiteCode = 'CAS'
+                        UseSystemAccount    = $true
+                        PulseMode           = $true
+                        Limited             = $true
                     }
 
                     $multiTrueError = 'Only one type PulseMode, Limited, or Unlimited can be set to True in the configuration.'
@@ -688,11 +688,11 @@ try
                     $inputOverlapRateMsg = 'Skipping RateLimitingSchedule as input specified overlap another parameter defined RateLimitSchedule for LimitedBeginHour: 9 LimitedEndHour: 17.'
 
                     $inputOverlapNetwork = @{
-                        SiteCode             = 'Lab'
-                        DestinationSiteCode  = 'CAS'
-                        UseSystemAccount     = $true
-                        UnLimited            = $true
-                        NetworkLoadSchedule  = $networkLoadInputOverlap
+                        SiteCode            = 'Lab'
+                        DestinationSiteCode = 'CAS'
+                        UseSystemAccount    = $true
+                        UnLimited           = $true
+                        NetworkLoadSchedule = $networkLoadInputOverlap
                     }
 
                     $inputOverlapNetworkMsg = 'NetworkLoadSchedule has an input overlap for BeginHour: 9 EndHour: 0 Day: Sunday.'
@@ -1089,11 +1089,11 @@ try
                     }
 
                     $badInput = @{
-                        SiteCode             = 'Lab'
-                        DestinationSiteCode  = 'CAS'
-                        UseSystemAccount     = $true
-                        PulseMode            = $true
-                        Limited              = $true
+                        SiteCode            = 'Lab'
+                        DestinationSiteCode = 'CAS'
+                        UseSystemAccount    = $true
+                        PulseMode           = $true
+                        Limited             = $true
                     }
 
                     $badAccountInput = @{

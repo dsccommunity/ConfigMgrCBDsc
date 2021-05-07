@@ -77,6 +77,7 @@
         'CMSecurityRoles'
         'CMClientPushSettings'
         'CMSoftwareDistributionComponent'
+        'CMMaintenanceWindows'
         'CMFileReplication'
     )
 
@@ -95,7 +96,8 @@
             'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
             'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint',
             'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
-            'DistributionPointGroupMembers','SecurityScopes','UserDiscovery','SecurityRoles','ClientPushSettings','SoftwareDistributionComponent','FileReplication')
+            'DistributionPointGroupMembers','SecurityScopes','UserDiscovery','SecurityRoles','ClientPushSettings','SoftwareDistributionComponent',
+            'MaintenanceWindows','FileReplication')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

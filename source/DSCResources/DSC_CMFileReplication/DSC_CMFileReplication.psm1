@@ -40,7 +40,7 @@ function Get-TargetResource
     if ($replRoute)
     {
         $replSite = 'Present'
-        $login = ($replRoute.props | Where-Object -FilterScript {$_.PropertyName -eq 'Lan Login'}).value2
+        $login = ($replRoute.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Lan Login'}).Value2
         if ([string]::IsNullOrEmpty($login))
         {
             $account = $true
@@ -51,29 +51,28 @@ function Get-TargetResource
         }
 
         $noLimit = $replRoute.UnlimitedRateForAll
-        $pulse = $replRoute.propLists.values[0]
-        $blockSize = $replRoute.propLists.values[1]
-        $dataDelay = $replRoute.propLists.values[2]
+        $pulse = $replRoute.PropLists.Values[0]
+        $blockSize = $replRoute.PropLists.Values[1]
+        $dataDelay = $replRoute.PropLists.Values[2]
         $rateSchedule = $replRoute.RateLimitingSchedule
 
         if ($rateSchedule)
         {
             $count = 0
             $next = $count + 1
-            $rateLimites = @()
+            $rateLimits = @()
 
             do
             {
                 if ($rateSchedule[$count] -eq $rateSchedule[$next])
                 {
                     $next ++
-                    $match = $null
                 }
                 else
                 {
                     if ($next -eq 24)
                     {
-                        $rateLimites += @{
+                        $rateLimits += @{
                             LimitedBeginHour               = $count
                             LimitedEndHour                 = 0
                             LimitAvailableBandwidthPercent = $rateSchedule[$count]
@@ -81,7 +80,7 @@ function Get-TargetResource
                     }
                     else
                     {
-                        $rateLimites += @{
+                        $rateLimits += @{
                             LimitedBeginHour               = $count
                             LimitedEndHour                 = $next
                             LimitAvailableBandwidthPercent = $rateSchedule[$count]
@@ -93,7 +92,7 @@ function Get-TargetResource
             until ($count -eq 24)
 
             $cimRateLimit = New-Object -TypeName 'System.Collections.ObjectModel.Collection`1[Microsoft.Management.Infrastructure.CimInstance]'
-            foreach ($item in $rateLimites)
+            foreach ($item in $rateLimits)
             {
                 $cimRateLimit += (New-CimInstance -ClassName DSC_CMRateLimitingSchedule -Property @{
                     LimitedBeginHour = [UInt32]$item.LimitedBeginHour
