@@ -120,6 +120,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **CMSoftwareDistributionComponent**: Provides a resource for modifying software
   distribution component settings.  Also provides the capability to add\remove
   Network Access Accounts.
+- **CMMaintenanceWindows**: Provides a resource for creating and modifying
+  maintenance windows for collections.
 
 ### xSccmPreReqs
 
@@ -1233,3 +1235,50 @@ you are using apply and auto correct.
 
 - [CMSoftwareDistributionComponent_AccessAccount](Source\Examples\Resources\CMSoftwareDistributionComponent\CMSoftwareDistributionComponent_AccessAccount.ps1)
 - [CMSoftwareDistributionComponent_Computer](Source\Examples\Resources\CMSoftwareDistributionComponent\CMSoftwareDistributionComponent_Computer.ps1)
+
+### CMMaintenanceWindows
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] CollectionName** _(Key)_: Specifies the collection name for
+  the maintenance window.
+- **[String] Name** _(Key): Specifies the name for the maintenance window.
+- **[String] ServiceWindowsType** _(Write)_: Specifies what the maintenance window
+  will apply to.
+  - Values include: { Any | SoftwareUpdatesOnly | TaskSequencesOnly }
+- **[String] Start** _(Key): Specifies the start date and start time for the maintenance
+  window Month/Day/Year, example 1/1/2020 02:00.
+- **[String] ScheduleType** _(Write)_: Specifies the schedule type for the maintenance
+  window.
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | None }
+- **[UInt32] RecurInterval** _(Write)_: Specifies how often the ScheduleType is run.
+- **[String] MonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
+  schedule type.
+  - Values include: { First | Second | Third | Fourth | Last }
+- **[String] DayOfWeek** _(Write)_: Specifies the day of week name for MonthlyByWeek
+  and Weekly schedules.
+  - Values include: { Sunday | Monday | Tuesday | Wednesday | Thursday | Friday |
+    Saturday }
+- **[UInt32] DayOfMonth** _(Write)_: Specifies the day number for MonthlyByDay schedules.
+  Note specifying 0 sets the schedule to run the last day of the month.
+  - Values Range: 0 - 31
+- **[UInt32] HourDuration** _(Write)_: Specifies the duration for the maintenance
+  window in hours, max value 23.
+  - Values Range: 0 - 23
+- **[UInt32] MinuteDuration** _(Write)_: Specifies the duration for the maintenance
+  window in minutes, max value 59.
+  - Values Range: 5 - 59
+- **[Boolean] IsEnabled** _(Write)_: Specifies if the maintenance window is enabled,
+  default value is enabled.
+- **[String] Ensure** _(Write)_: Specifies whether the Security Scope
+  is present or absent.
+  - Values include: { Present | Absent }
+- **[String] Description** _(Read)_: Provides the description of the
+  maintenance window.
+- **[String] CollectionStatus** _(Read)_: Specifies if the collection applying
+  the maintenance window to exists.
+
+#### CMMaintenanceWindows Examples
+
+- [CMMaintenanceWindows_Present](Source\Examples\Resources\CMMaintenanceWindows\CMMaintenanceWindows_Present.ps1)
+- [CMMaintenanceWindows_Absent](Source\Examples\Resources\CMMaintenanceWindows\CMMaintenanceWindows_Absent.ps1)
