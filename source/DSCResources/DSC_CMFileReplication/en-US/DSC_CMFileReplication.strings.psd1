@@ -13,7 +13,7 @@ ConvertFrom-StringData @'
     FileReplPresent      = NOTMATCH:  File replication is present expected absent.
     RemoveReplSite       = Removing File replication from sourceSite: {0} to DestinationSite: {1}.
     ExtraSettings        = Setting {0} does not apply to file replication type specified.
-    OverlappingRate      = RateLimitingSchedule has an input overlap for LimitedBeginHour: {0} LimitedEndHour: {1}.
+    OverlappingRate      = Skipping RateLimitingSchedule as input specified overlap another parameter defined RateLimitSchedule for LimitedBeginHour: {0} LimitedEndHour: {1}.
     OverlappingSchedule  = NetworkLoadSchedule has an input overlap for BeginHour: {0} EndHour: {1} Day: {2}.
     MultipleTypes        = Only one type PulseMode, Limited, or Unlimited can be set to True in the configuration.
     AccountsError        = You are specifying UseSystemAccount $true and also sepcifying FileRepliacationAccountName, choose one.

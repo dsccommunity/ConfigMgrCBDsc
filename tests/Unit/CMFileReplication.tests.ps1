@@ -685,7 +685,7 @@ try
                         RateLimitingSchedule = $limitedInputOverlap
                     }
 
-                    $inputOverlapRateMsg = 'RateLimitingSchedule has an input overlap for LimitedBeginHour: 9 LimitedEndHour: 17.'
+                    $inputOverlapRateMsg = 'Skipping RateLimitingSchedule as input specified overlap another parameter defined RateLimitSchedule for LimitedBeginHour: 9 LimitedEndHour: 17.'
 
                     $inputOverlapNetwork = @{
                         SiteCode             = 'Lab'

@@ -392,9 +392,9 @@ function Set-TargetResource
             {
                 foreach ($limSched in $RateLimitingSchedule)
                 {
-                    $overlapCheck = $RateLimitingSchedule.Where({$limSched.LimitedBeginHour -gt $_.LimitedBeginHour -and
-                                                                $limSched.LimitedBeginHour -lt $_.LimitedEndHour})
-                    if ($overlapCheck)
+                    $overlapCheck = $RateLimitingSchedule.Where({$limSched.LimitedBeginHour -ge $_.LimitedBeginHour -and
+                                        ($limSched.LimitedBeginHour -lt $_.LimitedEndHour -or $_.LimitedEndHour -eq 0)})
+                    if ($overlapCheck.Count -ge 2)
                     {
                         $errorMsg += ($script:localizedData.OverlappingRate -f $limSched.LimitedBeginHour, $limSched.LimitedEndHour)
                     }
@@ -435,9 +435,9 @@ function Set-TargetResource
             {
                 foreach ($limNetSched in $NetworkLoadSchedule)
                 {
-                    $loadOverlap = $NetworkLoadSchedule.Where({$_.Day -eq $limNetSched.Day -and $limNetSched.BeginHour -gt
-                                    $_.BeginHour -and $limNetSched.BeginHour -lt $_.EndHour})
-                    if ($loadOverlap)
+                    $loadOverlap = $NetworkLoadSchedule.Where({$_.Day -eq $limNetSched.Day -and $limNetSched.BeginHour -ge
+                                        $_.BeginHour -and ($limNetSched.BeginHour -lt $_.EndHour -or $_.EndHour -eq 0)})
+                    if ($loadOverlap.Count -ge 2)
                     {
                         $errorMsg += ($script:localizedData.OverlappingSchedule -f $limNetSched.BeginHour, $limNetSched.EndHour, $limNetSched.Day)
                     }
@@ -693,11 +693,12 @@ function Test-TargetResource
             {
                 foreach ($limSched in $RateLimitingSchedule)
                 {
-                    $overlapCheck = $RateLimitingSchedule.Where({$limSched.LimitedBeginHour -gt $_.LimitedBeginHour -and
-                                                                $limSched.LimitedBeginHour -lt $_.LimitedEndHour})
-                    if ($overlapCheck)
+                    $overlapCheck = $RateLimitingSchedule.Where({$limSched.LimitedBeginHour -ge $_.LimitedBeginHour -and
+                                        ($limSched.LimitedBeginHour -lt $_.LimitedEndHour -or $_.LimitedEndHour -eq 0)})
+                    if ($overlapCheck.Count -ge 2)
                     {
                         Write-Warning ($script:localizedData.OverlappingRate -f $limSched.LimitedBeginHour, $limSched.LimitedEndHour)
+                        $return = $false
                     }
                     else
                     {
@@ -732,11 +733,13 @@ function Test-TargetResource
             {
                 foreach ($limNetSched in $NetworkLoadSchedule)
                 {
-                    $loadOverlap = $NetworkLoadSchedule.Where({$_.Day -eq $limNetSched.Day -and $limNetSched.BeginHour -gt
-                        $_.BeginHour -and $limNetSched.BeginHour -lt $_.EndHour})
-                    if ($loadOverlap)
+                    $loadOverlap = $NetworkLoadSchedule.Where({$_.Day -eq $limNetSched.Day -and $limNetSched.BeginHour -ge
+                                        $_.BeginHour -and ($limNetSched.BeginHour -lt $_.EndHour -or $_.EndHour -eq 0)})
+
+                    if ($loadOverlap.Count -ge 2)
                     {
                         Write-Warning -Message ($script:localizedData.OverlappingSchedule -f $limNetSched.BeginHour, $limNetSched.EndHour, $limNetSched.Day)
+                        $return = $false
                     }
                     else
                     {
