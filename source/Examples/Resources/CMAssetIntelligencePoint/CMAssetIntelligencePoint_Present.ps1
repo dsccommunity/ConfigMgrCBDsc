@@ -13,11 +13,8 @@ Configuration Example
             SiteCode              = 'Lab'
             SiteServerName        = 'CA01.contoso.com'
             Ensure                = 'Present'
-            Schedule              = DSC_CMAssetIntelligenceSynchronizationSchedule
-            {
-                RecurInterval = 'Days'
-                RecurCount    = '7'
-            }
+            ScheduleType          = 'Days'
+            RecurInterval         = '7'
             Enable                = $True
             EnableSynchronization = $True
             IsSingleInstance      = 'Yes'
