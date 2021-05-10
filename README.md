@@ -583,7 +583,7 @@ you are using apply and auto correct.
 
 - **[String] IsSingleInstance** _(Key)_:  Specifies the resource is a single
   instance, the value must be 'Yes'.
-  { Yes }.
+  - Values include: { Yes }.
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
 - **[String] SiteServerName** _(Required)_: Specifies the Site Server to install

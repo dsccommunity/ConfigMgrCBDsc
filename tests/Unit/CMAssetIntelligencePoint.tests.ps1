@@ -38,7 +38,7 @@ try
 {
     InModuleScope $script:dscResourceName {
         Describe 'ConfigMgrCBDsc - DSC_CMAssetIntelligencePoint\Get-TargetResource' -Tag 'Get' {
-            BeforeAll{
+            BeforeAll {
                 $getInput = @{
                     SiteCode         = 'Lab'
                     IsSingleInstance = 'Yes'
@@ -253,7 +253,6 @@ try
                     }
 
                     Mock -CommandName Test-CMSchedule -MockWith { $false }
-
                     Mock -CommandName Set-CMSchedule -MockWith { $scheduleReturn }
                 }
 
