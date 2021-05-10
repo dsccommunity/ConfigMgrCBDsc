@@ -203,18 +203,18 @@ function Set-TargetResource
 
     try
     {
-        if (($ScheduleType) -and ($EnableSynchronization -eq $false))
-        {
-            throw $script:localizedData.ScheduleNoSync
-        }
-
-        if (($CertificateFile) -and ($RemoveCertificate -eq $true))
-        {
-            throw $script:localizedData.CertMismatch
-        }
-
         if ($Ensure -eq 'Present')
         {
+            if (($ScheduleType) -and ($EnableSynchronization -eq $false))
+            {
+                throw $script:localizedData.ScheduleNoSync
+            }
+
+            if (($CertificateFile) -and ($RemoveCertificate -eq $true))
+            {
+                throw $script:localizedData.CertMismatch
+            }
+
             if ($state.Ensure -eq 'Absent')
             {
                 if (-not $PsBoundParameters.ContainsKey('SiteServerName'))
@@ -440,6 +440,18 @@ function Test-TargetResource
 
     if ($Ensure -eq 'Present')
     {
+        if (($ScheduleType) -and ($EnableSynchronization -eq $false))
+        {
+            Write-Warning -Message $script:localizedData.ScheduleNoSync
+            $result = $false
+        }
+
+        if (($CertificateFile) -and ($RemoveCertificate -eq $true))
+        {
+            Write-Warning -Message $script:localizedData.CertMismatch
+            $result = $false
+        }
+
         if ($state.Ensure -eq 'Absent')
         {
             Write-Verbose -Message ($script:localizedData.APNotInstalled -f $SiteServerName)

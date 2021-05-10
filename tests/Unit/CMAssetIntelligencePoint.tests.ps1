@@ -342,60 +342,6 @@ try
                     Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
-
-                <#It 'Should call expected commands when a schedule is present and a nonrecurring schedule is specified' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabledDays }
-                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero }
-
-                    Set-TargetResource @getReturnEnabledZero
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Test-CMSchedule -Exactly -Times 0 -ScopeIt
-                    Assert-MockCalled Set-CMSchedule -Exactly -Times 0 -ScopeIt
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands when no schedule is present and a schedule is specified' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnNoSchedule }
-                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertDays }
-
-                    Set-TargetResource @getReturnEnabledDays
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Test-CMSchedule -Exactly -Times 0 -ScopeIt
-                    Assert-MockCalled Set-CMSchedule -Exactly -Times 0 -ScopeIt
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands when a state is absent and a nonrecurring schedule is specified' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-                    Mock -CommandName New-CMSchedule -MockWith { $scheduleConvertZero }
-
-                    Set-TargetResource @getReturnEnabledZero
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Test-CMSchedule -Exactly -Times 0 -ScopeIt
-                    Assert-MockCalled Set-CMSchedule -Exactly -Times 0 -ScopeIt
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }#>
             }
 
             Context 'When Set-TargetResource throws' {
@@ -500,105 +446,6 @@ try
                     Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 }
-
-                <#It 'Should call expected commands and throw if Get-CMSiteSystemServer throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-                    Mock -CommandName Get-CMSiteSystemServer -MockWith { throw }
-
-                    { Set-TargetResource @inputPresent } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands and throw if New-CMSiteSystemServer throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-                    Mock -CommandName Get-CMSiteSystemServer
-                    Mock -CommandName New-CMSiteSystemServer -MockWith { throw }
-
-                    { Set-TargetResource @inputPresent } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands and throw if Add-CMAssetIntelligenceSynchronizationPoint throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
-                    Mock -CommandName Get-CMSiteSystemServer
-                    Mock -CommandName New-CMSiteSystemServer -MockWith { $true }
-                    Mock -CommandName Add-CMAssetIntelligenceSynchronizationPoint -MockWith { throw }
-
-                    { Set-TargetResource @inputNoCert } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands and throw if New-CMSchedule throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $returnEnabledDaysMismatch }
-                    Mock -CommandName New-CMSchedule -MockWith { throw }
-
-                    { Set-TargetResource @getReturnEnabledDays } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands and throw if Set-CMAssetIntelligenceSynchronizationPoint throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
-                    Mock -CommandName Set-CMAssetIntelligenceSynchronizationPoint -MockWith { throw }
-
-                    { Set-TargetResource @inputNoSync } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should call expected commands and throw if Remove-CMAssetIntelligenceSynchronizationPoint throws' {
-                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
-                    Mock -CommandName Remove-CMAssetIntelligenceSynchronizationPoint -MockWith { throw }
-
-                    { Set-TargetResource @inputAbsent } | Should -Throw
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Add-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Set-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Remove-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                }#>
             }
         }
 
@@ -646,6 +493,15 @@ try
                     CertificateFile  = '\\CA01.Contoso.com\c$\cert.pfx'
                     Ensure           = 'Present'
                     IsSingleInstance = 'Yes'
+                }
+
+                $inputCertNoCert = @{
+                    SiteCode          = 'Lab'
+                    SiteServerName    = 'CA01.contoso.com'
+                    CertificateFile   = '\\CA01.Contoso.com\c$\cert.pfx'
+                    RemoveCertificate = $true
+                    Ensure            = 'Present'
+                    IsSingleInstance  = 'Yes'
                 }
 
                 $inputNoCert = @{
@@ -718,6 +574,12 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
                     Test-TargetResource @inputNoCert | Should -Be $false
+                }
+
+                It 'Should return desired result false when a certificate file is specified along with RemoveCertificate being set to true' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    Test-TargetResource @inputCertNoCert | Should -Be $false
                 }
 
                 It 'Should return desired result true when no certificate file is specified and no certificate file is present' {
