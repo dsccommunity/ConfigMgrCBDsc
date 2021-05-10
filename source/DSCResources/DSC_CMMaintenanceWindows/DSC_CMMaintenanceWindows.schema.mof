@@ -1,0 +1,20 @@
+[ClassVersion("1.0.0"), FriendlyName("CMMaintenanceWindows")]
+class DSC_CMMaintenanceWindows : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the collection name for the maintenance window.")] String CollectionName;
+    [Key, Description("Specifies the name for the maintenance window.")] String Name;
+    [Write, Description("Specifies what the maintenance window will apply to."), ValueMap{"Any","SoftwareUpdatesOnly","TaskSequencesOnly"}, Values{"Any","SoftwareUpdatesOnly","TaskSequencesOnly"}] String ServiceWindowsType;
+    [Write, Description("Specifies the start date and start time for the maintenance window Month/Day/Year, example 1/1/2020 02:00.")] String Start;
+    [Write, Description("Specifies the schedule type for the maintenance window."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","None"}] String ScheduleType;
+    [Write, Description("Specifies how often the ScheduleType is run.")] UInt32 RecurInterval;
+    [Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String MonthlyWeekOrder;
+    [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
+    [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 DayOfMonth;
+    [Write, Description("Specifies the duration for the maintenance window in hours, max value 23.")] UInt32 HourDuration;
+    [Write, Description("Specifies the duration for the maintenance window in minutes, max value 59.")] UInt32 MinuteDuration;
+    [Write, Description("Specifies if the maintenance window is enabled, default value is enabled.")] Boolean IsEnabled;
+    [Write, Description("Specifies whether the maintenance window is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+    [Read, Description("Provides the description of the maintenance window.")] String Description;
+    [Read, Description("Specifies if the collection applying the maintenance window to exists.")] String CollectionStatus;
+};

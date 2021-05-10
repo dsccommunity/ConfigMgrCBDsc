@@ -1,0 +1,33 @@
+[ClassVersion("1.0.0"), FriendlyName("CMFileReplication")]
+class DSC_CMFileReplication : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the destination site for the file replication route by using a site code.")] String DestinationSiteCode;
+    [Write, Description("Specifies a data block size, in kilobytes. Used in conjunction with the PulseMode parameter.")] UInt32 DataBlockSizeKB;
+    [Write, Description("Delay, in seconds, between sending data blocks when PulseMode is used.")] UInt32 DelayBetweenDataBlockSec;
+    [Write, Description("Specifies the account that Configuration Manager uses for file replication.")] String FileReplicationAccountName;
+    [Write, Description("Specifies if the replication service will use the site system account.")] Boolean UseSystemAccount;
+    [Write, Description("Indicates that bandwidth for a file replication route is limited.")] Boolean Limited;
+    [Write, Description("Indicates that file replication uses data block size and delays between transmissions.")] Boolean PulseMode;
+    [Write, Description("Indicates that bandwidth for a file replication route is unlimited.")] Boolean Unlimited;
+    [Write, EmbeddedInstance("DSC_CMRateLimitingSchedule"), Description("Specifies, as an array of CimInstances, hour ranges and bandwidth percentages for limiting file replication.")] String RateLimitingSchedule[];
+    [Write, EmbeddedInstance("DSC_CMReplicationNetworkLoadSchedule"), Description("Specifies, as an array of CimInstances, hour ranges and bandwidth percentages for network load balancing schedule.")] String NetworkLoadSchedule[];
+    [Write, Description("Specifies whether the file replication is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMRateLimitingSchedule
+{
+     [Required, Description("Specifies the hour the limiting schedule starts.")] UInt32 LimitedBeginHour;
+     [Required, Description("Specifies the hour the limiting schedule ends.")] UInt32 LimitedEndHour;
+     [Required, Description("Specifies the bandwidth percentage for the start through the end hours.")] UInt32 LimitAvailableBandwidthPercent;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMReplicationNetworkLoadSchedule
+{
+     [Required, Description("Specifies the hour the limiting schedule starts.")] UInt32 BeginHour;
+     [Required, Description("Specifies the hour the limiting schedule ends.")] UInt32 EndHour;
+     [Required, Description("Specifies the day for the networking load balance schedule applies to."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String Day;
+     [Required, Description("Specifies the restriction for the network load balance schedule."), ValueMap{"All","High","MediumHigh","Closed"}, Values{"All","High","MediumHigh","Closed"}] String Type;
+};
