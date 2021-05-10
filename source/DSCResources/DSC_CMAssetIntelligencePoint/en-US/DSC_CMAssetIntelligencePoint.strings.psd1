@@ -1,7 +1,6 @@
 ConvertFrom-StringData @'
     RetrieveSettingValue = Getting information for the specified Asset Intelligence Synchronization Point.
     APNotInstalled       = Asset Intelligence Synchronization Point is not installed on server: {0}.
-    TestSetting          = Setting {0} expected value: {1} returned {2}.
     APAbsent             = {0} Asset Intelligence Synchronization Point expected absent returned present.
     TestState            = Test-TargetResource compliance check returned: {0}.
     ScheduleNoSync       = When specifying a schedule, the EnableSynchronization paramater must be true.
