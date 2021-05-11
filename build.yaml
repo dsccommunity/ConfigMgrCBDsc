@@ -82,6 +82,8 @@ Resolve-Dependency:
   Verbose: false
 
 ModuleBuildTasks:
+  Sampler.GitHubTasks:
+    - '*.ib.tasks'
   Sampler:
     - '*.build.Sampler.ib.tasks'
   DscResource.DocGenerator:
