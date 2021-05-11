@@ -112,3 +112,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed issue when adding a Distribution Point to Distribution Group immediately
   after adding the Distribution Point would error saying invalid Distribution Point.
 - Updated Build.yaml and RequiredModules.ps1 to allow for GitHub builds.
+- Updated PrimaryInstall.ps1 to remove module version.
