@@ -5,8 +5,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [X.Y.Z] - 2021-05-11
-
 ### Added
 
 - Added SccmIniFile resource
