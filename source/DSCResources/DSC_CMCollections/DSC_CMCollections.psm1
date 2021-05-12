@@ -738,6 +738,7 @@ function Test-TargetResource
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -CollectionName $CollectionName -CollectionType $CollectionType
     $result = $true
+    $schedResult = $true
 
     if ($Ensure -eq 'Present')
     {
