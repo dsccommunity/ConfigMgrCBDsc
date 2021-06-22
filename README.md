@@ -1425,7 +1425,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
-- **[String] Include** _(Key)_: Specifies which resources will be invoked,
+- **[String] Include** _(Write)_: Specifies which resources will be invoked,
   default setting: All.
   - Values include: { All|Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
@@ -1437,7 +1437,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
-- Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
+  - Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
@@ -1445,11 +1445,12 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery }
-- **[String] DataFile** _(Key)_: Specifies where the data file will be saved.
-  Filename must end with .psd1.
+- **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
+  Filename must end with .psd1. Not specifying DataFile the output will be displayed
+  in the output screen only if Include does not equal ConfigFileOnly.
 - **[String] ConfigOutputPath** _(Write)_: Specifies where the configuration file
   will be saved. Filename must end with .ps1.
-- **[String] MofOutPutPath** _(Key)_: Specifies where the mof file will be saved
+- **[String] MofOutPutPath** _(Write)_: Specifies where the mof file will be saved
   when running the configuration.
 
 ### Set-ConfigMgrCBDscReverse Examples
