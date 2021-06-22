@@ -1365,6 +1365,11 @@ specified will be in plain text in the mof file when it is compiled.
 If desired, once the configuration is created you can add the necessary pieces
 to encrypt the passwords in the mof file.
 
+If looking to stand-up a brand new environment, an example of installing pre-reqs,
+SQL, and installing Configuration Manager can be found in examples: PrimaryInstall.ps1.
+Using the information in the example can assist with setting up a brand new environment
+and using the output from ReverseDsc to quickly stand up a new test environment.
+
 ### Supported DSC Resources
 
 Currently not all modules will gathered by ReverseDSC. Below will list
@@ -1374,7 +1379,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMAdministrativeUser: Fully Supported
 - DSC_CMAssetIntelligencePoint: Fully Supported
 - DSC_CMBoundaries: Not Supported
-- DSC_CMBoundaryGroups: Partial Support, will only create the boundary group
+- DSC_CMBoundaryGroups: Limited Support, will only create the boundary group
   and will not populate or gather the boundaries within the group.
 - DSC_CMClientPushSettings: Fully Supported
 - DSC_CMClientStatusSettings: Fully Supported
@@ -1489,7 +1494,7 @@ created it hard codes that path into the configuration.
 $params = @{
     SiteCode         = 'Lab'
     Include          = 'ConfigFileOnly'
-    DataFile         = 'C:\temp\datafile.psd1'
+    DataFile         = 'C:\temp\DataFile.psd1'
     ConfigOutputPath = 'C:\temp\CMConfig.ps1'
     MofOutputPath    = 'C:\temp\Mof'
 }
@@ -1497,11 +1502,11 @@ Set-ConfigMgrCBDscReverse @params
 ```
 
 After creating a DataFile and configuration file, to compile the mof
-One additional command will need to be ran. After running the command
-below any item that requires a password, example CMAccounts, will be
-prompted to enter a password for those accounts. If running against and
+one additional command will need to be ran. After running the command
+below, any item that requires a password, example CMAccounts, will
+prompt to enter a password for those accounts. If running against and
 environment already up and running, the passwords are not evaluated and set
-if the account already exists.
+if the account already exists with a password.
 
 ```powershell
 C:\temp\CMConfig.ps1
