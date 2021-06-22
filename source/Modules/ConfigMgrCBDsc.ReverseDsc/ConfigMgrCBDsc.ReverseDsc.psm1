@@ -1,4 +1,4 @@
-﻿$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
+$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
 $script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
 
 Import-Module -Name $script:dscResourceCommonPath
@@ -286,7 +286,8 @@ function Set-OutFile
         $sourceDP = 'SourceDistirbutionPoint'
 
         $tester += "`t`t$($sourceDP.PadRight($updatedCount)) = @(`r`n"
-        foreach ($item in $cPush.SourceDistributionPoint) {
+        foreach ($item in $cPush.SourceDistributionPoint)
+        {
             $tester += "`t`t`t@{`r`n"
             $tester += "`t`t`t`tDPRank   = $($item.DPRank)`r`n"
             $tester += "`t`t`t`tSourceDP = '$($item.SourceDP)'`r`n"
@@ -439,7 +440,8 @@ function New-Configuration
         $MofOutPutPath
     )
 
-    if (Test-Path -Path $ConfigOutputPath) {
+    if (Test-Path -Path $ConfigOutputPath)
+    {
         Remove-Item -Path $ConfigOutputPath
     }
 
@@ -3172,8 +3174,8 @@ Configuration ConfigureSccm
                 {
                     SiteCode       = `$SiteCode
                     SecurityScopes = `$item.SecurityScopes
-		            Ensure         = `$item.Ensure
-		            BoundaryGroup  = `$item.BoundaryGroup
+                    Ensure         = `$item.Ensure
+                    BoundaryGroup  = `$item.BoundaryGroup
                     DependsOn      = `$cmSecurityScopesDependsOn
                 }
 
@@ -3424,10 +3426,12 @@ function Set-ConfigMgrCBDscReverse
         [Parameter()]
         [ValidateScript(
             {
-                if ($_.Substring($_.Length -5,5) -eq '.psd1') {
+                if ($_.Substring($_.Length -5,5) -eq '.psd1')
+                {
                     $true
                 }
-                else {
+                else
+                {
                     throw $script:localizedData.DataFileEr
                 }
             }
@@ -3438,10 +3442,12 @@ function Set-ConfigMgrCBDscReverse
         [Parameter()]
         [ValidateScript(
             {
-                if ($_.Substring($_.Length -4,4) -eq '.ps1') {
+                if ($_.Substring($_.Length -4,4) -eq '.ps1')
+                {
                     $true
                 }
-                else {
+                else
+                {
                     throw $script:localizedData.ConfigOutputPathEr
                 }
             }
@@ -3586,7 +3592,8 @@ function Set-ConfigMgrCBDscReverse
             $wBG += "$testThing"
         }
 
-        if ($wBG) {
+        if ($wBG)
+        {
             $wBG += ")"
             $fileOut += "$wBG`r`n"
         }
@@ -3935,7 +3942,8 @@ function Set-ConfigMgrCBDscReverse
             }
         }
 
-        if ($wWindow) {
+        if ($wWindow)
+        {
             $wWindow += ")"
             $fileOut += "$wWindow`r`n"
         }
