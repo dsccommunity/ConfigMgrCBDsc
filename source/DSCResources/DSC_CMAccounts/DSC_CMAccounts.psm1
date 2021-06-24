@@ -1,5 +1,5 @@
-$script:dscResourceCommonPath = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\DscResource.Common'
-$script:configMgrResourcehelper = Join-Path -Path $PSScriptRoot -ChildPath '..\..\Modules\ConfigMgrCBDsc.ResourceHelper'
+$script:dscResourceCommonPath = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath DscResource.Common
+$script:configMgrResourcehelper = Join-Path (Join-Path -Path (Split-Path -Parent -Path (Split-Path -Parent -Path $PsScriptRoot)) -ChildPath Modules) -ChildPath ConfigMgrCBDsc.ResourceHelper
 
 Import-Module -Name $script:dscResourceCommonPath
 Import-Module -Name $script:configMgrResourcehelper
@@ -28,23 +28,28 @@ function Get-TargetResource
 
         [Parameter(Mandatory = $true)]
         [String]
-        $Account,
-
-        [Parameter()]
-        [ValidateSet('Present', 'Absent')]
-        [String]
-        $Ensure = 'Present'
+        $Account
     )
 
     Write-Verbose -Message $script:localizedData.RetrieveSettingValue
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
 
+    $accStatus = Get-CMAccount -SiteCode $SiteCode -UserName $Account
+
+    if ($accStatus)
+    {
+        $status = 'Present'
+    }
+    else
+    {
+        $status = 'Absent'
+    }
+
     return @{
-        SiteCode        = $SiteCode
-        Account         = $Account
-        CurrentAccounts = (Get-CMAccount -SiteCode $SiteCode).Username
-        Ensure          = $Ensure
+        SiteCode = $SiteCode
+        Account  = $Account
+        Ensure   = $status
     }
 }
 
@@ -90,19 +95,18 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    Write-Verbose -Message $script:localizedData.RetrieveSettingValue
-    $currentState = (Get-CMAccount -SiteCode $SiteCode).Username
+    $state = Get-TargetResource -SiteCode $SiteCode -Account $Account
 
     try
     {
         if ($Ensure -eq 'Present')
         {
-            if ($null -eq $AccountPassword)
+            if ([string]::IsNullOrEmpty($AccountPassword))
             {
-                throw 'When adding an account a password must be specified'
+                throw $script:localizedData.MissingPass
             }
 
-            if ($currentState -notcontains $Account)
+            if ($state.Ensure -eq 'Absent')
             {
                 $param = @{
                     UserName = $Account
@@ -114,21 +118,18 @@ function Set-TargetResource
                 New-CMAccount @param
             }
         }
-        else
+        elseif ($state.Ensure -eq 'Present')
         {
-            if ($currentState -contains $Account)
-            {
-                $param = @{
-                    UserName = $Account
-                    Force    = $true
-                }
-
-                Write-Verbose -Message ($script:localizedData.RemovingCMAccount -f $Account)
-                Remove-CMAccount @param
+            $param = @{
+                UserName = $Account
+                Force    = $true
             }
+
+            Write-Verbose -Message ($script:localizedData.RemovingCMAccount -f $Account)
+            Remove-CMAccount @param
         }
 
-        if ($null -eq $param)
+        if ([string]::IsNullOrEmpty($param))
         {
             Write-Verbose -Message $script:localizedData.DesiredState
         }
@@ -186,24 +187,26 @@ function Test-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $currentState = (Get-CMAccount -SiteCode $SiteCode).Username
+    $state = Get-TargetResource -SiteCode $SiteCode -Account $Account
     $result = $true
 
     if ($Ensure -eq 'Present')
     {
-        if (($currentState -notcontains $Account))
+        if ([string]::IsNullOrEmpty($AccountPassword))
+        {
+            Write-Warning -Message $script:localizedData.MissingPass
+        }
+
+        if ($state.Ensure -eq 'Absent')
         {
             Write-Verbose -Message ($script:localizedData.TestPresent -f $Account)
             $result = $false
         }
     }
-    else
+    elseif ($state.Ensure -eq 'Present')
     {
-        if (($currentState -contains $Account))
-        {
-            Write-Verbose -Message ($script:localizedData.TestAbsent -f $Account)
-            $result = $false
-        }
+        Write-Verbose -Message ($script:localizedData.TestAbsent -f $Account)
+        $result = $false
     }
 
     Write-Verbose -Message ($script:localizedData.TestState -f $result)
