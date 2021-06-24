@@ -2209,6 +2209,11 @@ InModuleScope $script:subModuleName {
                 }
             )
 
+            $cmAssetIntellReturn = @{
+                NetworkOSPath = '\\CA01.contoso.com'
+                RoleName      = 'AI Update Service Point'
+            }
+
             $invokeCMAssetIntelligencePoint = @{
                 ConfigurationName     = $null
                 DependsOn             = $null
@@ -2686,6 +2691,16 @@ InModuleScope $script:subModuleName {
                 Username              = 'contoso\connect'
                 UseSiteDatabase       = $true
                 PSComputerName        = 'localhost'
+            }
+
+            $getNetworkDiscoveryEnabled = @{
+                SiteCode = 'Lab'
+                Props    = @(
+                    @{
+                        PropertyName = 'Settings'
+                        Value1       = 'ACTIVE'
+                    }
+                )
             }
 
             $invokeNetworkDiscovery = @{
@@ -3361,6 +3376,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Set-Location
                 Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
                 Mock -CommandName Get-CMAdministrativeUser -MockWith { $cmAdministrativeUsers }
+                Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $cmAssetIntellReturn }
                 Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionsReturn } -ParameterFilter {$CollectionType -match 'Device'}
                 Mock -CommandName Get-CMCollection -MockWith { $userCollectionsReturn } -ParameterFilter {$CollectionType -match 'User' }
                 Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionGroupReturn }
@@ -3401,6 +3417,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeForestDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMForestDiscovery' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getHeartbeatDiscoveryEnabled } -ParameterFilter { $Name -eq 'HeartbeatDiscovery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeHeartbeatDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMHeartbeatDiscovery' }
+                Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getNetworkDiscoveryEnabled } -ParameterFilter { $Name -eq 'NetworkDiscovery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeNetworkDiscovery } -ParameterFilter { $Name -eq 'CMNetworkDiscovery' }
                 Mock -CommandName Get-CMManagementPoint -MockWith { $getManagementPointNonSiteDatabase }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeManagementPointUseNonSiteDatabase } -ParameterFilter { $Name -eq 'CMManagementPoint' }
@@ -3426,11 +3443,12 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 25 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
                 Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 4 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 5 -Scope It
                 Assert-MockCalled Get-CMManagementPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 1 -Scope It
@@ -3457,6 +3475,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3489,6 +3508,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3512,7 +3532,7 @@ InModuleScope $script:subModuleName {
 
             It 'Should return expected results and call expected commands for Heartbeat Discovery Disabled' {
                 Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
-                Mock -CommandName Invoke-DscResource -MockWith { $invokeHeartbeatDiscoveryDisabled }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeHeartbeatDiscoveryDisabled } -ParameterFilter { $Name -eq 'CMHeartbeatDiscovery' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getHeartbeatDiscoveryDisabled } -ParameterFilter { $Name -eq 'HeartbeatDiscovery' }
 
                 $result = Set-ConfigMgrCBDscReverse @heartbeatDiscovery
@@ -3521,6 +3541,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3553,6 +3574,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3585,6 +3607,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3617,6 +3640,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3649,6 +3673,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3679,8 +3704,9 @@ InModuleScope $script:subModuleName {
                 $result | Should -BeOfType System.String
                 $result | Should -Match "CMSiteMaintenance"
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 20 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 19 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3713,6 +3739,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3745,6 +3772,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3777,6 +3805,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3809,6 +3838,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3841,6 +3871,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3873,6 +3904,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3905,6 +3937,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3938,6 +3971,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -3970,6 +4004,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4001,6 +4036,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4029,6 +4065,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Set-Location
                 Mock -CommandName Get-CMAccount
                 Mock -CommandName Get-CMAdministrativeUser
+                Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint
                 Mock -CommandName Get-CMCollection
                 Mock -CommandName Get-CMCollection
                 Mock -CommandName Get-CMDistributionPointGroup
@@ -4082,6 +4119,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4111,6 +4149,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4140,6 +4179,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It

@@ -60,7 +60,7 @@ function Assert-CMModule
         {
             if ($prop.Name -eq 'SiteCode')
             {
-                $properties.Add($prop.Name,$siteCode)
+                $properties.Add($prop.Name,$SiteCode)
             }
             elseif ($prop.Name -eq 'CollectionName')
             {
@@ -947,18 +947,34 @@ Configuration ConfigureSccm
 
         if (`$CMSoftwareDistributionComponent)
         {
-            CMSoftwareDistributionComponent SoftwareDistributionSettings
+            if (`$CMSoftwareDistributionComponent.MulticastRetryCount)
             {
-                SiteCode                         = `$SiteCode
-                RetryCount                       = `$CMSoftwareDistributionComponent.RetryCount
-                MulticastDelayBeforeRetryingMins = `$CMSoftwareDistributionComponent.MulticastDelayBeforeRetryingMins
-                ClientComputerAccount            = `$CMSoftwareDistributionComponent.ClientComputerAccount
-                AccessAccounts                   = `$CMSoftwareDistributionComponent.AccessAccounts
-                DelayBeforeRetryingMins          = `$CMSoftwareDistributionComponent.DelayBeforeRetryingMins
-                MulticastRetryCount              = `$CMSoftwareDistributionComponent.MulticastRetryCount
-                MaximumThreadCountPerPackage     = `$CMSoftwareDistributionComponent.MaximumThreadCountPerPackage
-                MaximumPackageCount              = `$CMSoftwareDistributionComponent.MaximumPackageCount
-                DependsOn                        = `$cmAccountsDependsOn
+                CMSoftwareDistributionComponent SoftwareDistributionSettings
+                {
+                    SiteCode                         = `$SiteCode
+                    RetryCount                       = `$CMSoftwareDistributionComponent.RetryCount
+                    MulticastDelayBeforeRetryingMins = `$CMSoftwareDistributionComponent.MulticastDelayBeforeRetryingMins
+                    ClientComputerAccount            = `$CMSoftwareDistributionComponent.ClientComputerAccount
+                    AccessAccounts                   = `$CMSoftwareDistributionComponent.AccessAccounts
+                    DelayBeforeRetryingMins          = `$CMSoftwareDistributionComponent.DelayBeforeRetryingMins
+                    MulticastRetryCount              = `$CMSoftwareDistributionComponent.MulticastRetryCount
+                    MaximumThreadCountPerPackage     = `$CMSoftwareDistributionComponent.MaximumThreadCountPerPackage
+                    MaximumPackageCount              = `$CMSoftwareDistributionComponent.MaximumPackageCount
+                    DependsOn                        = `$cmAccountsDependsOn
+                }
+            }
+            else
+            {
+                CMSoftwareDistributionComponent SoftwareDistributionSettings
+                {
+                    SiteCode                         = `$SiteCode
+                    RetryCount                       = `$CMSoftwareDistributionComponent.RetryCount
+                    ClientComputerAccount            = `$CMSoftwareDistributionComponent.ClientComputerAccount
+                    DelayBeforeRetryingMins          = `$CMSoftwareDistributionComponent.DelayBeforeRetryingMins
+                    MaximumThreadCountPerPackage     = `$CMSoftwareDistributionComponent.MaximumThreadCountPerPackage
+                    MaximumPackageCount              = `$CMSoftwareDistributionComponent.MaximumPackageCount
+                    DependsOn                        = `$cmAccountsDependsOn
+                }
             }
         }
 
@@ -2913,18 +2929,15 @@ Configuration ConfigureSccm
         {
             foreach (`$item in `$CMSiteSystemServer)
             {
-                if (`$item.EnableProxy -eq `$false)
+                if ([string]::IsNullOrEmpty(`$item.EnableProxy))
                 {
                     if (`$item.UseSiteServerAccount -eq `$true)
                     {
                         CMSiteSystemServer `$item.SiteSystemServer
                         {
                             SiteCode             = `$SiteCode
-                            EnableProxy          = `$item.EnableProxy
                             Ensure               = `$item.Ensure
                             SiteSystemServer     = `$item.SiteSystemServer
-                            FdmOperation         = `$item.FdmOperation
-                            PublicFqdn           = `$item.PublicFqdn
                             UseSiteServerAccount = `$item.UseSiteServerAccount
                             DependsOn            = `$cmAccountsDependsOn
                         }
@@ -2934,14 +2947,76 @@ Configuration ConfigureSccm
                         CMSiteSystemServer `$item.SiteSystemServer
                         {
                             SiteCode             = `$SiteCode
-                            EnableProxy          = `$item.EnableProxy
                             Ensure               = `$item.Ensure
                             SiteSystemServer     = `$item.SiteSystemServer
-                            FdmOperation         = `$item.FdmOperation
-                            PublicFqdn           = `$item.PublicFqdn
-                            AccountName          = `$item.AccountName
                             UseSiteServerAccount = `$item.UseSiteServerAccount
+                            AccountName          = `$item.AccountName
                             DependsOn            = `$cmAccountsDependsOn
+                        }
+                    }
+                }
+                elseif (`$item.EnableProxy -eq `$false)
+                {
+                    if (`$item.UseSiteServerAccount -eq `$true)
+                    {
+                        if ([string]::IsNullOrEmpty(`$item.FdmOperation))
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                PublicFqdn           = `$item.PublicFqdn
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                FdmOperation         = `$item.FdmOperation
+                                PublicFqdn           = `$item.PublicFqdn
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if ([string]::IsNullOrEmpty(`$item.FdmOperation))
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                PublicFqdn           = `$item.PublicFqdn
+                                AccountName          = `$item.AccountName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                FdmOperation         = `$item.FdmOperation
+                                PublicFqdn           = `$item.PublicFqdn
+                                AccountName          = `$item.AccountName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
                         }
                     }
                 }
@@ -2949,37 +3024,76 @@ Configuration ConfigureSccm
                 {
                     if (`$item.UseSiteServerAccount -eq `$true)
                     {
-                        CMSiteSystemServer `$item.SiteSystemServer
+                        if ([string]::IsNullOrEmpty(`$item.FdmOperation))
                         {
-                            SiteCode             = `$SiteCode
-                            ProxyServerPort      = `$item.ProxyServerPort
-                            EnableProxy          = `$item.EnableProxy
-                            Ensure               = `$item.Ensure
-                            SiteSystemServer     = `$item.SiteSystemServer
-                            FdmOperation         = `$item.FdmOperation
-                            PublicFqdn           = `$item.PublicFqdn
-                            ProxyServerName      = `$item.ProxyServerName
-                            UseSiteServerAccount = `$item.UseSiteServerAccount
-                            ProxyAccessAccount   = `$item.ProxyAccessAccount
-                            DependsOn            = `$cmAccountsDependsOn
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                ProxyAccessAccount   = `$item.ProxyAccessAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                FdmOperation         = `$item.FdmOperation
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                ProxyAccessAccount   = `$item.ProxyAccessAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
                         }
                     }
                     else
                     {
-                        CMSiteSystemServer `$item.SiteSystemServer
+                        if ([string]::IsNullOrEmpty(`$item.FdmOperation))
                         {
-                            SiteCode             = `$SiteCode
-                            ProxyServerPort      = `$item.ProxyServerPort
-                            AccountName          = `$item.AccountName
-                            EnableProxy          = `$item.EnableProxy
-                            Ensure               = `$item.Ensure
-                            SiteSystemServer     = `$item.SiteSystemServer
-                            FdmOperation         = `$item.FdmOperation
-                            PublicFqdn           = `$item.PublicFqdn
-                            ProxyServerName      = `$item.ProxyServerName
-                            UseSiteServerAccount = `$item.UseSiteServerAccount
-                            ProxyAccessAccount   = `$item.ProxyAccessAccount
-                            DependsOn            = `$cmAccountsDependsOn
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                AccountName          = `$item.AccountName
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                ProxyAccessAccount   = `$item.ProxyAccessAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                AccountName          = `$item.AccountName
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                FdmOperation         = `$item.FdmOperation
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                ProxyAccessAccount   = `$item.ProxyAccessAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
                         }
                     }
                 }
@@ -2987,35 +3101,72 @@ Configuration ConfigureSccm
                 {
                     if (`$item.UseSiteServerAccount -eq `$true)
                     {
-                        CMSiteSystemServer `$item.SiteSystemServer
+                        if ([string]::IsNullOrEmpty(`$item.FdmOperation))
                         {
-                            SiteCode             = `$SiteCode
-                            ProxyServerPort      = `$item.ProxyServerPort
-                            EnableProxy          = `$item.EnableProxy
-                            Ensure               = `$item.Ensure
-                            SiteSystemServer     = `$item.SiteSystemServer
-                            FdmOperation         = `$item.FdmOperation
-                            PublicFqdn           = `$item.PublicFqdn
-                            ProxyServerName      = `$item.ProxyServerName
-                            UseSiteServerAccount = `$item.UseSiteServerAccount
-                            DependsOn            = `$cmAccountsDependsOn
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                FdmOperation         = `$item.FdmOperation
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
                         }
                     }
                     else
                     {
-                        CMSiteSystemServer `$item.SiteSystemServer
+                        if ([string]::IsNullOrEmpty(`$item.FdmOperation))
                         {
-                            SiteCode             = `$SiteCode
-                            ProxyServerPort      = `$item.ProxyServerPort
-                            AccountName          = `$item.AccountName
-                            EnableProxy          = `$item.EnableProxy
-                            Ensure               = `$item.Ensure
-                            SiteSystemServer     = `$item.SiteSystemServer
-                            FdmOperation         = `$item.FdmOperation
-                            PublicFqdn           = `$item.PublicFqdn
-                            ProxyServerName      = `$item.ProxyServerName
-                            UseSiteServerAccount = `$item.UseSiteServerAccount
-                            DependsOn            = `$cmAccountsDependsOn
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                AccountName          = `$item.AccountName
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMSiteSystemServer `$item.SiteSystemServer
+                            {
+                                SiteCode             = `$SiteCode
+                                ProxyServerPort      = `$item.ProxyServerPort
+                                AccountName          = `$item.AccountName
+                                EnableProxy          = `$item.EnableProxy
+                                Ensure               = `$item.Ensure
+                                SiteSystemServer     = `$item.SiteSystemServer
+                                FdmOperation         = `$item.FdmOperation
+                                PublicFqdn           = `$item.PublicFqdn
+                                ProxyServerName      = `$item.ProxyServerName
+                                UseSiteServerAccount = `$item.UseSiteServerAccount
+                                DependsOn            = `$cmAccountsDependsOn
+                            }
                         }
                     }
                 }
@@ -3032,34 +3183,70 @@ Configuration ConfigureSccm
                 {
                     if (`$mp.UseComputerAccount -eq `$true)
                     {
-                        CMManagementPoint `$(`$mp.SiteServerName)
+                        if ([string]::IsNullOrEmpty(`$mp.EnableCloudGateway))
                         {
-                            SiteCode             = `$SiteCode
-                            EnableSsl            = `$mp.EnableSsl
-                            GenerateAlert        = `$mp.GenerateAlert
-                            SiteServerName       = `$mp.SiteServerName
-                            Ensure               = `$mp.Ensure
-                            UseComputerAccount   = `$mp.UseComputerAccount
-                            UseSiteDatabase      = `$mp.UseSiteDatabase
-                            ClientConnectionType = `$mp.ClientConnectionType
-                            EnableCloudGateway   = `$mp.EnableCloudGateway
-                            DependsOn            = `$cmSiteSystemsDependsOn
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UseComputerAccount   = `$mp.UseComputerAccount
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UseComputerAccount   = `$mp.UseComputerAccount
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                EnableCloudGateway   = `$mp.EnableCloudGateway
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
                         }
                     }
                     else
                     {
-                        CMManagementPoint `$(`$mp.SiteServerName)
+                        if ([string]::IsNullOrEmpty(`$mp.EnableCloudGateway))
                         {
-                            SiteCode             = `$SiteCode
-                            EnableSsl            = `$mp.EnableSsl
-                            GenerateAlert        = `$mp.GenerateAlert
-                            SiteServerName       = `$mp.SiteServerName
-                            Ensure               = `$mp.Ensure
-                            UserName             = `$mp.UserName
-                            UseSiteDatabase      = `$mp.UseSiteDatabase
-                            ClientConnectionType = `$mp.ClientConnectionType
-                            EnableCloudGateway   = `$mp.EnableCloudGateway
-                            DependsOn            = `$cmSiteSystemsDependsOn
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UserName             = `$mp.UserName
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UserName             = `$mp.UserName
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                EnableCloudGateway   = `$mp.EnableCloudGateway
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
                         }
                     }
                 }
@@ -3067,40 +3254,82 @@ Configuration ConfigureSccm
                 {
                     if (`$mp.UseComputerAccount -eq `$true)
                     {
-                        CMManagementPoint `$(`$mp.SiteServerName)
+                        if ([string]::IsNullOrEmpty(`$mp.EnableCloudGateway))
                         {
-                            SiteCode              = `$SiteCode
-                            EnableSsl             = `$mp.EnableSsl
-                            GenerateAlert         = `$mp.GenerateAlert
-                            SiteServerName        = `$mp.SiteServerName
-                            Ensure                = `$mp.Ensure
-                            UseComputerAccount    = `$mp.UseComputerAccount
-                            UseSiteDatabase       = `$mp.UseSiteDatabase
-                            ClientConnectionType  = `$mp.ClientConnectionType
-                            EnableCloudGateway    = `$mp.EnableCloudGateway
-                            SQLServerFqdn         = `$mp.SQLServerFqdn
-                            DatabaseName          = `$mp.DatabaseName
-                            SqlServerInstanceName = `$mp.SqlServerInstanceName
-                            DependsOn             = `$cmSiteSystemsDependsOn
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode              = `$SiteCode
+                                EnableSsl             = `$mp.EnableSsl
+                                GenerateAlert         = `$mp.GenerateAlert
+                                SiteServerName        = `$mp.SiteServerName
+                                Ensure                = `$mp.Ensure
+                                UseComputerAccount    = `$mp.UseComputerAccount
+                                UseSiteDatabase       = `$mp.UseSiteDatabase
+                                ClientConnectionType  = `$mp.ClientConnectionType
+                                SQLServerFqdn         = `$mp.SQLServerFqdn
+                                DatabaseName          = `$mp.DatabaseName
+                                SqlServerInstanceName = `$mp.SqlServerInstanceName
+                                DependsOn             = `$cmSiteSystemsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode              = `$SiteCode
+                                EnableSsl             = `$mp.EnableSsl
+                                GenerateAlert         = `$mp.GenerateAlert
+                                SiteServerName        = `$mp.SiteServerName
+                                Ensure                = `$mp.Ensure
+                                UseComputerAccount    = `$mp.UseComputerAccount
+                                UseSiteDatabase       = `$mp.UseSiteDatabase
+                                ClientConnectionType  = `$mp.ClientConnectionType
+                                EnableCloudGateway    = `$mp.EnableCloudGateway
+                                SQLServerFqdn         = `$mp.SQLServerFqdn
+                                DatabaseName          = `$mp.DatabaseName
+                                SqlServerInstanceName = `$mp.SqlServerInstanceName
+                                DependsOn             = `$cmSiteSystemsDependsOn
+                            }
                         }
                     }
                     else
                     {
-                        CMManagementPoint `$(`$mp.SiteServerName)
+                        if ([string]::IsNullOrEmpty(`$mp.EnableCloudGateway))
                         {
-                            SiteCode              = `$SiteCode
-                            EnableSsl             = `$mp.EnableSsl
-                            GenerateAlert         = `$mp.GenerateAlert
-                            SiteServerName        = `$mp.SiteServerName
-                            Ensure                = `$mp.Ensure
-                            UserName              = `$mp.UserName
-                            UseSiteDatabase       = `$mp.UseSiteDatabase
-                            ClientConnectionType  = `$mp.ClientConnectionType
-                            EnableCloudGateway    = `$mp.EnableCloudGateway
-                            SQLServerFqdn         = `$mp.SQLServerFqdn
-                            DatabaseName          = `$mp.DatabaseName
-                            SqlServerInstanceName = `$mp.SqlServerInstanceName
-                            DependsOn             = `$cmSiteSystemsDependsOn
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode              = `$SiteCode
+                                EnableSsl             = `$mp.EnableSsl
+                                GenerateAlert         = `$mp.GenerateAlert
+                                SiteServerName        = `$mp.SiteServerName
+                                Ensure                = `$mp.Ensure
+                                UserName              = `$mp.UserName
+                                UseSiteDatabase       = `$mp.UseSiteDatabase
+                                ClientConnectionType  = `$mp.ClientConnectionType
+                                SQLServerFqdn         = `$mp.SQLServerFqdn
+                                DatabaseName          = `$mp.DatabaseName
+                                SqlServerInstanceName = `$mp.SqlServerInstanceName
+                                DependsOn             = `$cmSiteSystemsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode              = `$SiteCode
+                                EnableSsl             = `$mp.EnableSsl
+                                GenerateAlert         = `$mp.GenerateAlert
+                                SiteServerName        = `$mp.SiteServerName
+                                Ensure                = `$mp.Ensure
+                                UserName              = `$mp.UserName
+                                UseSiteDatabase       = `$mp.UseSiteDatabase
+                                ClientConnectionType  = `$mp.ClientConnectionType
+                                EnableCloudGateway    = `$mp.EnableCloudGateway
+                                SQLServerFqdn         = `$mp.SQLServerFqdn
+                                DatabaseName          = `$mp.DatabaseName
+                                SqlServerInstanceName = `$mp.SqlServerInstanceName
+                                DependsOn             = `$cmSiteSystemsDependsOn
+                            }
                         }
                     }
                 }
@@ -3108,38 +3337,78 @@ Configuration ConfigureSccm
                 {
                     if (`$mp.UseComputerAccount -eq `$true)
                     {
-                        CMManagementPoint `$(`$mp.SiteServerName)
+                        if ([string]::IsNullOrEmpty(`$mp.EnableCloudGateway))
                         {
-                            SiteCode             = `$SiteCode
-                            EnableSsl            = `$mp.EnableSsl
-                            GenerateAlert        = `$mp.GenerateAlert
-                            SiteServerName       = `$mp.SiteServerName
-                            Ensure               = `$mp.Ensure
-                            UseComputerAccount   = `$mp.UseComputerAccount
-                            UseSiteDatabase      = `$mp.UseSiteDatabase
-                            ClientConnectionType = `$mp.ClientConnectionType
-                            EnableCloudGateway   = `$mp.EnableCloudGateway
-                            SQLServerFqdn        = `$mp.SQLServerFqdn
-                            DatabaseName         = `$mp.DatabaseName
-                            DependsOn            = `$cmSiteSystemsDependsOn
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UseComputerAccount   = `$mp.UseComputerAccount
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                SQLServerFqdn        = `$mp.SQLServerFqdn
+                                DatabaseName         = `$mp.DatabaseName
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UseComputerAccount   = `$mp.UseComputerAccount
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                EnableCloudGateway   = `$mp.EnableCloudGateway
+                                SQLServerFqdn        = `$mp.SQLServerFqdn
+                                DatabaseName         = `$mp.DatabaseName
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
                         }
                     }
                     else
                     {
-                        CMManagementPoint `$(`$mp.SiteServerName)
+                        if ([string]::IsNullOrEmpty(`$mp.EnableCloudGateway))
                         {
-                            SiteCode             = `$SiteCode
-                            EnableSsl            = `$mp.EnableSsl
-                            GenerateAlert        = `$mp.GenerateAlert
-                            SiteServerName       = `$mp.SiteServerName
-                            Ensure               = `$mp.Ensure
-                            UserName             = `$mp.UserName
-                            UseSiteDatabase      = `$mp.UseSiteDatabase
-                            ClientConnectionType = `$mp.ClientConnectionType
-                            EnableCloudGateway   = `$mp.EnableCloudGateway
-                            SQLServerFqdn        = `$mp.SQLServerFqdn
-                            DatabaseName         = `$mp.DatabaseName
-                            DependsOn            = `$cmSiteSystemsDependsOn
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UserName             = `$mp.UserName
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                SQLServerFqdn        = `$mp.SQLServerFqdn
+                                DatabaseName         = `$mp.DatabaseName
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMManagementPoint `$(`$mp.SiteServerName)
+                            {
+                                SiteCode             = `$SiteCode
+                                EnableSsl            = `$mp.EnableSsl
+                                GenerateAlert        = `$mp.GenerateAlert
+                                SiteServerName       = `$mp.SiteServerName
+                                Ensure               = `$mp.Ensure
+                                UserName             = `$mp.UserName
+                                UseSiteDatabase      = `$mp.UseSiteDatabase
+                                ClientConnectionType = `$mp.ClientConnectionType
+                                EnableCloudGateway   = `$mp.EnableCloudGateway
+                                SQLServerFqdn        = `$mp.SQLServerFqdn
+                                DatabaseName         = `$mp.DatabaseName
+                                DependsOn            = `$cmSiteSystemsDependsOn
+                            }
                         }
                     }
                 }
@@ -3183,6 +3452,19 @@ Configuration ConfigureSccm
             }
         }
 
+        if (`$CMBoundaryGroups -and `$CMSiteSystemServer)
+        {
+            `$dpDependsOn = `$cmSiteSystemsDependsOn,`$cmBoundaryGroupDependsOn
+        }
+        elseif (`$CMBoundaryGroups)
+        {
+            `$dpDependsOn = `$cmBoundaryGroupDependsOn
+        }
+        else
+        {
+            `$dpDependsOn = `$cmSiteSystemsDependsOn
+        }
+
         if (`$CMDistributionPoint)
         {
             foreach (`$dp in `$CMDistributionPoint)
@@ -3205,11 +3487,24 @@ Configuration ConfigureSccm
                     SecondaryPackageShareLocation   = `$dp.SecondaryPackageShareLocation
                     EnableBranchCache               = `$dp.EnableBranchCache
                     AllowPreStaging                 = `$dp.AllowPreStaging
-                    DependsOn                       = `$cmSiteSystemsDependsOn,`$cmBoundaryGroupDependsOn
+                    DependsOn                       = `$dpDependsOn
                 }
 
                 [array]`$cmDistroPointDependsOn += `"[CMDistributionPoint]`$(`$dp.SiteServerName)`"
             }
+        }
+
+        if (`$cmDistroPointDependsOn -and `$cmDistroGroupsDependsOn)
+        {
+            `$dpGroupDependsOn = `$cmDistroPointDependsOn,`$cmDistroGroupsDependsOn
+        }
+        elseif (`$cmDistroPointDependsOn)
+        {
+            `$dpGroupDependsOn = `$cmDistroPointDependsOn
+        }
+        else
+        {
+            `$dpGroupDependsOn = `$cmDistroGroupsDependsOn
         }
 
         if (`$CMDistributionPointGroupMembers)
@@ -3221,7 +3516,7 @@ Configuration ConfigureSccm
                     SiteCode           = `$SiteCode
                     DistributionPoint  = `$dpGroup.DistributionPoint
                     DistributionGroups = `$dpGroup.DistributionGroups
-                    DependsOn          = `$cmDistroPointDependsOn,`$cmDistroGroupsDependsOn
+                    DependsOn          = `$dpGroupDependsOn
                 }
             }
         }
@@ -3482,7 +3777,7 @@ function Set-ConfigMgrCBDscReverse
     if (($Include -contains 'All' -and $Exclude -notcontains 'Accounts') -or ($Include -contains 'Accounts'))
     {
         $resourceName = 'CMAccounts'
-        $accounts = Get-CMAccount -SiteCode $siteCode
+        $accounts = Get-CMAccount -SiteCode $SiteCode
 
         if ($accounts)
         {
@@ -3550,19 +3845,25 @@ function Set-ConfigMgrCBDscReverse
     {
         $resourceName = 'CMAssetIntelligencePoint'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
-        $wAsset = "$resourceName = @{`r`n"
-        $params = @{
-            ResourceName = $resourceName
-            SiteCode     = $SiteCode
-            StringValue  = 'Yes'
-            Indent       = 1
-            MultiEntry   = $false
-            Resources    = $resources
-        }
 
-        $testThing = Set-OutFile @params
-        $wAsset += "$testThing"
-        $fileOut += "$wAsset`r`n"
+        $assetIntel = Get-CMAssetIntelligenceSynchronizationPoint -SiteCode $SiteCode
+
+        if ($assetIntel)
+        {
+            $wAsset = "$resourceName = @{`r`n"
+            $params = @{
+                ResourceName = $resourceName
+                SiteCode     = $SiteCode
+                StringValue  = 'Yes'
+                Indent       = 1
+                MultiEntry   = $false
+                Resources    = $resources
+            }
+
+            $testThing = Set-OutFile @params
+            $wAsset += "$testThing"
+            $fileOut += "$wAsset`r`n"
+        }
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'BoundaryGroups') -or ($Include -contains 'BoundaryGroups'))
@@ -3650,8 +3951,11 @@ function Set-ConfigMgrCBDscReverse
         }
 
         $testThing = Set-OutFile @params
-        $wcollectionEval += "$testThing"
-        $fileOut += "$wcollectionEval`r`n"
+        if ($testThing.Length -gt 1)
+        {
+            $wcollectionEval += "$testThing"
+            $fileOut += "$wcollectionEval`r`n"
+        }
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'Collections') -or ($Include -contains 'Collections'))
@@ -3744,7 +4048,7 @@ function Set-ConfigMgrCBDscReverse
     if (($Include -eq 'All' -and $Exclude -notcontains 'DistributionPoint') -or ($Include -contains 'DistributionPoint'))
     {
         $resourceName = 'CMDistributionPoint'
-        $dps = (Get-CMDistributionPoint -SiteCode $siteCode).NetworkOSPath.TrimStart('\\')
+        $dps = Get-CMDistributionPoint -SiteCode $SiteCode
 
         if ($dps)
         {
@@ -3753,13 +4057,13 @@ function Set-ConfigMgrCBDscReverse
 
         foreach ($dp in $dps)
         {
-            Write-Verbose -Message ($script:localizedData.DistroPoint -f $dp) -Verbose
+            Write-Verbose -Message ($script:localizedData.DistroPoint -f $dp.NetworkOSPath.TrimStart('\\')) -Verbose
             $params = @{
                 ResourceName = $resourceName
                 SiteCode     = $SiteCode
                 ExcludeList  = @('SiteCode','BoundaryGroupStatus')
                 Indent       = 2
-                StringValue  = $dp
+                StringValue  = $dp.NetworkOSPath.TrimStart('\\')
                 MultiEntry   = $true
                 Resources    = $resources
             }
@@ -3778,7 +4082,7 @@ function Set-ConfigMgrCBDscReverse
     if (($Include -eq 'All' -and $Exclude -notcontains 'DistributionPointGroupMembers') -or ($Include -contains 'DistributionPointGroupMembers'))
     {
         $resourceName = 'CMDistributionPointGroupMembers'
-        $getDPGroupMembers = (Get-CMDistributionPoint -SiteCode $siteCode).NetworkOSPath.TrimStart('\\')
+        $getDPGroupMembers = Get-CMDistributionPoint -SiteCode $SiteCode
 
         if ($getDPGroupMembers)
         {
@@ -3787,13 +4091,13 @@ function Set-ConfigMgrCBDscReverse
 
         foreach ($getDPGroupMember in $getDPGroupMembers)
         {
-            Write-Verbose -Message ($script:localizedData.DistroGroupMembers -f $getDPGroupMember) -Verbose
+            Write-Verbose -Message ($script:localizedData.DistroGroupMembers -f $getDPGroupMember.NetworkOSPath.TrimStart('\\')) -Verbose
             $params = @{
                 ResourceName = $resourceName
                 SiteCode     = $SiteCode
                 ExcludeList  = @('SiteCode','DPStatus')
                 Indent       = 2
-                StringValue  = $getDPGroupMember
+                StringValue  = $getDPGroupMember.NetworkOSPath.TrimStart('\\')
                 MultiEntry   = $true
                 Resources    = $resources
             }
@@ -3812,7 +4116,7 @@ function Set-ConfigMgrCBDscReverse
     if (($Include -eq 'All' -and $Exclude -notcontains 'FallbackPoints') -or ($Include -contains 'FallbackPoints'))
     {
         $resourceName = 'CMFallbackStatusPoint'
-        $fallbacks = (Get-CMFallbackStatusPoint -SiteCode $siteCode).NetworkOSPath.TrimStart('\\')
+        $fallbacks = Get-CMFallbackStatusPoint -SiteCode $SiteCode
 
         if ($fallbacks)
         {
@@ -3821,12 +4125,12 @@ function Set-ConfigMgrCBDscReverse
 
         foreach ($fallback in $fallbacks)
         {
-            Write-Verbose -Message ($script:localizedData.Fallback -f $fallback) -Verbose
+            Write-Verbose -Message ($script:localizedData.Fallback -f $fallback.NetworkOSPath.TrimStart('\\')) -Verbose
             $params = @{
                 ResourceName = $resourceName
                 SiteCode     = $SiteCode
                 Indent       = 2
-                StringValue  = $fallback
+                StringValue  = $fallback.NetworkOSPath.TrimStart('\\')
                 MultiEntry   = $true
                 Resources    = $resources
             }
@@ -3880,32 +4184,36 @@ function Set-ConfigMgrCBDscReverse
         $resourceName = 'CMHeartbeatDiscovery'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
         $heartbeat = ((Get-CMDiscoveryMethod -Name HeartbeatDiscovery -SiteCode $SiteCode).props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
-        $wHeartbeat = "$resourceName = @{`r`n"
 
-        if ($heartbeat -eq 'INACTIVE')
+        if ($heartbeat)
         {
-            $params = @{
-                ResourceName = $resourceName
-                SiteCode     = $SiteCode
-                Indent       = 1
-                Count        = 7
-                ExcludeList  = @('SiteCode','ScheduleInterval','ScheduleCount')
-                Resources    = $resources
-            }
-        }
-        else
-        {
-            $params = @{
-                ResourceName = $resourceName
-                SiteCode     = $SiteCode
-                Indent       = 1
-                Resources    = $resources
-            }
-        }
+            $wHeartbeat = "$resourceName = @{`r`n"
 
-        $testThing = Set-OutFile @params
-        $wHeartbeat += "$testThing"
-        $fileOut += "$wHeartbeat`r`n"
+            if ($heartbeat -eq 'INACTIVE')
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 1
+                    Count        = 7
+                    ExcludeList  = @('SiteCode','ScheduleInterval','ScheduleCount')
+                    Resources    = $resources
+                }
+            }
+            else
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 1
+                    Resources    = $resources
+                }
+            }
+
+            $testThing = Set-OutFile @params
+            $wHeartbeat += "$testThing"
+            $fileOut += "$wHeartbeat`r`n"
+        }
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'MaintenanceWindow') -or ($Include -contains 'MaintenanceWindow'))
@@ -3952,7 +4260,7 @@ function Set-ConfigMgrCBDscReverse
     if (($Include -eq 'All' -and $Exclude -notcontains 'ManagementPoint') -or ($Include -contains 'ManagementPoint'))
     {
         $resourceName = 'CMManagementPoint'
-        $mps = Get-CMManagementPoint -SiteCode $siteCode
+        $mps = Get-CMManagementPoint -SiteCode $SiteCode
 
         if ($mps)
         {
@@ -4007,25 +4315,30 @@ function Set-ConfigMgrCBDscReverse
     {
         $resourceName = 'CMNetworkDiscovery'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
-        $wNetDiscovery = "$resourceName = @{`r`n"
-        $params = @{
-            ResourceName = $resourceName
-            SiteCode     = $SiteCode
-            Indent       = 1
-            MultiEntry   = $false
-            Count        = 7
-            Resources    = $resources
-        }
+        $network = Get-CMDiscoveryMethod -Name NetworkDiscovery -SiteCode $SiteCode
 
-        $testThing = Set-OutFile @params
-        $wNetDiscovery += "$testThing"
-        $fileOut += "$wNetDiscovery`r`n"
+        if ($network)
+        {
+            $wNetDiscovery = "$resourceName = @{`r`n"
+            $params = @{
+                ResourceName = $resourceName
+                SiteCode     = $SiteCode
+                Indent       = 1
+                MultiEntry   = $false
+                Count        = 7
+                Resources    = $resources
+            }
+
+            $testThing = Set-OutFile @params
+            $wNetDiscovery += "$testThing"
+            $fileOut += "$wNetDiscovery`r`n"
+        }
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'PullDistributionPoint') -or ($Include -contains 'PullDistributionPoint'))
     {
         $resourceName = 'CMPullDistributionPoint'
-        $getPullDPs = Get-CMDistributionPointInfo -SiteCode $siteCode | Where-Object -FilterScript {$_.IsPullDP -eq $true}
+        $getPullDPs = Get-CMDistributionPointInfo -SiteCode $SiteCode | Where-Object -FilterScript {$_.IsPullDP -eq $true}
 
         if ($getPullDPs)
         {
@@ -4059,7 +4372,7 @@ function Set-ConfigMgrCBDscReverse
     if (($Include -eq 'All' -and $Exclude -notcontains 'PxeDistributionPoint') -or ($Include -contains 'PxeDistributionPoint'))
     {
         $resourceName = 'CMPxeDistributionPoint'
-        $getPxeDPs = Get-CMDistributionPointInfo -SiteCode $siteCode | Where-Object -FilterScript {$_.IsPXE -eq $true}
+        $getPxeDPs = Get-CMDistributionPointInfo -SiteCode $SiteCode | Where-Object -FilterScript {$_.IsPXE -eq $true}
 
         if ($getPxeDPs)
         {
@@ -4170,7 +4483,7 @@ function Set-ConfigMgrCBDscReverse
     {
         $resourceName = 'CMServiceConnectionPoint'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
-        $serviceConnections = Get-CMServiceConnectionPoint -SiteCode $siteCode
+        $serviceConnections = Get-CMServiceConnectionPoint -SiteCode $SiteCode
 
         if ($serviceConnections)
         {
@@ -4200,8 +4513,8 @@ function Set-ConfigMgrCBDscReverse
             'Delete Aged Replication Summary Data','Delete Obsolete Forest Discovery Sites And Subnets',
             'Delete Aged Delete Detection Data','Delete Aged Distribution Point Usage Stats',
             'Rebuild Indexes','Delete Aged Log Data','Delete Aged Passcode Records','Delete Aged Console Connection Data',
-            'Monitor Keys','Delete Aged Client Operations','Delete Aged Notification Server History',
-            'Delete Aged Cloud Management Gateway Traffic Data')
+            'Monitor Keys','Delete Aged Client Operations','Delete Aged Notification Server History'
+        )
         $casOnly = @('Check Application Title with Inventory Information','Delete Duplicate System Discovery Data')
         $primaryOnly = @('Clear Undiscovered Clients','Delete Aged Application Request Data','Delete Aged Client Download History',
             'Delete Aged Collected Files','Delete Aged Computer Association Data','Delete Aged Device Wipe Record',
@@ -4211,7 +4524,7 @@ function Set-ConfigMgrCBDscReverse
             'Delete Aged Unknown Computers','Delete Aged User Device Affinity Data','Delete Inactive Client Discovery Data'
             'Delete Obsolete Client Discovery Data','Delete Orphaned Client Deployment State Records',
             'Summarize File Usage Metering Data','Summarize Installed Software Data','Summarize Monthly Usage Metering Data',
-            'Update Application Available Targeting','Update Application Catalog Tables'
+            'Update Application Available Targeting','Update Application Catalog Tables','Delete Aged Cloud Management Gateway Traffic Data'
         )
 
         if ($siteType.SiteType -eq 2)
@@ -4250,7 +4563,7 @@ function Set-ConfigMgrCBDscReverse
     if (($Include -eq 'All' -and $Exclude -notcontains 'SiteSystemServer') -or ($Include -contains 'SiteSystemServer'))
     {
         $resourceName = 'CMSiteSystemServer'
-        $siteServers = Get-CMSiteSystemServer -SiteCode $siteCode
+        $siteServers = Get-CMSiteSystemServer -SiteCode $SiteCode
 
         if ($siteServers)
         {
@@ -4385,31 +4698,35 @@ function Set-ConfigMgrCBDscReverse
         $resourceName = 'CMSystemDiscovery'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
         $systemDisc = ((Get-CMDiscoveryMethod -Name ActiveDirectorySystemDiscovery -SiteCode $SiteCode).Props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
-        $wsysDiscovery = "$resourceName = @{`r`n"
 
-        if ($systemDisc -eq 'INACTIVE')
+        if ($systemDisc)
         {
-            $params = @{
-                ResourceName = $resourceName
-                SiteCode     = $SiteCode
-                Indent       = 1
-                ExcludeList  = @('SiteCode','ScheduleInterval','ScheduleCount')
-                Resources    = $resources
-            }
-        }
-        else
-        {
-            $params = @{
-                ResourceName = $resourceName
-                SiteCode     = $SiteCode
-                Indent       = 1
-                Resources    = $resources
-            }
-        }
+            $wsysDiscovery = "$resourceName = @{`r`n"
 
-        $testThing = Set-OutFile @params
-        $wsysDiscovery += "$testThing"
-        $fileOut += "$wsysDiscovery`r`n"
+            if ($systemDisc -eq 'INACTIVE')
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 1
+                    ExcludeList  = @('SiteCode','ScheduleInterval','ScheduleCount')
+                    Resources    = $resources
+                }
+            }
+            else
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 1
+                    Resources    = $resources
+                }
+            }
+
+            $testThing = Set-OutFile @params
+            $wsysDiscovery += "$testThing"
+            $fileOut += "$wsysDiscovery`r`n"
+        }
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'UserDiscovery') -or ($Include -contains 'UserDiscovery'))
@@ -4417,31 +4734,35 @@ function Set-ConfigMgrCBDscReverse
         $resourceName = 'CMUserDiscovery'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
         $userDisc = ((Get-CMDiscoveryMethod -Name ActiveDirectoryUserDiscovery -SiteCode $SiteCode).props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
-        $wusrDiscovery = "$resourceName = @{`r`n"
 
-        if ($userDisc -eq 'INACTIVE')
+        if ($userDisc)
         {
-            $params = @{
-                ResourceName = $resourceName
-                SiteCode     = $SiteCode
-                Indent       = 1
-                ExcludeList  = @('SiteCode','ScheduleInterval','ScheduleCount')
-                Resources    = $resources
-            }
-        }
-        else
-        {
-            $params = @{
-                ResourceName = $resourceName
-                SiteCode     = $SiteCode
-                Indent       = 1
-                Resources    = $resources
-            }
-        }
+            $wusrDiscovery = "$resourceName = @{`r`n"
 
-        $testThing = Set-OutFile @params
-        $wusrDiscovery += "$testThing"
-        $fileOut += "$wusrDiscovery`r`n"
+            if ($userDisc -eq 'INACTIVE')
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 1
+                    ExcludeList  = @('SiteCode','ScheduleInterval','ScheduleCount')
+                    Resources    = $resources
+                }
+            }
+            else
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 1
+                    Resources    = $resources
+                }
+            }
+
+            $testThing = Set-OutFile @params
+            $wusrDiscovery += "$testThing"
+            $fileOut += "$wusrDiscovery`r`n"
+        }
     }
 
     $fileOut += "}`r`n"
