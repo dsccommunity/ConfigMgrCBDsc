@@ -11,7 +11,7 @@ $script:parentModule = Get-Module -Name $script:projectName -ListAvailable | Sel
 $script:subModulesFolder = Join-Path -Path $script:parentModule.ModuleBase -ChildPath 'Modules'
 Remove-Module -Name $script:parentModule -Force -ErrorAction 'SilentlyContinue'
 
-$script:subModuleName = (Split-Path -Path $PSCommandPath -Leaf) -replace '\.Tests.ps1'
+$script:subModuleName = (Split-Path -Path $PSCommandPath -Leaf) -Replace '\.Tests.ps1'
 $script:subModuleFile = Join-Path -Path $script:subModulesFolder -ChildPath "$($script:subModuleName)"
 
 Import-Module $script:subModuleFile -Force -ErrorAction 'Stop'
@@ -1221,7 +1221,7 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
-                    Name          = 'CMPXEDistributionPoint'
+                    Name          = 'CMPxeDistributionPoint'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
                     Properties    = @(
@@ -2234,7 +2234,7 @@ InModuleScope $script:subModuleName {
                 RemoveCertificate     = $null
                 ScheduleType          = 'Days'
                 SiteCode              = 'LAB'
-                SiteServerName        = 'SCCM.contoso.com'
+                SiteServerName        = 'CA01.contoso.com'
                 Start                 = '2/1/1970 00:00'
                 PSComputerName        = 'localhost'
             }
@@ -2264,7 +2264,7 @@ InModuleScope $script:subModuleName {
                 RemoveCertificate     = $null
                 ScheduleType          = 'None'
                 SiteCode              = 'LAB'
-                SiteServerName        = 'SCCM.contoso.com'
+                SiteServerName        = 'CA01.contoso.com'
                 Start                 = $null
                 PSComputerName        = 'localhost'
             }
@@ -2737,14 +2737,14 @@ InModuleScope $script:subModuleName {
             }
 
             $invokepullDP = @{
-                ConfigurationName     = $null
-                DependsOn             = $null
-                ModuleName            = 'ConfigMgrCBDsc'
-                ModuleVersion         = 1.0.1
-                PsDscRunAsCredential  = $null
-                ResourceId            = $null
-                SourceInfo            = $null
-                SiteServerName        = 'DP03.contoso.com'
+                ConfigurationName       = $null
+                DependsOn               = $null
+                ModuleName              = 'ConfigMgrCBDsc'
+                ModuleVersion           = 1.0.1
+                PsDscRunAsCredential    = $null
+                ResourceId              = $null
+                SourceInfo              = $null
+                SiteServerName          = 'DP03.contoso.com'
                 SourceDistributionPoint = @(
                     @{
                         DPRank         = 1
@@ -2757,8 +2757,8 @@ InModuleScope $script:subModuleName {
                         PSComputerName = 'localhost'
                     }
                 )
-                SiteCode              = 'Lab'
-                PSComputerName        = 'localhost'
+                SiteCode                = 'Lab'
+                PSComputerName          = 'localhost'
             }
 
             $pxeDP = @{
@@ -2802,7 +2802,7 @@ InModuleScope $script:subModuleName {
                 SourceInfo           = $null
                 SiteServerName       = 'RP01.contoso.com'
                 DatabaseName         = 'CM_Lab'
-                DatabaseServerName   = 'SCCM.contoso.com'
+                DatabaseServerName   = 'CA01.contoso.com'
                 FolderName           = 'CM_Lab'
                 ReportServerInstance = 'InstCMLab'
                 Username             = 'contoso\reportingUser'
@@ -2835,7 +2835,7 @@ InModuleScope $script:subModuleName {
 
             $getServiceConnectionPoint = @{
                 SiteCode      = 'Lab'
-                NetworkOSPath = 'SCCM.contoso.com'
+                NetworkOSPath = 'CA01.contoso.com'
             }
 
             $invokeServiceConnectionPoint = @{
@@ -2846,7 +2846,7 @@ InModuleScope $script:subModuleName {
                 PsDscRunAsCredential = $null
                 ResourceId           = $null
                 SourceInfo           = $null
-                SiteServerName       = 'SCCM.contoso.com'
+                SiteServerName       = 'CA01.contoso.com'
                 Mode                 = 'Online'
                 Ensure               = 'Present'
                 SiteCode             = 'Lab'
@@ -3075,7 +3075,7 @@ InModuleScope $script:subModuleName {
                 PsDscRunAsCredential             = $null
                 ResourceId                       = $null
                 SourceInfo                       = $null
-                AccessAccounts                   = @('jeffo\billy', 'jeffo\test', 'jeffo\test1')
+                AccessAccounts                   = @('contoso\billy', 'contoso\test', 'contoso\test1')
                 AccessAccountsToExclude          = $null
                 AccessAccountsToInclude          = $null
                 ClientComputerAccount            = $false
@@ -3341,7 +3341,7 @@ InModuleScope $script:subModuleName {
             }
 
             $getCMBoundaryGroup = @{
-                Name              = 'TestBoundary'
+                Name = 'TestBoundary'
             }
 
             $invokeCMBoundaryGroup = @{
@@ -4218,20 +4218,20 @@ InModuleScope $script:subModuleName {
             }
 
             It 'Should return call expected commands for creating the configuration file' {
-                Mock -CommandName Test-Path -MockWith { $true }
-
-                New-Configuration @config
-                Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
-                Assert-MockCalled Remove-Item -Exactly -Times 1 -Scope It
-                Assert-MockCalled Add-Content -Exactly -Times 1 -Scope It
-            }
-
-            It 'Should return call expected commands for creating the configuration file when file exists' {
                 Mock -CommandName Test-Path -MockWith { $false }
 
                 New-Configuration @config
                 Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
                 Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 1 -Scope It
+            }
+
+            It 'Should return call expected commands for creating the configuration file when file exists' {
+                Mock -CommandName Test-Path -MockWith { $true }
+
+                New-Configuration @config
+                Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 1 -Scope It
                 Assert-MockCalled Add-Content -Exactly -Times 1 -Scope It
             }
         }

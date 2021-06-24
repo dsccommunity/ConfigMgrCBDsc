@@ -51,7 +51,7 @@ function Assert-CMModule
         $Resource
     )
 
-    $required = $resource.Properties
+    $required = $Resource.Properties
     $properties = @{}
 
     foreach ($prop in $required)
@@ -81,7 +81,7 @@ function Assert-CMModule
         }
     }
 
-    $result = Invoke-DscResource -ModuleName $moduleName -Name $resource.Name -Method Get -Property $properties
+    $result = Invoke-DscResource -ModuleName $ModuleName -Name $Resource.Name -Method Get -Property $properties
 
     $blanketExclude = @('ConfigurationName','DependsOn','ModuleName','ModuleVersion','PsDscRunAsCredential','ResourceId','SourceInfo')
     $return = @{}
@@ -370,11 +370,11 @@ function Set-CMThing
             {
                 if ($item.Value.GetType().Name -eq 'Boolean')
                 {
-                    $thing = "$($item.Key.PadRight($count)) = `$$($item.Value)"
+                    $thing = "$($item.Key.PadRight($Count)) = `$$($item.Value)"
                 }
                 elseif (($item.Value.GetTYpe().Name -eq 'String') -or ($item.Value.GetTYpe().Name -eq 'DateTime'))
                 {
-                    $thing = "$($item.Key.PadRight($count)) = '$($item.Value)'"
+                    $thing = "$($item.Key.PadRight($Count)) = '$($item.Value)'"
                 }
                 elseif (($item.Value.GetType().Name -eq 'Object[]') -or ($item.Value.GetType().Name -eq 'String[]'))
                 {
@@ -384,12 +384,12 @@ function Set-CMThing
                         {
                             $subThing += "'$subItem',"
                         }
-                        $thing ="$($item.Key.PadRight($count)) = $($subThing.TrimEnd(','))"
+                        $thing ="$($item.Key.PadRight($Count)) = $($subThing.TrimEnd(','))"
                     }
                 }
                 else
                 {
-                    $thing = "$($item.Key.PadRight($count)) = $($item.Value)"
+                    $thing = "$($item.Key.PadRight($Count)) = $($item.Value)"
                 }
             }
             if ($thing)
@@ -2358,7 +2358,6 @@ Configuration ConfigureSccm
                         }
                     }
                 }
-                #no rules
                 elseif ([string]::IsNullOrEmpty(`$coll.ExcludeMembership) -and
                         [string]::IsNullOrEmpty(`$coll.IncludeMembership) -and
                         [string]::IsNullOrEmpty(`$coll.DirectMembership) -and
@@ -3554,7 +3553,7 @@ Configuration ConfigureSccm
             {
                 if (`$pxe.PxePassword -eq `$true)
                 {
-                    `$password = Get-Credential -UserName `'contoso\DoesNotMatter`' -Message `"PXE Password for `$(`$pxe.SiteServerName)`"
+                    `$password = Get-Credential -UserName `'PxePassword`' -Message `"Enter the PXE boot Password you wish to use for `$(`$pxe.SiteServerName). The username does not matter.`"
 
                     CMPxeDistributionPoint `$(`$pxe.SiteServerName)
                     {
@@ -3769,7 +3768,7 @@ function Set-ConfigMgrCBDscReverse
 
     if ($Include -ne 'All' -and -not [string]::IsNullOrEmpty($Exclude))
     {
-        Write-Verbose -Message $script:localizedData.ExcludeMsg -Verbose
+        Write-Warning -Message $script:localizedData.ExcludeMsg
     }
 
     $fileOut = "@{`r`nSiteCode = '$SiteCode'`r`n"
@@ -4150,7 +4149,7 @@ function Set-ConfigMgrCBDscReverse
     {
         $resourceName = 'CMForestDiscovery'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
-        $forest = ((Get-CMDiscoveryMethod -Name ActiveDirectoryForestDiscovery -SiteCode $SiteCode).props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
+        $forest = ((Get-CMDiscoveryMethod -Name ActiveDirectoryForestDiscovery -SiteCode $SiteCode).Props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
         $wforest = "$resourceName = @{`r`n"
 
         if ($forest -eq 'INACTIVE')
@@ -4183,7 +4182,7 @@ function Set-ConfigMgrCBDscReverse
     {
         $resourceName = 'CMHeartbeatDiscovery'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
-        $heartbeat = ((Get-CMDiscoveryMethod -Name HeartbeatDiscovery -SiteCode $SiteCode).props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
+        $heartbeat = ((Get-CMDiscoveryMethod -Name HeartbeatDiscovery -SiteCode $SiteCode).Props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
 
         if ($heartbeat)
         {
@@ -4733,7 +4732,7 @@ function Set-ConfigMgrCBDscReverse
     {
         $resourceName = 'CMUserDiscovery'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
-        $userDisc = ((Get-CMDiscoveryMethod -Name ActiveDirectoryUserDiscovery -SiteCode $SiteCode).props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
+        $userDisc = ((Get-CMDiscoveryMethod -Name ActiveDirectoryUserDiscovery -SiteCode $SiteCode).Props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
 
         if ($userDisc)
         {

@@ -1338,32 +1338,32 @@ you are using apply and auto correct.
 
 ## ReverseDsc
 
-Most organizations using this module, already have an existing Configuration Manager
+Most organizations using this module already have an existing Configuration Manager
 environment. Creating a configuration and a PowerShell data file that contains
 all of the configurations of an environment, to either stand-up a lab environment
-or document a production environment, can be a time consuming tasks to undertake.
+or document a production environment, can be a time consuming task to undertake.
 ReverseDsc with-in the ConfigMgrCBDsc module will assist in documenting the
-current, production or development, environment and allow you to take that configuration
+current production or development environment and allow you to take that configuration
 and allow you to monitor your current settings or rebuild another environment with
 the core functionality quickly using the same settings that are currently set within
 the Configuration Manager environment.
 
-Typically with ReverseDsc you will get a configuration that has all of the data hard
-coded within the configuration. With this module, it will generate a data file and
-if desired a Configuration that will reference the data file to generate a mof file.
-This allows you to only have to modify the data file for each of your environments,
+Typically, with ReverseDsc you will get a configuration that has all of the data
+hard coded within the configuration. With this module, it will generate a data file
+and if desired a Configuration that will reference the data file to generate a mof
+file. This allows you to only have to modify the data file for each of your environments,
 production or Lab, and use the same configuration file for each environment.
 
 **Note**
 
-No passwords are gathered by ReverseDsc. Items such as CMAccounts will only list
+**No passwords are gathered by ReverseDsc. Items such as CMAccounts will only list
 the account and when the configuration is ran a prompt will be provided to provide
 the password for the account.
 
 With the default configuration created, it does NOT use certificates and all passwords
 specified will be in plain text in the mof file when it is compiled.
 If desired, once the configuration is created you can add the necessary pieces
-to encrypt the passwords in the mof file.
+to encrypt the passwords in the mof file.**
 
 If looking to stand-up a brand new environment, an example of installing pre-reqs,
 SQL, and installing Configuration Manager can be found in examples: PrimaryInstall.ps1.
@@ -1488,7 +1488,7 @@ Set-ConfigMgrCBDscReverse @params
 
 Running ReverseDsc and only creating a configuration file. DataFile and
 MofOutputPath are still required. The reason is when the configuration is
-created it hard codes that path into the configuration.
+created, it hard codes the path into the configuration file.
 
 ```powershell
 $params = @{
