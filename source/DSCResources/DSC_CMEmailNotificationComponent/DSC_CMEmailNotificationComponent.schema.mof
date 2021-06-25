@@ -1,0 +1,12 @@
+[ClassVersion("1.0.0"), FriendlyName("CMEmailNotificationComponent")]
+class DSC_CMEmailNotificationComponent : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies if email notifications are enable or disable.")] Boolean Enabled;
+    [Write, Description("Specifies the FQDN of the site server that will send e-mail.")] String SmtpServerFqdn;
+    [Write, Description("Specifies the address used to send mail.")] String SendFrom;
+    [Write, Description("Specifies the port used to send mail.")] UInt32 Port;
+    [Write, Description("Specifies the username for authenticating against an SMTP server. Only used when AuthenticationMethod equals Other")] String UserName;
+    [Write, Description("Specifies whether to use SSL for email alerts. If omitted, the assumed intent is that SSL is not to be used.")] Boolean UseSSL;
+    [Write, Description("Specifies the method by which Configuration Manager authenticates the site server to the SMTP Server."), ValueMap{"Anonymous","DefaultServiceAccount","Other"}, Values{"Anonymous","DefaultServiceAccount","Other"}] String TypeOfAuthentication;
+};
