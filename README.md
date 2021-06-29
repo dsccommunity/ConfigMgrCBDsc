@@ -1413,6 +1413,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMDistributionGroup: Fully Supported
 - DSC_CMDistributionPoint: Fully Supported
 - DSC_CMDistributionPointGroupMembers: Fully Supported
+- DSC_CMEmailNotificationComponent: Fully Supported
 - DSC_CMFallbackStatusPoint: Fully Supported
 - DSC_CMFileReplication: Not Supported
 - DSC_CMForestDiscovery: Fully Supported

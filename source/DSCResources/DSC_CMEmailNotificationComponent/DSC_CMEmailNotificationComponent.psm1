@@ -167,6 +167,22 @@ function Set-TargetResource
                 throw $script:localizedData.AuthOtherNoUser
             }
 
+            if ($SmtpServerFqdn)
+            {
+                if ($SmtpServerFqdn.Contains('@') -or -not $SmtpServerFqdn.Contains('.'))
+                {
+                    throw ($script:localizedData.SmtpError -f $SmtpServerFqdn)
+                }
+            }
+
+            if ($SendFrom)
+            {
+                if (-not $SendFrom.Contains('@') -or -not $SendFrom.Contains('.'))
+                {
+                    throw ($script:localizedData.SendFromError -f $SendFrom)
+                }
+            }
+
             if ($PSBoundParameters.ContainsKey('UseSsl'))
             {
                 if (($state.UseSSL -eq $false -and $useSSL -eq $true) -and -not $PSBoundParameters.ContainsKey('Port'))
@@ -334,6 +350,24 @@ function Test-TargetResource
         {
             Write-Warning -Message $script:localizedData.AuthOtherNoUser
             $result = $false
+        }
+
+        if ($SmtpServerFqdn)
+        {
+            if ($SmtpServerFqdn.Contains('@') -or -not $SmtpServerFqdn.Contains('.'))
+            {
+                Write-Warning -Message ($script:localizedData.SmtpError -f $SmtpServerFqdn)
+                $result = $false
+            }
+        }
+
+        if ($SendFrom)
+        {
+            if (-not $SendFrom.Contains('@') -or -not $SendFrom.Contains('.'))
+            {
+                Write-Warning -Message ($script:localizedData.SendFromError -f $SendFrom)
+                $result = $false
+            }
         }
 
         if ($PSBoundParameters.ContainsKey('UseSsl'))

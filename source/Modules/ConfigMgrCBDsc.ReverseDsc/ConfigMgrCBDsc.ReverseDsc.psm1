@@ -497,6 +497,10 @@ Configuration ConfigureSccm
 
         [Parameter()]
         [HashTable[]]
+        `$CMEmailNotificationComponent,
+
+        [Parameter()]
+        [HashTable[]]
         `$CMFallbackStatusPoint,
 
         [Parameter()]
@@ -720,6 +724,45 @@ Configuration ConfigureSccm
                 ReportServerInstance = `$CMReportingServicePoint.ReportServerInstance
                 Ensure               = `$CMReportingServicePoint.Ensure
                 DependsOn            = `$cmAccountsDependsOn
+            }
+        }
+
+        if (`$CMEmailNotificationComponent)
+        {
+            if (`$CMEmailNotificationComponent.Enabled -eq `$false)
+            {
+                CMEmailNotificationComponent EmailNotificationComponent
+                {
+                    SiteCode = `$SiteCode
+                    Enabled  = `$CMEmailNotificationComponent.Enabled
+                }
+            }
+            elseif (`$CMEmailNotificationComponent.TypeOfAuthentication -eq 'Other')
+            {
+                CMEmailNotificationComponent EmailNotificationComponent
+                {
+                    SiteCode             = `$SiteCode
+                    Enabled              = `$CMEmailNotificationComponent.Enabled
+                    TypeOfAuthentication = `$CMEmailNotificationComponent.TypeOfAuthentication
+                    Port                 = `$CMEmailNotificationComponent.Port
+                    SmtpServerFqdn       = `$CMEmailNotificationComponent.SmtpServerFqdn
+                    SendFrom             = `$CMEmailNotificationComponent.SendFrom
+                    UserName             = `$CMEmailNotificationComponent.UserName
+                    UseSsl               = `$CMEmailNotificationComponent.UseSsl
+                }
+            }
+            else
+            {
+                CMEmailNotificationComponent EmailNotificationComponent
+                {
+                    SiteCode             = `$SiteCode
+                    Enabled              = `$CMEmailNotificationComponent.Enabled
+                    TypeOfAuthentication = `$CMEmailNotificationComponent.TypeOfAuthentication
+                    Port                 = `$CMEmailNotificationComponent.Port
+                    SmtpServerFqdn       = `$CMEmailNotificationComponent.SmtpServerFqdn
+                    SendFrom             = `$CMEmailNotificationComponent.SendFrom
+                    UseSsl               = `$CMEmailNotificationComponent.UseSsl
+                }
             }
         }
 
@@ -3697,10 +3740,10 @@ function Set-ConfigMgrCBDscReverse
         [ValidateSet('All','Accounts','AdministrativeUser','AssetIntelligencePoint','BoundaryGroups',
             'ClientPush','ClientStatusSettings','CollectionEvaluationComponent','Collections',
             'DistributionGroups','DistributionPoint','DistributionPointGroupMembers',
-            'FallbackPoints','ForestDiscovery','HeartbeatDiscovery','MaintenanceWindow','ManagementPoint',
-            'NetworkDiscovery','PullDistributionPoint','PxeDistributionPoint',
-            'ReportingServicesPoint','SecurityScopes','ServiceConnection','SiteMaintenance',
-            'SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
+            'EmailNotificationComponent','FallbackPoints','ForestDiscovery','HeartbeatDiscovery',
+            'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
+            'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
+            'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
             'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly')]
         [String[]]
         $Include = 'All',
@@ -3709,10 +3752,10 @@ function Set-ConfigMgrCBDscReverse
         [ValidateSet('Accounts','AdministrativeUser','AssetIntelligencePoint','BoundaryGroups',
             'ClientPush','ClientStatusSettings','CollectionEvaluationComponent','Collections',
             'DistributionGroups','DistributionPoint','DistributionPointGroupMembers',
-            'FallbackPoints','ForestDiscovery','HeartbeatDiscovery','MaintenanceWindow','ManagementPoint',
-            'NetworkDiscovery','PullDistributionPoint','PxeDistributionPoint',
-            'ReportingServicesPoint','SecurityScopes','ServiceConnection','SiteMaintenance',
-            'SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
+            'EmailNotificationComponent','FallbackPoints','ForestDiscovery','HeartbeatDiscovery',
+            'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
+            'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
+            'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
             'StatusReportingComponent','SystemDiscovery','UserDiscovery')]
         [String[]]
         $Exclude,
@@ -4110,6 +4153,25 @@ function Set-ConfigMgrCBDscReverse
             $wDPGroupMembers += ")"
             $fileOut += "$wDPGroupMembers`r`n"
         }
+    }
+
+    if (($Include -eq 'All' -and $Exclude -notcontains 'EmailNotificationComponent') -or ($Include -contains 'EmailNotificationComponent'))
+    {
+        $resourceName = 'CMEmailNotificationComponent'
+        Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
+
+        $wEmailNotify = "$resourceName = @{`r`n"
+        $params = @{
+            ResourceName = $resourceName
+            SiteCode     = $SiteCode
+            Indent       = 1
+            MultiEntry   = $false
+            Resources    = $resources
+        }
+
+        $testThing = Set-OutFile @params
+        $wEmailNotify += "$testThing"
+        $fileOut += "$wEmailNotify`r`n"
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'FallbackPoints') -or ($Include -contains 'FallbackPoints'))

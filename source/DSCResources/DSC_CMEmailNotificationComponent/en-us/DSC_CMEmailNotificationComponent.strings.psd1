@@ -13,4 +13,6 @@ ConvertFrom-StringData @'
     SslBadPort           = When using SSL, you must specify a port other than the default non-SSL port 25.
     NonSslBadPort        = When not using SSL, you must specify a port other than the default SSL port 465.
     AbsentUsername       = UserAccount specifed {0} does not exist in Configuration Manager and will need to be created prior to adding as the connection account.
+    SmtpError            = SmtpServerFqdn {0} should use . vs @ format, example test.contoso.com.
+    SendFromError        = SendFrom {0} should use @ format, example sendfrom@contoso.com.
 '@

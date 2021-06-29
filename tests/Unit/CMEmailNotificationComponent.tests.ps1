@@ -395,6 +395,30 @@ try
                     }
 
                     $sslBadPort = 'When using SSL, you must specify a port other than the default non-SSL port 25.'
+
+                    $inputBadSendFrom = @{
+                        SiteCode             = 'Lab'
+                        SendFrom             = 'emailsender.contoso.com'
+                        SmtpServerFqdn       = 'EmailServer.contoso.com'
+                        TypeOfAuthentication = 'DefaultServiceAccount'
+                        Port                 = 446
+                        UseSsl               = $true
+                        Enabled              = $true
+                    }
+
+                    $sendFromError = 'SendFrom emailsender.contoso.com should use @ format, example sendfrom@contoso.com.'
+
+                    $inputBadSmtpServerFqdn = @{
+                        SiteCode             = 'Lab'
+                        SendFrom             = 'emailsender@contoso.com'
+                        SmtpServerFqdn       = 'EmailServer@contoso.com'
+                        TypeOfAuthentication = 'DefaultServiceAccount'
+                        Port                 = 446
+                        UseSsl               = $true
+                        Enabled              = $true
+                    }
+
+                    $smtpError = 'SmtpServerFqdn EmailServer@contoso.com should use . vs @ format, example test.contoso.com.'
                 }
 
                 It 'Should return throw Username specifed does not exist in Confiuration Manager' {
@@ -460,6 +484,30 @@ try
                     Mock -CommandName Get-CMAccount -MockWith { $null }
 
                     { Set-TargetResource @inputSslPortforSslFalse } | Should -Throw -ExpectedMessage $nonSslBadPort
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMEmailNotificationComponent -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should return throw when specifying a bad misformatted SendFrom' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresentNonSsl }
+                    Mock -CommandName Get-CMAccount -MockWith { $null }
+
+                    { Set-TargetResource @inputBadSendFrom } | Should -Throw -ExpectedMessage $sendFromError
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMEmailNotificationComponent -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should return throw when specifying a bad misformatted SmtpServerFqdn' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresentNonSsl }
+                    Mock -CommandName Get-CMAccount -MockWith { $null }
+
+                    { Set-TargetResource @inputBadSmtpServerFqdn } | Should -Throw -ExpectedMessage $smtpError
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -612,6 +660,26 @@ try
                         UseSsl               = $true
                         Enabled              = $true
                     }
+
+                    $inputBadSendFrom = @{
+                        SiteCode             = 'Lab'
+                        SendFrom             = 'emailsender.contoso.com'
+                        SmtpServerFqdn       = 'EmailServer.contoso.com'
+                        TypeOfAuthentication = 'DefaultServiceAccount'
+                        Port                 = 446
+                        UseSsl               = $true
+                        Enabled              = $true
+                    }
+
+                    $inputBadSmtpServerFqdn = @{
+                        SiteCode             = 'Lab'
+                        SendFrom             = 'emailsender@contoso.com'
+                        SmtpServerFqdn       = 'EmailServer@contoso.com'
+                        TypeOfAuthentication = 'DefaultServiceAccount'
+                        Port                 = 446
+                        UseSsl               = $true
+                        Enabled              = $true
+                    }
                 }
 
                 It 'Should return desired result false when Enabled and missing core components for enabled equals True' {
@@ -654,6 +722,18 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnPresentSsl }
 
                     Test-TargetResource @inputNoneSslPortforSslTrue | Should -Be $false
+                }
+
+                It 'Should return desired result false when specifying a malformed SendFrom' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresentSsl }
+
+                    Test-TargetResource @inputBadSendFrom | Should -Be $false
+                }
+
+                It 'Should return desired result false when specifying a malformed SmtpServerFqdn' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresentSsl }
+
+                    Test-TargetResource @inputBadSmtpServerFqdn | Should -Be $false
                 }
             }
         }
