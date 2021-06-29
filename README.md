@@ -1335,3 +1335,179 @@ you are using apply and auto correct.
 
 - [CMFileReplication_Present](Source\Examples\Resources\CMFileReplication\CMFileReplication_Present.ps1)
 - [CMFileReplication_Absent](Source\Examples\Resources\CMFileReplication\CMFileReplication_Absent.ps1)
+
+## ReverseDsc
+
+Most organizations using this module already have an existing Configuration Manager
+environment. Creating a configuration and a PowerShell data file that contains
+all of the configurations of an environment, to either stand-up a lab environment
+or document a production environment, can be a time consuming task to undertake.
+ReverseDsc with-in the ConfigMgrCBDsc module will assist in documenting the
+current production or development environment and allow you to take that configuration
+and allow you to monitor your current settings or rebuild another environment with
+the core functionality quickly using the same settings that are currently set within
+the Configuration Manager environment.
+
+Typically, with ReverseDsc you will get a configuration that has all of the data
+hard coded within the configuration. With this module, it will generate a data file
+and if desired a Configuration that will reference the data file to generate a mof
+file. This allows you to only have to modify the data file for each of your environments,
+production or Lab, and use the same configuration file for each environment.
+
+**Note**
+
+**No passwords are gathered by ReverseDsc. Items such as CMAccounts will only list
+the account and when the configuration is ran a prompt will be provided to provide
+the password for the account.
+
+With the default configuration created, it does NOT use certificates and all passwords
+specified will be in plain text in the mof file when it is compiled.
+If desired, once the configuration is created you can add the necessary pieces
+to encrypt the passwords in the mof file.**
+
+If looking to stand-up a brand new environment, an example of installing pre-reqs,
+SQL, and installing Configuration Manager can be found in examples: PrimaryInstall.ps1.
+Using the information in the example can assist with setting up a brand new environment
+and using the output from ReverseDsc to quickly stand up a new test environment.
+
+### Supported DSC Resources
+
+Currently not all modules will gathered by ReverseDSC. Below will list
+all of the modules and specify if it is currently supported by ReverseDSC.
+
+- DSC_CMAccounts: Fully Supported
+- DSC_CMAdministrativeUser: Fully Supported
+- DSC_CMAssetIntelligencePoint: Fully Supported
+- DSC_CMBoundaries: Not Supported
+- DSC_CMBoundaryGroups: Limited Support, will only create the boundary group
+  and will not populate or gather the boundaries within the group.
+- DSC_CMClientPushSettings: Fully Supported
+- DSC_CMClientStatusSettings: Fully Supported
+- DSC_CMCollectionMembershipEvaluationComponent: Fully Supported
+- DSC_CMCollections: Fully Supported
+- DSC_CMDistributionGroup: Fully Supported
+- DSC_CMDistributionPoint: Fully Supported
+- DSC_CMDistributionPointGroupMembers: Fully Supported
+- DSC_CMFallbackStatusPoint: Fully Supported
+- DSC_CMFileReplication: Not Supported
+- DSC_CMForestDiscovery: Fully Supported
+- DSC_CMHeartbeatDiscovery: Fully Supported
+- DSC_CMIniFile: Not Supported
+- DSC_CMMaintenanceWindows: Fully Supported
+- DSC_CMManagementPoint: Fully Supported
+- DSC_CMNetworkDiscovery: Fully Supported
+- DSC_CMPullDistributionPoint: Fully Supported
+- DSC_CMPxeDistributionPoint: Fully Supported
+- DSC_CMReportingServicePoint: Fully Supported
+- DSC_CMSecurityRoles: Not Supported
+- DSC_CMSecurityScopes: Fully Supported
+- DSC_CMServiceConnectionPoint: Fully Supported
+- DSC_CMSiteMaintenance: Fully Supported
+- DSC_CMSiteSystemServer: Fully Supported
+- DSC_CMSoftwareDistributionComponent: Fully Supported
+- DSC_CMSoftwareUpdatePoint: Fully Supported
+- DSC_CMStatusReportingComponent: Fully Supported
+- DSC_CMSystemDiscovery: Fully Supported
+- DSC_CMUserDiscovery: Fully Supported
+- xSccmInstall: Not Supported
+- xSccmPreReqs: Not Supported
+- xSccmSqlSetup: Not Supported
+
+### Importing the ReverseDsc module
+
+The ConfigMgrCBDsc module will have to be installed to run ReverseDSC. ReverseDSC
+uses the helper function and each module to gather the information about the
+environment. After installing the module, next the ReverseDsc module will need to
+be imported, replace `<version>` with the version number of currently installed module:
+
+```powershell
+Import-Module -Name 'C:\Program Files\WindowsPowerShell\Modules\ConfigMgrCBDsc\<version>\Modules\ConfigMgrCBDsc.ReverseDsc\ConfigMgrCBDsc.ReverseDsc.psd1'
+```
+
+After importing the module, Set-ConfigMgrCBDscReverse will be available.
+
+### Set-ConfigMgrCBDscReverse
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Include** _(Write)_: Specifies which resources will be invoked,
+  default setting: All.
+  - Values include: { All|Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
+  ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
+  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
+  FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
+- **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
+  being evaluated. Only evaluated when Include = 'All'
+  - Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
+  ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
+  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
+  FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  StatusReportingComponent|SystemDiscovery|UserDiscovery }
+- **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
+  Filename must end with .psd1. Not specifying DataFile the output will be displayed
+  in the output screen only if Include does not equal ConfigFileOnly.
+- **[String] ConfigOutputPath** _(Write)_: Specifies where the configuration file
+  will be saved. Filename must end with .ps1.
+- **[String] MofOutPutPath** _(Write)_: Specifies where the mof file will be saved
+  when running the configuration.
+
+### Set-ConfigMgrCBDscReverse Examples
+
+Running ReverseDsc with all options and creating a configuration file.
+
+```powershell
+$params = @{
+    SiteCode         = 'Lab'
+    Include          = 'All'
+    DataFile         = 'C:\temp\datafile.psd1'
+    ConfigOutputPath = 'C:\temp\CMConfig.ps1'
+    MofOutputPath    = 'C:\temp\Mof'
+}
+Set-ConfigMgrCBDscReverse @params
+```
+
+Running ReverseDsc using exclude and not creating a configuration file.
+This will still create a DataFile containing all of the information retrieved.
+
+```powershell
+$params = @{
+    SiteCode = 'Lab'
+    Include  = 'All'
+    Exclude  = 'SiteSystemServer'
+    DataFile = 'C:\temp\datafile.psd1'
+}
+Set-ConfigMgrCBDscReverse @params
+```
+
+Running ReverseDsc and only creating a configuration file. DataFile and
+MofOutputPath are still required. The reason is when the configuration is
+created, it hard codes the path into the configuration file.
+
+```powershell
+$params = @{
+    SiteCode         = 'Lab'
+    Include          = 'ConfigFileOnly'
+    DataFile         = 'C:\temp\DataFile.psd1'
+    ConfigOutputPath = 'C:\temp\CMConfig.ps1'
+    MofOutputPath    = 'C:\temp\Mof'
+}
+Set-ConfigMgrCBDscReverse @params
+```
+
+After creating a DataFile and configuration file, to compile the mof
+one additional command will need to be ran. After running the command
+below, any item that requires a password, example CMAccounts, will
+prompt to enter a password for those accounts. If running against and
+environment already up and running, the passwords are not evaluated and set
+if the account already exists with a password.
+
+```powershell
+C:\temp\CMConfig.ps1
+```
