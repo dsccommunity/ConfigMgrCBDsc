@@ -58,25 +58,25 @@ try
                     Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
 
                     $result = Get-TargetResource @getInput
-                    $result                 | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode        | Should -Be -ExpectedValue 'Lab'
-                    $result.Account         | Should -Be -ExpectedValue 'TestUser1'
-                    $result.Ensure          | Should -Be -ExpectedValue 'Present'
+                    $result          | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode | Should -Be -ExpectedValue 'Lab'
+                    $result.Account  | Should -Be -ExpectedValue 'TestUser1'
+                    $result.Ensure   | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result' {
                     Mock -CommandName Get-CMAccount -MockWith { $null }
 
                     $result = Get-TargetResource @getInput
-                    $result                 | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode        | Should -Be -ExpectedValue 'Lab'
-                    $result.Account         | Should -Be -ExpectedValue 'TestUser1'
-                    $result.Ensure          | Should -Be -ExpectedValue 'Absent'
+                    $result          | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode | Should -Be -ExpectedValue 'Lab'
+                    $result.Account  | Should -Be -ExpectedValue 'TestUser1'
+                    $result.Ensure   | Should -Be -ExpectedValue 'Absent'
                 }
             }
         }
 
-        Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Get-TargetResource' -Tag 'Set' {
+        Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
                 $testCredential = New-Object `
                 -TypeName System.Management.Automation.PSCredential `
