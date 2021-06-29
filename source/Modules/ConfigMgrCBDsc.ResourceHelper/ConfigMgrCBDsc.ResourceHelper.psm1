@@ -230,6 +230,7 @@ function ConvertTo-CimBoundaries
             '0' { 'IPSubnet' }
             '1' { 'AdSite' }
             '3' { 'IPRange' }
+            '4' { 'VPN' }
         }
 
         $cimProperties = @{
