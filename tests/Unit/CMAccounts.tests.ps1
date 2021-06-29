@@ -36,229 +36,239 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        $moduleResourceName = 'ConfigMgrCBDsc - DSC_CMClientAccounts'
+        Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Get-TargetResource' -Tag 'Get' {
+            BeforeAll {
+                $getInput = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                }
 
-        $testCredential = New-Object `
-        -TypeName System.Management.Automation.PSCredential `
-        -ArgumentList 'DummyUsername', (ConvertTo-SecureString 'DummyPassword' -AsPlainText -Force)
+                $cmAccounts = @{
+                    UserName = 'TestUser1'
+                    ItemType = 'User'
+                }
 
-        $getCmAccounts = @{
-            SiteCode  = 'Lab'
-            Account = 'TestUser1'
-        }
-
-        $cmAccountNull_Present = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser3'
-            Ensure   = 'Present'
-            AccountPassword = $testCredential
-        }
-
-        $cmAccountNull_Absent = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser3'
-            Ensure   = 'Absent'
-            AccountPassword = $testCredential
-        }
-
-        $cmAccountExists_Present = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser1'
-            Ensure   = 'Present'
-            AccountPassword = $testCredential
-        }
-
-        $cmAccountExists_Absent = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser1'
-            Ensure   = 'Absent'
-            AccountPassword = $testCredential
-        }
-
-        $cmAccountExists_AbsentNoCred = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser1'
-            Ensure   = 'Absent'
-        }
-
-        $cmAccountPresentNoCred = @{
-            SiteCode = 'Lab'
-            Account  = 'DummyUser3'
-            Ensure   = 'Present'
-        }
-
-        $cmAccounts = @(
-            @{
-                UserName = 'DummyUser1'
-                ItemType = 'User'
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+                Mock -CommandName Set-Location
             }
-            @{
-                UserName = 'DummyUser2'
-                ItemType = 'User'
-            }
-        )
-
-        Describe "$moduleResourceName\Get-TargetResource" {
-            Mock -CommandName Import-ConfigMgrPowerShellModule
-            Mock -CommandName Set-Location
 
             Context 'When retrieving client settings' {
 
                 It 'Should return desired result' {
                     Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
 
-                    $result = Get-TargetResource @getCmAccounts
-                    $result                 | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode        | Should -Be -ExpectedValue 'Lab'
-                    $result.Account         | Should -Be -ExpectedValue 'TestUser1'
-                    $result.CurrentAccounts | Should -Be -ExpectedValue @('DummyUser1','DummyUser2')
-                    $result.Ensure          | Should -Be -ExpectedValue 'Present'
+                    $result = Get-TargetResource @getInput
+                    $result          | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode | Should -Be -ExpectedValue 'Lab'
+                    $result.Account  | Should -Be -ExpectedValue 'TestUser1'
+                    $result.Ensure   | Should -Be -ExpectedValue 'Present'
                 }
 
                 It 'Should return desired result' {
                     Mock -CommandName Get-CMAccount -MockWith { $null }
 
-                    $result = Get-TargetResource @getCmAccounts
-                    $result                 | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode        | Should -Be -ExpectedValue 'Lab'
-                    $result.Account         | Should -Be -ExpectedValue 'TestUser1'
-                    $result.CurrentAccounts | Should -Be -ExpectedValue $null
-                    $result.Ensure          | Should -Be -ExpectedValue 'Present'
+                    $result = Get-TargetResource @getInput
+                    $result          | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode | Should -Be -ExpectedValue 'Lab'
+                    $result.Account  | Should -Be -ExpectedValue 'TestUser1'
+                    $result.Ensure   | Should -Be -ExpectedValue 'Absent'
                 }
             }
         }
 
-        Describe "$moduleResourceName\Set-TargetResource" {
-            Context 'When Set-TargetResource runs successfully' {
+        Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Set-TargetResource' -Tag 'Set' {
+            BeforeAll {
+                $testCredential = New-Object `
+                -TypeName System.Management.Automation.PSCredential `
+                -ArgumentList 'TestUser1', (ConvertTo-SecureString 'RandomPassword' -AsPlainText -Force)
+
+                $getReturnPresent = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                    Ensure   = 'Present'
+                }
+
+                $getReturnAbsent = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                    Ensure   = 'Absent'
+                }
+
+                $inputPresent = @{
+                    SiteCode        = 'Lab'
+                    Account         = 'TestUser1'
+                    AccountPassword = $testCredential
+                    Ensure          = 'Present'
+                }
+
+                $inputAbsent = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                    Ensure   = 'Absent'
+                }
+
+                $inputAbsentCreds = @{
+                    SiteCode        = 'Lab'
+                    Account         = 'TestUser1'
+                    AccountPassword = $testCredential
+                    Ensure          = 'Absent'
+                }
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
                 Mock -CommandName New-CMAccount
                 Mock -CommandName Remove-CMAccount
+            }
+
+            Context 'When Set-TargetResource runs successfully' {
 
                 It 'Should call expected commands for adding a new account' {
-                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
 
-                    Set-TargetResource @cmAccountNull_Present
+                    Set-TargetResource @inputPresent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMAccount -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMAccount -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands for removing an existing account' {
-                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
 
-                    Set-TargetResource @cmAccountExists_Absent
+                    Set-TargetResource @inputAbsentCreds
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMAccount -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAccount -Exactly -Times 1 -Scope It
                 }
 
                 It 'Should call expected commands for removing an existing account no creds specified' {
-                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
 
-                    Set-TargetResource @cmAccountExists_AbsentNoCred
+                    Set-TargetResource @inputAbsent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMAccount -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAccount -Exactly -Times 1 -Scope It
                 }
 
                 It 'Should call expected commands for when account is already in desired state' {
-                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
 
-                    Set-TargetResource @cmAccountExists_Present
+                    Set-TargetResource @inputPresent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMAccount -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAccount -Exactly -Times 0 -Scope It
                 }
             }
 
             Context 'When running Set-TargetResource should throw' {
-                Mock -CommandName Import-ConfigMgrPowerShellModule
-                Mock -CommandName Set-Location
-                Mock -CommandName New-CMAccount
-                Mock -CommandName Remove-CMAccount
+                BeforeEach {
+                    $cmAccountPresentNoCred = @{
+                        SiteCode = 'Lab'
+                        Account  = 'TestUser3'
+                        Ensure   = 'Present'
+                    }
+
+                    $getAbsentReturn = @{
+                        SiteCode = 'Lab'
+                        Account  = 'TestUser3'
+                        Ensure   = 'Absent'
+                    }
+
+                    $errorMsg = 'When adding an account a password must be specified.'
+                }
 
                 It 'Should Throw when Creds are not specified when adding an account' {
-                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
+                    Mock -CommandName Get-TargetResource -MockWith { $getAbsentReturn }
 
-                    { Set-TargetResource @cmAccountPresentNoCred } | Should -Throw -ExpectedMessage "When adding an account a password must be specified"
+                    { Set-TargetResource @cmAccountPresentNoCred } | Should -Throw -ExpectedMessage $errorMsg
 
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled New-CMAccount -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMAccount -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should throw when an error is returned from New-CMAccount' {
-                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
-                    Mock -CommandName New-CMAccount -MockWith { throw 'error' }
-
-                    { Set-TargetResource @cmAccountNull_Present } | Should -Throw
-
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMAccount -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Remove-CMAccount -Exactly -Times 0 -Scope It
-                }
-
-                It 'Should throw when an error is returned from Remove-CMAccount' {
-                    Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
-                    Mock -CommandName Remove-CMAccount -MockWith { throw 'error' }
-
-                    { Set-TargetResource @cmAccountExists_Absent } | Should -Throw
-
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                    Assert-MockCalled New-CMAccount -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Remove-CMAccount -Exactly -Times 1 -Scope It
                 }
             }
         }
 
-        Describe "$moduleResourceName\Test-TargetResource" {
-            Mock -CommandName Set-Location
-            Mock -CommandName Import-ConfigMgrPowerShellModule
+        Describe 'ConfigMgrCBDsc - DSC_CMAccounts\Test-TargetResource' -Tag 'Test' {
+            BeforeAll {
+                $testCredential = New-Object `
+                -TypeName System.Management.Automation.PSCredential `
+                -ArgumentList 'TestUser1', (ConvertTo-SecureString 'RandomPassword' -AsPlainText -Force)
+
+                $getReturnPresent = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                    Ensure   = 'Present'
+                }
+
+                $getReturnAbsent = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                    Ensure   = 'Absent'
+                }
+
+                $inputPresent = @{
+                    SiteCode        = 'Lab'
+                    Account         = 'TestUser1'
+                    AccountPassword = $testCredential
+                    Ensure          = 'Present'
+                }
+
+                $inputAbsent = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                    Ensure   = 'Absent'
+                }
+
+                $cmAccountPresentNoCred = @{
+                    SiteCode = 'Lab'
+                    Account  = 'TestUser1'
+                    Ensure   = 'Present'
+                }
+
+                Mock -CommandName Set-Location
+                Mock -CommandName Import-ConfigMgrPowerShellModule
+            }
 
             Context 'When running Test-TargetResource where Get-CMAccounts has accounts' {
-                Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
 
                 It 'Should return desired result true when ensure = present and account exists' {
-                    Test-TargetResource @cmAccountExists_Present | Should -Be $true
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
+
+                    Test-TargetResource @inputPresent | Should -Be $true
                 }
 
                 It 'Should return desired result true when ensure = absent and account does not exist' {
-                    Test-TargetResource @cmAccountNull_Absent | Should -Be $true
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+
+                    Test-TargetResource @inputAbsent | Should -Be $true
                 }
 
                 It 'Should return desired result false when ensure = present and account does not exist' {
-                    Test-TargetResource @cmAccountNull_Present | Should -Be $false
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+
+                    Test-TargetResource @inputPresent | Should -Be $false
                 }
 
-                It 'Should return desired result false when ensure = absent and account does not exist' {
-                    Test-TargetResource @cmAccountExists_Absent | Should -Be $false
-                }
-            }
+                It 'Should return desired result false when ensure = absent and account does exist' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
 
-            Context 'When running Test-TargetResource where Get-CMAccounts returned null' {
-                Mock -CommandName Get-CMAccount -MockWith { $null }
-
-                It 'Should return desired result false when ensure = present' {
-                    Test-TargetResource @cmAccountNull_Present | Should -Be $false
+                    Test-TargetResource @inputAbsent | Should -Be $false
                 }
 
-                It 'Should return desired result true when ensure = absent' {
-                    Test-TargetResource @cmAccountNull_Absent | Should -Be $true
+                It 'Should return desired result false when ensure = present and account does not exist' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAbsent }
+
+                    Test-TargetResource @cmAccountPresentNoCred | Should -Be $false
                 }
             }
         }

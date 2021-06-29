@@ -6,4 +6,5 @@ ConvertFrom-StringData @'
     RemovingCMAccount     = Removing Configuration Manager account '{0}'.
     TestPresent           = Present check for account: {0} account doesn't exist.
     TestAbsent            = Absent check for account: {0} and account exists.
+    MissingPass           = When adding an account a password must be specified.
 '@
