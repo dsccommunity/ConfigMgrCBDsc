@@ -1460,7 +1460,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   default setting: All.
   - Values include: { All|Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
-  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
+  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
@@ -1470,7 +1470,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   being evaluated. Only evaluated when Include = 'All'
   - Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
-  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
+  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
