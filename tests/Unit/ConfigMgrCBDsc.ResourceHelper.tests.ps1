@@ -206,25 +206,29 @@ InModuleScope $script:subModuleName {
         }
     }
 
-    Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Convert-BoundariesIPSubnets' -Tag 'BoundariesIPSubnet' {
+    Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\ConvertTo-CimBoundaries' -Tag 'CimBoundaries' {
         BeforeAll {
             $inputObject = @(
                 @{
-                    BoundaryID = 16777231
+                    BoundaryID   = 16777231
                     BoundaryType = 3
                     Value        = '10.1.1.1-10.1.1.255'
                 }
                 @{
-                    BoundaryID = 16777232
+                    BoundaryID   = 16777232
                     BoundaryType = 0
                     Value        = '10.1.2.0'
                 }
                 @{
-                    BoundaryID = 16777233
+                    BoundaryID   = 16777233
                     BoundaryType = 1
                     Value        = 'First-Site'
                 }
-
+                @{
+                    BoundaryID   = 16777234
+                    BoundaryType = 4
+                    Value        = 'Description:Virtual Adapter'
+                }
             )
         }
 
@@ -234,21 +238,23 @@ InModuleScope $script:subModuleName {
 
                 $result = ConvertTo-CimBoundaries -InputObject $inputObject
                 $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-                $result.Count    | Should -Be -ExpectedValue 3
+                $result.Count    | Should -Be -ExpectedValue 4
                 $result[0].Value | Should -Be -ExpectedValue '10.1.1.1-10.1.1.255'
                 $result[0].Type  | Should -Be -ExpectedValue 'IPRange'
                 $result[1].Value | Should -Be -ExpectedValue '10.1.2.0'
                 $result[1].Type  | Should -Be -ExpectedValue 'IPSubnet'
                 $result[2].Value | Should -Be -ExpectedValue 'First-Site'
                 $result[2].Type  | Should -Be -ExpectedValue 'ADSite'
+                $result[3].Value | Should -Be -ExpectedValue 'Description:Virtual Adapter'
+                $result[3].Type  | Should -Be -ExpectedValue 'VPN'
             }
         }
     }
 
-    Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\ConvertTo-CimBoundaries' -Tag 'CimBoundaries' {
+    Describe 'ConfigMgrCBDsc - ConfigMgrCBDsc.ResourceHelper\Convert-BoundariesIPSubnets' -Tag 'BoundariesIPSubnet' {
         BeforeAll {
             $mockBoundaryMembers = @(
-                (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
+                (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
                     -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                     -Property @{
                         'Type'  = 'IPSubnet'
@@ -264,7 +270,7 @@ InModuleScope $script:subModuleName {
                     } `
                     -ClientOnly
                 ),
-                (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
+                (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
                     -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                     -Property @{
                         'Type'  = 'IPSubnet'
@@ -272,7 +278,7 @@ InModuleScope $script:subModuleName {
                     } `
                     -ClientOnly
                 ),
-                (New-CimInstance -ClassName DSC_CMCollectionQueryRules `
+                (New-CimInstance -ClassName DSC_CMBoundaryGroupsBoundaries `
                     -Namespace root/microsoft/Windows/DesiredStateConfiguration `
                     -Property @{
                         'Value' = 'First-Site'
