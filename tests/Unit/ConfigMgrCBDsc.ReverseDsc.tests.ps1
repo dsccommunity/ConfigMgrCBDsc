@@ -1003,6 +1003,134 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
+                    Name          = 'CMGroupDiscovery'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enabled'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DeltaDiscoveryMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DiscoverDistributionGroupMembership'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableDeltaDiscovery'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableFilteringExpiredLogon'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableFilteringExpiredPassword'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'GroupDiscoveryScope'
+                            PropertyType = '[DSC_CMGroupDiscoveryScope[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'GroupDiscoveryScopeToExclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'GroupDiscoveryScopeToInclude'
+                            PropertyType = '[DSC_CMGroupDiscoveryScope[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Start'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'TimeSinceLastLogonDays'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'TimeSinceLastPasswordUpdateDays'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
                     Name          = 'CMHeartbeatDiscovery'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
@@ -2554,6 +2682,96 @@ InModuleScope $script:subModuleName {
                 PSComputerName                            = 'localhost'
             }
 
+            $getGroupDiscoveryEnabled = @{
+                SiteCode = 'Lab'
+                Props    = @(
+                    @{
+                        PropertyName = 'Settings'
+                        Value1       = 'ACTIVE'
+                    }
+                )
+            }
+
+            $getGroupDiscoveryDisabled = @{
+                SiteCode = 'Lab'
+                Props    = @(
+                    @{
+                        PropertyName = 'Settings'
+                        Value1       = 'INACTIVE'
+                    }
+                )
+            }
+
+            $groupDiscovery = @{
+                SiteCode = 'Lab'
+                Include  = 'GroupDiscovery'
+            }
+
+            $invokeGroupDiscoveryEnabled = @{
+                ConfigurationName                   = $null
+                DependsOn                           = $null
+                ModuleName                          = 'ConfigMgrCBDsc'
+                ModuleVersion                       = 1.0.1
+                PsDscRunAsCredential                = $null
+                ResourceId                          = $null
+                SourceInfo                          = $null
+                DayOfMonth                          = $null
+                DayOfWeek                           = $null
+                DeltaDiscoveryMins                  = 50
+                DiscoverDistributionGroupMembership = $true
+                Enabled                             = $true
+                EnableDeltaDiscovery                = $true
+                EnableFilteringExpiredLogon         = $true
+                EnableFilteringExpiredPassword      = $true
+                GroupDiscoveryScope                 = @(
+                    @{
+                        Name           = 'Test1'
+                        LdapLocation   = 'OU=Test1,DC=contoso,DC=com'
+                        Recurse        = $true
+                        PSComputerName = 'localhost'
+                    }
+                )
+                GroupDiscoveryScopeToExclude        = $null
+                GroupDiscoveryScopeToInclude        = $null
+                MonthlyWeekOrder                    = $null
+                RecurInterval                       = $null
+                ScheduleType                        = 'None'
+                SiteCode                            = 'Lab'
+                Start                               = '2/1/1970 00:00'
+                TimeSinceLastLogonDays              = 20
+                TimeSinceLastPasswordUpdateDays     = 40
+                PSComputerName                      = 'localhost'
+            }
+
+            $invokeGroupDiscoveryDisabled = @{
+                ConfigurationName                   = $null
+                DependsOn                           = $null
+                ModuleName                          = 'ConfigMgrCBDsc'
+                ModuleVersion                       = 1.0.1
+                PsDscRunAsCredential                = $null
+                ResourceId                          = $null
+                SourceInfo                          = $null
+                DayOfMonth                          = $null
+                DayOfWeek                           = $null
+                DeltaDiscoveryMins                  = $null
+                DiscoverDistributionGroupMembership = $null
+                Enabled                             = $false
+                EnableDeltaDiscovery                = $null
+                EnableFilteringExpiredLogon         = $null
+                EnableFilteringExpiredPassword      = $null
+                GroupDiscoveryScope                 = $null
+                GroupDiscoveryScopeToExclude        = $null
+                GroupDiscoveryScopeToInclude        = $null
+                MonthlyWeekOrder                    = $null
+                RecurInterval                       = $null
+                ScheduleType                        = $null
+                SiteCode                            = $null
+                Start                               = $null
+                TimeSinceLastLogonDays              = $null
+                TimeSinceLastPasswordUpdateDays     = $null
+                PSComputerName                      = 'localhost'
+            }
+
             $getHeartbeatDiscoveryEnabled = @{
                 SiteCode = 'Lab'
                 Props    = @(
@@ -3415,6 +3633,8 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeFallbackPoints } -ParameterFilter { $Name -eq 'CMFallbackStatusPoint' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getForestDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectoryForestDiscovery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeForestDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMForestDiscovery' }
+                Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getGroupDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectoryGroupDiscovery' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeGroupDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMGroupDiscovery' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getHeartbeatDiscoveryEnabled } -ParameterFilter { $Name -eq 'HeartbeatDiscovery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeHeartbeatDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMHeartbeatDiscovery' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getNetworkDiscoveryEnabled } -ParameterFilter { $Name -eq 'NetworkDiscovery' }
@@ -3441,14 +3661,14 @@ InModuleScope $script:subModuleName {
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 25 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 26 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
                 Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 5 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 6 -Scope It
                 Assert-MockCalled Get-CMManagementPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 1 -Scope It
@@ -3463,38 +3683,6 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Remove-Item -Exactly -Times 1 -Scope It
                 Assert-MockCalled Add-Content -Exactly -Times 1 -Scope It
                 Assert-MockCalled New-Configuration -Exactly -Times 1 -Scope It
-            }
-
-            It 'Should return expected results and call expected commands for Asset Intelligence Point' {
-                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
-                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMAssetIntelligencePointNoneSchedule } -ParameterFilter { $Name -eq 'CMAssetIntelligencePoint' }
-
-                $result = Set-ConfigMgrCBDscReverse @assetIntell
-                $result | Should -BeOfType System.String
-                $result | Should -Match 'CMAssetIntelligencePoint'
-                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
-                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
-                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
-                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
-                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
-                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
             }
 
             It 'Should return expected results and call expected commands for Forest Discovery Disabled' {
@@ -3538,6 +3726,39 @@ InModuleScope $script:subModuleName {
                 $result = Set-ConfigMgrCBDscReverse @heartbeatDiscovery
                 $result | Should -BeOfType System.String
                 $result | Should -Match "CMHeartbeatDiscovery"
+                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
+            }
+
+            It 'Should return expected results and call expected commands for Group Discovery Disabled' {
+                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeGroupDiscoveryDisabled } -ParameterFilter { $Name -eq 'CMGroupDiscovery' }
+                Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getGroupDiscoveryDisabled } -ParameterFilter { $Name -eq 'ActiveDirectoryGroupDiscovery' }
+
+                $result = Set-ConfigMgrCBDscReverse @groupDiscovery
+                $result | Should -BeOfType System.String
+                $result | Should -Match "CMGroupDiscovery"
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
