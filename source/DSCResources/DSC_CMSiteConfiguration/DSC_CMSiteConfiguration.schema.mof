@@ -1,0 +1,23 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSiteConfiguration")]
+class DSC_CMSiteConfiguration: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Write, Description("Specifies the site comment.")] String Comment;
+    [Write, Description("Specifies the communication method for the site systems that use IIS. To use HTTPS, the servers need a valid PKI web server certificate for server authentication."), ValueMap{"HttpsOnly","Offline"}, Values{"HttpsOnly","Offline"}] String ClientComputerCommunicationType;
+    [Write, Description("Indicates whether clients check the Certificate Revocation List (CRL) for site systems.")] Boolean ClientCheckCertificateRevocationListForSiteSystem;
+    [Write, Description("Indicates whether to use a PKI client certificate for client authentication when available.")] Boolean UsePkiClientCertificate;
+    [Write, Description("Use this parameter to enable or disable the site property to Use Configuration Manager-generated certificates for HTTP site systems.")] Boolean UseSmsGeneratedCert;
+    [Write, Description("This option requires that clients sign data when they send to management points.")] Boolean RequireSigning;
+    [Write, Description("Specifies if the clients sign data and communicate with site systems by using HTTP, this option requires the clients to use SHA-256 to sign the data. This option applies to clients that don't use PKI certificates.")] Boolean RequireSha256;
+    [Write, Description("Specifies to use 3DES to encrypt the client inventory data and state messages that are sent to the management point.")] Boolean UseEncryption;
+    [Write, Description("Specifies the maximum number of simultaneous communications to all sites.")] UInt32 MaximumConcurrentSendingForAllSite;
+    [Write, Description("Specifies the maximum number of simultaneous communications to any single site.")] UInt32 MaximumConcurrentSendingForPerSite;
+    [Write, Description("Specifies the number of times to retry a failed communication.")] UInt32 RetryNumberForConcurrentSending;
+    [Write, Description("Specifies the number of minutes to delay before it retries.")] UInt32 ConcurrentSendingDelayBeforeRetryingMins;
+    [Write, Description("Specifies if an alert is created when the free disk space on the site database server is low.")] Boolean EnableLowFreeSpaceAlert;
+    [Write, Description("Specifies disk space warning alert when the free disk space on the site database server falls below the specified threshold.")] UInt32 FreeSpaceThresholdWarningGB;
+    [Write, Description("Specifies disk space critical alert when the free disk space on the site database server falls below the specified threshold.")] UInt32 FreeSpaceThresholdCriticalGB;
+    [Write, Description("Specifies select collection window hides collections with membership that exceeds this value.")] UInt32 ThresholdOfSelectCollectionByDefault;
+    [Write, Description("Specifies select collection window always hides collections that have more members than this maximum value.")] UInt32 ThresholdOfSelectCollectionMax;
+    [Write, Description("Specify the behavior to take when the selected collection includes computers that host site systems roles."), ValueMap{"Warn","Block"}, Values{"Warn","Block"}] String SiteSystemCollectionBehavior;
+};
