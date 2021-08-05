@@ -1,6 +1,5 @@
 ConvertFrom-StringData @'
     RetrieveSettingValue = Getting results for Configuration Manager accounts.
-    DesiredState         = Setting is already in desired state.
     TestState            = Test-TargetResource compliance check returned: {0}.
     Enabled              = NOTMATCH: Value for property Enabled does not match. Current State is False and desired state is True.
     Disabled             = NOTMATCH: Value for property Enabled does not match. Current State is True and desired state is False.
