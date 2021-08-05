@@ -58,8 +58,6 @@ function Get-TargetResource
         $siteServerDeployment = 'Warn'
     }
 
-    #[boolean]$nonCrit = ($hiercySettings | Where-Object -FilterScript {$_.PropertyName -eq 'Enable Console Notifications'}).Value
-
     # Alerts
     $dbAlert = (Get-CMAlert | Where-Object -FilterScript {$_.Name -eq '$DatabaseFreeSpaceWarningName'}).PropertyList.ParameterValues[-1]
     if ($dbAlert -ne '>')
@@ -340,23 +338,57 @@ function Set-TargetResource
 
     try
     {
-        if ($Ensure -eq 'Present')
+        $defaultValues = @(
+            'Comment','ClientComputerCommunicationType','ClientCheckCertificateRevocationListForSiteSystem',
+            'UsePkiClientCertificate','RequireSigning','UseEncryption','MaximumConcurrentSendingForAllSite',
+            'MaximumConcurrentSendingForPerSite','RetryNumberForConcurrentSending',
+            'ConcurrentSendingDelayBeforeRetryingMins','EnableLowFreeSpaceAlert',
+            'ThresholdOfSelectCollectionByDefault','ThresholdOfSelectCollectionMax','SiteSystemCollectionBehavior'
+        )
+
+        if ($ClientComputerCommunicationType -eq 'HttpsOnly' -and $PSBoundParameters.ContainsKey('UseSmsGeneratedCert'))
         {
-            if ($state.Ensure -eq 'Absent')
+            Write-Warning -Message $script:localizedData.IgnoreSMSCert
+        }
+        else
+        {
+            $defaultValues += @('UseSmsGeneratedCert')
+        }
+
+        if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -and $EnableLowFreeSpaceAlert -eq $false)
+        {
+            if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
             {
-                Write-Verbose -Message ($script:localizedData.AddScpRole -f $SiteServerName)
-                Add-CMServiceConnectionPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode -Mode $Mode
+                Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
             }
-            elseif ($state.Mode -ne $Mode)
+            else
             {
-                Write-Verbose -Message ($script:localizedData.SettingValue -f $Mode)
-                Set-CMServiceConnectionPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode -Mode $Mode
+                if ($FreeSpaceThresholdCriticalGB -ge $FreeSpaceThresholdWarningGB)
+                {
+                    throw $script:localizedData.AlertErrorMsg
+                }
+
+                $defaultValues += @('FreeSpaceThresholdCriticalGB','FreeSpaceThresholdWarningGB')
             }
         }
-        elseif ($state.Ensure -eq 'Present')
+
+        foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            Write-Verbose -Message ($script:localizedData.RemoveScpRole -f $SiteServerName)
-            Remove-CMServiceConnectionPoint -SiteSystemServerName $SiteServerName -SiteCode $SiteCode
+            if ($defaultValues -contains $param.key)
+            {
+                if ($param.Value -ne $state[$param.key])
+                {
+                    Write-Verbose -Message ($script:localizedData.SettingValue -f $param.Key, $param.Value)
+                    $buildingParams += @{
+                        $param.Key = $param.Value
+                    }
+                }
+            }
+        }
+
+        if ($buildingParams)
+        {
+            Set-CMSite -SiteCode $SiteCode @buildingParams
         }
     }
     catch
@@ -548,7 +580,7 @@ function Test-TargetResource
 
     if ($ClientComputerCommunicationType -eq 'HttpsOnly' -and $PSBoundParameters.ContainsKey('UseSmsGeneratedCert'))
     {
-        Write-Warning -Message 'When specifying HttpsOnly, UseSMSGeneratedCert can not be specified, ignoring setting.'
+        Write-Warning -Message $script:localizedData.IgnoreSMSCert
     }
     else
     {
@@ -559,13 +591,13 @@ function Test-TargetResource
     {
         if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
         {
-            Write-Warning 'EnableLowFreeSpaceAlert is disabled and FreeSpaceThreshold Warning\Critical GB was specified, ignoring setting'
+            Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
         }
         else
         {
             if ($FreeSpaceThresholdCriticalGB -ge $FreeSpaceThresholdWarningGB)
             {
-                Write-Warning 'FreeSpaceThresholdCritical is greater than or equal to FreeSpaceThresholdWarning.  Warning should be greater than Critical'
+                Write-Warning -Message $script:localizedData.AlertErrorMsg
                 $badInput = $true
             }
 
