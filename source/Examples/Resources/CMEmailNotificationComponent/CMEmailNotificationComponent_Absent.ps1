@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        A DSC configuration script to disabled email notification component in Configuration Manager.
+        A DSC configuration script to disable email notification component in Configuration Manager.
 #>
 Configuration Example
 {

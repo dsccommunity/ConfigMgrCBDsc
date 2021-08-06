@@ -7,11 +7,11 @@ ConvertFrom-StringData @'
     MissingParams        = When specifying Enabled equals true you must specify SmtpServerFqdn, Sendfrom, and TypeOfAuthentication.
     UserAuthNotOther     = When specifying UserName you must set TypeOfAuthentication to Other.
     AuthOtherNoUser      = When setting TypeOfAuthentication to Other, you must specify UserName.
-    SslTrueNoPort        = Changing UseSSL from false to true and no port was specified, the Port will automatically be changed to 465.
-    SslFalseNoPort       = Chaning UseSSL from true to false and no port was specified, the Port will automatically be changed to 25
+    SslTrueNoPort        = Changing UseSsl from false to true and no port was specified, the Port will automatically be changed to 465.
+    SslFalseNoPort       = Chaning UseSsl from true to false and no port was specified, the Port will automatically be changed to 25
     SslBadPort           = When using SSL, you must specify a port other than the default non-SSL port 25.
     NonSslBadPort        = When not using SSL, you must specify a port other than the default SSL port 465.
-    AbsentUsername       = UserAccount specifed {0} does not exist in Configuration Manager and will need to be created prior to adding as the connection account.
+    AbsentUsername       = UserAccount specifed {0} does not exist in the specified Configuration Manager site and will need to be created prior to adding as the connection account.
     SmtpError            = SmtpServerFqdn {0} should use . vs @ format, example test.contoso.com.
     SendFromError        = SendFrom {0} should use @ format, example sendfrom@contoso.com.
 '@

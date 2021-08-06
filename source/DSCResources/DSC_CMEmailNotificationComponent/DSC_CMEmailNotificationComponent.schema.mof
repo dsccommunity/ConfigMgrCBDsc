@@ -2,7 +2,7 @@
 class DSC_CMEmailNotificationComponent : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
-    [Key, Description("Specifies if email notifications are enable or disable.")] Boolean Enabled;
+    [Key, Description("Specifies if email notifications are enabled or disabled.")] Boolean Enabled;
     [Write, Description("Specifies the FQDN of the site server that will send email.")] String SmtpServerFqdn;
     [Write, Description("Specifies the address used to send email.")] String SendFrom;
     [Write, Description("Specifies the port used to send email.")] UInt32 Port;

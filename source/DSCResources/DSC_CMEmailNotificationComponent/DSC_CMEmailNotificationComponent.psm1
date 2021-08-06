@@ -14,7 +14,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Specifies the SiteCode for the Configuration Manager site.
 
     .PARAMETER Enabled
-        Specifies if email notifications are enable or disable.
+        Specifies if email notifications are enabled or disabled.
 #>
 function Get-TargetResource
 {
@@ -83,7 +83,7 @@ function Get-TargetResource
         Specifies the SiteCode for the Configuration Manager site.
 
     .PARAMETER Enabled
-        Specifies if email notifications are enable or disable.
+        Specifies if email notifications are enabled or disabled.
 
     .PARAMETER ServerFqdn
         Specifies the FQDN of the site server that will send e-mail.
@@ -97,7 +97,7 @@ function Get-TargetResource
     .PARAMETER UserName
         Specifies the username for authenticating against an SMTP server.
 
-    .PARAMETER UseSSL
+    .PARAMETER UseSsl
         Specifies whether to use SSL for email alerts. If omitted, the assumed intent is that SSL is not to be used.
 
     .PARAMETER TypeOfAuthentication
@@ -135,7 +135,7 @@ function Set-TargetResource
 
         [Parameter()]
         [Boolean]
-        $UseSsL,
+        $UseSsl,
 
         [Parameter()]
         [ValidateSet('Anonymous','DefaultServiceAccount','Other')]
@@ -185,22 +185,22 @@ function Set-TargetResource
 
             if ($PSBoundParameters.ContainsKey('UseSsl'))
             {
-                if (($state.UseSSL -eq $false -and $useSSL -eq $true) -and -not $PSBoundParameters.ContainsKey('Port'))
+                if (($state.UseSsl -eq $false -and $useSsl -eq $true) -and -not $PSBoundParameters.ContainsKey('Port'))
                 {
                     Write-Warning -Message $script:localizedData.SSLTrueNoPort
                 }
 
-                if (($state.UseSSL -eq $true -and $UseSsL -eq $false) -and -not $PSBoundParameters.ContainsKey('Port'))
+                if (($state.UseSsl -eq $true -and $UseSsl -eq $false) -and -not $PSBoundParameters.ContainsKey('Port'))
                 {
                     Write-Warning -Message $script:localizedData.SSLFalseNoPort
                 }
 
-                if ($UseSsL -eq $true -and $Port -eq 25)
+                if ($UseSsl -eq $true -and $Port -eq 25)
                 {
                     throw $script:localizedData.SslBadPort
                 }
 
-                if (($UseSsL -eq $false) -and ($Port -eq '465'))
+                if (($UseSsl -eq $false) -and ($Port -eq '465'))
                 {
                     throw $script:localizedData.NonSslBadPort
                 }
@@ -210,15 +210,15 @@ function Set-TargetResource
             {
                 if ($param.Key -ne 'SiteCode')
                 {
-                    if ($param.Value -ne $state[$param.key])
+                    if ($param.Value -ne $state[$param.Key])
                     {
-                        Write-Verbose -Message ($script:localizedData.SettingValue -f $param.key, $param.Value)
+                        Write-Verbose -Message ($script:localizedData.SettingValue -f $param.Key, $param.Value)
                     }
 
                     if ($param.Key -ne 'Enabled')
                     {
                         $buildingParams += @{
-                            $param.key = $param.Value
+                            $param.Key = $param.Value
                         }
                     }
                 }
@@ -263,7 +263,7 @@ function Set-TargetResource
         Specifies the SiteCode for the Configuration Manager site.
 
     .PARAMETER Enabled
-        Specifies if email notifications are enable or disable.
+        Specifies if email notifications are enabled or disabled.
 
     .PARAMETER ServerFqdn
         Specifies the FQDN of the site server that will send e-mail.
@@ -278,7 +278,7 @@ function Set-TargetResource
         Specifies the username for authenticating against an SMTP server. Only used when TypeOfAuthentication
         equals Other.
 
-    .PARAMETER UseSSL
+    .PARAMETER UseSsl
         Specifies whether to use SSL for email alerts. If omitted, the assumed intent is that SSL is not to be used.
 
     .PARAMETER TypeOfAuthentication
@@ -317,7 +317,7 @@ function Test-TargetResource
 
         [Parameter()]
         [Boolean]
-        $UseSsL,
+        $UseSsl,
 
         [Parameter()]
         [ValidateSet('Anonymous','DefaultServiceAccount','Other')]
@@ -372,23 +372,23 @@ function Test-TargetResource
 
         if ($PSBoundParameters.ContainsKey('UseSsl'))
         {
-            if (($state.UseSSL -eq $false -and $useSSL -eq $true) -and -not $PSBoundParameters.ContainsKey('Port'))
+            if (($state.UseSsl -eq $false -and $useSsl -eq $true) -and -not $PSBoundParameters.ContainsKey('Port'))
             {
                 Write-Warning -Message $script:localizedData.SSLTrueNoPort
             }
 
-            if (($state.UseSSL -eq $true -and $UseSsL -eq $false) -and -not $PSBoundParameters.ContainsKey('Port'))
+            if (($state.UseSsl -eq $true -and $UseSsl -eq $false) -and -not $PSBoundParameters.ContainsKey('Port'))
             {
                 Write-Warning -Message $script:localizedData.SSLFalseNoPort
             }
 
-            if ($UseSsL -eq $true -and $Port -eq 25)
+            if ($UseSsl -eq $true -and $Port -eq 25)
             {
                 Write-Warning -Message $script:localizedData.SslBadPort
                 $result = $false
             }
 
-            if (($UseSsL -eq $false) -and ($Port -eq 465))
+            if (($UseSsl -eq $false) -and ($Port -eq 465))
             {
                 Write-Warning -Message $script:localizedData.NonSslBadPort
                 $result = $false
@@ -406,7 +406,7 @@ function Test-TargetResource
                 CurrentValues = $state
                 DesiredValues = $PSBoundParameters
                 ValuesToCheck = @('Enabled','SmtpServerFqdn','SendFrom','Port',
-                    'Username','UseSsL','TypeOfAuthentication')
+                    'Username','UseSsl','TypeOfAuthentication')
             }
 
             $testResult = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking

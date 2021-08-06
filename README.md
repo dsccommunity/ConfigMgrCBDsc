@@ -1343,7 +1343,7 @@ you are using apply and auto correct.
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
   Manager site.
 - **[String] Enabled** _(Key)_: Specifies if email notifications are
-  enable or disable.
+  enabled or disabled.
 - **[String] SmtpServerFqdn** _(Write)_: Specifies the FQDN of the site server that
   will send email.
 - **[String] SendFrom** _(Write)_: Specifies the address used to send email.

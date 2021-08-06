@@ -340,7 +340,7 @@ try
             Context 'When Set-TargetResource throws' {
                 BeforeEach {
                     Mock -CommandName Get-CMAccount
-                    $absentUsername = 'UserAccount specifed contoso\EmailUser does not exist in Configuration Manager and will need to be created prior to adding as the connection account.'
+                    $absentUsername = 'UserAccount specifed contoso\EmailUser does not exist in the specified Configuration Manager site and will need to be created prior to adding as the connection account.'
 
                     $inputMissingCore = @{
                         SiteCode             = 'Lab'
