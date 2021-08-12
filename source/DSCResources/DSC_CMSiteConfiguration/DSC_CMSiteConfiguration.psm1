@@ -42,14 +42,12 @@ function Get-TargetResource
         }
     }
 
-    $hiercySettings = (Get-CMSiteDefinition -SiteCode $SiteCode).Props
+    $siteDef = Get-CMSiteDefinition -SiteCode $SiteCode
+    $comments = ($siteDef.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Comments'}).Value1
+    $defaultSize = ($siteDef.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Device Collection Threshold'}).Value1
+    $maxSize = ($siteDef.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Device Collection Threshold'}).Value2
 
-    $comments = ($hiercySettings | Where-Object -FilterScript {$_.PropertyName -eq 'Comments'}).Value1
-
-    $defaultSize = ($hiercySettings | Where-Object -FilterScript {$_.PropertyName -eq 'Device Collection Threshold'}).Value1
-    $maxSize = ($hiercySettings | Where-Object -FilterScript {$_.PropertyName -eq 'Device Collection Threshold'}).Value2
-
-    if (($hiercySettings | Where-Object -FilterScript {$_.PropertyName -eq 'Device Collection Threshold'}).Value -eq 0)
+    if (($siteDef.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Device Collection Threshold'}).Value -eq 0)
     {
         $siteServerDeployment = 'Block'
     }
@@ -58,25 +56,18 @@ function Get-TargetResource
         $siteServerDeployment = 'Warn'
     }
 
-    # Alerts
-    $dbAlert = (Get-CMAlert | Where-Object -FilterScript {$_.Name -eq '$DatabaseFreeSpaceWarningName'}).PropertyList.ParameterValues[-1]
-    if ($dbAlert -ne '>')
-    {
-        $dbAlertXml = [xml]$dbAlert
-        $freeSpaceAlert = $true
-        $warningGB = $dbAlertXml.Parameters.Parameter[2].'#text'
-        $critGB = $dbAlertXml.Parameters.Parameter[3].'#text'
-    }
-    else
-    {
-        $freeSpaceAlert = $false
-    }
-
     # Communication Security
     $props = (Get-CMSiteComponent -ComponentName 'SMS_Site_Component_Manager' -SiteCode $SiteCode).Props
     $clientComms = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'IISSSLState'}).Value
 
-    if ($clientComms -eq 31)
+    if ($clientComms -eq 0)
+    {
+        $clientCommunication = 'HttpsOrHttp'
+        $useCrl = $true
+        $pkiClient = $true
+        $sccmCert = $false
+    }
+    elseif ($clientComms -eq 31)
     {
         $clientCommunication = 'HttpsOnly'
         $useCrl = $false
@@ -140,12 +131,37 @@ function Get-TargetResource
         $sccmCert = $true
     }
 
-    [boolean]$hash = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Enhanced Hash Algorithm'}).Value
-    [boolean]$signing = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Message Signing'}).Value
+    if ($siteDef.SiteType -eq 2)
+    {
+        $sType = 'Primary'
 
-    $siteSecurity = (Get-CMSiteComponent -ComponentName SMS_POLICY_PROVIDER).Props
+        # Alerts
+        $dbAlert = (Get-CMAlert | Where-Object -FilterScript {$_.Name -eq '$DatabaseFreeSpaceWarningName'}).PropertyList.ParameterValues[-1]
+        if ($dbAlert -ne '>')
+        {
+            $dbAlertXml = [xml]$dbAlert
+            $freeSpaceAlert = $true
+            $warningGB = $dbAlertXml.Parameters.Parameter[2].'#text'
+            $critGB = $dbAlertXml.Parameters.Parameter[3].'#text'
+        }
+        else
+        {
+            $freeSpaceAlert = $false
+        }
 
-    [boolean]$threeDes = ($siteSecurity | Where-Object -FilterScript {$_.PropertyName -eq 'Use Encryption'}).Value
+        [boolean]$hash = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Enhanced Hash Algorithm'}).Value
+        [boolean]$signing = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Message Signing'}).Value
+
+        $siteSecurity = (Get-CMSiteComponent -ComponentName SMS_POLICY_PROVIDER).Props
+
+        [boolean]$threeDes = ($siteSecurity | Where-Object -FilterScript {$_.PropertyName -eq 'Use Encryption'}).Value
+    }
+    elseif ($siteDef.SiteType -eq 4)
+    {
+        $sType = 'Cas'
+        $useCrl = $null
+        $pkiClient = $null
+    }
 
     return @{
         SiteCode                                          = $SiteCode
@@ -167,6 +183,7 @@ function Get-TargetResource
         RequireSha256                                     = $hash
         RequireSigning                                    = $signing
         UseEncryption                                     = $threeDes
+        SiteType                                          = $sType
     }
 }
 
@@ -334,19 +351,20 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode -SiteServerName $SiteServerName
+    $state = Get-TargetResource -SiteCode $SiteCode
 
     try
     {
         $defaultValues = @(
-            'Comment','ClientComputerCommunicationType','ClientCheckCertificateRevocationListForSiteSystem',
-            'UsePkiClientCertificate','RequireSigning','UseEncryption','MaximumConcurrentSendingForAllSite',
+            'SiteCode','Comment','ClientComputerCommunicationType','MaximumConcurrentSendingForAllSite',
             'MaximumConcurrentSendingForPerSite','RetryNumberForConcurrentSending',
-            'ConcurrentSendingDelayBeforeRetryingMins','EnableLowFreeSpaceAlert',
-            'ThresholdOfSelectCollectionByDefault','ThresholdOfSelectCollectionMax','SiteSystemCollectionBehavior'
+            'ConcurrentSendingDelayBeforeRetryingMins','ThresholdOfSelectCollectionByDefault',
+            'ThresholdOfSelectCollectionMax','SiteSystemCollectionBehavior'
         )
 
-        if ($ClientComputerCommunicationType -eq 'HttpsOnly' -and $PSBoundParameters.ContainsKey('UseSmsGeneratedCert'))
+        if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
+            (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
+            ([string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $state.ClientComputerCommunicationType -eq 'HttpsOnly'))
         {
             Write-Warning -Message $script:localizedData.IgnoreSMSCert
         }
@@ -355,28 +373,85 @@ function Set-TargetResource
             $defaultValues += @('UseSmsGeneratedCert')
         }
 
-        if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -and $EnableLowFreeSpaceAlert -eq $false)
+        if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionByDefault') -or $PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionMax'))
         {
-            if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+            if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionByDefault'))
             {
-                Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
+                $collectionDefault = $ThresholdOfSelectCollectionByDefault
             }
-            else
+            elseif ($state.ThresholdOfSelectCollectionByDefault)
             {
-                if ($FreeSpaceThresholdCriticalGB -ge $FreeSpaceThresholdWarningGB)
-                {
-                    throw $script:localizedData.AlertErrorMsg
-                }
+                $collectionDefault = $state.ThresholdOfSelectCollectionByDefault
+            }
 
-                $defaultValues += @('FreeSpaceThresholdCriticalGB','FreeSpaceThresholdWarningGB')
+            if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionMax'))
+            {
+                $collectionMax = $ThresholdOfSelectCollectionMax
+            }
+            elseif ($state.ThresholdOfSelectCollectionMax)
+            {
+                $collectionMax = $state.ThresholdOfSelectCollectionMax
+            }
+
+            if (($collectionMax -ne 0) -and ($collectionMax -le $collectionDefault))
+            {
+                throw ($script:localizedData.CollectionError -f $collectionDefault, $collectionMax)
+            }
+        }
+
+        if ($state.SiteType -eq 'Primary')
+        {
+            $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
+                'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert')
+
+            if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+                $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+            {
+                if ($EnableLowFreeSpaceAlert -eq $true)
+                {
+                    if (-not $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+                        -not $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+                    {
+                        throw $script:localizedData.AlertMissing
+                    }
+                    else
+                    {
+                        if ($FreeSpaceThresholdCriticalGB -ge $FreeSpaceThresholdWarningGB)
+                        {
+                            throw $script:localizedData.AlertErrorMsg
+                        }
+                        else
+                        {
+                            $defaultValues += @('FreeSpaceThresholdWarningGB','FreeSpaceThresholdCriticalGB')
+                        }
+                    }
+                }
+                else
+                {
+                    if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+                        $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+                    {
+                        Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
+                    }
+                }
+            }
+        }
+        elseif ($state.SiteType -eq 'Cas')
+        {
+            foreach ($param in $PSBoundParameters.GetEnumerator())
+            {
+                if ($defaultValues -notcontains $param.Key)
+                {
+                    Write-Warning -Message ($script:localizedData.IgnorePrimarySetting -f $param.Key)
+                }
             }
         }
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            if ($defaultValues -contains $param.key)
+            if ($defaultValues -contains $param.Key)
             {
-                if ($param.Value -ne $state[$param.key])
+                if ($param.Value -ne $state[$param.Key])
                 {
                     Write-Verbose -Message ($script:localizedData.SettingValue -f $param.Key, $param.Value)
                     $buildingParams += @{
@@ -571,14 +646,15 @@ function Test-TargetResource
     $badInput = $false
 
     $defaultValues = @(
-        'Comment','ClientComputerCommunicationType','ClientCheckCertificateRevocationListForSiteSystem',
-        'UsePkiClientCertificate','RequireSigning','UseEncryption','MaximumConcurrentSendingForAllSite',
+        'SiteCode','Comment','ClientComputerCommunicationType','MaximumConcurrentSendingForAllSite',
         'MaximumConcurrentSendingForPerSite','RetryNumberForConcurrentSending',
-        'ConcurrentSendingDelayBeforeRetryingMins','EnableLowFreeSpaceAlert',
-        'ThresholdOfSelectCollectionByDefault','ThresholdOfSelectCollectionMax','SiteSystemCollectionBehavior'
+        'ConcurrentSendingDelayBeforeRetryingMins','ThresholdOfSelectCollectionByDefault',
+        'ThresholdOfSelectCollectionMax','SiteSystemCollectionBehavior'
     )
 
-    if ($ClientComputerCommunicationType -eq 'HttpsOnly' -and $PSBoundParameters.ContainsKey('UseSmsGeneratedCert'))
+    if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
+        (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
+        ([string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $state.ClientComputerCommunicationType -eq 'HttpsOnly'))
     {
         Write-Warning -Message $script:localizedData.IgnoreSMSCert
     }
@@ -587,21 +663,141 @@ function Test-TargetResource
         $defaultValues += @('UseSmsGeneratedCert')
     }
 
-    if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -and $EnableLowFreeSpaceAlert -eq $false)
+    if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionByDefault') -or $PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionMax'))
     {
-        if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+        if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionByDefault'))
         {
-            Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
+            $collectionDefault = $ThresholdOfSelectCollectionByDefault
         }
-        else
+        elseif ($state.ThresholdOfSelectCollectionByDefault)
         {
-            if ($FreeSpaceThresholdCriticalGB -ge $FreeSpaceThresholdWarningGB)
+            $collectionDefault = $state.ThresholdOfSelectCollectionByDefault
+        }
+
+        if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionMax'))
+        {
+            $collectionMax = $ThresholdOfSelectCollectionMax
+        }
+        elseif ($state.ThresholdOfSelectCollectionMax)
+        {
+            $collectionMax = $state.ThresholdOfSelectCollectionMax
+        }
+
+        if (($collectionMax -ne 0) -and ($collectionMax -le $collectionDefault))
+        {
+            Write-Warning -Message ($script:localizedData.CollectionError -f $collectionDefault, $collectionMax)
+        }
+    }
+
+    if ($state.SiteType -eq 'Primary')
+    {
+        $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
+            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert')
+
+        if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+            $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+        {
+            if ($EnableLowFreeSpaceAlert -eq $true)
             {
-                Write-Warning -Message $script:localizedData.AlertErrorMsg
-                $badInput = $true
+                if (-not $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+                    -not $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+                {
+                    Write-Warning -Message $script:localizedData.AlertErrorMsg
+                    $badInput = $true
+                }
+                else
+                {
+                    if ($FreeSpaceThresholdCriticalGB -ge $FreeSpaceThresholdWarningGB)
+                    {
+                        Write-Warning -Message $script:localizedData.AlertErrorMsg
+                        $badInput = $true
+                    }
+                    else
+                    {
+                        $defaultValues += @('FreeSpaceThresholdWarningGB','FreeSpaceThresholdCriticalGB')
+                    }
+                }
+            }
+            else
+            {
+                if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+                    $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+                {
+                    Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
+                }
+            }
+        }
+        <#if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+            $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+        {
+            if ($EnableLowFreeSpaceAlert -eq $true)
+            {
+                if ((-not $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
+                    -not $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB')) -and $state.EnableLowFreeSpaceAlert -eq $false)
+                {
+                    Write-Warning -Message $script:localizedData.AlertErrorMsg
+                    $badInput = $true
+                }
+                else
+                {
+                    $evalute = $true
+                }
+            }
+            elseif (-not $PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert'))
+            {
+                if ($state.EnableLowFreeSpaceAlert -eq $false)
+                {
+                    Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
+                }
+                else
+                {
+                    $evalute = $true
+                }
+            }
+            elseif (($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -and $EnableLowFreeSpaceAlert -eq $false) -and
+                    ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB')))
+            {
+                Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
             }
 
-            $defaultValues += @('FreeSpaceThresholdCriticalGB','FreeSpaceThresholdWarningGB')
+            if ($evalute -eq $true)
+            {
+                if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB'))
+                {
+                    $freeSpaceWarn = $FreeSpaceThresholdWarningGB
+                }
+                elseif ($state.FreeSpaceThresholdWarningGB)
+                {
+                    $freeSpaceWarn = $state.FreeSpaceThresholdWarningGB
+                }
+
+                if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
+                {
+                    $freeSpaceCrit = $FreeSpaceThresholdCriticalGB
+                }
+                elseif ($state.FreeSpaceThresholdCriticalGB)
+                {
+                    $freeSpaceCrit = $state.FreeSpaceThresholdWarningGB
+                }
+
+                if ($freeSpaceCrit -ge $freeSpaceWarn)
+                {
+                    Write-Warning -Message $script:localizedData.AlertErrorMsg
+                    $badInput = $true
+                }
+
+                $defaultValues += @('FreeSpaceThresholdWarningGB','FreeSpaceThresholdCriticalGB')
+            }
+        }#>
+    }
+    elseif ($state.SiteType -eq 'Cas')
+    {
+        foreach ($param in $PSBoundParameters.GetEnumerator())
+        {
+            if ($defaultValues -notcontains $param.Key)
+            {
+                Write-Warning -Message ($script:localizedData.IgnorePrimarySetting -f $param.Key)
+            }
         }
     }
 

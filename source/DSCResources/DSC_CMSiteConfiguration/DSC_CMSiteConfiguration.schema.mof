@@ -20,4 +20,5 @@ class DSC_CMSiteConfiguration: OMI_BaseResource
     [Write, Description("Specifies select collection window hides collections with membership that exceeds this value.")] UInt32 ThresholdOfSelectCollectionByDefault;
     [Write, Description("Specifies select collection window always hides collections that have more members than this maximum value.")] UInt32 ThresholdOfSelectCollectionMax;
     [Write, Description("Specify the behavior to take when the selected collection includes computers that host site systems roles."), ValueMap{"Warn","Block"}, Values{"Warn","Block"}] String SiteSystemCollectionBehavior;
+    [Read, Description("Specifies the site type, CAS or Primary")] String SiteType;
 };
