@@ -727,68 +727,6 @@ function Test-TargetResource
                 }
             }
         }
-        <#if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
-            $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
-        {
-            if ($EnableLowFreeSpaceAlert -eq $true)
-            {
-                if ((-not $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
-                    -not $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB')) -and $state.EnableLowFreeSpaceAlert -eq $false)
-                {
-                    Write-Warning -Message $script:localizedData.AlertErrorMsg
-                    $badInput = $true
-                }
-                else
-                {
-                    $evalute = $true
-                }
-            }
-            elseif (-not $PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert'))
-            {
-                if ($state.EnableLowFreeSpaceAlert -eq $false)
-                {
-                    Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
-                }
-                else
-                {
-                    $evalute = $true
-                }
-            }
-            elseif (($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -and $EnableLowFreeSpaceAlert -eq $false) -and
-                    ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB')))
-            {
-                Write-Warning -Message $script:localizedData.IgnoreAlertsSettings
-            }
-
-            if ($evalute -eq $true)
-            {
-                if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB'))
-                {
-                    $freeSpaceWarn = $FreeSpaceThresholdWarningGB
-                }
-                elseif ($state.FreeSpaceThresholdWarningGB)
-                {
-                    $freeSpaceWarn = $state.FreeSpaceThresholdWarningGB
-                }
-
-                if ($PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
-                {
-                    $freeSpaceCrit = $FreeSpaceThresholdCriticalGB
-                }
-                elseif ($state.FreeSpaceThresholdCriticalGB)
-                {
-                    $freeSpaceCrit = $state.FreeSpaceThresholdWarningGB
-                }
-
-                if ($freeSpaceCrit -ge $freeSpaceWarn)
-                {
-                    Write-Warning -Message $script:localizedData.AlertErrorMsg
-                    $badInput = $true
-                }
-
-                $defaultValues += @('FreeSpaceThresholdWarningGB','FreeSpaceThresholdCriticalGB')
-            }
-        }#>
     }
     elseif ($state.SiteType -eq 'Cas')
     {
