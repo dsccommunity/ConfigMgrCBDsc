@@ -1402,6 +1402,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMSecurityRoles: Not Supported
 - DSC_CMSecurityScopes: Fully Supported
 - DSC_CMServiceConnectionPoint: Fully Supported
+- DSC_CMSiteConfiguration: Fully Supported
 - DSC_CMSiteMaintenance: Fully Supported
 - DSC_CMSiteSystemServer: Fully Supported
 - DSC_CMSoftwareDistributionComponent: Fully Supported
@@ -1436,9 +1437,9 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
-  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|SiteConfiguration|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
@@ -1446,9 +1447,9 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
-  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|SiteConfiguration|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
   Filename must end with .psd1. Not specifying DataFile the output will be displayed

@@ -3698,8 +3698,8 @@ function Set-ConfigMgrCBDscReverse
             'ClientPush','ClientStatusSettings','CollectionEvaluationComponent','Collections',
             'DistributionGroups','DistributionPoint','DistributionPointGroupMembers',
             'FallbackPoints','ForestDiscovery','HeartbeatDiscovery','MaintenanceWindow','ManagementPoint',
-            'NetworkDiscovery','PullDistributionPoint','PxeDistributionPoint',
-            'ReportingServicesPoint','SecurityScopes','ServiceConnection','SiteMaintenance',
+            'NetworkDiscovery','PullDistributionPoint','PxeDistributionPoint','ReportingServicesPoint',
+            'SecurityScopes','ServiceConnection','SiteConfiguration','SiteMaintenance',
             'SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
             'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly')]
         [String[]]
@@ -3710,8 +3710,8 @@ function Set-ConfigMgrCBDscReverse
             'ClientPush','ClientStatusSettings','CollectionEvaluationComponent','Collections',
             'DistributionGroups','DistributionPoint','DistributionPointGroupMembers',
             'FallbackPoints','ForestDiscovery','HeartbeatDiscovery','MaintenanceWindow','ManagementPoint',
-            'NetworkDiscovery','PullDistributionPoint','PxeDistributionPoint',
-            'ReportingServicesPoint','SecurityScopes','ServiceConnection','SiteMaintenance',
+            'NetworkDiscovery','PullDistributionPoint','PxeDistributionPoint','ReportingServicesPoint',
+            'SecurityScopes','ServiceConnection','SiteConfiguration','SiteMaintenance',
             'SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
             'StatusReportingComponent','SystemDiscovery','UserDiscovery')]
         [String[]]
@@ -4500,6 +4500,38 @@ function Set-ConfigMgrCBDscReverse
             $wsvcConnection += "$testThing"
             $fileOut += "$wsvcConnection`r`n"
         }
+    }
+
+    if (($Include -eq 'All' -and $Exclude -notcontains 'SiteConfiguration') -or ($Include -contains 'SiteConfiguration'))
+    {
+        $resourceName = 'CMSiteConfiguration'
+        Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
+        $wSiteConfiguration = "$resourceName = @(`r`n"
+        $siteType = Get-CMSiteDefinition -SiteCode $SiteCode
+
+        if ($siteType.SiteType -eq 2)
+        {
+            $excluded = @('SiteCode','SiteType')
+        }
+        else
+        {
+            $excluded = @('SiteCode','ClientCheckCertificateRevocationListForSiteSystem',
+            'UsePkiClientCertificate', 'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert',
+            'FreeSpaceThresholdCriticalGB','FreeSpaceThresholdWarningGB','SiteType')
+        }
+
+        $params = @{
+            ResourceName = $resourceName
+            SiteCode     = $SiteCode
+            Indent       = 1
+            MultiEntry   = $false
+            Resources    = $resources
+            ExcludeList  = $excluded
+        }
+
+        $testThing = Set-OutFile @params
+        $wSiteConfiguration += "$testThing"
+        $fileOut += $wSiteConfiguration
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'SiteMaintenance') -or ($Include -contains 'SiteMaintenance'))
