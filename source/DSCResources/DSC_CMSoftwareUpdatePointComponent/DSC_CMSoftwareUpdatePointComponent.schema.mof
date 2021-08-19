@@ -1,0 +1,41 @@
+[ClassVersion("1.0.0"), FriendlyName("CMSoftwareUpdatePointComponent")]
+class DSC_CMSoftwareUpdatePointComponent: OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+	[Write, Description("Specifies an array of languages desired for the languages supported for software updates summary details at the specified site.")] String LanguageSummaryDetails[];
+	[Write, Description("Specifies an array of languages to include in the languages supported for software updates summary details at the specified site.")] String LanguageSummaryDetailsToInclude[];
+	[Write, Description("Specifies an array of languages to exclude from the languages supported for software updates summary details at the specified site.")] String LanguageSummaryDetailsToExclude[];
+	[Write, Description("Specifies an array of languages desired for the languages supported for software updates at the specified site.")] String LanguageUpdateFiles[];
+	[Write, Description("Specifies an array of languages to include in the languages supported for software updates at the specified site.")] String LanguageUpdateFilesToInclude[];
+	[Write, Description("Specifies an array of languages to exclude from the languages supported for software updates at the specified site.")] String LanguageUpdateFilesToExclude[];
+	[Write, Description("Specifies an array of products desired for software updates to synchronize.")] String Products[];
+	[Write, Description("Specifies an array of products to include in software updates to synchronize.")] String ProductsToInclude[];
+	[Write, Description("Specifies an array of products to exclude from software updates to synchronize.")] String ProductsToExclude[];
+	[Write, Description("Specifies an array of software update classifications desired for the classifications supported for software updates at this site.")] String UpdateClassifications[];
+	[Write, Description("Specifies an array of software update classifications to include in the classifications supported for software updates at this site.")] String UpdateClassificationsToInclude[];
+	[Write, Description("Specifies an array of software update classifications to exclude from the classifications supported for software updates at this site.")] String UpdateClassificationsToExclude[];
+	[Write, Description("Specifies whether express updates will be downloaded for Windows 10."), ValueMap{"FullFilesOnly","ExpressForWindows10Only"}, Values{"FullFilesOnly","ExpressForWindows10Only"}] String ContentFileOption;
+	[Write, Description("Specifies the default WSUS server that the software update point is pointed to.")] String DefaultWsusServer;
+	[Write, Description("Specifies whether to decline expired updates in WSUS according to superscedence rules.")] Boolean EnableCallWsusCleanupWizard;
+	[Write, Description("Specifies whether Configuration Manager creates an alert when synchronization fails on a site.")] Boolean EnableSyncFailureAlert;
+	[Write, Description("Indicates whether this site automatically synchronizes updates according to a schedule.")] Boolean EnableSynchronization;
+	[Write, Description("Indicates whether a software update expires immediately after another update supersedes it or after a specified period of time.")] Boolean ImmediatelyExpireSupersedence;
+	[Write, Description("Indicates whether a feature update expires immediately after another update supersedes it or after a specified period of time.")] Boolean ImmediatelyExpireSupersedenceForFeature;
+	[Write, Description("Specifies whether to create event messages for WSUS reporting for status reporting events or for all reporting events."), ValueMap{"CreateAllWsusReportingEvents","CreateOnlyWsusStatusReportingEvents","DoNotCreateWsusReportingEvents"}, Values{"CreateAllWsusReportingEvents","CreateOnlyWsusStatusReportingEvents","DoNotCreateWsusReportingEvents"}] String ReportingEvent;
+	[Write, Description("Specifies a source for synchronization for this software update point."), ValueMap{"SynchronizeFromMicrosoftUpdate","SynchronizeFromAnUpstreamDataSourceLocation","DoNotSynchronizeFromMicrosoftUpdateOrUpstreamDataSource"}, Values{"SynchronizeFromMicrosoftUpdate","SynchronizeFromAnUpstreamDataSourceLocation","DoNotSynchronizeFromMicrosoftUpdateOrUpstreamDataSource"}] String SynchronizeAction;
+	[Write, Description("Specifies an upstream data location as a URL.")] String UpstreamSourceLocation;
+	[Write, Description("Specifies how long, in months, to wait before a software update expires after another update supersedes it.")] UInt32 WaitMonth;
+	[Write, Description("Specifies how long, in months, to wait before a feature update expires after another update supersedes it.")] UInt32 WaitMonthForFeature;
+	[Write, Description("Specifies the start date and start time for the synchronization schedule Month/Day/Year, example 1/1/2020 02:00.")] String Start;
+	[Write, Description("Specifies the schedule type for the synchronization schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","None"}] String ScheduleType;
+	[Write, Description("Specifies how often the ScheduleType is run.")] UInt32 RecurInterval;
+	[Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String MonthlyWeekOrder;
+	[Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
+	[Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 DayOfMonth;
+	[Write, Description("Specifies whether manual management of the WSUS signing certificate is enabled.")] Boolean EnableManualCertManagement;
+	[Write, Description("Specifies whether third-party updates are enabled on the Software Update Point Component.")] Boolean EnableThirdPartyUpdates;
+	[Write, Description("Specifies the maximum runtime, in minutes, for windows feature updates.")] UInt32 FeatureUpdateMaxRuntimeMins;
+	[Write, Description("Specifies the maximum runtime, in minutes, for Office 365 updates and windows non-feature updates.")] UInt32 NonFeatureUpdateMaxRuntimeMins;
+	[Read, Description("Identifies whether the specified site is a child site or top level site.")] String ChildSite;
+	[Read, Description("Identifies software update categories and products at the specified site.")] String AvailableCats;
+};

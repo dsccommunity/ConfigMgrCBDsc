@@ -1,0 +1,33 @@
+ConvertFrom-StringData @'
+    RetrieveSettingValue         = Getting information for the specified Software Update Point Component.
+    ScheduleNoSync               = When specifying a schedule, the EnableSynchronization paramater must be true.
+    SyncNoSchedule               = When specifying the EnableSynchronization paramater as true, you must specify a schedule.
+    WaitMonthNull                = If you specify a value of $false for the ImmediatelyExpireSupersedence parameter, you muse use the WaitMonth parameter.
+    WaitMonthNeeded              = If you specify a value of $true for the ImmediatelyExpireSupersedence parameter, do not use the WaitMonth parameter.
+    WaitFeatureNull              = If you specify a value of $false for the ImmediatelyExpireSupersedenceForFeature parameter, you muse use the WaitMonthForFeature parameter.
+    WaitFeatureNeeded            = If you specify a value of $true for the ImmediatelyExpireSupersedenceForFeature parameter, do not use the WaitMonthForFeature parameter.
+    UpstreamSourceNull           = If you specify to synchronize from an upstream data source, you must use the UpstreamSourceLocation parameter.
+    CertMgmtSpecified            = If you specify not to enable third party updates, do not use the EnableManualCertManagement parameter.
+    LangSumInEx                  = LanguageSummaryDetailsToExclude and LanguageSummaryDetailsToInclude contain to same entry {0}, remove from one of the arrays.
+    LangFilesInEx                = LanguageUpdateFilesToExclude and LanguageUpdateFilesToInclude contain to same entry {0}, remove from one of the arrays.
+    ProductsInEx                 = ProductsToExclude and ProductsToInclude contain to same entry {0}, remove from one of the arrays.
+    UpdateClassInEx              = UpdateClassificationsToExclude and UpdateClassificationsToInclude contain to same entry {0}, remove from one of the arrays.
+    LanguageSummaryIgnore        = LanguageSummaryDetails is set, ignoring LanguageSummaryDetailsToInclude and LanguageSummaryDetailsToExclude settings.
+    LanguageSummaryMissing       = The following LanguageSummaryDetails are missing {0}.
+    LanguageSummaryRemove        = The following LanguageSummaryDetails need to be removed {0}.
+    LanguageUpdateIgnore         = LanguageUpdateFiles is set, ignoring LanguageUpdateFilesToInclude and LanguageUpdateFilesToExclude settings.
+    LanguageUpdateMissing        = The following LanguageUpdateFiles are missing {0}.
+    LanguageUpdateRemove         = The following LanguageUpdateFiles need to be removed {0}.
+    ProductsIgnore               = Products is set, ignoring ProductsToInclude and ProductsToExclude settings.
+    ProductsMissing              = The following Products are missing {0}.
+    ProductsRemove               = The following Products need to be removed {0}.
+    UpdateClassificationsIgnore  = UpdateClassifications is set, ignoring UpdateClassificationsToInclude and UpdateClassificationsToExclude settings.
+    UpdateClassificationsMissing = The following UpdateClassifications are missing {0}.
+    UpdateClassificationsRemove  = The following UpdateClassifications need to be removed {0}.
+    TestState                    = Test-TargetResource compliance check returned: {0}.
+    ChildBadParams               = The specified site is a child site. The {0} parameter cannot be changed and will be ignored.
+    NewSchedule                  = Modifying Software Update Point Component Syncrhonization schedule.
+    SettingValue                 = Setting value: {0} to {1}.
+    InvalidLangs                 = {0} is not a valid language available in ConfigMgr, please validate your input.
+    InvalidCats                  = {0} is not a valid product or category available in ConfigMgr, please validate your input.
+'@
