@@ -429,6 +429,80 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsBits'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableBitsMaxBandwidth'
+                            PropertyType = '[boolean]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableDownloadOffSchedule'
+                            PropertyType = '[boolean]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxBandwidthBeginHr'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxBandwidthEndHr'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxTransferRateOnSchedule'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxTransferRateOffSchedule'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingStatus'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
                     Name          = 'CMClientStatusSettings'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
