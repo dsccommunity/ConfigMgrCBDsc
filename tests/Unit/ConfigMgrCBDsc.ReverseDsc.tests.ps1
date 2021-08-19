@@ -897,6 +897,74 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
+                    Name          = 'CMEmailNotificationComponent'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enabled'
+                            PropertyType = '[boolean]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SmtpServerFqdn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SendFrom'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Port'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UserName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UseSsl'
+                            PropertyType = '[boolean]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'TypeOfAuthentication'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
                     Name          = 'CMFallbackStatusPoint'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
@@ -2600,6 +2668,25 @@ InModuleScope $script:subModuleName {
                 PSComputerName              = 'localhost'
             }
 
+            $invokeEmailComponent = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                Enabled              = $true
+                TypeOfAuthentication = 'Other'
+                UserName             = 'contoso\emailUser'
+                SmtpServerFqdn       = 'Smtp01.contoso.com'
+                SendFrom             = 'sender@contoso.com'
+                Port                 = 446
+                UseSsl               = $true
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
             $getFallBackStatusReturn = @(
                 @{
                     SiteCode      = 'Lab'
@@ -3630,6 +3717,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMDistributionGroup } -ParameterFilter { $Name -eq 'CMDistributionGroup' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMDistributionPoint } -ParameterFilter { $Name -eq 'CMDistributionPoint' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMDistributionGroupMembers } -ParameterFilter { $Name -eq 'CMDistributionPointGroupMembers' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeEmailComponent } -ParameterFilter { $Name -eq 'CMEmailNotificationComponent' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeFallbackPoints } -ParameterFilter { $Name -eq 'CMFallbackStatusPoint' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getForestDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectoryForestDiscovery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeForestDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMForestDiscovery' }

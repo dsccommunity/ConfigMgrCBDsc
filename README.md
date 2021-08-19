@@ -124,6 +124,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   maintenance windows for collections.
 - **CMFileReplication**: Provides a resource for creating, modifying, or deleting
   file replication settings in Configuration Manager.
+- **CMEmailNotificationComponent**: Provides a resource for modifying email notification
+  component settings.
 
 ### xSccmPreReqs
 
@@ -1336,6 +1338,29 @@ you are using apply and auto correct.
 - [CMFileReplication_Present](Source\Examples\Resources\CMFileReplication\CMFileReplication_Present.ps1)
 - [CMFileReplication_Absent](Source\Examples\Resources\CMFileReplication\CMFileReplication_Absent.ps1)
 
+### CMEmailNotificationComponent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Enabled** _(Key)_: Specifies if email notifications are
+  enabled or disabled.
+- **[String] SmtpServerFqdn** _(Write)_: Specifies the FQDN of the site server that
+  will send email.
+- **[String] SendFrom** _(Write)_: Specifies the address used to send email.
+- **[UInt32] Port** _(Write)_: Specifies the port used to send email.
+- **[String] UserName** _(Write)_: Specifies the username for authenticating against
+  an SMTP server. Only used when AuthenticationMethod equals Other.
+- **[Boolean] UseSsl** _(Write)_: Specifies whether to use SSL for email alerts.
+  If omitted, the assumed intent is that SSL is not to be used.
+- **[String] TypeOfAuthentication** _(Write)_: Specifies the method by which
+  Configuration Manager authenticates the site server to the SMTP Server.
+  - Values include: {Anonymous|DefaultServiceAccount|Other}
+
+#### CMEmailNotificationComponent Examples
+
+- [CMEmailNotificationComponent_Present](Source\Examples\Resources\CMEmailNotificationComponent\CMEmailNotificationComponent_Present.ps1)
+- [CMEmailNotificationComponent_Absent](Source\Examples\Resources\CMEmailNotificationComponent\CMEmailNotificationComponent_Absent.ps1)
+
 ### CMGroupDiscovery
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
@@ -1443,6 +1468,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMDistributionGroup: Fully Supported
 - DSC_CMDistributionPoint: Fully Supported
 - DSC_CMDistributionPointGroupMembers: Fully Supported
+- DSC_CMEmailNotificationComponent: Fully Supported
 - DSC_CMFallbackStatusPoint: Fully Supported
 - DSC_CMFileReplication: Not Supported
 - DSC_CMForestDiscovery: Fully Supported
@@ -1490,9 +1516,9 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   default setting: All.
   - Values include: { All|Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
-  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
-  FallbackPoints|ForestDiscovery|GroupDiscovery|HeartbeatDiscovery|MaintenanceWindow|
-  ManagementPoint|NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
+  FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
@@ -1500,10 +1526,9 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   being evaluated. Only evaluated when Include = 'All'
   - Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
-  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|
-  FallbackPoints|ForestDiscovery|GroupDiscovery|HeartbeatDiscovery|MaintenanceWindow|
-  ManagementPoint|NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
-  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
+  DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
+  FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
