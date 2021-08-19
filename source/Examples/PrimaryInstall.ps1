@@ -274,6 +274,20 @@ Configuration PrimaryInstall
             [array]$cmAccountsDependsOn += "[CMAccounts]AddingAccount-$($account.Username)"
         }
 
+        CMEmailNotificationComponent EmailSettings
+        {
+            SiteCode             = $SiteCode
+            SendFrom             = 'emailsender@contoso.com'
+            SmtpServerFqdn       = 'EmailServer.contoso.com'
+            TypeOfAuthentication = 'Other'
+            Port                 = 465
+            UseSsl               = $true
+            Enabled              = $true
+            UserName             = 'contoso\EmailUser'
+            PsDscRunAsCredential = $SccmInstallAccount
+            DependsOn            = $cmAccountsDependsOn
+        }
+
         CMForestDiscovery CreateForestDiscovery
         {
             SiteCode             = $SiteCode
@@ -579,7 +593,7 @@ Configuration PrimaryInstall
                 '[CMHeartbeatDiscovery]CreateHeartbeatDiscovery','[CMUserDiscovery]CreateUserDiscovery','[CMClientStatusSettings]CreateClientStatusSettings',$cmSiteMaintenanceDependsOn,
                 '[CMBoundaryGroups]DemoBoundaryGroup','[CMAdministrativeUser]SiteAdmins','[CMCollectionMembershipEvaluationComponent]CollectionSettings',
                 '[CMStatusReportingComponent]StatusReportingSettings','[Registry]MaxHWMifSize','[CMDistributionPointGroupMembers]DPGroupMembers','[CMManagementPoint]MPInstall',
-                '[CMSoftwareUpdatePoint]SUPInstall', '[CMSoftwareUpdatePointComponent]SUPComponent'
+                '[CMSoftwareUpdatePoint]SUPInstall','[CMEmailNotificationComponent]EmailSettings','[CMSoftwareUpdatePointComponent]SUPComponent'
         }
     }
 }
@@ -607,6 +621,7 @@ $params = @{
         Get-Credential -Username 'contoso\SCCM-Network' -Message 'SCCM Network Service account'
         Get-Credential -Username 'contoso\SCCM-ClientPush' -Message 'SCCM Client Push account'
         Get-Credential -Username 'contoso\SCCM-ADJoin' -Message 'SCCM AD Join account'
+        Get-Credential -Username 'contoso\EmailUser' -Message 'User account for authenticating against an SMTP server'
     )
 }
 
