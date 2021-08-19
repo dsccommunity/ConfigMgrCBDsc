@@ -126,6 +126,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   file replication settings in Configuration Manager.
 - **CMEmailNotificationComponent**: Provides a resource for modifying email notification
   component settings.
+- **CMGroupDiscovery**: Provides a resource to manage the Configuration Manager
+  Group Discovery method.
 
 ### xSccmPreReqs
 
