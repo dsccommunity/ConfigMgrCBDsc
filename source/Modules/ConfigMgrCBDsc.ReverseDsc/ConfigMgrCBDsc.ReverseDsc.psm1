@@ -3744,7 +3744,7 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly')]
+            'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly','ClientSettingsBits')]
         [String[]]
         $Include = 'All',
 
@@ -3756,7 +3756,7 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'StatusReportingComponent','SystemDiscovery','UserDiscovery')]
+            'StatusReportingComponent','SystemDiscovery','UserDiscovery','ClientSettingsBits')]
         [String[]]
         $Exclude,
 
@@ -3958,6 +3958,45 @@ function Set-ConfigMgrCBDscReverse
         $testThing = Set-OutFile @params
         $wPush += "$testThing"
         $fileOut += "$wPush`r`n"
+    }
+
+    if (($Include -eq 'All' -and $Exclude -notcontains 'ClientSettingsBits') -or ($Include -contains 'ClientSettingsBits'))
+    {
+        $resourceName = 'CMClientSettingsBits'
+        $bitsConfigured = Get-CMClientSetting -Setting BackgroundIntelligentTransfer
+
+        if ($bitsConfigured)
+        {
+            $wCSBits = "$resourceName = @(`r`n"
+            $clientSettings = (Get-CMClientSetting).Name
+        }
+
+        foreach ($item in $clientSettings)
+        {
+            $bitSettings = Get-CMClientSetting -Setting BackgroundIntelligentTransfer -Name $item
+            Write-Verbose -Message ($script:localizedData.ClientSetBits -f $item) -Verbose
+
+            if ($bitSettings)
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 2
+                    MultiEntry   = $true
+                    Resources    = $resources
+                    StringValue  = $item
+                }
+
+                $testThing = Set-OutFile @params
+                $wCSBits += "$testThing"
+            }
+        }
+
+        if ($wCSBits)
+        {
+            $wCSBits += ")"
+            $fileOut += "$wCSBits`r`n"
+        }
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'ClientStatusSettings') -or ($Include -contains 'ClientStatusSettings'))

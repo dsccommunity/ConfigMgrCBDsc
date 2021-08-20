@@ -9,6 +9,7 @@ ConvertFrom-StringData @'
     BoundaryGroup      = Processing CMBoundaryGroups for boundary group: {0}.
     DeviceColl         = Processing CMCollections for device collection: {0}.
     UserColl           = Processing CMCollections for user collection: {0}.
+    ClientSetBits      = Processing CMClientSettingsBits for client policy: {0}.
     DistroGroup        = Processing CMDistributionGroup for group: {0}.
     DistroPoint        = Processing CMDistributionPoint for distribution point: {0}.
     DistroGroupMembers = Processing CMDistributionPointGroupMembers for distribution point group for distribution point: {0}.
