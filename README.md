@@ -126,6 +126,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   file replication settings in Configuration Manager.
 - **CMEmailNotificationComponent**: Provides a resource for modifying email notification
   component settings.
+- **CMClientSettingsBits**: Provides a resource for modifying CM Client Policy settings
+  for Bits.
 
 ### xSccmPreReqs
 
@@ -1361,6 +1363,31 @@ you are using apply and auto correct.
 - [CMEmailNotificationComponent_Present](Source\Examples\Resources\CMEmailNotificationComponent\CMEmailNotificationComponent_Present.ps1)
 - [CMEmailNotificationComponent_Absent](Source\Examples\Resources\CMEmailNotificationComponent\CMEmailNotificationComponent_Absent.ps1)
 
+### CMClientSettingsBits
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] ClientSettingName** _(Key)_: Specifies which client settings policy
+  to modify.
+- **[Boolean] EnableBitsMaxBandwidth** _(Required)_: Specifies if limit the maximum
+  network bandwidth for BITS background transfers is enabled or disabled.
+- **[UInt32] MaxBandwidthBeginHr** _(Write)_: Specifies the throttling window
+  start time, use 0 for 12 a.m. and 23 for 11 p.m..
+- **[UInt32] MaxBandwidthEndHr** _(Write)_: Specifies the throttling window end
+  time, use 0 for 12 a.m. and 23 for 11 p.m..
+- **[UInt32] MaxTransferRateOnSchedule** _(Write)_: Specifies the maximum transfer
+  rate during throttling window in Kbps.
+- **[Boolean] EnableDownloadOffSchedule** _(Write)_: Specifies if BITS downloads
+  are allowed outside the throttling window.
+- **[UInt32] MaxTransferRateOffSchedule** _(Write)_: Specifies the maximum transfer
+  rate outside the throttling window in Kbps.
+- **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy
+  exists.
+
+#### CMClientSettingsBits Examples
+
+- [CMClientSettingsBits](Source\Examples\Resources\CMClientSettingsBits\CMClientSettingsBits.ps1)
+
 ## ReverseDsc
 
 Most organizations using this module already have an existing Configuration Manager
@@ -1407,6 +1434,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMBoundaryGroups: Limited Support, will only create the boundary group
   and will not populate or gather the boundaries within the group.
 - DSC_CMClientPushSettings: Fully Supported
+- DSC_CMClientSettingsBits: Fully Supported
 - DSC_CMClientStatusSettings: Fully Supported
 - DSC_CMCollectionMembershipEvaluationComponent: Fully Supported
 - DSC_CMCollections: Fully Supported
@@ -1462,7 +1490,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
-  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|ClientSettingsBits|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
@@ -1472,7 +1500,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
-  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|ClientSettingsBits|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery }

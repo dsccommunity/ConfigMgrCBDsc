@@ -476,6 +476,10 @@ Configuration ConfigureSccm
         `$CMClientPushSettings,
 
         [Parameter()]
+        [HashTable[]]
+        `$CMClientSettingsBits,
+
+        [Parameter()]
         [HashTable]
         `$CMClientStatusSettings,
 
@@ -1033,6 +1037,49 @@ Configuration ConfigureSccm
                 HardwareInventoryDays  = `$CMClientStatusSettings.HardwareInventoryDays
                 StatusMessageDays      = `$CMClientStatusSettings.StatusMessageDays
                 HistoryCleanupDays     = `$CMClientStatusSettings.HistoryCleanupDays
+            }
+        }
+
+        if (`$CMClientSettingsBits)
+        {
+            foreach (`$bitsSetting in `$CMClientSettingsBits)
+            {
+                if (`$bitsSetting.EnableBitsMaxBandwidth -eq `$false)
+                {
+                    CMClientSettingsBits `$bitsSetting.ClientSettingName
+                    {
+                        SiteCode               = `$SiteCode
+                        ClientSettingName      = `$bitsSetting.ClientSettingName
+                        EnableBitsMaxBandwidth = `$bitsSetting.EnableBitsMaxBandwidth
+                    }
+                }
+                elseif (`$bitsSetting.EnableDownloadOffSchedule -eq `$false)
+                {
+                    CMClientSettingsBits `$bitsSetting.ClientSettingName
+                    {
+                        SiteCode                  = `$SiteCode
+                        ClientSettingName         = `$bitsSetting.ClientSettingName
+                        EnableBitsMaxBandwidth    = `$bitsSetting.EnableBitsMaxBandwidth
+                        MaxBandwidthBeginHr       = `$bitsSetting.MaxBandwidthBeginHr
+                        MaxBandwidthEndHr         = `$bitsSetting.MaxBandwidthEndHr
+                        MaxTransferRateOnSchedule = `$bitsSetting.MaxTransferRateOnSchedule
+                        EnableDownloadOffSchedule = `$bitsSetting.EnableDownloadOffSchedule
+                    }
+                }
+                else
+                {
+                    CMClientSettingsBits `$bitsSetting.ClientSettingName
+                    {
+                        SiteCode                   = `$SiteCode
+                        ClientSettingName          = `$bitsSetting.ClientSettingName
+                        EnableBitsMaxBandwidth     = `$bitsSetting.EnableBitsMaxBandwidth
+                        MaxBandwidthBeginHr        = `$bitsSetting.MaxBandwidthBeginHr
+                        MaxBandwidthEndHr          = `$bitsSetting.MaxBandwidthEndHr
+                        MaxTransferRateOnSchedule  = `$bitsSetting.MaxTransferRateOnSchedule
+                        EnableDownloadOffSchedule  = `$bitsSetting.EnableDownloadOffSchedule
+                        MaxTransferRateOffSchedule = `$bitsSetting.MaxTransferRateOffSchedule
+                    }
+                }
             }
         }
 
@@ -3960,6 +4007,12 @@ function Set-ConfigMgrCBDscReverse
         $fileOut += "$wPush`r`n"
     }
 
+    # Place holder for all client settings items to parse
+    if (($Include -eq 'All' -and $Exclude -notcontains 'ClientSettingsBits') -or ($Include -contains 'ClientSettingsBits'))
+    {
+        $clientSettings = (Get-CMClientSetting -ErrorAction SilentlyContinue).Name
+    }
+
     if (($Include -eq 'All' -and $Exclude -notcontains 'ClientSettingsBits') -or ($Include -contains 'ClientSettingsBits'))
     {
         $resourceName = 'CMClientSettingsBits'
@@ -3968,7 +4021,6 @@ function Set-ConfigMgrCBDscReverse
         if ($bitsConfigured)
         {
             $wCSBits = "$resourceName = @(`r`n"
-            $clientSettings = (Get-CMClientSetting).Name
         }
 
         foreach ($item in $clientSettings)
@@ -4674,6 +4726,7 @@ function Set-ConfigMgrCBDscReverse
         {
             Write-Verbose -Message ($script:localizedData.SiteServer -f $siteServer.NetworkOSPath.TrimStart('\\')) -Verbose
             $useSiteServer = ($siteServer.Props | Where-Object -FilterScript {$_.PropertyName -eq 'UseMachineAccount'}).Value
+
             if ($useSiteServer -eq 1)
             {
                 $excludeList = @('SiteCode','AccountName','RoleCount')

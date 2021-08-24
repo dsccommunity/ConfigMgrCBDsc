@@ -3529,6 +3529,41 @@ InModuleScope $script:subModuleName {
                 ConfigOutputPath = 'TestDrive:\temp.ps1'
                 MofOutPutPath    = 'TestDrive:\'
             }
+
+            $getClientSettings = @(
+                @{
+                    Name = 'Default Client Settings'
+                }
+            )
+
+            $getClientSettingBits = @{
+                EnableBitsMaxBandwidth     = $true
+                MaxBandwidthValidFrom      = 0
+                MaxBandwidthValidTo        = 23
+                MaxTransferRateOnSchedule  = 900
+                MaxTransferRateOffSchedule = 9000
+                EnableDownloadOffSchedule  = $true
+            }
+
+            $invokeClientSettingBits = @{
+                ConfigurationName          = $null
+                DependsOn                  = $null
+                ModuleName                 = 'ConfigMgrCBDsc'
+                ModuleVersion              = 1.0.1
+                PsDscRunAsCredential       = $null
+                ResourceId                 = $null
+                SourceInfo                 = $null
+                ClientSettingName          = 'Default Client Settings'
+                ClientSettingStatus        = 'Present'
+                EnableBitsMaxBandwidth     = $true
+                EnableDownloadOffSchedule  = $true
+                MaxBandwidthBeginHr        = 0
+                MaxBandwidthEndHr          = 23
+                MaxTransferRateOffSchedule = 9000
+                MaxTransferRateOnSchedule  = 900
+                SiteCode                   = 'Lab'
+                PSComputerName             = 'localhost'
+            }
         }
 
         Context 'When running the Set-ConfigMgrCBDscReverse' {
@@ -3599,13 +3634,17 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getSystemDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectorySystemDiscovery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeUserDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMUserDiscovery' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getUserDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectoryUserDiscovery' }
+                Mock -CommandName Get-CMClientSetting -MockWith { $getClientSettings }
+                Mock -CommandName Get-CMClientSetting -MockWith { $getClientSettingBits } -ParameterFilter { $Setting -eq 'BackgroundIntelligentTransfer' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeClientSettingBits } -ParameterFilter { $Name -eq 'CMClientSettingsBits' }
 
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 26 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 27 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 3 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
