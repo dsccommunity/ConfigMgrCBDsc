@@ -1537,6 +1537,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMSiteSystemServer: Fully Supported
 - DSC_CMSoftwareDistributionComponent: Fully Supported
 - DSC_CMSoftwareUpdatePoint: Fully Supported
+- DSC_CMSoftwareUpdatePointComponent: Fully Supported
 - DSC_CMStatusReportingComponent: Fully Supported
 - DSC_CMSystemDiscovery: Fully Supported
 - DSC_CMUserDiscovery: Fully Supported
@@ -1570,7 +1571,8 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
-  StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
+  SoftwareupdatePointComponent|StatusReportingComponent|SystemDiscovery|UserDiscovery|
+  ConfigFileOnly }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
   - Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
@@ -1580,7 +1582,8 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
-  StatusReportingComponent|SystemDiscovery|UserDiscovery }
+  SoftwareupdatePointComponent|StatusReportingComponent|SystemDiscovery|
+  UserDiscovery }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
   Filename must end with .psd1. Not specifying DataFile the output will be displayed
   in the output screen only if Include does not equal ConfigFileOnly.

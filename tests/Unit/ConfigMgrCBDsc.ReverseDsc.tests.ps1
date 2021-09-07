@@ -1851,6 +1851,224 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
+                    Name          = 'SoftwareUpdatePointComponent'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'LanguageSummaryDetails'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'LanguageSummaryDetailsToInclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'LanguageSummaryDetailsToExclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'LanguageUpdateFiles'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'LanguageUpdateFilesToInclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'LanguageUpdateFilesToExclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Products'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ProductsToInclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ProductsToExclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UpdateClassifications'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UpdateClassificationsToInclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UpdateClassificationsToExclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ContentFileOption'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{FullFilesOnly, ExpressForWindows10Only}'
+                        }
+                        @{
+                            Name         = 'DefaultWsusServer'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableCallWsusCleanupWizard'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableSyncFailureAlert'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableSynchronization'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ImmediatelyExpireSupersedence'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ImmediatelyExpireSupersedenceForFeature'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ReportingEvent'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{CreateAllWsusReportingEvents, CreateOnlyWsusStatusReportingEvents, DoNotCreateWsusReportingEvents}'
+                        }
+                        @{
+                            Name         = 'SynchronizeAction,'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{SynchronizeFromMicrosoftUpdate, SynchronizeFromAnUpstreamDataSourceLocation, DoNotSynchronizeFromMicrosoftUpdateOrUpstreamDataSource}'
+                        }
+                        @{
+                            Name         = 'UpstreamSourceLocation'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'WaitMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'WaitMonthForFeature'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Start'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{MonthlyByDay, MonthlyByWeek, Weekly, Days, None}'
+                        }
+                        @{
+                            Name         = 'RecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{First, Second, Third, Fourth, Last}'
+                        }
+                        @{
+                            Name         = 'DayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday}'
+                        }
+                        @{
+                            Name         = 'DayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableManualCertManagement'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableThirdPartyUpdates'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FeatureUpdateMaxRuntimeMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'NonFeatureUpdateMaxRuntimeMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
                     Name          = 'CMStatusReportingComponent'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
@@ -3210,6 +3428,48 @@ InModuleScope $script:subModuleName {
                 PSComputerName                = 'localhost'
             }
 
+            $supComponent = @{
+                SiteCode = 'Lab'
+                Include  = 'SoftwareupdatePointComponent'
+            }
+
+            $invokeSoftwareUpdatePointComponent = @{
+                ConfigurationName                       = $null
+                DependsOn                               = $null
+                ModuleName                              = 'ConfigMgrCBDsc'
+                ModuleVersion                           = 1.0.1
+                PsDscRunAsCredential                    = $null
+                ResourceId                              = $null
+                SourceInfo                              = $null
+                SiteCode                                = 'Lab'
+                EnableSynchronization                   = $true
+                SynchronizeAction                       = 'SynchronizeFromMicrosoftUpdate'
+                ScheduleType                            = 'Days'
+                RecurInterval                           = 7
+                LanguageSummaryDetailsToInclude         = @('English','French')
+                LanguageUpdateFilesToInclude            = @('English','French')
+                ProductsToInclude                       = @('Windows Server 2012 R2','Windows 10')
+                UpdateClassificationsToInclude          = @('Critical Updates','Updates')
+                ContentFileOption                       = 'FullFilesOnly'
+                DefaultWsusServer                       = 'CA01.contoso.com'
+                EnableCallWsusCleanupWizard             = $true
+                EnableSyncFailureAlert                  = $true
+                ImmediatelyExpireSupersedence           = $false
+                ImmediatelyExpireSupersedenceForFeature = $false
+                ReportingEvent                          = 'DoNotCreateWsusReportingEvents'
+                WaitMonth                               = 1
+                WaitMonthForFeature                     = 1
+                EnableThirdPartyUpdates                 = $true
+                EnableManualCertManagement              = $false
+                FeatureUpdateMaxRuntimeMins             = 300
+                NonFeatureUpdateMaxRuntimeMins          = 300
+                PSComputerName                          = 'localhost'
+            }
+
+            $getCMSite = @{
+                ReportingSiteCode = 'CAS'
+            }
+
             $invokeReportingComponent = @{
                 ConfigurationName          = $null
                 DependsOn                  = $null
@@ -3476,6 +3736,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Get-CMSecurityScope
                 Mock -CommandName Get-CMServiceConnectionPoint
                 Mock -CommandName Get-CMSiteDefinition
+                Mock -CommandName Get-CMSite
                 Mock -CommandName Get-CMSiteSystemServer
                 Mock -CommandName Get-CMSoftwareUpdatePoint
                 Mock -CommandName Get-CMMaintenanceWindow
@@ -3520,6 +3781,8 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareDistro } -ParameterFilter { $Name -eq 'CMSoftwareDistributionComponent' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdate } -ParameterFilter { $Name -eq 'CMSoftwareUpdatePoint' }
                 Mock -CommandName Get-CMSoftwareUpdatePoint -MockWith { $getSoftwareUpdatePoint }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdatePointComponent } -ParameterFilter { $Name -eq 'SoftwareupdatePointComponent' }
+                Mock -CommandName Get-CMSite -MockWith { $null }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeReportingComponent } -ParameterFilter { $Name -eq 'CMStatusReportingComponent' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeSystemDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMSystemDiscovery' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getSystemDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectorySystemDiscovery' }
@@ -3529,7 +3792,7 @@ InModuleScope $script:subModuleName {
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 26 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 27 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
@@ -3545,6 +3808,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMSite -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Test-Path -Exactly -Times 1 -Scope It
@@ -4047,6 +4311,40 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
             }
 
+            It 'Should return expected results and call expected commands for Software Update Point Component Child Site' {
+                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdatePointComponent }
+                Mock -CommandName Get-CMSite -MockWith { $getCMSite } -ParameterFilter { $Name -eq 'SoftwareupdatePointComponent'}
+
+                $result = Set-ConfigMgrCBDscReverse @supComponent
+                $result | Should -BeOfType System.String
+                $result | Should -Match "SoftwareupdatePointComponent"
+                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSite -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
+            }
+
             It 'Should return expected results and call expected commands for CMMaintenanceWindows' {
                 Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMMaintenanceWindows } -ParameterFilter { $Name -eq 'CMMaintenanceWindows'}
@@ -4170,6 +4468,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Get-CMSoftwareUpdatePoint
                 Mock -CommandName Get-CMMaintenanceWindow
                 Mock -CommandName Get-CMBoundaryGroup
+                Mock -CommandName Get-CMSite
                 Mock -CommandName Remove-Item
                 Mock -CommandName Add-Content
                 Mock -CommandName Test-Path
