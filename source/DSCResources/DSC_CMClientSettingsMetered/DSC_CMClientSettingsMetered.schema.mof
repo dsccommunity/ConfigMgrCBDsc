@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsMetered")]
+class DSC_CMClientSettingsMetered : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies setting for client communication on a metered internet connection.")] String MeteredNetworkUsage;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+};

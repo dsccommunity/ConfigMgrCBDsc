@@ -1,0 +1,11 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsUserDeviceAffinity")]
+class DSC_CMClientSettingsUserDeviceAffinity : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies if user device affinity usage threshold in minutes.")] UInt32 LogOnThresholdMins;
+    [Write, Description("Specifies if user device affinity usage threshold in days.")] UInt32 UsageThresholdDays;
+    [Write, Description("Specifies allowing automatic configure user device affinity from usage data.")] Boolean AutoApproveAffinity;
+    [Write, Description("Specifies allowing users to define their primary device.")] Boolean AllowUserAffinity;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+};

@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsStateMessaging")]
+class DSC_CMClientSettingsStateMessaging : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies the state message reporting cycle in minutes.")] Boolean ReportingCycleMins;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+};

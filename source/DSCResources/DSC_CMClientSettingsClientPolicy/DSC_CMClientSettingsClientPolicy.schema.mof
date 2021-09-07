@@ -1,0 +1,11 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsClientPolicy")]
+class DSC_CMClientSettingsClientPolicy : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies client policy interval in minutes.")] UInt32 PolicyPollingMins;
+    [Write, Description("Specifies if user policy on clients is enabled or disabled.")] Boolean EnableUserPolicy;
+    [Write, Description("Specifies if user policy request from internet clients is enabled or disabled.")] Boolean EnableUserPolicyOnInternet;
+    [Write, Description("Specifies if user policy for multiple sessions is enabled or disabled.")] Boolean EnableUserPolicyOnTS;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+};

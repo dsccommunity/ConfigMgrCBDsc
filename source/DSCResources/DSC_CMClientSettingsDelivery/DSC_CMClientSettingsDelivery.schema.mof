@@ -1,0 +1,8 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsDelivery")]
+class DSC_CMClientSettingsDelivery : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies if use Configuration Manager Boundary Groups for Delivery Optimization Group ID is enabled or disabled.")] Boolean Enable;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+};

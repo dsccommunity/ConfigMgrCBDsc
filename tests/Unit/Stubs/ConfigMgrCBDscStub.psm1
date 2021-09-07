@@ -35811,6 +35811,9 @@ function Set-CMClientSettingClientPolicy
         [bool]
         ${EnableUserPolicyOnInternet},
 
+        [bool]
+        ${EnableUserPolicyOnTS},
+
         [Parameter(ParameterSetName='SetDefaultSetting', Mandatory=$true)]
         [switch]
         ${DefaultSetting},
