@@ -556,12 +556,16 @@ function Set-TargetResource
 
                 if ($langFileCompare.Missing)
                 {
-                    $buildingParams += @{AddLanguageUpdateFile = $langFileCompare.Missing}
+                    $buildingParams += @{
+                        AddLanguageUpdateFile = $langFileCompare.Missing
+                    }
                 }
 
                 if ($langFileCompare.Remove)
                 {
-                    $buildingParams += @{RemoveLanguageUpdateFile = $langFileCompare.Remove}
+                    $buildingParams += @{
+                        RemoveLanguageUpdateFile = $langFileCompare.Remove
+                    }
                 }
             }
 
@@ -577,49 +581,49 @@ function Set-TargetResource
             if (($PSBoundParameters.ImmediatelyExpireSupersedence -eq $false) -and
                (-not $PSBoundParameters.ContainsKey('WaitMonth')))
             {
-                Throw $script:localizedData.WaitMonthNull
+                throw $script:localizedData.WaitMonthNull
             }
 
             if (($PSBoundParameters.ImmediatelyExpireSupersedence -eq $true) -and
                ($PSBoundParameters.ContainsKey('WaitMonth')))
             {
-                Throw $script:localizedData.WaitMonthNeeded
+                throw $script:localizedData.WaitMonthNeeded
             }
 
             if (($PSBoundParameters.ImmediatelyExpireSupersedenceForFeature -eq $false) -and
                (-not $PSBoundParameters.ContainsKey('WaitMonthForFeature')))
             {
-                Throw $script:localizedData.WaitFeatureNull
+                throw $script:localizedData.WaitFeatureNull
             }
 
             if (($PSBoundParameters.ImmediatelyExpireSupersedenceForFeature -eq $true) -and
                ($PSBoundParameters.ContainsKey('WaitMonthForFeature')))
             {
-                Throw $script:localizedData.WaitFeatureNeeded
+                throw $script:localizedData.WaitFeatureNeeded
             }
 
             if (($PSBoundParameters.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation') -and
                (-not $PSBoundParameters.ContainsKey('UpstreamSourceLocation')))
             {
-                Throw $script:localizedData.UpstreamSourceNull
+                throw $script:localizedData.UpstreamSourceNull
             }
 
             if (($PSBoundParameters.EnableThirdPartyUpdates -eq $false) -and
                ($PSBoundParameters.ContainsKey('EnableManualCertManagement')))
             {
-                Throw $script:localizedData.CertMgmtSpecified
+                throw $script:localizedData.CertMgmtSpecified
             }
 
             if (($PSBoundParameters.EnableSynchronization -eq $false) -and
                ($PSBoundParameters.ContainsKey('ScheduleType')))
             {
-                Throw $script:localizedData.ScheduleNoSync
+                throw $script:localizedData.ScheduleNoSync
             }
 
             if (($PSBoundParameters.EnableSynchronization -eq $true) -and
                (-not $PSBoundParameters.ContainsKey('ScheduleType')))
             {
-                Throw $script:localizedData.SyncNoSchedule
+                throw $script:localizedData.SyncNoSchedule
             }
 
             if ($LanguageSummaryDetails -or $LanguageSummaryDetailsToInclude -or $LanguageSummaryDetailsToExclude)
@@ -646,12 +650,16 @@ function Set-TargetResource
 
                 if ($langSumCompare.Missing)
                 {
-                    $buildingParams += @{AddLanguageSummaryDetail = $langSumCompare.Missing}
+                    $buildingParams += @{
+                        AddLanguageSummaryDetail = $langSumCompare.Missing
+                    }
                 }
 
                 if ($langSumCompare.Remove)
                 {
-                    $buildingParams += @{RemoveLanguageSummaryDetail = $langSumCompare.Remove}
+                    $buildingParams += @{
+                        RemoveLanguageSummaryDetail = $langSumCompare.Remove
+                    }
                 }
 
             }
@@ -680,12 +688,16 @@ function Set-TargetResource
 
                 if ($langFileCompare.Missing)
                 {
-                    $buildingParams += @{AddLanguageUpdateFile = $langFileCompare.Missing}
+                    $buildingParams += @{
+                        AddLanguageUpdateFile = $langFileCompare.Missing
+                    }
                 }
 
                 if ($langFileCompare.Remove)
                 {
-                    $buildingParams += @{RemoveLanguageUpdateFile = $langFileCompare.Remove}
+                    $buildingParams += @{
+                        RemoveLanguageUpdateFile = $langFileCompare.Remove
+                    }
                 }
 
             }
@@ -714,12 +726,16 @@ function Set-TargetResource
 
                 if ($productsCompare.Missing)
                 {
-                    $buildingParams += @{AddProduct = $productsCompare.Missing}
+                    $buildingParams += @{
+                        AddProduct = $productsCompare.Missing
+                    }
                 }
 
                 if ($productsCompare.Remove)
                 {
-                    $buildingParams += @{RemoveProduct = $productsCompare.Remove}
+                    $buildingParams += @{
+                        RemoveProduct = $productsCompare.Remove
+                    }
                 }
 
             }
@@ -748,12 +764,16 @@ function Set-TargetResource
 
                 if ($classCompare.Missing)
                 {
-                    $buildingParams += @{AddUpdateClassification = $classCompare.Missing}
+                    $buildingParams += @{
+                        AddUpdateClassification = $classCompare.Missing
+                    }
                 }
 
                 if ($classCompare.Remove)
                 {
-                    $buildingParams += @{RemoveUpdateClassification = $classCompare.Remove}
+                    $buildingParams += @{
+                        RemoveUpdateClassification = $classCompare.Remove
+                    }
                 }
 
             }

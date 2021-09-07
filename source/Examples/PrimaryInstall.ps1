@@ -577,7 +577,6 @@ Configuration PrimaryInstall
             NonFeatureUpdateMaxRuntimeMins          = 300
             DependsOn                               = '[CMSoftwareUpdatePoint]SUPInstall'
         }
-    }
 
         Script RebootAfterSCCMConfigurationInstall
         {
