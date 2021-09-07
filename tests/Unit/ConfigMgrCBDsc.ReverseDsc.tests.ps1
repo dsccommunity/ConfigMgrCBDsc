@@ -1851,7 +1851,7 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
-                    Name          = 'SoftwareUpdatePointComponent'
+                    Name          = 'CMSoftwareUpdatePointComponent'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
                     Properties    = @(
@@ -3430,7 +3430,7 @@ InModuleScope $script:subModuleName {
 
             $supComponent = @{
                 SiteCode = 'Lab'
-                Include  = 'SoftwareupdatePointComponent'
+                Include  = 'SoftwareUpdatePointComponent'
             }
 
             $invokeSoftwareUpdatePointComponent = @{
@@ -3781,7 +3781,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareDistro } -ParameterFilter { $Name -eq 'CMSoftwareDistributionComponent' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdate } -ParameterFilter { $Name -eq 'CMSoftwareUpdatePoint' }
                 Mock -CommandName Get-CMSoftwareUpdatePoint -MockWith { $getSoftwareUpdatePoint }
-                Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdatePointComponent } -ParameterFilter { $Name -eq 'SoftwareupdatePointComponent' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdatePointComponent } -ParameterFilter { $Name -eq 'CMSoftwareUpdatePointComponent' }
                 Mock -CommandName Get-CMSite -MockWith { $null }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeReportingComponent } -ParameterFilter { $Name -eq 'CMStatusReportingComponent' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeSystemDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMSystemDiscovery' }
@@ -4313,12 +4313,12 @@ InModuleScope $script:subModuleName {
 
             It 'Should return expected results and call expected commands for Software Update Point Component Child Site' {
                 Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
-                Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdatePointComponent }
-                Mock -CommandName Get-CMSite -MockWith { $getCMSite } -ParameterFilter { $Name -eq 'SoftwareupdatePointComponent'}
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSoftwareUpdatePointComponent } -ParameterFilter { $Name -eq 'CMSoftwareUpdatePointComponent'}
+                Mock -CommandName Get-CMSite -MockWith { $getCMSite }
 
                 $result = Set-ConfigMgrCBDscReverse @supComponent
                 $result | Should -BeOfType System.String
-                $result | Should -Match "SoftwareupdatePointComponent"
+                $result | Should -Match "SoftwareUpdatePointComponent"
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It

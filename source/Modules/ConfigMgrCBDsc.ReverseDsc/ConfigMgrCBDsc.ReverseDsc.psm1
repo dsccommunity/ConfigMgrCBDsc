@@ -7198,7 +7198,7 @@ function Set-ConfigMgrCBDscReverse
         $fileOut += "$wdistroComSetting`r`n"
     }
 
-    if (($Include -eq 'All' -and $Exclude -notcontains 'SoftwareupdatePoint') -or ($Include -contains 'SoftwareupdatePoint'))
+    if (($Include -eq 'All' -and $Exclude -notcontains 'SoftwareUpdatePoint') -or ($Include -contains 'SoftwareUpdatePoint'))
     {
         $resourceName = 'CMSoftwareUpdatePoint'
         $getSoftwareUpdatePoints = Get-CMSoftwareUpdatePoint -SiteCode $SiteCode
@@ -7239,7 +7239,7 @@ function Set-ConfigMgrCBDscReverse
         }
     }
 
-    if (($Include -eq 'All' -and $Exclude -notcontains 'SoftwareupdatePointComponent') -or ($Include -contains 'SoftwareupdatePointComponent'))
+    if (($Include -eq 'All' -and $Exclude -notcontains 'SoftwareUpdatePointComponent') -or ($Include -contains 'SoftwareUpdatePointComponent'))
     {
         if ([string]::IsNullOrEmpty((Get-CMSite -SiteCode $SiteCode).ReportingSiteCode))
         {
@@ -7253,7 +7253,7 @@ function Set-ConfigMgrCBDscReverse
             'EnableManualCertManagement','FeatureUpdateMaxRuntimeMins','NonFeatureUpdateMaxRuntimeMins','ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
         }
 
-        $resourceName = 'CMSoftwareupdatePointComponent'
+        $resourceName = 'CMSoftwareUpdatePointComponent'
         Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
         $wSupComponent = "$resourceName = @{`r`n"
         $params = @{
