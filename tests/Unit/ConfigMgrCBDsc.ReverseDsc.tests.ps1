@@ -2015,7 +2015,7 @@ InModuleScope $script:subModuleName {
                             Name         = 'ScheduleType'
                             PropertyType = '[string]'
                             IsMandatory  = $false
-                            Values       = '{MonthlyByDay, MonthlyByWeek, Weekly, Days, None}'
+                            Values       = '{MonthlyByDay, MonthlyByWeek, Weekly, Days}'
                         }
                         @{
                             Name         = 'RecurInterval'

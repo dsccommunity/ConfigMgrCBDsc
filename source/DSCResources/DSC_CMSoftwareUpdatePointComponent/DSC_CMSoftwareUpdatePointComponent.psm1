@@ -138,7 +138,7 @@ function Get-TargetResource
         $schedule = Get-CMSchedule -ScheduleString $syncSchedule
     }
 
-    $syncFailureAlert = get-cmalert | Where-Object -FilterScript {$_.Name -match "Synchronization failure alert for software update point:"}
+    $syncFailureAlert = Get-CMAlert | Where-Object -FilterScript {$_.Name -match "Synchronization failure alert for software update point:"}
 
     if ($syncFailureAlert)
     {
@@ -149,7 +149,7 @@ function Get-TargetResource
         $enableFailureAlert = $false
     }
 
-    $available = (Get-CMSoftwareUpdateCategory -fast)
+    $available = (Get-CMSoftwareUpdateCategory -Fast)
     $updateCats = ($available | Where-Object -FilterScript {($_.SourceSite -eq $SiteCode) -and ($_.IsSubscribed -eq $true)})
     $products = @()
     $classifications = @()
@@ -445,7 +445,7 @@ function Set-TargetResource
         $Start,
 
         [Parameter()]
-        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','None')]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days')]
         [String]
         $ScheduleType,
 
@@ -661,7 +661,6 @@ function Set-TargetResource
                         RemoveLanguageSummaryDetail = $langSumCompare.Remove
                     }
                 }
-
             }
 
             if ($LanguageUpdateFiles -or $LanguageUpdateFilesToInclude -or $LanguageUpdateFilesToExclude)
@@ -699,7 +698,6 @@ function Set-TargetResource
                         RemoveLanguageUpdateFile = $langFileCompare.Remove
                     }
                 }
-
             }
 
             if ($Products -or $ProductsToInclude -or $ProductsToExclude)
@@ -1095,7 +1093,7 @@ function Test-TargetResource
         $Start,
 
         [Parameter()]
-        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','None')]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days')]
         [String]
         $ScheduleType,
 
@@ -1240,7 +1238,8 @@ function Test-TargetResource
             $result = $false
         }
     }
-    else {
+    else
+    {
         if (($PSBoundParameters.ImmediatelyExpireSupersedence -eq $false) -and
            (-not $PSBoundParameters.ContainsKey('WaitMonth')))
         {

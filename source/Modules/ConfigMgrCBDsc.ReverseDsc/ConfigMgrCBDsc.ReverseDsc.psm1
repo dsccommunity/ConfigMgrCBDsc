@@ -6246,7 +6246,7 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'SoftwareupdatePointComponent','StatusReportingComponent','SystemDiscovery','UserDiscovery',
+            'SoftwareUpdatePointComponent','StatusReportingComponent','SystemDiscovery','UserDiscovery',
             'ConfigFileOnly')]
         [String[]]
         $Include = 'All',
@@ -6259,7 +6259,7 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'SoftwareupdatePointComponent','StatusReportingComponent','SystemDiscovery','UserDiscovery')]
+            'SoftwareUpdatePointComponent','StatusReportingComponent','SystemDiscovery','UserDiscovery')]
         [String[]]
         $Exclude,
 
