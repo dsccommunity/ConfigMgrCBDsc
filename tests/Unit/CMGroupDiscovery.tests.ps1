@@ -222,7 +222,7 @@ try
                 Mock -CommandName Set-Location
             }
 
-            Context 'When retrieving Collection settings' {
+            Context 'When retrieving Group Discovery settings' {
 
                 It 'Should return desired result when delta schedule returns hour' {
                     Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getCMDiscoveryEnabled  }
@@ -284,7 +284,6 @@ try
                     $result.GroupDiscoveryScope[1].Name         | Should -Be -ExpectedValue 'Test2'
                     $result.GroupDiscoveryScope[1].LdapLocation | Should -Be -ExpectedValue 'LDAP://OU=Test2,DC=contoso,DC=com'
                     $result.GroupDiscoveryScope[1].Recurse      | Should -Be -ExpectedValue $false
-                    #$result.GroupDiscoveryScope                | Should -Be -ExpectedValue $adContainersReturn
                 }
 
                 It 'Should return desired result when delta discovery is disabled' {

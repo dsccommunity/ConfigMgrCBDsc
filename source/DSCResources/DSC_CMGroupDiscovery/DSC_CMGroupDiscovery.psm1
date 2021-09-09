@@ -399,7 +399,7 @@ function Set-TargetResource
                     {
                         if ($state.GroupDiscoveryScope.Name -contains $item.Name)
                         {
-                            Write-Verbose -Message ($script:localizedData.GdsUpdate -f $item.Name, $item.LdapLocation, $item.Recurse,$item.LdapLocation, $item.Recurse)
+                            Write-Verbose -Message ($script:localizedData.GdsUpdate -f $item.Name, $item.LdapLocation, $item.Recurse, $item.LdapLocation, $item.Recurse)
                         }
                         else
                         {
@@ -420,11 +420,8 @@ function Set-TargetResource
                     {
                         if ($item.SideIndicator -eq '=>')
                         {
-                            #if ($refObject.Name -notcontains $item.Name)
-                            #{
-                                Write-Verbose -Message ($script:localizedData.GdsExtra -f $item.Name)
-                                $removing += "$($item.Name)"
-                            #}
+                            Write-Verbose -Message ($script:localizedData.GdsExtra -f $item.Name)
+                            $removing += "$($item.Name)"
                         }
                     }
                 }
@@ -716,7 +713,7 @@ function Test-TargetResource
                 {
                     if ($state.GroupDiscoveryScope.Name -contains $item.Name)
                     {
-                        Write-Verbose -Message ($script:localizedData.GdsUpdate -f $item.Name, $item.LdapLocation, $item.Recurse,$item.LdapLocation, $item.Recurse)
+                        Write-Verbose -Message ($script:localizedData.GdsUpdate -f $item.Name, $item.LdapLocation, $item.Recurse, $item.LdapLocation, $item.Recurse)
                     }
                     else
                     {
@@ -730,11 +727,8 @@ function Test-TargetResource
                 {
                     if ($item.SideIndicator -eq '=>')
                     {
-                        #if ($refObject.Name -notcontains $item.Name)
-                        #{
-                            Write-Verbose -Message ($script:localizedData.GdsExtra -f $item.Name)
-                            $result = $false
-                        #}
+                        Write-Verbose -Message ($script:localizedData.GdsExtra -f $item.Name)
+                        $result = $false
                     }
                 }
             }

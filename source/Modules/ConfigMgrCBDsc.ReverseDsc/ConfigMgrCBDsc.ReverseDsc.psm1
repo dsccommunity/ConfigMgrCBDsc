@@ -4891,7 +4891,6 @@ function Set-ConfigMgrCBDscReverse
                     SiteCode     = $SiteCode
                     Indent       = 1
                     Count        = 7
-                    #ExcludeList  = @('SiteCode','ScheduleInterval','ScheduleCount')
                     Resources    = $resources
                 }
             }
