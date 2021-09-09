@@ -3009,31 +3009,31 @@ InModuleScope $script:subModuleName {
             }
 
             $invokeNetworkDiscovery = @{
-                ConfigurationName     = $null
-                DependsOn             = $null
-                ModuleName            = 'ConfigMgrCBDsc'
-                ModuleVersion         = 1.0.1
-                PsDscRunAsCredential  = $null
-                ResourceId            = $null
-                SourceInfo            = $null
-                Enabled               = $false
-                SiteCode              = 'Lab'
-                PSComputerName        = 'localhost'
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                Enabled              = $false
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
             }
 
             $getCMDistributionPointInfo = @{
-                SiteCode      = 'Lab'
-                ServerName    = 'DP03.contoso.com'
-                IsPullDP      = $true
-                IsPXE         = $true
+                SiteCode   = 'Lab'
+                ServerName = 'DP03.contoso.com'
+                IsPullDP   = $true
+                IsPXE      = $true
             }
 
             $getCMDistributionPointPxePW = @{
-                SiteCode      = 'Lab'
-                ServerName    = 'DP03.contoso.com'
-                IsPullDP      = $true
-                IsPXE         = $true
-                PxePassword   = 'somepw'
+                SiteCode    = 'Lab'
+                ServerName  = 'DP03.contoso.com'
+                IsPullDP    = $true
+                IsPXE       = $true
+                PxePassword = 'somepw'
             }
 
             $pullDP = @{
@@ -3780,7 +3780,7 @@ InModuleScope $script:subModuleName {
 
                 $result = Set-ConfigMgrCBDscReverse @forestDiscovery
                 $result | Should -BeOfType System.String
-                $result | Should -Match "CMForestDiscovery"
+                $result | Should -Match 'CMForestDiscovery'
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It

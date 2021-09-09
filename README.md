@@ -1522,7 +1522,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
@@ -1530,8 +1530,9 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
-  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
+  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
   Filename must end with .psd1. Not specifying DataFile the output will be displayed
