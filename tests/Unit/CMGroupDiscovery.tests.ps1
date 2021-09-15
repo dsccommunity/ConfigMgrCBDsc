@@ -613,6 +613,31 @@ try
 
                     $deltaMinutesMsg = 'When changing delta schedule, delta schedule must be enabled.'
 
+                    $missingScheduleType = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        Start            = '2/1/1970 00:00'
+                        DayOfWeek        = 'Friday'
+                        MonthlyWeekOrder = 'first'
+                    }
+
+                    $missingScheduleTypeMsg = 'In order to create a schedule you must specify ScheduleType.'
+
+                    $timeSinceLastLogon = @{
+                        SiteCode               = 'Lab'
+                        Enabled                = $true
+                        TimeSinceLastLogonDays = 15
+                    }
+
+                    $timeSinceLastLogonMsg = 'When setting TimeSinceLastLogonDays, EnableFilteringExpiredLogon must be set to true.'
+
+                    $timePasswordUpdate = @{
+                        SiteCode                        = 'Lab'
+                        Enabled                         = $true
+                        TimeSinceLastPasswordUpdateDays = 49
+                    }
+
+                    $passwordExpiredFilterMsg = 'When setting TimeSinceLastPasswordUpdateDays, EnableFilteringExpiredPassword must be set to true.'
                 }
 
                 It 'Should call expected commands when include and exclude contain the same entry' {
@@ -643,6 +668,42 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getDeltaDisabled }
 
                     { Set-TargetResource @deltaMinutes } | Should -Throw -ExpectedMessage $deltaMinutesMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMADGroupDiscoveryScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when specifying schedule and not specifying ScheduleType' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
+
+                    { Set-TargetResource @missingScheduleType } | Should -Throw -ExpectedMessage $missingScheduleTypeMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMADGroupDiscoveryScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when specifying TimeSinceLastLogonDays and not EnableFilteringExpiredLogon' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
+
+                    { Set-TargetResource @timeSinceLastLogon } | Should -Throw -ExpectedMessage $timeSinceLastLogonMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMADGroupDiscoveryScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when specifying TimeSinceLastPasswordUpdateDays and not EnableFilteringExpiredPassword' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getTargetResourceStandardReturn }
+
+                    { Set-TargetResource @timePasswordUpdate } | Should -Throw -ExpectedMessage $passwordExpiredFilterMsg
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -882,12 +943,38 @@ try
                         EnableDeltaDiscovery = $true
                     }
 
+                    $deltaSchedule = @{
+                        SiteCode           = 'Lab'
+                        Enabled            = $true
+                        DeltaDiscoveryMins = 5
+                    }
+
                     $allGroupDiscoveryOptions = @{
                         SiteCode                     = 'Lab'
                         Enabled                      = $true
                         GroupDiscoveryScope          = $groupDiscoveryMisMatchInstance
                         GroupDiscoveryScopeToInclude = $groupDiscoverySingleInstance
                         GroupDiscoveryScopeToExclude = 'Test2'
+                    }
+
+                    $missingScheduleType = @{
+                        SiteCode         = 'Lab'
+                        Enabled          = $true
+                        Start            = '2/1/1970 00:00'
+                        DayOfWeek        = 'Friday'
+                        MonthlyWeekOrder = 'first'
+                    }
+
+                    $timeSinceLastLogon = @{
+                        SiteCode               = 'Lab'
+                        Enabled                = $true
+                        TimeSinceLastLogonDays = 15
+                    }
+
+                    $timePasswordUpdate = @{
+                        SiteCode                        = 'Lab'
+                        Enabled                         = $true
+                        TimeSinceLastPasswordUpdateDays = 49
                     }
                 }
 
@@ -907,6 +994,30 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabled }
 
                     Test-TargetResource @allGroupDiscoveryOptions | Should -Be $false
+                }
+
+                It 'Should return desired result false when specifying delta discovery and not enabling delta discovery' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getDeltaDisabled }
+
+                    Test-TargetResource @deltaSchedule | Should -Be $false
+                }
+
+                It 'Should return desired result false when specifying schedule and not specifying ScheduleType' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabled }
+
+                    Test-TargetResource @missingScheduleType | Should -Be $false
+                }
+
+                It 'Should return desired result false when specifying TimeSinceLastLogonDays and not EnableFilteringExpiredLogon' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabled }
+
+                    Test-TargetResource @timeSinceLastLogon | Should -Be $false
+                }
+
+                It 'Should return desired result false when specifying TimeSinceLastPasswordUpdateDays and not EnableFilteringExpiredPassword' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnEnabled }
+
+                    Test-TargetResource @timePasswordUpdate | Should -Be $false
                 }
             }
         }

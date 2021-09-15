@@ -4889,6 +4889,9 @@ function Set-ConfigMgrCBDscReverse
                 $params = @{
                     ResourceName = $resourceName
                     SiteCode     = $SiteCode
+                    ExcludeList  = @('SiteCode','EnableDeltaDiscovery','DeltaDiscoveryMins','EnableFilteringExpiredLogon',
+                    'TimeSinceLastLogonDays','EnableFilteringExpiredPassword','TimeSinceLastPasswordUpdateDays','DiscoverDistributionGroupMembership',
+                    'GroupDiscoveryScope','Start','ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth')
                     Indent       = 1
                     Count        = 7
                     Resources    = $resources

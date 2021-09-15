@@ -36,29 +36,12 @@ function Get-TargetResource
     Set-Location -Path "$($SiteCode):\"
 
     $groupDiscovery = Get-CMDiscoveryMethod -Name ActiveDirectoryGroupDiscovery -SiteCode $SiteCode
-    $status = ($groupDiscovery.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
 
-    if ($status -eq 'Active')
+    if ($groupDiscovery)
     {
-        foreach ($prop in $groupDiscovery.Props)
-        {
-            switch ($prop.PropertyName)
-            {
-                'Settings'                          { $enabledStatus = ($prop.Value1 -eq 'Active') }
-                'Full Sync Schedule'                { $groupSchedule = $prop.Value1 }
-                'Enable Incremental Sync'           { [boolean]$deltaEnabled = $prop.Value }
-                'Startup Schedule'                  { $groupDelta = $prop.Value1 }
-                'Enable Filtering Expired Logon'    { [boolean]$lastLogonEnabled = $prop.Value }
-                'Days Since Last Logon'             { $lastLogon = $prop.Value }
-                'Enable Filtering Expired Password' { [boolean]$lastPasswordEnabled = $prop.Value }
-                'Days Since Last Password Set'      { $lastPassword = $prop.Value }
-                'Discover DG Membership'            { [boolean]$dgMemberEnabled = $prop.Value }
-            }
-        }
-
         $adContainers = ($groupDiscovery.Proplists | Where-Object -FilterScript {$_.PropertyListName -eq 'AD Containers'}).Values
-
         $count = 0
+
         if ($adContainers)
         {
             $adGroups = @()
@@ -88,31 +71,52 @@ function Get-TargetResource
             }
         }
 
-        if ($deltaEnabled -eq $false)
+        $status = ($groupDiscovery.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
+
+        if ($status -eq 'Active')
         {
-            $groupSchedule = $groupDelta
-            $groupDelta = $null
+            foreach ($prop in $groupDiscovery.Props)
+            {
+                switch ($prop.PropertyName)
+                {
+                    'Settings'                          { $enabledStatus = ($prop.Value1 -eq 'Active') }
+                    'Full Sync Schedule'                { $groupSchedule = $prop.Value1 }
+                    'Enable Incremental Sync'           { [boolean]$deltaEnabled = $prop.Value }
+                    'Startup Schedule'                  { $groupDelta = $prop.Value1 }
+                    'Enable Filtering Expired Logon'    { [boolean]$lastLogonEnabled = $prop.Value }
+                    'Days Since Last Logon'             { $lastLogon = $prop.Value }
+                    'Enable Filtering Expired Password' { [boolean]$lastPasswordEnabled = $prop.Value }
+                    'Days Since Last Password Set'      { $lastPassword = $prop.Value }
+                    'Discover DG Membership'            { [boolean]$dgMemberEnabled = $prop.Value }
+                }
+            }
+
+            if ($deltaEnabled -eq $false)
+            {
+                $groupSchedule = $groupDelta
+                $groupDelta = $null
+            }
+
+            $schedule = Get-CMSchedule -ScheduleString $groupSchedule
+
+            if (-not [string]::IsNullOrEmpty($groupDelta))
+            {
+                $sDelta = Convert-CMSchedule -ScheduleString $groupDelta
+
+                if ($sDelta.HourSpan -eq 1)
+                {
+                    $syncDelta = 60
+                }
+                else
+                {
+                    $syncDelta = $sDelta.MinuteSpan
+                }
+            }
         }
-
-        $schedule = Get-CMSchedule -ScheduleString $groupSchedule
-
-        if (-not [string]::IsNullOrEmpty($groupDelta))
+        else
         {
-            $sDelta = Convert-CMSchedule -ScheduleString $groupDelta
-
-            if ($sDelta.HourSpan -eq 1)
-            {
-                $syncDelta = 60
-            }
-            else
-            {
-                $syncDelta = $sDelta.MinuteSpan
-            }
+            $enabledStatus = $false
         }
-    }
-    else
-    {
-        $enabledStatus = $false
     }
 
     return @{
@@ -294,9 +298,8 @@ function Set-TargetResource
 
         if ($Enabled -eq $true)
         {
-            if (($PSBoundParameters.DeltaDiscoveryMins) -and ($PSBoundParameters.EnableDeltaDiscovery -eq $false -or
-                ($state.EnableDeltaDiscovery -eq $false -and
-                [string]::IsNullOrEmpty($PSBoundParameters.EnableDeltaDiscovery))))
+            if (($PSBoundParameters.ContainsKey('DeltaDiscoveryMins')) -and ($EnableDeltaDiscovery -eq $false -or
+                $state.EnableDeltaDiscovery -eq $false))
             {
                 throw $script:localizedData.MissingDeltaDiscovery
             }
@@ -324,6 +327,23 @@ function Set-TargetResource
                         throw ($script:localizedData.GdsInEx -f $item.Name)
                     }
                 }
+            }
+
+            if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
+                $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
+                $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
+            {
+                throw $script:localizedData.MissingScheduleType
+            }
+
+            if ($PSBoundParameters.ContainsKey('TimeSinceLastLogonDays') -and $EnableFilteringExpiredLogon -ne $true)
+            {
+                throw $script:localizedData.TimeSinceLastLogon
+            }
+
+            if ($PSBoundParameters.ContainsKey('TimeSinceLastPasswordUpdateDays') -and $EnableFilteringExpiredPassword -ne $true)
+            {
+                throw $script:localizedData.PasswordExpiredFilter
             }
 
             $paramsToCheck = @('Enabled','EnableDeltaDiscovery','DeltaDiscoveryMins','EnableFilteringExpiredLogon',
@@ -632,6 +652,33 @@ function Test-TargetResource
 
     if ($Enabled -eq $true)
     {
+        if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
+                $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
+                $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
+        {
+            Write-Warning -Message $script:localizedData.MissingScheduleType
+            $badInput = $true
+        }
+
+        if (($PSBoundParameters.ContainsKey('DeltaDiscoveryMins')) -and ($EnableDeltaDiscovery -eq $false -or
+                $state.EnableDeltaDiscovery -eq $false))
+        {
+            Write-Warning -Message $script:localizedData.MissingDeltaDiscovery
+            $badInput = $true
+        }
+
+        if ($PSBoundParameters.ContainsKey('TimeSinceLastLogonDays') -and $EnableFilteringExpiredLogon -ne $true)
+        {
+            Write-Warning -Message $script:localizedData.TimeSinceLastLogon
+            $badInput = $true
+        }
+
+        if ($PSBoundParameters.ContainsKey('TimeSinceLastPasswordUpdateDays') -and $EnableFilteringExpiredPassword -ne $true)
+        {
+            Write-Warning -Message $script:localizedData.PasswordExpiredFilter
+            $badInput = $true
+        }
+
         $testParams = @{
             CurrentValues = $state
             DesiredValues = $PSBoundParameters
@@ -746,9 +793,13 @@ function Test-TargetResource
             }
         }
 
-        if ($result -eq $false -or $testResult -eq $false -or $schedResult -eq $false)
+        if ($result -eq $false -or $testResult -eq $false -or $schedResult -eq $false -or $badInput -eq $true)
         {
             $result = $false
+        }
+        else
+        {
+            $result = $true
         }
     }
     elseif ($state.Enabled -eq $true)

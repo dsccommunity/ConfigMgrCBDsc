@@ -12,4 +12,7 @@ ConvertFrom-StringData @'
     GdsExtra              = Group Discovery Scope Name {0} is expected to be absent.
     DeltaNoInterval       = DeltaDiscoveryMins is not specified, specify DeltaDiscoveryMins when enabling Delta Discovery.
     NewSchedule           = Modifying group discovery schedule.
+    MissingScheduleType   = In order to create a schedule you must specify ScheduleType.
+    TimeSinceLastLogon    = When setting TimeSinceLastLogonDays, EnableFilteringExpiredLogon must be set to true.
+    PasswordExpiredFilter = When setting TimeSinceLastPasswordUpdateDays, EnableFilteringExpiredPassword must be set to true.
 '@
