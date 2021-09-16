@@ -126,6 +126,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   file replication settings in Configuration Manager.
 - **CMEmailNotificationComponent**: Provides a resource for modifying email notification
   component settings.
+- **CMGroupDiscovery**: Provides a resource to manage the Configuration Manager
+  Group Discovery method.
 
 ### xSccmPreReqs
 
@@ -1361,6 +1363,61 @@ you are using apply and auto correct.
 - [CMEmailNotificationComponent_Present](Source\Examples\Resources\CMEmailNotificationComponent\CMEmailNotificationComponent_Present.ps1)
 - [CMEmailNotificationComponent_Absent](Source\Examples\Resources\CMEmailNotificationComponent\CMEmailNotificationComponent_Absent.ps1)
 
+### CMGroupDiscovery
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[Boolean] Enabled** _(Key)_: Specifies the enablement of the system discovery
+  method.
+- **[Boolean] EnableDeltaDiscovery** _(Write)_: Indicates whether Configuration Manager
+  discovers resources created or modified in AD DS since the last discovery cycle.
+- **[UInt32] DeltaDiscoveryMins** _(Write)_: Specifies the number of minutes for
+  the delta discovery.
+  - Values Range: 5 - 60
+- **[Boolean] EnableFilteringExpiredLogon** _(Write)_: Indicates whether Configuration
+  Manager discovers only computers that have logged onto a domain within a specified
+  number of days.
+- **[UInt32] TimeSinceLastLogonDays** _(Write)_: Specify the number of days for
+  EnableFilteringExpiredLogon.
+  - Values Range: 14 - 720
+- **[Boolean] EnableFilteringExpiredPassword** _(Write)_: Indicates whether Configuration
+  Manager discovers only computers that have updated their computer account password
+  within a specified number of days.
+- **[UInt32] TimeSinceLastPasswordUpdateDays** _(Write)_: Specify the number of days
+  for EnableFilteringExpiredPassword.
+  - Values Range: 30 - 720
+- **[EmbeddedInstance] GroupDiscoveryScope[]** _(Write)_: Specifies an array of Group
+  Discovery Scopes to match to the discovery.
+- **[EmbeddedInstance] GroupDiscoveryScopeToInclude[]** _(Write)_: Specifies an array
+  of Group Discovery Scopes to add to the discovery.
+- **[String] GroupDiscoveryScopeToExclude[]** _(Write)_: Specifies an array of names
+  of Group Discovery Scopes to exclude to the discovery.
+- **[Boolean] DiscoverDistributionGroupMembership** _(Write)_: Specify if group discovery
+  will discover distribution groups and the members of the group.
+- **[String] Start** _(Write)_: Specifies the start date and start time for the
+  collection refresh schedule Month/Day/Year, example 1/1/2020 02:00.
+- **[String] ScheduleType** _(Write)_: Specifies the schedule type for the collection
+  refresh schedule.
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | Hours |
+    Minutes | None }
+- **[UInt32] RecurInterval** _(Write)_: Specifies how often the ScheduleType is run.
+- **[String] MonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
+  schedule type.
+  - Values include: { First | Second | Third | Fourth | Last }
+- **[String] DayOfWeek** _(Write)_: Specifies the day of week name for MonthlyByWeek
+  and Weekly schedules.
+  - Values include: { Sunday | Monday | Tuesday | Wednesday | Thursday | Friday |
+    Saturday }
+- **[UInt32] DayOfMonth** _(Write)_: Specifies the day number for MonthlyByDay schedules.
+  Note specifying 0 sets the schedule to run the last day of the month.
+  - Values Range: 0 - 31
+
+#### CMGroupDiscovery Examples
+
+- [GroupDiscovery_Enabled](Source\Examples\Resources\CMGroupDiscovery\GroupDiscovery_Enabled.ps1)
+- [GroupDiscovery_Include_Exclude](Source\Examples\Resources\CMGroupDiscovery\GroupDiscovery_Include_Exclude.ps1)
+- [GroupDiscovery_Disabled](Source\Examples\Resources\CMGroupDiscovery\GroupDiscovery_Disabled.ps1)
+
 ## ReverseDsc
 
 Most organizations using this module already have an existing Configuration Manager
@@ -1417,6 +1474,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMFallbackStatusPoint: Fully Supported
 - DSC_CMFileReplication: Not Supported
 - DSC_CMForestDiscovery: Fully Supported
+- DSC_CMGroupDiscovery: Fully Supported
 - DSC_CMHeartbeatDiscovery: Fully Supported
 - DSC_CMIniFile: Not Supported
 - DSC_CMMaintenanceWindows: Fully Supported
@@ -1462,9 +1520,9 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
-  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
@@ -1472,9 +1530,9 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientPush|ClientStatusSettings|CollectionEvaluationComponent|Collections|
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
-  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|
+  NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareupdatePoint|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
   StatusReportingComponent|SystemDiscovery|UserDiscovery }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
   Filename must end with .psd1. Not specifying DataFile the output will be displayed

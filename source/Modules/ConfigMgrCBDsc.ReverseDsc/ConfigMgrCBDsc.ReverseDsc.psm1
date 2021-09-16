@@ -218,7 +218,7 @@ function Set-OutFile
     }
 
     if ($ResourceName -eq 'CMCollections' -or $ResourceName -eq 'CMAssetIntelligencePoint' -or
-        $ResourceName -eq 'CMMaintenanceWindows')
+        $ResourceName -eq 'CMMaintenanceWindows' -or $ResourceName -eq 'CMGroupDiscovery')
     {
         if ($cPush.ScheduleType -eq 'None')
         {
@@ -306,6 +306,22 @@ function Set-OutFile
             $tester += "`t`t`t@{`r`n"
             $tester += "`t`t`t`tRuleName        = '$($item.RuleName)'`r`n"
             $tester += "`t`t`t`tQueryExpression = '$($item.QueryExpression)'`r`n"
+            $tester += "`t`t`t}`r`n"
+        }
+        $tester += "`t`t)`r`n"
+    }
+
+    if (($ResourceName -eq 'CMGroupDiscovery') -and ($cPush.GroupDiscoveryScope))
+    {
+        $col = 'GroupDiscoveryScope'
+
+        $tester += "`t`t$($col.PadRight($updatedCount)) = @(`r`n"
+        foreach ($item in $cPush.GroupDiscoveryScope)
+        {
+            $tester += "`t`t`t@{`r`n"
+            $tester += "`t`t`t`tName         = '$($item.Name)'`r`n"
+            $tester += "`t`t`t`tLdapLocation = '$($item.LdapLocation)'`r`n"
+            $tester += "`t`t`t`tRecurse      = '$($item.Recurse)'`r`n"
             $tester += "`t`t`t}`r`n"
         }
         $tester += "`t`t)`r`n"
@@ -506,6 +522,10 @@ Configuration ConfigureSccm
         [Parameter()]
         [HashTable]
         `$CMForestDiscovery,
+
+        [Parameter()]
+        [HashTable]
+        `$CMGroupDiscovery,
 
         [Parameter()]
         [HashTable]
@@ -875,6 +895,620 @@ Configuration ConfigureSccm
                 {
                     SiteCode = `$SiteCode
                     Enabled  = `$CMForestDiscovery.Enabled
+                }
+            }
+        }
+
+        if (`$CMGroupDiscovery)
+        {
+            if (`$CMGroupDiscovery.Enabled -eq `$false)
+            {
+                CMGroupDiscovery GroupDiscoverySettings
+                {
+                    SiteCode = `$SiteCode
+                    Enabled  = `$CMGroupDiscovery.Enabled
+                }
+            }
+            else
+            {
+                if (`$CMGroupDiscovery.GroupDiscoveryScope)
+                {
+                    `$groupScopes = @()
+                    foreach (`$item in `$CMGroupDiscovery.GroupDiscoveryScope)
+                    {
+                        `$groupScopes += DSC_CMGroupDiscoveryScope
+                        {
+                            Name         = `$item.Name
+                            LdapLocation = `$item.LdapLocation
+                            Recurse      = `$item.Recurse
+                        }
+                    }
+                }
+
+                if (`$CMGroupDiscovery.DeltaDiscovery -eq `$false)
+                {
+                    if (`$CMGroupDiscovery.EnableFilteringExpiredLogon -eq `$true -and
+                        `$CMGroupDiscovery.EnableFilteringExpiredPassword -eq `$true)
+                    {
+                        if (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfMonth                          = `$CMGroupDiscovery.DayOfMonth
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                MonthlyWeekOrder                    = `$CMGroupDiscovery.MonthlyWeekOrder
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'Weekly')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RefreshType                         = `$CMGroupDiscovery.RefreshType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'None')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                            }
+                        }
+                        else
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                            }
+                        }
+                    }
+                    elseif (`$CMGroupDiscovery.EnableFilteringExpiredLogon -eq `$true)
+                    {
+                        if (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfMonth                          = `$CMGroupDiscovery.DayOfMonth
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                MonthlyWeekOrder                    = `$CMGroupDiscovery.MonthlyWeekOrder
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'Weekly')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RefreshType                         = `$CMGroupDiscovery.RefreshType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'None')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                            }
+                        }
+                        else
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                            }
+                        }
+                    }
+                    elseif (`$CMGroupDiscovery.EnableFilteringExpiredPassword -eq `$true)
+                    {
+                        if (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfMonth                          = `$CMGroupDiscovery.DayOfMonth
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                MonthlyWeekOrder                    = `$CMGroupDiscovery.MonthlyWeekOrder
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'Weekly')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RefreshType                         = `$CMGroupDiscovery.RefreshType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'None')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                            }
+                        }
+                        else
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (`$CMGroupDiscovery.EnableFilteringExpiredLogon -eq `$true -and
+                        `$CMGroupDiscovery.EnableFilteringExpiredPassword -eq `$true)
+                    {
+                        if (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfMonth                          = `$CMGroupDiscovery.DayOfMonth
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                MonthlyWeekOrder                    = `$CMGroupDiscovery.MonthlyWeekOrder
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'Weekly')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RefreshType                         = `$CMGroupDiscovery.RefreshType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'None')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                            }
+                        }
+                        else
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                            }
+                        }
+                    }
+                    elseif (`$CMGroupDiscovery.EnableFilteringExpiredLogon -eq `$true)
+                    {
+                        if (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfMonth                          = `$CMGroupDiscovery.DayOfMonth
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                MonthlyWeekOrder                    = `$CMGroupDiscovery.MonthlyWeekOrder
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'Weekly')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RefreshType                         = `$CMGroupDiscovery.RefreshType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'None')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                            }
+                        }
+                        else
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                TimeSinceLastLogonDays              = `$CMGroupDiscovery.TimeSinceLastLogonDays
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                            }
+                        }
+                    }
+                    elseif (`$CMGroupDiscovery.EnableFilteringExpiredPassword -eq `$true)
+                    {
+                        if (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfMonth                          = `$CMGroupDiscovery.DayOfMonth
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                MonthlyWeekOrder                    = `$CMGroupDiscovery.MonthlyWeekOrder
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'Weekly')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RefreshType                         = `$CMGroupDiscovery.RefreshType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                                DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
+                            }
+                        }
+                        elseif (`$CMGroupDiscovery.ScheduleType -eq 'None')
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                            }
+                        }
+                        else
+                        {
+                            CMGroupDiscovery GroupDiscoverySettings
+                            {
+                                SiteCode                            = `$SiteCode
+                                Enabled                             = `$CMGroupDiscovery.Enabled
+                                EnableDeltaDiscovery                = `$CMGroupDiscovery.EnableDeltaDiscovery
+                                DeltaDiscoveryMins                  = `$CMGroupDiscovery.DeltaDiscoveryMins
+                                EnableFilteringExpiredLogon         = `$CMGroupDiscovery.EnableFilteringExpiredLogon
+                                EnableFilteringExpiredPassword      = `$CMGroupDiscovery.EnableFilteringExpiredPassword
+                                TimeSinceLastPasswordUpdateDays     = `$CMGroupDiscovery.TimeSinceLastPasswordUpdateDays
+                                GroupDiscoveryScope                 = `$groupScopes
+                                DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
+                                Start                               = `$CMGroupDiscovery.Start
+                                ScheduleType                        = `$CMGroupDiscovery.ScheduleType
+                                RecurInterval                       = `$CMGroupDiscovery.RecurInterval
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -3744,7 +4378,7 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly')]
+            'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly','GroupDiscovery')]
         [String[]]
         $Include = 'All',
 
@@ -3756,7 +4390,7 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'StatusReportingComponent','SystemDiscovery','UserDiscovery')]
+            'StatusReportingComponent','SystemDiscovery','UserDiscovery','GroupDiscovery')]
         [String[]]
         $Exclude,
 
@@ -4238,6 +4872,45 @@ function Set-ConfigMgrCBDscReverse
         $testThing = Set-OutFile @params
         $wforest += "$testThing"
         $fileOut += "$wforest`r`n"
+    }
+
+    if (($Include -eq 'All' -and $Exclude -notcontains 'GroupDiscovery') -or ($Include -contains 'GroupDiscovery'))
+    {
+        $resourceName = 'CMGroupDiscovery'
+        Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
+        $groupDisc = ((Get-CMDiscoveryMethod -Name ActiveDirectoryGroupDiscovery -SiteCode $SiteCode).Props | Where-Object -FilterScript {$_.PropertyName -eq 'Settings'}).Value1
+
+        if ($groupDisc)
+        {
+            $wGrpDiscovery = "$resourceName = @{`r`n"
+
+            if ($groupDisc -eq 'INACTIVE')
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    ExcludeList  = @('SiteCode','EnableDeltaDiscovery','DeltaDiscoveryMins','EnableFilteringExpiredLogon',
+                    'TimeSinceLastLogonDays','EnableFilteringExpiredPassword','TimeSinceLastPasswordUpdateDays','DiscoverDistributionGroupMembership',
+                    'GroupDiscoveryScope','Start','ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth')
+                    Indent       = 1
+                    Count        = 7
+                    Resources    = $resources
+                }
+            }
+            else
+            {
+                $params = @{
+                    ResourceName = $resourceName
+                    SiteCode     = $SiteCode
+                    Indent       = 1
+                    Resources    = $resources
+                }
+            }
+
+            $testThing = Set-OutFile @params
+            $wGrpDiscovery += "$testThing"
+            $fileOut += "$wGrpDiscovery`r`n"
+        }
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'HeartbeatDiscovery') -or ($Include -contains 'HeartbeatDiscovery'))

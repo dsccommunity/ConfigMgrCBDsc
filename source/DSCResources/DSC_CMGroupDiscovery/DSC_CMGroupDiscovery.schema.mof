@@ -1,0 +1,30 @@
+[ClassVersion("1.0.0"), FriendlyName("CMGroupDiscovery")]
+class DSC_CMGroupDiscovery : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies the enablement of the system discovery method.")] Boolean Enabled;
+    [Write, Description("Indicates whether Configuration Manager discovers resources created or modified in AD DS since the last discovery cycle.")] Boolean EnableDeltaDiscovery;
+    [Write, Description("Specifies the number of minutes for the delta discovery.")] UInt32 DeltaDiscoveryMins;
+    [Write, Description("Indicates whether Configuration Manager discovers only computers that have logged onto a domain within a specified number of days.")] Boolean EnableFilteringExpiredLogon;
+    [Write, Description("Specify the number of days for EnableFilteringExpiredLogon.")] UInt32 TimeSinceLastLogonDays;
+    [Write, Description("Indicates whether Configuration Manager discovers only computers that have updated their computer account password within a specified number of days.")] Boolean EnableFilteringExpiredPassword;
+    [Write, Description("Specify the number of days for EnableFilteringExpiredPassword.")] UInt32 TimeSinceLastPasswordUpdateDays;
+    [Write, EmbeddedInstance("DSC_CMGroupDiscoveryScope"), Description("Specifies an array of Group Discovery Scopes to match to the discovery.")] String GroupDiscoveryScope[];
+    [Write, EmbeddedInstance("DSC_CMGroupDiscoveryScope"), Description("Specifies an array of Group Discovery Scopes to add to the discovery.")] String GroupDiscoveryScopeToInclude[];
+    [Write, Description("Specifies an array of names of Group Discovery Scopes to exclude to the discovery.")] String GroupDiscoveryScopeToExclude[];
+    [Write, Description("Specify if group discovery will discover distribution groups and the members of the group.")] Boolean DiscoverDistributionGroupMembership;
+    [Write, Description("Specifies the start date and start time for the group discovery schedule Month/Day/Year, example 1/1/2020 02:00.")] String Start;
+    [Write, Description("Specifies the schedule type for the group discovery schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}] String ScheduleType;
+    [Write, Description("Specifies how often the ScheduleType is run.")] UInt32 RecurInterval;
+    [Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String MonthlyWeekOrder;
+    [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
+    [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 DayOfMonth;
+};
+
+[ClassVersion("1.0.0")]
+class DSC_CMGroupDiscoveryScope
+{
+     [Required, Description("Specifies the name of the Group Discovery Scope.")] String Name;
+     [Required, Description("Specifies the LDAP location.")] String LdapLocation;
+     [Required, Description("Specifies if the LDAP search is recursive.")] Boolean Recurse;
+};
