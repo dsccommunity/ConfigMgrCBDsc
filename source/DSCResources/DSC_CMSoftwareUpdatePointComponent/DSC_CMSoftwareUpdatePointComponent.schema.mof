@@ -27,7 +27,7 @@ class DSC_CMSoftwareUpdatePointComponent: OMI_BaseResource
     [Write, Description("Specifies how long, in months, to wait before a software update expires after another update supersedes it.")] UInt32 WaitMonth;
     [Write, Description("Specifies how long, in months, to wait before a feature update expires after another update supersedes it.")] UInt32 WaitMonthForFeature;
     [Write, Description("Specifies the start date and start time for the synchronization schedule Month/Day/Year, example 1/1/2020 02:00.")] String Start;
-    [Write, Description("Specifies the schedule type for the synchronization schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days"}] String ScheduleType;
+    [Write, Description("Specifies the schedule type for the synchronization schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours"}] String ScheduleType;
     [Write, Description("Specifies how often the ScheduleType is run.")] UInt32 RecurInterval;
     [Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String MonthlyWeekOrder;
     [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
@@ -37,5 +37,5 @@ class DSC_CMSoftwareUpdatePointComponent: OMI_BaseResource
     [Write, Description("Specifies the maximum runtime, in minutes, for windows feature updates.")] UInt32 FeatureUpdateMaxRuntimeMins;
     [Write, Description("Specifies the maximum runtime, in minutes, for Office 365 updates and windows non-feature updates.")] UInt32 NonFeatureUpdateMaxRuntimeMins;
     [Read, Description("Identifies whether the specified site is a child site or top level site.")] String ChildSite;
-    [Read, Description("Identifies software update categories and products at the specified site.")] String AvailableCats;
+    [Read, Description("Identifies software update categories and products at the specified site.")] String AvailableCats[];
 };

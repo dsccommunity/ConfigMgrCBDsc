@@ -445,7 +445,7 @@ function Set-TargetResource
         $Start,
 
         [Parameter()]
-        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days')]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','Hours')]
         [String]
         $ScheduleType,
 
@@ -516,7 +516,7 @@ function Set-TargetResource
 
         foreach ($cat in $cats.Where({ $_ -ne $null }))
         {
-            if ($State.AvailableCats -notcontains $cat)
+            if ($state.AvailableCats -notcontains $cat)
             {
                 throw ($script:localizedData.InvalidCats -f $cat)
             }
@@ -624,6 +624,13 @@ function Set-TargetResource
                (-not $PSBoundParameters.ContainsKey('ScheduleType')))
             {
                 throw $script:localizedData.SyncNoSchedule
+            }
+
+            if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
+                $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
+                $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
+            {
+                throw $script:localizedData.MissingScheduleType
             }
 
             if ($LanguageSummaryDetails -or $LanguageSummaryDetailsToInclude -or $LanguageSummaryDetailsToExclude)
@@ -1093,7 +1100,7 @@ function Test-TargetResource
         $Start,
 
         [Parameter()]
-        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days')]
+        [ValidateSet('MonthlyByDay','MonthlyByWeek','Weekly','Days','Hours')]
         [String]
         $ScheduleType,
 
@@ -1164,7 +1171,7 @@ function Test-TargetResource
 
     foreach ($cat in $cats.Where({ $_ -ne $null }))
     {
-        if ($State.AvailableCats -notcontains $cat)
+        if ($state.AvailableCats -notcontains $cat)
         {
             Write-Warning -Message ($script:localizedData.InvalidCats -f $cat)
             $result = $false
@@ -1293,6 +1300,14 @@ function Test-TargetResource
            (-not $PSBoundParameters.ContainsKey('ScheduleType')))
         {
             Write-Warning -Message $script:localizedData.SyncNoSchedule
+            $result = $false
+        }
+
+        if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
+                $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
+                $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
+        {
+            Write-Warning -Message $script:localizedData.MissingScheduleType
             $result = $false
         }
 

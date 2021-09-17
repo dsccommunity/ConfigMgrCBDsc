@@ -1436,7 +1436,7 @@ you are using apply and auto correct.
   synchronization schedule.
 - **[String] ScheduleType** _(Write)_: Specifies the schedule type for the
   synchronization schedule.
-  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days }
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | Hours }
 - **[UInt32] RecurInterval** _(Write)_: Specifies how often the ScheduleType is run.
   - Values Range: 1 - 31
 - **[String] MonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
