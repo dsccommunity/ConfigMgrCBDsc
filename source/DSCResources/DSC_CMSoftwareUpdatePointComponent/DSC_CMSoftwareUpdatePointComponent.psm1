@@ -582,7 +582,8 @@ function Set-TargetResource
                 }
             }
         }
-        else {
+        else
+        {
             if (($PSBoundParameters.ImmediatelyExpireSupersedence -eq $false) -and
                (-not $PSBoundParameters.ContainsKey('WaitMonth')))
             {
