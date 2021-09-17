@@ -585,6 +585,16 @@ try
                         RecurInterval = 9
                     }
 
+                    $updateRemovals = @{
+                        SiteCode                     = 'Lab'
+                        LanguageUpdateFilesToExclude = @('English','French')
+                    }
+
+                    $summaryRemovals = @{
+                        SiteCode                        = 'Lab'
+                        LanguageSummaryDetailsToExclude = @('English','French')
+                    }
+
                     $badlang = 'BadLang is not a valid language available in ConfigMgr, please validate your input.'
                     $badcat = 'BadCat is not a valid product or category available in ConfigMgr, please validate your input.'
                     $langSumInEx = 'LanguageSummaryDetailsToExclude and LanguageSummaryDetailsToInclude contain to same entry German, remove from one of the arrays.'
@@ -600,6 +610,8 @@ try
                     $scheduleNoSync = 'When specifying a schedule, the EnableSynchronization paramater must be true.'
                     $syncNoSchedule = 'When specifying the EnableSynchronization paramater as true, you must specify a schedule.'
                     $missingScheduleType = 'In order to create a schedule you must specify ScheduleType.'
+                    $allSummaryRemoved = 'You cannot remove all Language Summary Details. Please remove one or more exclusions.'
+                    $allUpdateRemoved = 'You cannot remove all Language Update Files. Please remove one or more exclusions.'
 
                     Mock -CommandName New-CMSchedule
                     Mock -CommandName Test-CMSchedule
@@ -812,6 +824,45 @@ try
                     Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
                     Assert-MockCalled Set-CMSoftwareUpdatePointComponent -Exactly -Times 0 -Scope It
                 }
+
+                It 'Should return throw when a child languages removed' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnChild }
+                    Mock -CommandName Set-CMSoftwareUpdatePointComponent
+
+                    { Set-TargetResource @updateRemovals } | Should -Throw -ExpectedMessage $allUpdateRemoved
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Test-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSoftwareUpdatePointComponent -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should return throw when all language summary details removed' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnSchedule }
+                    Mock -CommandName Set-CMSoftwareUpdatePointComponent
+
+                    { Set-TargetResource @summaryRemovals } | Should -Throw -ExpectedMessage $allSummaryRemoved
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Test-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSoftwareUpdatePointComponent -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should return throw when all language update files removed' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnSchedule }
+                    Mock -CommandName Set-CMSoftwareUpdatePointComponent
+
+                    { Set-TargetResource @updateRemovals } | Should -Throw -ExpectedMessage $allUpdateRemoved
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Test-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMSoftwareUpdatePointComponent -Exactly -Times 0 -Scope It
+                }
             }
         }
 
@@ -996,6 +1047,16 @@ try
                         RecurInterval = 9
                     }
 
+                    $updateRemovals = @{
+                        SiteCode                     = 'Lab'
+                        LanguageUpdateFilesToExclude = @('English','French')
+                    }
+
+                    $summaryRemovals = @{
+                        SiteCode                        = 'Lab'
+                        LanguageSummaryDetailsToExclude = @('English','French')
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnSchedule }
                 }
 
@@ -1033,6 +1094,14 @@ try
 
                 It 'Should return desired result false, ScheduleType missing' {
                     Test-TargetResource @noSchedType | Should -Be $false
+                }
+
+                It 'Should return desired result false, all update files removed' {
+                    Test-TargetResource @updateRemovals | Should -Be $false
+                }
+
+                It 'Should return desired result false, all summary details removed' {
+                    Test-TargetResource @summaryRemovals | Should -Be $false
                 }
             }
 
@@ -1089,6 +1158,11 @@ try
                         LanguageUpdateFilesToExclude = @('German')
                     }
 
+                    $childRemovals = @{
+                        SiteCode                     = 'Lab'
+                        LanguageUpdateFilesToExclude = @('English','French')
+                    }
+
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnChild }
                 }
 
@@ -1110,6 +1184,10 @@ try
 
                 It 'Should return desired result false, include/exclude ignored' {
                     Test-TargetResource @childIgnore | Should -Be $false
+                }
+
+                It 'Should return desired result false when child site all langs removed' {
+                    Test-TargetResource @childRemovals | Should -Be $false
                 }
             }
         }

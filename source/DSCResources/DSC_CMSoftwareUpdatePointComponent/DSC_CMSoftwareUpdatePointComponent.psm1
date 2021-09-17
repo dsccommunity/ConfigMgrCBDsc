@@ -567,6 +567,11 @@ function Set-TargetResource
                         RemoveLanguageUpdateFile = $langFileCompare.Remove
                     }
                 }
+
+                if ($state.LanguageUpdateFiles.Count + $langFileCompare.Missing.Count - $langFileCompare.Remove.Count -eq 0)
+                {
+                    throw $script:localizedData.AllUpdateRemoved
+                }
             }
 
             if ($ReportingEvent -ne $state.ReportingEvent)
@@ -668,6 +673,11 @@ function Set-TargetResource
                         RemoveLanguageSummaryDetail = $langSumCompare.Remove
                     }
                 }
+
+                if ($state.LanguageSummaryDetails.Count + $langSumCompare.Missing.Count - $langSumCompare.Remove.Count -eq 0)
+                {
+                    throw $script:localizedData.AllSummaryRemoved
+                }
             }
 
             if ($LanguageUpdateFiles -or $LanguageUpdateFilesToInclude -or $LanguageUpdateFilesToExclude)
@@ -704,6 +714,11 @@ function Set-TargetResource
                     $buildingParams += @{
                         RemoveLanguageUpdateFile = $langFileCompare.Remove
                     }
+                }
+
+                if ($state.LanguageUpdateFiles.Count + $langFileCompare.Missing.Count - $langFileCompare.Remove.Count -eq 0)
+                {
+                    throw $script:localizedData.AllUpdateRemoved
                 }
             }
 
@@ -1230,6 +1245,12 @@ function Test-TargetResource
                 Write-Verbose -Message ($script:localizedData.LanguageUpdateRemove -f ($languageUpdateFilesCompare.Remove | Out-String))
                 $result = $false
             }
+
+            if ($state.LanguageUpdateFiles.Count + $languageUpdateFilesCompare.Missing.Count - $languageUpdateFilesCompare.Remove.Count -eq 0)
+            {
+                Write-Warning -Message $script:localizedData.AllUpdateRemoved
+                $result = $false
+            }
         }
 
         $testParams = @{
@@ -1353,6 +1374,12 @@ function Test-TargetResource
                 Write-Verbose -Message ($script:localizedData.LanguageSummaryRemove -f ($languageSummaryDetailsCompare.Remove | Out-String))
                 $result = $false
             }
+
+            if ($state.LanguageSummaryDetails.Count + $languageSummaryDetailsCompare.Missing.Count - $languageSummaryDetailsCompare.Remove.Count -eq 0)
+            {
+                Write-Warning -Message $script:localizedData.AllSummaryRemoved
+                $result = $false
+            }
         }
 
         if ($LanguageUpdateFiles -or $LanguageUpdateFilesToInclude -or $LanguageUpdateFilesToExclude)
@@ -1395,6 +1422,12 @@ function Test-TargetResource
             if ($languageUpdateFilesCompare.Remove)
             {
                 Write-Verbose -Message ($script:localizedData.LanguageUpdateRemove -f ($languageUpdateFilesCompare.Remove | Out-String))
+                $result = $false
+            }
+
+            if ($state.LanguageUpdateFiles.Count + $languageUpdateFilesCompare.Missing.Count - $languageUpdateFilesCompare.Remove.Count -eq 0)
+            {
+                Write-Warning -Message $script:localizedData.AllUpdateRemoved
                 $result = $false
             }
         }

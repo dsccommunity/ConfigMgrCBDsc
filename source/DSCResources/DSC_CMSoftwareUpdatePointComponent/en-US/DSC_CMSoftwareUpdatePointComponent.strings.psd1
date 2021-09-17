@@ -31,4 +31,6 @@ ConvertFrom-StringData @'
     InvalidLangs                 = {0} is not a valid language available in ConfigMgr, please validate your input.
     InvalidCats                  = {0} is not a valid product or category available in ConfigMgr, please validate your input.
     MissingScheduleType          = In order to create a schedule you must specify ScheduleType.
+    AllSummaryRemoved            = You cannot remove all Language Summary Details. Please remove one or more exclusions.
+    AllUpdateRemoved             = You cannot remove all Language Update Files. Please remove one or more exclusions.
 '@
