@@ -128,6 +128,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   component settings.
 - **CMGroupDiscovery**: Provides a resource to manage the Configuration Manager
   Group Discovery method.
+- **CMSoftwareUpdatePointComponent**: Provides a resource for modifying the
+  Software Update Point Component settings in Configuration Manager.
 
 ### xSccmPreReqs
 
@@ -1418,6 +1420,109 @@ you are using apply and auto correct.
 - [GroupDiscovery_Include_Exclude](Source\Examples\Resources\CMGroupDiscovery\GroupDiscovery_Include_Exclude.ps1)
 - [GroupDiscovery_Disabled](Source\Examples\Resources\CMGroupDiscovery\GroupDiscovery_Disabled.ps1)
 
+### CMSoftwareUpdatePointComponent
+
+- **[String] SiteCode** _(Key)_: Specifies a site code for the Configuration Manager
+  site that manages the system role for the software update point component.
+- **[String] LanguageSummaryDetails[]** _(Write)_: Specifies an array of languages
+  desired for the languages supported for software updates summary details at the
+  specified site.
+- **[String] LanguageSummaryDetailsToInclude[]** _(Write)_: Specifies an array of
+  languages to include in the languages supported for software updates summary
+  details at the specified site.
+- **[String] LanguageSummaryDetailsToExclude[]** _(Write)_: Specifies an array of
+  languages to exclude from the languages supported for software updates summary
+  details at the specified site.
+- **[String] LanguageUpdateFiles[]** _(Write)_: Specifies an array of languages
+  desired for the languages supported for software updates at the specified site.
+- **[String] LanguageUpdateFilesToInclude[]** _(Write)_: Specifies an array of
+  languages to include in the languages supported for software updates at the
+  specified site.
+- **[String] LanguageUpdateFilesToExclude[]** _(Write)_: Specifies an array of
+  languages to exclude from the languages supported for software updates at the
+  specified site.
+- **[String] Products[]** _(Write)_: Specifies an array of products desired for
+  software updates to synchronize.
+- **[String] ProductsToInclude[]** _(Write)_: Specifies an array of products to
+  include in software updates to synchronize.
+- **[String] ProductsToExclude[]** _(Write)_: Specifies an array of products to
+  exclude from software updates to synchronize.
+- **[String] UpdateClassifications[]** _(Write)_: Specifies an array of software
+  update classifications desired for the classifications supported for software
+  updates at this site.
+- **[String] UpdateClassificationsToInclude[]** _(Write)_: Specifies an array of
+  software update classifications to include in the classifications supported for
+  software updates at this site.
+- **[String] UpdateClassificationsToExclude[]** _(Write)_: Specifies an array of
+  software update classifications to exclude from the classifications supported for
+  software updates at this site.
+- **[String] ContentFileOption** _(Write)_: Specifies whether express updates will
+  be downloaded for Windows 10.
+  - Values include: { FullFilesOnly | ExpressForWindows10Only }
+- **[String] DefaultWsusServer** _(Write)_: Specifies the default WSUS server that
+  the software update point is pointed to.
+- **[Boolean] EnableCallWsusCleanupWizard** _(Write)_: Specifies whether to decline
+  expired updates in WSUS according to superscedence rules.
+- **[Boolean] EnableSyncFailureAlert** _(Write)_: Specifies whether Configuration
+  Manager creates an alert when synchronization fails on a site.
+- **[Boolean] EnableSynchronization** _(Write)_: Indicates whether this site
+  automatically synchronizes updates according to a schedule.
+- **[Boolean] ImmediatelyExpireSupersedence** _(Write)_: Indicates whether a software
+  update expires immediately after another update supersedes it or after a specified
+  period of time.
+- **[Boolean] ImmediatelyExpireSupersedenceForFeature** _(Write)_: Indicates whether
+  a feature update expires immediately after another update supersedes it or after
+  a specified period of time.
+- **[String] ReportingEvent** _(Write)_: Specifies whether to create event messages
+  for WSUS reporting for status reporting events or for all reporting events.
+  - Values include: { CreateAllWsusReportingEvents | CreateOnlyWsusStatusReportingEvents
+  | DoNotCreateWsusReportingEvents}
+- **[String] SynchronizeAction** _(Write)_: Specifies a source for synchronization
+  for this software update point.
+  - Values include: { SynchronizeFromMicrosoftUpdate | SynchronizeFromAnUpstreamDataSourceLocation
+  | DoNotSynchronizeFromMicrosoftUpdateOrUpstreamDataSource}
+- **[String] UpstreamSourceLocation** _(Write)_: Specifies an upstream data location
+  as a URL.
+- **[UInt32] WaitMonth** _(Write)_: Specifies how long, in months, to wait before
+  a software update expires after another update supersedes it.
+  - Values Range: 1 - 99
+- **[UInt32] WaitMonthForFeature** _(Write)_: Specifies how long, in months, to
+  wait before a feature update expires after another update supersedes it.
+  - Values Range: 1 - 99
+- **[String] Start** _(Write)_: Specifies the start date and start time for the
+  synchronization schedule.
+- **[String] ScheduleType** _(Write)_: Specifies the schedule type for the
+  synchronization schedule.
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | Hours }
+- **[UInt32] RecurInterval** _(Write)_: Specifies how often the ScheduleType is run.
+  - Values Range: 1 - 31
+- **[String] MonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
+  schedule type.
+  - Values include: { First | Second | Third | Fourth | Last }
+- **[String] DayOfWeek** _(Write)_: Specifies the day of week name for MonthlyByWeek
+  and Weekly schedules.
+  - Values include: { Sunday | Monday | Tuesday | Wednesday | Thursday | Friday
+  | Saturday }
+- **[UInt32] DayOfMonth** _(Write)_: Specifies the day number for MonthlyByDay schedules.
+  - Values Range: 0 - 31
+- **[Boolean] EnableManualCertManagement** _(Write)_: Specifies whether manual management
+  of the WSUS signing certificate is enabled.
+- **[Boolean] EnableThirdPartyUpdates** _(Write)_: Specifies whether third-party
+  updates are enabled on the Software Update Point Component.
+- **[UInt32] FeatureUpdateMaxRuntimeMins** _(Write)_: Specifies the maximum runtime,
+  in minutes, for windows feature updates.
+  - Values Range: 5 - 9999
+- **[UInt32] NonFeatureUpdateMaxRuntimeMins** _(Write)_: Specifies the maximum runtime,
+  in minutes, for Office 365 updates and windows non-feature updates.
+  - Values Range: 5 - 9999
+
+#### CMSoftwareUpdatePointComponent Examples
+
+- [CMSoftwareUpdatePointComponent_ChildSite](Source\Examples\Resources\CMSoftwareUpdatePointComponent\CMSoftwareUpdatePointComponent_ChildSite.ps1)
+- [CMSoftwareUpdatePointComponent_Exclude](Source\Examples\Resources\CMSoftwareUpdatePointComponent\CMSoftwareUpdatePointComponent_Exclude.ps1)
+- [CMSoftwareUpdatePointComponent_Match](Source\Examples\Resources\CMSoftwareUpdatePointComponent\CMSoftwareUpdatePointComponent_Match.ps1)
+- [CMSoftwareUpdatePointComponent_TopLevel](Source\Examples\Resources\CMSoftwareUpdatePointComponent\CMSoftwareUpdatePointComponent_TopLevel.ps1)
+
 ## ReverseDsc
 
 Most organizations using this module already have an existing Configuration Manager
@@ -1490,6 +1595,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMSiteSystemServer: Fully Supported
 - DSC_CMSoftwareDistributionComponent: Fully Supported
 - DSC_CMSoftwareUpdatePoint: Fully Supported
+- DSC_CMSoftwareUpdatePointComponent: Fully Supported
 - DSC_CMStatusReportingComponent: Fully Supported
 - DSC_CMSystemDiscovery: Fully Supported
 - DSC_CMUserDiscovery: Fully Supported
@@ -1522,7 +1628,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|SoftwareupdatePointComponent|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
@@ -1532,7 +1638,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
-  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|
+  SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|SoftwareupdatePointComponent|
   StatusReportingComponent|SystemDiscovery|UserDiscovery }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
   Filename must end with .psd1. Not specifying DataFile the output will be displayed

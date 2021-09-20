@@ -218,7 +218,8 @@ function Set-OutFile
     }
 
     if ($ResourceName -eq 'CMCollections' -or $ResourceName -eq 'CMAssetIntelligencePoint' -or
-        $ResourceName -eq 'CMMaintenanceWindows' -or $ResourceName -eq 'CMGroupDiscovery')
+        $ResourceName -eq 'CMMaintenanceWindows' -or $ResourceName -eq 'CMGroupDiscovery' -or
+        $ResourceName -eq 'CMSoftwareUpdatePointComponent')
     {
         if ($cPush.ScheduleType -eq 'None')
         {
@@ -574,6 +575,10 @@ Configuration ConfigureSccm
         [Parameter()]
         [HashTable[]]
         `$CMSoftwareUpdatePoint,
+
+        [Parameter()]
+        [HashTable[]]
+        `$CMSoftwareUpdatePointComponent,
 
         [Parameter()]
         [HashTable]
@@ -4322,6 +4327,2504 @@ Configuration ConfigureSccm
                 [array]`$cmUpdatePointDependsOn += `"[CMSoftwareUpdatePoint]`$(`$updatePoint.SiteServerName)`"
             }
         }
+        if (`$CMSoftwareUpdatePointComponent)
+        {
+            if (-not `$CMSoftwareUpdatePointComponent.ContainsKey('EnableSynchronization'))
+            {
+                CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                {
+                    SiteCode            = `$SiteCode
+                    LanguageUpdateFiles = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                    ReportingEvent      = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                }
+            }
+            elseif (`$CMSoftwareUpdatePointComponent.EnableSynchronization -eq `$true)
+            {
+                if (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    if (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByDay')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfMonth                              = `$CMSoftwareUpdatePointComponent.DayOfMonth
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'MonthlyByWeek')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            MonthlyWeekOrder                        = `$CMSoftwareUpdatePointComponent.MonthlyWeekOrder
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    elseif (`$CMSoftwareUpdatePointComponent.ScheduleType -eq 'Weekly')
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DayOfWeek                               = `$CMSoftwareUpdatePointComponent.DayOfWeek
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                    else
+                    {
+                        CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                        {
+                            SiteCode                                = `$SiteCode
+                            LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                            LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                            Products                                = `$CMSoftwareUpdatePointComponent.Products
+                            UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                            ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                            DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                            EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                            EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                            EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                            ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                            ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                            ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                            SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                            WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                            EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                            FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                            NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                            ScheduleType                            = `$CMSoftwareUpdatePointComponent.ScheduleType
+                            Start                                   = `$CMSoftwareUpdatePointComponent.Start
+                            RecurInterval                           = `$CMSoftwareUpdatePointComponent.RecurInterval
+                            DependsOn                               = `$cmUpdatePointDependsOn
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -eq 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        UpstreamSourceLocation                  = `$CMSoftwareUpdatePointComponent.UpstreamSourceLocation
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$true)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        EnableManualCertManagement              = `$CMSoftwareUpdatePointComponent.EnableManualCertManagement
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        WaitMonthForFeature                     = `$CMSoftwareUpdatePointComponent.WaitMonthForFeature
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+                elseif (`$CMSoftwareUpdatePointComponent.SynchronizeAction -ne 'SynchronizeFromAnUpstreamDataSourceLocation' -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence -eq `$false -and
+                    `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature -eq `$true -and
+                    `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates -eq `$false)
+                {
+                    CMSoftwareUpdatePointComponent SoftwareUpdatePointComponent
+                    {
+                        SiteCode                                = `$SiteCode
+                        LanguageSummaryDetails                  = `$CMSoftwareUpdatePointComponent.LanguageSummaryDetails
+                        LanguageUpdateFiles                     = `$CMSoftwareUpdatePointComponent.LanguageUpdateFiles
+                        Products                                = `$CMSoftwareUpdatePointComponent.Products
+                        UpdateClassifications                   = `$CMSoftwareUpdatePointComponent.UpdateClassifications
+                        ContentFileOption                       = `$CMSoftwareUpdatePointComponent.ContentFileOption
+                        DefaultWsusServer                       = `$CMSoftwareUpdatePointComponent.DefaultWsusServer
+                        EnableCallWsusCleanupWizard             = `$CMSoftwareUpdatePointComponent.EnableCallWsusCleanupWizard
+                        EnableSyncFailureAlert                  = `$CMSoftwareUpdatePointComponent.EnableSyncFailureAlert
+                        EnableSynchronization                   = `$CMSoftwareUpdatePointComponent.EnableSynchronization
+                        ImmediatelyExpireSupersedence           = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedence
+                        ImmediatelyExpireSupersedenceForFeature = `$CMSoftwareUpdatePointComponent.ImmediatelyExpireSupersedenceForFeature
+                        ReportingEvent                          = `$CMSoftwareUpdatePointComponent.ReportingEvent
+                        SynchronizeAction                       = `$CMSoftwareUpdatePointComponent.SynchronizeAction
+                        WaitMonth                               = `$CMSoftwareUpdatePointComponent.WaitMonth
+                        EnableThirdPartyUpdates                 = `$CMSoftwareUpdatePointComponent.EnableThirdPartyUpdates
+                        FeatureUpdateMaxRuntimeMins             = `$CMSoftwareUpdatePointComponent.FeatureUpdateMaxRuntimeMins
+                        NonFeatureUpdateMaxRuntimeMins          = `$CMSoftwareUpdatePointComponent.NonFeatureUpdateMaxRuntimeMins
+                        DependsOn                               = `$cmUpdatePointDependsOn
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -4378,7 +6881,8 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly','GroupDiscovery')]
+            'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly','GroupDiscovery',
+            'SoftwareUpdatePointComponent')]
         [String[]]
         $Include = 'All',
 
@@ -4390,7 +6894,8 @@ function Set-ConfigMgrCBDscReverse
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
             'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
-            'StatusReportingComponent','SystemDiscovery','UserDiscovery','GroupDiscovery')]
+            'StatusReportingComponent','SystemDiscovery','UserDiscovery','GroupDiscovery',
+            'SoftwareUpdatePointComponent')]
         [String[]]
         $Exclude,
 
@@ -5368,7 +7873,7 @@ function Set-ConfigMgrCBDscReverse
         $fileOut += "$wdistroComSetting`r`n"
     }
 
-    if (($Include -eq 'All' -and $Exclude -notcontains 'SoftwareupdatePoint') -or ($Include -contains 'SoftwareupdatePoint'))
+    if (($Include -eq 'All' -and $Exclude -notcontains 'SoftwareUpdatePoint') -or ($Include -contains 'SoftwareUpdatePoint'))
     {
         $resourceName = 'CMSoftwareUpdatePoint'
         $getSoftwareUpdatePoints = Get-CMSoftwareUpdatePoint -SiteCode $SiteCode
@@ -5407,6 +7912,37 @@ function Set-ConfigMgrCBDscReverse
             $wSup += ")"
             $fileOut += "$wSup`r`n"
         }
+    }
+
+    if (($Include -eq 'All' -and $Exclude -notcontains 'SoftwareUpdatePointComponent') -or ($Include -contains 'SoftwareUpdatePointComponent'))
+    {
+        if ([string]::IsNullOrEmpty((Get-CMSite -SiteCode $SiteCode).ReportingSiteCode))
+        {
+            $excludeList = @('SiteCode')
+        }
+        else
+        {
+            $excludeList = @('SiteCode','LanguageSummaryDetails','LanguageSummaryDetailsToInclude','LanguageSummaryDetailsToExclude','Products','ProductsToInclude','ProductsToExclude','UpdateClassifications',
+            'UpdateClassificationsToInclude','UpdateClassificationsToExclude','ContentFileOption','DefaultWsusServer','EnableCallWsusCleanupWizard','EnableSyncFailureAlert','EnableSynchronization',
+            'ImmediatelyExpireSupersedence','ImmediatelyExpireSupersedenceForFeature','SynchronizeAction','UpstreamSourceLocation','WaitMonth','WaitMonthForFeature','EnableThirdPartyUpdates',
+            'EnableManualCertManagement','FeatureUpdateMaxRuntimeMins','NonFeatureUpdateMaxRuntimeMins','ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
+        }
+
+        $resourceName = 'CMSoftwareUpdatePointComponent'
+        Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
+        $wSupComponent = "$resourceName = @{`r`n"
+        $params = @{
+            ResourceName = $resourceName
+            SiteCode     = $SiteCode
+            ExcludeList  = $excludeList
+            Indent       = 1
+            MultiEntry   = $false
+            Resources    = $resources
+        }
+
+        $testThing = Set-OutFile @params
+        $wSupComponent += "$testThing"
+        $fileOut += "$wSupComponent`r`n"
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'StatusReportingComponent') -or ($Include -contains 'StatusReportingComponent'))
