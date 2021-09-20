@@ -46433,6 +46433,20 @@ function Set-CMSoftwareUpdatePointComponent
         [System.Object]
         ${InputObject},
 
+        [bool]
+        ${EnableThirdPartyUpdates},
+
+        [bool]
+        ${EnableManualCertManagement},
+
+        [ValidateRange(5, 9999)]
+        [int]
+        ${FeatureUpdateMaxRuntimeMins},
+
+        [ValidateRange(5, 9999)]
+        [int]
+        ${NonFeatureUpdateMaxRuntimeMins},
+
         [switch]
         ${PassThru},
 

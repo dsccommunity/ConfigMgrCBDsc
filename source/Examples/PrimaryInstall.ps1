@@ -551,6 +551,33 @@ Configuration PrimaryInstall
             DependsOn                     = '[Script]RebootAfterSccmSetup'
         }
 
+        CMSoftwareUpdatePointComponent SUPComponent
+        {
+            SiteCode                                = $SiteCode
+            EnableSynchronization                   = $true
+            SynchronizeAction                       = 'SynchronizeFromMicrosoftUpdate'
+            ScheduleType                            = 'Days'
+            RecurInterval                           = 7
+            LanguageSummaryDetailsToInclude         = @('English')
+            LanguageUpdateFilesToInclude            = @('English')
+            ProductsToInclude                       = @('Windows 10')
+            UpdateClassificationsToInclude          = @('Critical Updates','Updates')
+            ContentFileOption                       = 'FullFilesOnly'
+            DefaultWsusServer                       = $ServerName
+            EnableCallWsusCleanupWizard             = $true
+            EnableSyncFailureAlert                  = $true
+            ImmediatelyExpireSupersedence           = $false
+            ImmediatelyExpireSupersedenceForFeature = $false
+            ReportingEvent                          = 'DoNotCreateWsusReportingEvents'
+            WaitMonth                               = 1
+            WaitMonthForFeature                     = 1
+            EnableThirdPartyUpdates                 = $true
+            EnableManualCertManagement              = $false
+            FeatureUpdateMaxRuntimeMins             = 300
+            NonFeatureUpdateMaxRuntimeMins          = 300
+            DependsOn                               = '[CMSoftwareUpdatePoint]SUPInstall'
+        }
+
         Script RebootAfterSCCMConfigurationInstall
         {
             TestScript = {
@@ -565,7 +592,7 @@ Configuration PrimaryInstall
                 '[CMHeartbeatDiscovery]CreateHeartbeatDiscovery','[CMUserDiscovery]CreateUserDiscovery','[CMClientStatusSettings]CreateClientStatusSettings',$cmSiteMaintenanceDependsOn,
                 '[CMBoundaryGroups]DemoBoundaryGroup','[CMAdministrativeUser]SiteAdmins','[CMCollectionMembershipEvaluationComponent]CollectionSettings',
                 '[CMStatusReportingComponent]StatusReportingSettings','[Registry]MaxHWMifSize','[CMDistributionPointGroupMembers]DPGroupMembers','[CMManagementPoint]MPInstall',
-                '[CMSoftwareUpdatePoint]SUPInstall','[CMEmailNotificationComponent]EmailSettings'
+                '[CMSoftwareUpdatePoint]SUPInstall','[CMEmailNotificationComponent]EmailSettings','[CMSoftwareUpdatePointComponent]SUPComponent'
         }
     }
 }
