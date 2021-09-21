@@ -229,6 +229,11 @@ InModuleScope $script:subModuleName {
                     BoundaryType = 4
                     Value        = 'Description:Virtual Adapter'
                 }
+                @{
+                    BoundaryID   = 16777235
+                    BoundaryType = 2
+                    Value        = '2001:0DB8:0000:000b'
+                }
             )
         }
 
@@ -238,7 +243,7 @@ InModuleScope $script:subModuleName {
 
                 $result = ConvertTo-CimBoundaries -InputObject $inputObject
                 $result          | Should -BeOfType '[Microsoft.Management.Infrastructure.CimInstance]'
-                $result.Count    | Should -Be -ExpectedValue 4
+                $result.Count    | Should -Be -ExpectedValue 5
                 $result[0].Value | Should -Be -ExpectedValue '10.1.1.1-10.1.1.255'
                 $result[0].Type  | Should -Be -ExpectedValue 'IPRange'
                 $result[1].Value | Should -Be -ExpectedValue '10.1.2.0'
@@ -247,6 +252,8 @@ InModuleScope $script:subModuleName {
                 $result[2].Type  | Should -Be -ExpectedValue 'ADSite'
                 $result[3].Value | Should -Be -ExpectedValue 'Description:Virtual Adapter'
                 $result[3].Type  | Should -Be -ExpectedValue 'VPN'
+                $result[4].Value | Should -Be -ExpectedValue '2001:0DB8:0000:000b'
+                $result[4].Type  | Should -Be -ExpectedValue 'IPv6Prefix'
             }
         }
     }

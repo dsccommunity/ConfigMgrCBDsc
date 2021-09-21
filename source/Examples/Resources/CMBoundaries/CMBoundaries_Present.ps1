@@ -34,5 +34,42 @@ Configuration Example
             Value       = '10.1.1.1-10.1.1.255'
             Ensure      = 'Present'
         }
+
+        CMBoundaries ExampleVPN
+        {
+            SiteCode    = 'Lab'
+            DisplayName = 'VPN AutoDetect'
+            Type        = 'VPN'
+            Value       = 'Auto:On'
+            Ensure      = 'Present'
+        }
+
+
+        CMBoundaries ExampleVPNDescription
+        {
+            SiteCode    = 'Lab'
+            DisplayName = 'VPN ConnectionDescription'
+            Type        = 'VPN'
+            Value       = 'Description:Contoso VPN'
+            Ensure      = 'Present'
+        }
+
+        CMBoundaries ExampleVPNName
+        {
+            SiteCode    = 'Lab'
+            DisplayName = 'VPN ConnectionName'
+            Type        = 'VPN'
+            Value       = 'Name:Contoso.com'
+            Ensure      = 'Present'
+        }
+
+        CMBoundaries ExampleIPv6
+        {
+            SiteCode    = 'Lab'
+            DisplayName = 'IPv6 1'
+            Type        = 'IPv6Prefix'
+            Value       = '2001:0DB8:0000:000b'
+            Ensure      = 'Present'
+        }
     }
 }
