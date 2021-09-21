@@ -57,7 +57,7 @@ function Get-TargetResource
         'AdSite'     { '1' }
         'IPv6Prefix' { '2' }
         'IPRange'    { '3' }
-        'VPN'        { '4' }
+        'Vpn'        { '4' }
     }
 
     if ($Type -eq 'IPSubnet')

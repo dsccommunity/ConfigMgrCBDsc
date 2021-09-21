@@ -76,7 +76,7 @@ try
             Ensure      = 'Absent'
         }
 
-        $inputVPNPresent = @{
+        $inputVpnPresent = @{
             SiteCode    = 'Lab'
             DisplayName = 'VPN 1'
             Type        = 'VPN'
@@ -90,7 +90,7 @@ try
             Value       = '2001:0DB8:0000:000b'
         }
 
-        $boundaryVPNReturn = @(
+        $boundaryVpnReturn = @(
             @{
                 BoundaryId   = 1677726
                 BoundaryType = 4
@@ -223,10 +223,10 @@ try
                     $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
                 }
 
-                It 'Should return desired result for VPN return' {
-                    Mock -CommandName Get-CMBoundary -MockWith { $boundaryVPNReturn }
+                It 'Should return desired result for Vpn return' {
+                    Mock -CommandName Get-CMBoundary -MockWith { $boundaryVpnReturn }
 
-                    $result = Get-TargetResource @inputVPNPresent
+                    $result = Get-TargetResource @inputVpnPresent
                     $result             | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode    | Should -Be -ExpectedValue 'Lab'
                     $result.DisplayName | Should -Be -ExpectedValue 'VPN 1'

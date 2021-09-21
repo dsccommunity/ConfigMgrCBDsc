@@ -35,7 +35,7 @@ Configuration Example
             Ensure      = 'Present'
         }
 
-        CMBoundaries ExampleVPN
+        CMBoundaries ExampleVpn
         {
             SiteCode    = 'Lab'
             DisplayName = 'VPN AutoDetect'
@@ -45,7 +45,7 @@ Configuration Example
         }
 
 
-        CMBoundaries ExampleVPNDescription
+        CMBoundaries ExampleVpnDescription
         {
             SiteCode    = 'Lab'
             DisplayName = 'VPN ConnectionDescription'
@@ -54,7 +54,7 @@ Configuration Example
             Ensure      = 'Present'
         }
 
-        CMBoundaries ExampleVPNName
+        CMBoundaries ExampleVpnName
         {
             SiteCode    = 'Lab'
             DisplayName = 'VPN ConnectionName'
