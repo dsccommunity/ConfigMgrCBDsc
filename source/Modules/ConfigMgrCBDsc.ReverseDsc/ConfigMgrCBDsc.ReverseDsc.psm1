@@ -989,7 +989,6 @@ Configuration ConfigureSccm
                                 DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
                                 Start                               = `$CMGroupDiscovery.Start
                                 ScheduleType                        = `$CMGroupDiscovery.ScheduleType
-                                RefreshType                         = `$CMGroupDiscovery.RefreshType
                                 RecurInterval                       = `$CMGroupDiscovery.RecurInterval
                                 DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
                             }
@@ -1083,7 +1082,6 @@ Configuration ConfigureSccm
                                 DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
                                 Start                               = `$CMGroupDiscovery.Start
                                 ScheduleType                        = `$CMGroupDiscovery.ScheduleType
-                                RefreshType                         = `$CMGroupDiscovery.RefreshType
                                 RecurInterval                       = `$CMGroupDiscovery.RecurInterval
                                 DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
                             }
@@ -1175,7 +1173,6 @@ Configuration ConfigureSccm
                                 DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
                                 Start                               = `$CMGroupDiscovery.Start
                                 ScheduleType                        = `$CMGroupDiscovery.ScheduleType
-                                RefreshType                         = `$CMGroupDiscovery.RefreshType
                                 RecurInterval                       = `$CMGroupDiscovery.RecurInterval
                                 DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
                             }
@@ -1277,7 +1274,6 @@ Configuration ConfigureSccm
                                 DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
                                 Start                               = `$CMGroupDiscovery.Start
                                 ScheduleType                        = `$CMGroupDiscovery.ScheduleType
-                                RefreshType                         = `$CMGroupDiscovery.RefreshType
                                 RecurInterval                       = `$CMGroupDiscovery.RecurInterval
                                 DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
                             }
@@ -1376,7 +1372,6 @@ Configuration ConfigureSccm
                                 DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
                                 Start                               = `$CMGroupDiscovery.Start
                                 ScheduleType                        = `$CMGroupDiscovery.ScheduleType
-                                RefreshType                         = `$CMGroupDiscovery.RefreshType
                                 RecurInterval                       = `$CMGroupDiscovery.RecurInterval
                                 DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
                             }
@@ -1473,7 +1468,6 @@ Configuration ConfigureSccm
                                 DiscoverDistributionGroupMembership = `$CMGroupDiscovery.DiscoverDistributionGroupMembership
                                 Start                               = `$CMGroupDiscovery.Start
                                 ScheduleType                        = `$CMGroupDiscovery.ScheduleType
-                                RefreshType                         = `$CMGroupDiscovery.RefreshType
                                 RecurInterval                       = `$CMGroupDiscovery.RecurInterval
                                 DayOfWeek                           = `$CMGroupDiscovery.DayOfWeek
                             }
