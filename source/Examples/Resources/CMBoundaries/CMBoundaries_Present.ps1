@@ -44,7 +44,6 @@ Configuration Example
             Ensure      = 'Present'
         }
 
-
         CMBoundaries ExampleVpnDescription
         {
             SiteCode    = 'Lab'
