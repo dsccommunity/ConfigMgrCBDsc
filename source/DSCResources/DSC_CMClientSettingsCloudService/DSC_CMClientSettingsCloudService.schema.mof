@@ -7,4 +7,5 @@ class DSC_CMClientSettingsCloudService : OMI_BaseResource
     [Write, Description("Specifies if automatically register new Windows 10 domain joined devices with Azure Active Directory.")] Boolean AutoAzureADJoin;
     [Write, Description("Specifies if allow access to cloud management gateway is enabled or disabled.")] Boolean AllowCloudManagementGateway;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
 };

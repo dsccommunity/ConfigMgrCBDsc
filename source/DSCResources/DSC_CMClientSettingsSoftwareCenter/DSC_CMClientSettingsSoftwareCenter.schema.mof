@@ -1,0 +1,21 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsSoftwareCenter")]
+class DSC_CMClientSettingsSoftwareCenter : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Required, Description("Specifies if custom software center is to be used.")] Boolean EnableCustomize;
+    [Write, Description("Specifies the company name to be used in software center.")] String CompanyName;
+    [Write, Description("Specifies in hex format the color to be used in software center.")] String ColorScheme;
+    [Write, Description("Specifies if application catalog link is hidden.")] Boolean HideApplicationCatalogLink;
+    [Write, Description("Specifies if installed applications are hidden.")] Boolean HideInstalledApplication;
+    [Write, Description("Specifies if unapproved applications are hidden.")] Boolean HideUnapprovedApplication;
+    [Write, Description("Specifies if application tab is visible.")] Boolean EnableApplicationsTab;
+    [Write, Description("Specifies if updates tab is visible.")] Boolean EnableUpdatesTab;
+    [Write, Description("Specifies if operating system tab is visible.")] Boolean EnableOperatingSystemsTab;
+    [Write, Description("Specifies if status tab is visible.")] Boolean EnableStatusTab;
+    [Write, Description("Specifies if compliance tab is visible.")] Boolean EnableComplianceTab;
+    [Write, Description("Specifies if options tab is visible.")] Boolean EnableOptionsTab;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+    [Read, Description("Specifies the portal type selected.")] String PortalType;
+};

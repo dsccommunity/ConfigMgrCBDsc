@@ -3,7 +3,7 @@ class DSC_CMClientSettingsCompliance : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
-    [Write, Description("Specifies if compliance evaluation on clients is enabled or disabled.")] Boolean Enable;
+    [Required, Description("Specifies if compliance evaluation on clients is enabled or disabled.")] Boolean Enable;
     [Write, Description("Specifies if user data and profiles are enabled or disabled.")] Boolean EnableUserDataAndProfile;
     [Write, Description("Specifies the start date and start time for the compliance evaluation schedule Month/Day/Year, example 1/1/2020 02:00.")] String Start;
     [Write, Description("Specifies the schedule type for the compliance evaluation schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}] String ScheduleType;
@@ -12,4 +12,5 @@ class DSC_CMClientSettingsCompliance : OMI_BaseResource
     [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
     [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 DayOfMonth;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
 };

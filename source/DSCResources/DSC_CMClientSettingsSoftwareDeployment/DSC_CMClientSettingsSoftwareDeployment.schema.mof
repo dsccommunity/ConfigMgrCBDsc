@@ -10,4 +10,5 @@ class DSC_CMClientSettingsSoftwareDeployment : OMI_BaseResource
     [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String DayOfWeek;
     [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 DayOfMonth;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
 };

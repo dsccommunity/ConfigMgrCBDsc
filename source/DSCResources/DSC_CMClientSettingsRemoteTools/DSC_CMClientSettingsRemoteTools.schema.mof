@@ -1,0 +1,26 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsRemoteTools")]
+class DSC_CMClientSettingsRemoteTools : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies if the firewall exceptions profiles for Remote Tools."), ValueMap{"Domain","Private","Public"}, Values{"Domain","Private","Public"}] String FirewallExceptionProfile[];
+    [Write, Description("Specifies if users can change policy or notifications settings in software center.")] Boolean AllowClientChange;
+    [Write, Description("Specifies if allow remote control of an unattended computer is enabled or disabled.")] Boolean AllowUnattendedComputer;
+    [Write, Description("Specifies if users are prompted for remote control permissions.")] Boolean PromptUserForPermission;
+    [Write, Description("Specifies if users are prompted for permission to transfer content from share clipboard.")] Boolean PromptUserForClipboardPermission;
+    [Write, Description("Specifies if remote control permissions are granted to the local administrators group.")] Boolean GrantPermissionToLocalAdministrator;
+    [Write, Description("Specifies the access level allowed."), ValueMap{"NoAccess","ViewOnly","FullControl"}, Values{"NoAccess","ViewOnly","FullControl"}] String AccessLevel;
+    [Write, Description("Specifies the permitted viewers for remote control and remote assistance.")] String PermittedViewer[];
+    [Write, Description("Specifies if session notifications are shown on the taskbar.")] Boolean ShowNotificationIconOnTaskbar;
+    [Write, Description("Specifies if the session connection bar is shown.")] Boolean ShowSessionConnectionBar;
+    [Write, Description("Specifies if sound is played on the client."), ValueMap{"PlayNoSound","PlaySoundAtBeginAndEnd","PlaySoundRepeatedly"}, Values{"PlayNoSound","PlaySoundAtBeginAndEnd","PlaySoundRepeatedly"}] String AudibleSignal;
+    [Write, Description("Specifies if unsolicited remote assistance settings are managed.")] Boolean ManageUnsolicitedRemoteAssistance;
+    [Write, Description("Specifies if solicited remote assistance settings are managed.")] Boolean ManageSolicitedRemoteAssistance;
+    [Write, Description("Specifies the level of access for remote assistance."), ValueMap{"None","RemoteViewing","FullControl"}, Values{"None","RemoteViewing","FullControl"}] String RemoteAssistanceAccessLevel;
+    [Write, Description("Specifies if remote desktop settings are managed.")] Boolean ManageRemoteDesktopSetting;
+    [Write, Description("Specifies if permitted viewers are allowed to connect by using remote desktop connection.")] Boolean AllowPermittedViewer;
+    [Write, Description("Specifies network level required authentication on computers that run Vista or later versions.")] Boolean RequireAuthentication;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+    [Read, Description("Specifies if the Remote Tools settings is enabled or disabled.")] String RemoteToolsStatus;
+};

@@ -39,6 +39,7 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting SoftwareDeployment
 
         if ($settings)
@@ -63,6 +64,7 @@ function Get-TargetResource
         DayofMonth               = $schedule.MonthDay
         RecurInterval            = $schedule.RecurInterval
         ClientSettingStatus      = $status
+        ClientType               = $type
     }
 }
 
@@ -140,6 +142,7 @@ function Set-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -ClientSettingName $ClientSettingName
+    $schedResult = $true
 
     try
     {
@@ -148,11 +151,16 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
+        if ($state.ClientType -eq 'User')
+        {
+            throw $script:localizedData.WrongClientType
+        }
+
         if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
             $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
             $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
         {
-            throw 'In order to create a schedule you must specify ScheduleType'
+            throw $script:localizedData.RequiredSchedule
         }
 
         if ($ScheduleType)
@@ -185,7 +193,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingSoftwareDeployment -DefaultSetting @buildingParams
             }
@@ -287,13 +295,18 @@ function Test-TargetResource
         Write-Warning -Message ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         $result = $false
     }
+    elseif ($state.ClientType -eq 'User')
+    {
+        Write-Warning -Message $script:localizedData.WrongClientType
+        $result = $false
+    }
     else
     {
         if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
             $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
             $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
         {
-            Write-Warning -Message 'In order to create a schedule you must specify ScheduleType'
+            Write-Warning -Message $script:localizedData.RequiredSchedule
             $badInput = $true
         }
 

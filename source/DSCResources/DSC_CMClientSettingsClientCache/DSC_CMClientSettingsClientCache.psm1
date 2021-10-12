@@ -39,6 +39,7 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting ClientCache
 
         if ($settings)
@@ -74,6 +75,7 @@ function Get-TargetResource
         BroadcastPort             = $broadPort
         DownloadPort              = $httpPort
         ClientSettingStatus       = $status
+        ClientType                = $type
     }
 }
 
@@ -178,6 +180,11 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
+        if ($state.ClientType -eq 'User')
+        {
+            throw $script:localizedData.WrongClientType
+        }
+
         if (($ConfigureBranchCache -eq $false) -and ($PSBoundParameters.ContainsKey('EnableBranchCache') -or $PSBoundParameters.ContainsKey('MaxBranchCacheSizePercent')))
         {
             throw $script:localizedData.DisabledBranchwithMax
@@ -217,7 +224,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingClientCache -DefaultSetting @buildingParams
             }
@@ -336,6 +343,11 @@ function Test-TargetResource
     if ($state.ClientSettingStatus -eq 'Absent')
     {
         Write-Warning -Message ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
+        $result = $false
+    }
+    elseif ($state.ClientType -eq 'User')
+    {
+        Write-Warning -Message $script:localizedData.WrongClientType
         $result = $false
     }
     else

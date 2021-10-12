@@ -39,6 +39,7 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting StateMessaging
 
         if ($settings)
@@ -58,6 +59,7 @@ function Get-TargetResource
         ClientSettingName   = $ClientSettingName
         ReportingCycleMins  = $cycleMins
         ClientSettingStatus = $status
+        ClientType          = $type
     }
 }
 
@@ -104,6 +106,11 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
+        if ($state.ClientType -eq 'User')
+        {
+            throw $script:localizedData.WrongClientType
+        }
+
         if ($ReportingCycleMins -ne $state.ReportingCycleMins)
         {
             Write-Verbose -Message ($script:localizedData.SettingValue -f $state.ReportingCycleMins, $ReportingCycleMins)
@@ -114,7 +121,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingStateMessaging -DefaultSetting @buildingParams
             }
@@ -175,6 +182,11 @@ function Test-TargetResource
     if ($state.ClientSettingStatus -eq 'Absent')
     {
         Write-Warning -Message ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
+        $result = $false
+    }
+    elseif ($state.ClientType -eq 'User')
+    {
+        Write-Warning -Message $script:localizedData.WrongClientType
         $result = $false
     }
     else

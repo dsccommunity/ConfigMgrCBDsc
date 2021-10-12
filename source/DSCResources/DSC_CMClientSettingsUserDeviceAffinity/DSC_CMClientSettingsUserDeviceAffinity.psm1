@@ -43,13 +43,18 @@ function Get-TargetResource
 
         if ($settings)
         {
-            $console = $settings.ConsoleMinutes
-            $intDays = $settings.IntervalDays
-            $allowUser = [System.Convert]::ToBoolean($settings.AllowUserAffinity)
+            $type = @('Default','Device','User')[$clientSetting.Type]
 
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($type -eq 'Default' -or $type -eq 'Device')
             {
-                $auto = [System.Convert]::ToBoolean($settings.AutoApproveAffinity)
+                $console = $settings.ConsoleMinutes
+                $intDays = $settings.IntervalDays
+                $allowUser = [System.Convert]::ToBoolean([UInt32]$settings.AutoApproveAffinity)
+            }
+
+            if ($type -eq 'Default' -or $type -eq 'User')
+            {
+                $auto = [System.Convert]::ToBoolean([UInt32]$settings.AllowUserAffinity)
             }
         }
 
@@ -68,6 +73,7 @@ function Get-TargetResource
         AutoApproveAffinity = $allowUser
         AllowUserAffinity   = $auto
         ClientSettingStatus = $status
+        ClientType          = $type
     }
 }
 
@@ -136,11 +142,11 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
-        if ($ClientSettingName -eq 'Default Client Agent Settings')
+        if ($state.ClientType -eq 'Default')
         {
             $defaultValues = @('LogOnThresholdMins','UsageThresholdDays','AutoApproveAffinity','AllowUserAffinity')
         }
-        else
+        elseif ($state.ClientType -eq 'Device')
         {
             if ($PSBoundParameters.ContainsKey('AllowUserAffinity'))
             {
@@ -149,6 +155,16 @@ function Set-TargetResource
 
             $defaultValues = @('LogOnThresholdMins','UsageThresholdDays','AutoApproveAffinity')
 
+        }
+        elseif ($state.ClientType -eq 'User')
+        {
+            if ($PSBoundParameters.ContainsKey('LogOnThresholdMins') -or $PSBoundParameters.ContainsKey('UsageThresholdDays') -or
+                $PSBoundParameters.ContainsKey('AutoApproveAffinity'))
+            {
+                Write-Warning -message $script:localizedData.NonUserSettings
+            }
+
+            $defaultValues = @('AllowUserAffinity')
         }
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
@@ -167,7 +183,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingUserAndDeviceAffinity -DefaultSetting @buildingParams
             }
@@ -254,11 +270,11 @@ function Test-TargetResource
     }
     else
     {
-        if ($ClientSettingName -eq 'Default Client Agent Settings')
+        if ($state.ClientType -eq 'Default')
         {
             $defaultValues = @('LogOnThresholdMins','UsageThresholdDays','AutoApproveAffinity','AllowUserAffinity')
         }
-        else
+        elseif ($state.ClientType -eq 'Device')
         {
             if ($PSBoundParameters.ContainsKey('AllowUserAffinity'))
             {
@@ -267,6 +283,16 @@ function Test-TargetResource
 
             $defaultValues = @('LogOnThresholdMins','UsageThresholdDays','AutoApproveAffinity')
 
+        }
+        elseif ($state.ClientType -eq 'User')
+        {
+            if ($PSBoundParameters.ContainsKey('LogOnThresholdMins') -or $PSBoundParameters.ContainsKey('UsageThresholdDays') -or
+                $PSBoundParameters.ContainsKey('AutoApproveAffinity'))
+            {
+                Write-Warning -message $script:localizedData.NonUserSettings
+            }
+
+            $defaultValues = @('AllowUserAffinity')
         }
 
         $testParams = @{

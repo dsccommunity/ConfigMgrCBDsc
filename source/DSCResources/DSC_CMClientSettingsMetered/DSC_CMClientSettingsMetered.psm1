@@ -39,6 +39,7 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting MeteredNetwork
 
         if ($settings)
@@ -63,6 +64,7 @@ function Get-TargetResource
         ClientSettingName   = $ClientSettingName
         MeteredNetworkUsage = $usage
         ClientSettingStatus = $status
+        ClientType          = $type
     }
 }
 
@@ -109,6 +111,11 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
+        if ($state.ClientType -eq 'User')
+        {
+            throw $script:localizedData.WrongClientType
+        }
+
         if ($MeteredNetworkUsage -ne $state.MeteredNetworkUsage)
         {
             Write-Verbose -Message ($script:localizedData.SettingValue -f $state.MeteredNetworkUsage, $MeteredNetworkUsage)
@@ -119,7 +126,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingMeteredInternetConnection -DefaultSetting @buildingParams
             }
@@ -180,6 +187,11 @@ function Test-TargetResource
     if ($state.ClientSettingStatus -eq 'Absent')
     {
         Write-Warning -Message ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
+        $result = $false
+    }
+    elseif ($state.ClientType -eq 'User')
+    {
+        Write-Warning -Message $script:localizedData.WrongClientType
         $result = $false
     }
     else

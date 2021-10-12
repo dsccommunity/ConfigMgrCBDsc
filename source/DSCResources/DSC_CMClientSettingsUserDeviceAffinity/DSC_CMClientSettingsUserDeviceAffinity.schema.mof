@@ -8,4 +8,5 @@ class DSC_CMClientSettingsUserDeviceAffinity : OMI_BaseResource
     [Write, Description("Specifies allowing automatic configure user device affinity from usage data.")] Boolean AutoApproveAffinity;
     [Write, Description("Specifies allowing users to define their primary device.")] Boolean AllowUserAffinity;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
 };

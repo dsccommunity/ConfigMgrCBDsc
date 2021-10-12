@@ -1,0 +1,20 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsComputerAgent")]
+class DSC_CMClientSettingsComputerAgent : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies reminder, in hours, for deployment deadlines greater than 24 hours.")] UInt32 InitialReminderHr;
+    [Write, Description("Specifies reminder, in hours, for deployment deadlines less than 24 hours.")] UInt32 InterimReminderHr;
+    [Write, Description("Specifies reminder, in minutes, for deployment deadlines less than 1 hours.")] UInt32 FinalReminderMins;
+    [Write, Description("Specifies the organizational name displayed in software center.")] String BrandingTitle;
+    [Write, Description("Specifies if new software center is enabled or disabled.")] Boolean UseNewSoftwareCenter;
+    [Write, Description("Specifies if communication with the Health Attestation service is enabled or disabled.")] Boolean EnableHealthAttestation;
+    [Write, Description("Specifies if the on-premises health service is enabled or disabled.")] Boolean UseOnPremisesHealthAttestation;
+    [Write, Description("Specifies the install permissions."), ValueMap{"AllUsers","OnlyAdministrators","OnlyAdministratorsAndPrimaryUsers","NoUsers"}, Values{"AllUsers","OnlyAdministrators","OnlyAdministratorsAndPrimaryUsers","NoUsers"}] String InstallRestriction;
+    [Write, Description("Specifies the suspend BitLocker PIN entry on restart."), ValueMap{"Never","Always"}, Values{"Never","Always"}] String SuspendBitLocker;
+    [Write, Description("Specifies if additional software manages the deployment of applications and updates."), ValueMap{"No","Yes"}, Values{"No","Yes"}] String EnableThirdPartyOrchestration;
+    [Write, Description("Specifies powershell execution policy settings."), ValueMap{"AllSigned","Bypass","Restricted"}, Values{"AllSigned","Bypass","Restricted"}] String PowerShellExecutionPolicy;
+    [Write, Description("Specifies if notifications are shown for new deployments.")] Boolean DisplayNewProgramNotification;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+};

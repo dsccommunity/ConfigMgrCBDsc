@@ -52,6 +52,10 @@ try
                     HttpPort                  = 8003
                 }
 
+                $clientType = @{
+                    Type = 0
+                }
+
                 $getInput = @{
                     SiteCode          = 'Lab'
                     ClientSettingName = 'ClientTest'
@@ -64,7 +68,8 @@ try
             Context 'When retrieving Client Policy Settings for Client Cache' {
 
                 It 'Should return desired results when client settings exist' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn } -ParameterFilter { $Setting -eq 'ClientCache' }
 
                     $result = Get-TargetResource @getInput
                     $result                           | Should -BeOfType System.Collections.HashTable
@@ -80,6 +85,7 @@ try
                     $result.BroadcastPort             | Should -Be -ExpectedValue 8006
                     $result.DownloadPort              | Should -Be -ExpectedValue 8003
                     $result.ClientSettingStatus       | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                | Should -Be -ExpectedValue 'Default'
                 }
 
                 It 'Should return desired result when client setting policy does not exist' {
@@ -99,10 +105,11 @@ try
                     $result.BroadcastPort             | Should -Be -ExpectedValue $null
                     $result.DownloadPort              | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus       | Should -Be -ExpectedValue 'Absent'
+                    $result.ClientType                | Should -Be -ExpectedValue $null
                 }
 
                 It 'Should return desired result when client setting policy exist but client cache is not configured' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $true }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
                     Mock -CommandName Get-CMClientSetting -MockWith { $null } -ParameterFilter { $Setting -eq 'ClientCache' }
 
                     $result = Get-TargetResource @getInput
@@ -119,6 +126,7 @@ try
                     $result.BroadcastPort             | Should -Be -ExpectedValue $null
                     $result.DownloadPort              | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus       | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                | Should -Be -ExpectedValue 'Default'
                 }
             }
         }
@@ -152,6 +160,7 @@ try
                     BroadcastPort             = 8006
                     DownloadPort              = 8003
                     ClientSettingStatus       = 'Present'
+                    ClientType                = 'Default'
                 }
 
                 Mock -CommandName Set-CMClientSettingClientCache
@@ -174,6 +183,7 @@ try
                         BroadcastPort             = $null
                         DownloadPort              = $null
                         ClientSettingStatus       = 'Present'
+                        ClientType                = 'Device'
                     }
 
                     $returnDefaultClient = @{
@@ -189,6 +199,7 @@ try
                         BroadcastPort             = 8006
                         DownloadPort              = 8003
                         ClientSettingStatus       = 'Present'
+                        ClientType                = 'Default'
                     }
 
                     $inputDefaultClient = @{
@@ -262,6 +273,7 @@ try
                         BroadcastPort             = $null
                         DownloadPort              = $null
                         ClientSettingStatus       = 'Absent'
+                        ClientType                = $null
                     }
 
                     $absentMsg = 'Client Policy setting ClientTest does not exist, and will need to be created prior to making client setting changes.'
@@ -304,6 +316,24 @@ try
                     }
 
                     $branchMaxCache = 'When setting MaxCacheSizePercent, ConfigureBranchCache must be set to true.'
+
+                    $returnUser = @{
+                        SiteCode                  = 'Lab'
+                        ClientSettingName         = 'ClientTest'
+                        ConfigureBranchCache      = $null
+                        EnableBranchCache         = $null
+                        MaxBranchCacheSizePercent = $null
+                        ConfigureCacheSize        = $null
+                        MaxCacheSize              = $null
+                        MaxCacheSizePercent       = $null
+                        EnableSuperPeer           = $null
+                        BroadcastPort             = $null
+                        DownloadPort              = $null
+                        ClientSettingStatus       = 'Present'
+                        ClientType                = 'User'
+                    }
+
+                    $wrongClientType  = 'Client Settings for Client Cache only applies to Default and Device Client settings.'
                 }
 
                 It 'Should throw and call expected commands when client policy is absent' {
@@ -355,6 +385,16 @@ try
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMClientSettingClientCache -Exactly -Times 0 -Scope It
                 }
+
+                It 'Should throw and call expected commands when Client Policy Settings are user targeted' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnUser }
+
+                    { Set-TargetResource @inputPresent } | Should -Throw -ExpectedMessage $wrongClientType
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingClientCache -Exactly -Times 0 -Scope It
+                }
             }
         }
 
@@ -373,6 +413,7 @@ try
                     BroadcastPort             = 8006
                     DownloadPort              = 8003
                     ClientSettingStatus       = 'Present'
+                    ClientType                = 'Device'
                 }
 
                 $returnAbsent = @{
@@ -388,6 +429,7 @@ try
                     BroadcastPort             = $null
                     DownloadPort              = $null
                     ClientSettingStatus       = 'Absent'
+                    ClientType                = $null
                 }
 
                 $returnNotConfig = @{
@@ -403,6 +445,7 @@ try
                     BroadcastPort             = $null
                     DownloadPort              = $null
                     ClientSettingStatus       = 'Present'
+                    ClientType                = 'Default'
                 }
 
                 $inputPresent = @{
@@ -453,6 +496,22 @@ try
                     ClientSettingName    = 'ClientTest'
                     ConfigureBranchCache = $false
                     MaxCacheSizePercent  = 90
+                }
+
+                $returnUser = @{
+                    SiteCode                  = 'Lab'
+                    ClientSettingName         = 'ClientTest'
+                    ConfigureBranchCache      = $null
+                    EnableBranchCache         = $null
+                    MaxBranchCacheSizePercent = $null
+                    ConfigureCacheSize        = $null
+                    MaxCacheSize              = $null
+                    MaxCacheSizePercent       = $null
+                    EnableSuperPeer           = $null
+                    BroadcastPort             = $null
+                    DownloadPort              = $null
+                    ClientSettingStatus       = 'Present'
+                    ClientType                = 'User'
                 }
 
                 Mock -CommandName Set-Location
@@ -507,6 +566,12 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
 
                     Test-TargetResource @inputInvalidParamDisableBranch | Should -Be $false
+                }
+
+                It 'Should return desired result false when Client Policy settings are user based' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnUser }
+
+                    Test-TargetResource @inputPresent | Should -Be $false
                 }
             }
         }

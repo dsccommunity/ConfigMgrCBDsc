@@ -7,4 +7,5 @@ ConvertFrom-StringData @'
     ConfigCacheFalseSize  = When trying to set MaxCacheSize or MaxCacheSizePercent, ConfigureCacheSize must be set to true.
     DisableSuperBroad     = When trying to set BroadcastPort or DownloadPort, EnableSuperPeer must be set to true.
     BranchMaxCache        = When setting MaxCacheSizePercent, ConfigureBranchCache must be set to true.
+    WrongClientType       = Client Settings for Client Cache only applies to Default and Device Client settings.
 '@

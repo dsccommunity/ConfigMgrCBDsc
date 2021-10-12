@@ -8,4 +8,5 @@ class DSC_CMClientSettingsClientPolicy : OMI_BaseResource
     [Write, Description("Specifies if user policy request from internet clients is enabled or disabled.")] Boolean EnableUserPolicyOnInternet;
     [Write, Description("Specifies if user policy for multiple sessions is enabled or disabled.")] Boolean EnableUserPolicyOnTS;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
 };

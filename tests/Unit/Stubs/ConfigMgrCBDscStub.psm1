@@ -35891,7 +35891,6 @@ function Set-CMClientSettingComplianceSetting
     (
         [Parameter(ParameterSetName='SetDefaultSetting')]
         [Alias('EvaluationSchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -36405,6 +36404,9 @@ function Set-CMClientSettingPowerManagement
         [bool]
         ${EnableWakeupProxy},
 
+        [string]
+        ${NetworkWakeupOption},
+
         [ValidateRange(1, 65535)]
         [int]
         ${WakeupProxyPort},
@@ -36622,7 +36624,6 @@ function Set-CMClientSettingSoftwareDeployment
     param
     (
         [Alias('EvaluationSchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -36664,7 +36665,6 @@ function Set-CMClientSettingSoftwareInventory
         ${Enable},
 
         [Alias('InventorySchedule','SoftwareInventorySchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 

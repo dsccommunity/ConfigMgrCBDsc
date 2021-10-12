@@ -47,23 +47,28 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting HardwareInventory
 
         if ($settings)
         {
             $enabled = [System.Convert]::ToBoolean($settings.Enabled)
-            $randomDelay = $settings.MaxRandomDelayMinutes
-            $schedule = Get-CMSchedule -ScheduleString $settings.Schedule
 
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($enabled -eq $true)
             {
-                $thirdParty = $settings.Max3rdPartyMIFSize
-                $mifFile = switch ($settings.MIFCollection)
+                $randomDelay = $settings.MaxRandomDelayMinutes
+                $schedule = Get-CMSchedule -ScheduleString $settings.Schedule
+
+                if ($type -eq 'Default')
                 {
-                    '0'  { 'None' }
-                    '4'  { 'CollectNoIdMifFile' }
-                    '8'  { 'CollectIdMifFile' }
-                    '12' { 'CollectIdMifAndNoIdMifFile' }
+                    $thirdParty = $settings.Max3rdPartyMIFSize
+                    $mifFile = switch ($settings.MIFCollection)
+                    {
+                        '0'  { 'None' }
+                        '4'  { 'CollectNoIdMifFile' }
+                        '8'  { 'CollectIdMifFile' }
+                        '12' { 'CollectIdMifAndNoIdMifFile' }
+                    }
                 }
             }
         }
@@ -76,19 +81,20 @@ function Get-TargetResource
     }
 
     return @{
-        SiteCode                 = $SiteCode
-        ClientSettingName        = $ClientSettingName
-        Enable                   = $enabled
-        Start                    = $schedule.Start
-        ScheduleType             = $schedule.ScheduleType
-        DayOfWeek                = $schedule.DayofWeek
-        MonthlyWeekOrder         = $schedule.WeekOrder
-        DayofMonth               = $schedule.MonthDay
-        RecurInterval            = $schedule.RecurInterval
-        MaxRandomDelayMins       = $randomDelay
-        CollectMifFile           = $mifFile
-        MaxThirdPartyMifSize     = $thirdParty
-        ClientSettingStatus      = $status
+        SiteCode             = $SiteCode
+        ClientSettingName    = $ClientSettingName
+        Enable               = $enabled
+        Start                = $schedule.Start
+        ScheduleType         = $schedule.ScheduleType
+        DayOfWeek            = $schedule.DayofWeek
+        MonthlyWeekOrder     = $schedule.WeekOrder
+        DayofMonth           = $schedule.MonthDay
+        RecurInterval        = $schedule.RecurInterval
+        MaxRandomDelayMins   = $randomDelay
+        CollectMifFile       = $mifFile
+        MaxThirdPartyMifSize = $thirdParty
+        ClientSettingStatus  = $status
+        ClientType           = $type
     }
 }
 
@@ -197,6 +203,7 @@ function Set-TargetResource
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
     $state = Get-TargetResource -SiteCode $SiteCode -ClientSettingName $ClientSettingName -Enable $Enable
+    $schedResult = $true
 
     try
     {
@@ -205,16 +212,21 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
+        if ($state.ClientType -eq 'User')
+        {
+            throw $script:localizedData.WrongClientType
+        }
+
         if ($Enable -eq $true)
         {
             if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
                 $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
                 $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
             {
-                throw 'In order to create a schedule you must specify ScheduleType'
+                throw $script:localizedData.RequiredSchedule
             }
 
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 $defaultValues = @('Enable','MaxRandomDelayMins','CollectMifFile','MaxThirdPartyMifSize')
             }
@@ -222,7 +234,7 @@ function Set-TargetResource
             {
                 if ($PSBoundParameters.ContainsKey('CollectMifFile') -or $PSBoundParameters.ContainsKey('MaxThirdPartyMifSize'))
                 {
-                    Write-Warning -Message 'You can only specify these settings if configuring the Default Client Agent Settings, ignoring CollectMifFile and MaxThirdPartyMifSize'
+                    Write-Warning -Message $script:localizedData.DeviceIgnore
                 }
 
                 $defaultValues = @('Enable','MaxRandomDelayMins')
@@ -277,7 +289,7 @@ function Set-TargetResource
                 $PSBoundParameters.ContainsKey('DayOfMonth') -or $PSBoundParameters.ContainsKey('CollectMifFile') -or
                 $PSBoundParameters.ContainsKey('MaxThirdPartyMifSize'))
             {
-                Write-Warning -Message 'In order to set a schedule, MaxRandomDelayMins CollectMifFile, or MaxThirdPartyMifSize, Enable must be set to true, ignoring settings'
+                Write-Warning -Message $script:localizedData.DisableIgnore
             }
 
             $buildingParams = @{
@@ -287,7 +299,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingHardwareInventory -DefaultSetting @buildingParams
             }
@@ -421,6 +433,11 @@ function Test-TargetResource
         Write-Warning -Message ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         $result = $false
     }
+    elseif ($state.ClientType -eq 'User')
+    {
+        Write-Warning -Message $script:localizedData.WrongClientType
+        $result = $false
+    }
     else
     {
         if ($Enable -eq $true)
@@ -429,11 +446,11 @@ function Test-TargetResource
                 $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
                 $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
             {
-                Write-Warning -Message 'In order to create a schedule you must specify ScheduleType'
+                Write-Warning -Message $script:localizedData.RequiredSchedule
                 $badInput = $true
             }
 
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 $defaultValues = @('Enable','MaxRandomDelayMins','CollectMifFile','MaxThirdPartyMifSize')
             }
@@ -441,7 +458,7 @@ function Test-TargetResource
             {
                 if ($PSBoundParameters.ContainsKey('CollectMifFile') -or $PSBoundParameters.ContainsKey('MaxThirdPartyMifSize'))
                 {
-                    Write-Warning -Message 'You can only specify these settings if configuring the Default Client Agent Settings, ignoring CollectMifFile and MaxThirdPartyMifSize'
+                    Write-Warning -Message $script:localizedData.DeviceIgnore
                 }
 
                 $defaultValues = @('Enable','MaxRandomDelayMins')
@@ -470,7 +487,6 @@ function Test-TargetResource
 
                 $schedResult = Test-CMSchedule @scheduleCheck -State $state
             }
-
         }
         else
         {
@@ -480,7 +496,7 @@ function Test-TargetResource
                 $PSBoundParameters.ContainsKey('DayOfMonth') -or $PSBoundParameters.ContainsKey('CollectMifFile') -or
                 $PSBoundParameters.ContainsKey('MaxThirdPartyMifSize'))
             {
-                Write-Warning -Message 'In order to set a schedule, MaxRandomDelayMins CollectMifFile, or MaxThirdPartyMifSize, Enable must be set to true, ignoring settings'
+                Write-Warning -Message $script:localizedData.DisableIgnore
             }
 
             if ($state.Enable -eq $true)

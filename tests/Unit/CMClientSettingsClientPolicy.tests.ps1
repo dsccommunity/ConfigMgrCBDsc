@@ -47,6 +47,10 @@ try
                     PolicyEnableUserPolicyOnTS       = $true
                 }
 
+                $clientType = @{
+                    Type = 0
+                }
+
                 $getInput = @{
                     SiteCode          = 'Lab'
                     ClientSettingName = 'ClientTest'
@@ -59,7 +63,8 @@ try
             Context 'When retrieving Client Policy Settings for Client Policy' {
 
                 It 'Should return desired results when client settings exist' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn } -ParameterFilter { $Setting -eq 'ClientPolicy' }
 
                     $result = Get-TargetResource @getInput
                     $result                            | Should -BeOfType System.Collections.HashTable
@@ -70,6 +75,7 @@ try
                     $result.EnableUserPolicyOnInternet | Should -Be -ExpectedValue $false
                     $result.EnableUserPolicyOnTS       | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus        | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                 | Should -Be -ExpectedValue 'Default'
                 }
 
                 It 'Should return desired result when client setting policy does not exist' {
@@ -84,10 +90,11 @@ try
                     $result.EnableUserPolicyOnInternet | Should -Be -ExpectedValue $null
                     $result.EnableUserPolicyOnTS       | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus        | Should -Be -ExpectedValue 'Absent'
+                    $result.ClientType                 | Should -Be -ExpectedValue $null
                 }
 
                 It 'Should return desired result when client setting policy exist but client policy is not configured' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $true }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
                     Mock -CommandName Get-CMClientSetting -MockWith { $null } -ParameterFilter { $Setting -eq 'ClientPolicy' }
 
                     $result = Get-TargetResource @getInput
@@ -99,6 +106,7 @@ try
                     $result.EnableUserPolicyOnInternet | Should -Be -ExpectedValue $null
                     $result.EnableUserPolicyOnTS       | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus        | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                 | Should -Be -ExpectedValue 'Default'
                 }
             }
         }
@@ -129,6 +137,7 @@ try
                         EnableUserPolicyOnInternet = $false
                         EnableUserPolicyOnTS       = $true
                         ClientSettingStatus        = 'Present'
+                        ClientType                 = 'Device'
                     }
 
                     $returnNotConfig = @{
@@ -139,6 +148,7 @@ try
                         EnableUserPolicyOnInternet = $null
                         EnableUserPolicyOnTS       = $null
                         ClientSettingStatus        = 'Present'
+                        ClientType                 = 'Device'
                     }
 
                     $returnDefaultClient = @{
@@ -149,6 +159,7 @@ try
                         EnableUserPolicyOnInternet = $false
                         EnableUserPolicyOnTS       = $true
                         ClientSettingStatus        = 'Present'
+                        ClientType                 = 'Default'
                     }
 
                     $inputDefaultClient = @{
@@ -221,15 +232,39 @@ try
                         EnableUserPolicyOnInternet = $null
                         EnableUserPolicyOnTS       = $null
                         ClientSettingStatus        = 'Absent'
+                        ClientType                 = $null
                     }
 
                     $absentMsg = 'Client Policy setting ClientTest does not exist, and will need to be created prior to making client setting changes.'
+
+                    $returnUser = @{
+                        SiteCode                   = 'Lab'
+                        ClientSettingName          = 'ClientTest'
+                        PolicyPollingMins          = $null
+                        EnableUserPolicy           = $null
+                        EnableUserPolicyOnInternet = $null
+                        EnableUserPolicyOnTS       = $null
+                        ClientSettingStatus        = 'Present'
+                        ClientType                 = 'User'
+                    }
+
+                    $wrongClientType  = 'Client Settings for Client Policy settings only applies to Default and Device Client settings.'
                 }
 
                 It 'Should throw and call expected commands when setting command when disabled' {
                     Mock -CommandName Get-TargetResource -MockWith { $returnAbsent }
 
                     { Set-TargetResource @inputPresent } | Should -Throw -ExpectedMessage $absentMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingClientPolicy -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw and call expected commands when Client Policy Settings are user targeted' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnUser }
+
+                    { Set-TargetResource @inputPresent } | Should -Throw -ExpectedMessage $wrongClientType
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -248,6 +283,7 @@ try
                     EnableUserPolicyOnInternet = $false
                     EnableUserPolicyOnTS       = $true
                     ClientSettingStatus        = 'Present'
+                    ClientType                 = 'Device'
                 }
 
                 $returnAbsent = @{
@@ -258,6 +294,18 @@ try
                     EnableUserPolicyOnInternet = $null
                     EnableUserPolicyOnTS       = $null
                     ClientSettingStatus        = 'Absent'
+                    ClientType                 = $null
+                }
+
+                $returnUser = @{
+                    SiteCode                   = 'Lab'
+                    ClientSettingName          = 'ClientTest'
+                    PolicyPollingMins          = $null
+                    EnableUserPolicy           = $null
+                    EnableUserPolicyOnInternet = $null
+                    EnableUserPolicyOnTS       = $null
+                    ClientSettingStatus        = 'Present'
+                    ClientType                 = 'User'
                 }
 
                 $returnNotConfig = @{
@@ -268,6 +316,7 @@ try
                     EnableUserPolicyOnInternet = $null
                     EnableUserPolicyOnTS       = $null
                     ClientSettingStatus        = 'Present'
+                    ClientType                 = 'Device'
                 }
 
                 $inputPresent = @{
@@ -314,6 +363,12 @@ try
 
                 It 'Should return desired result false when settings mismatch' {
                     Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
+
+                    Test-TargetResource @inputMismatch | Should -Be $false
+                }
+
+                It 'Should return desired result false when Client Policy settings are user based' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnUser }
 
                     Test-TargetResource @inputMismatch | Should -Be $false
                 }

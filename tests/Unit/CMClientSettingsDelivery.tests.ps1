@@ -44,6 +44,10 @@ try
                     EnableWindowsDO = 1
                 }
 
+                $clientType = @{
+                    Type = '0'
+                }
+
                 $getInput = @{
                     SiteCode          = 'Lab'
                     ClientSettingName = 'ClientTest'
@@ -56,7 +60,8 @@ try
             Context 'When retrieving Client Policy Settings for Delivery Optimization' {
 
                 It 'Should return desired results when client settings exist' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn } -ParameterFilter { $Setting -eq 'DeliveryOptimization' }
 
                     $result = Get-TargetResource @getInput
                     $result                     | Should -BeOfType System.Collections.HashTable
@@ -64,6 +69,7 @@ try
                     $result.ClientSettingName   | Should -Be -ExpectedValue 'ClientTest'
                     $result.Enable              | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType          | Should -Be -ExpectedValue 'Default'
                 }
 
                 It 'Should return desired result when client setting policy does not exist' {
@@ -75,10 +81,11 @@ try
                     $result.ClientSettingName   | Should -Be -ExpectedValue 'ClientTest'
                     $result.Enable              | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus | Should -Be -ExpectedValue 'Absent'
+                    $result.ClientType          | Should -Be -ExpectedValue $null
                 }
 
                 It 'Should return desired result when client setting policy exist but delivery optimization is not configured' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $true }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
                     Mock -CommandName Get-CMClientSetting -MockWith { $null } -ParameterFilter { $Setting -eq 'DeliveryOptimization' }
 
                     $result = Get-TargetResource @getInput
@@ -87,6 +94,7 @@ try
                     $result.ClientSettingName   | Should -Be -ExpectedValue 'ClientTest'
                     $result.Enable              | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType          | Should -Be -ExpectedValue 'Default'
                 }
             }
         }
@@ -111,6 +119,7 @@ try
                         ClientSettingName   = 'ClientTest'
                         Enable              = $true
                         ClientSettingStatus = 'Present'
+                        ClientType          = 'Device'
                     }
 
                     $returnPresentDefaultClient = @{
@@ -118,6 +127,7 @@ try
                         ClientSettingName   = 'Default Client Agent Settings'
                         Enable              = $false
                         ClientSettingStatus = 'Present'
+                        ClientType          = 'Device'
                     }
 
                     $returnNotConfig = @{
@@ -125,6 +135,7 @@ try
                         ClientSettingName   = 'ClientTest'
                         Enable              = $null
                         ClientSettingStatus = 'Present'
+                        ClientType          = 'Default'
                     }
 
                     $inputDeliveryDisabled = @{
@@ -188,15 +199,36 @@ try
                         ClientSettingName   = 'ClientTest'
                         Enable              = $null
                         ClientSettingStatus = 'Absent'
+                        ClientType          = $null
                     }
 
                     $absentMsg = 'Client Policy setting ClientTest does not exist, and will need to be created prior to making client setting changes.'
+
+                    $returnWrongClientType = @{
+                        SiteCode            = 'Lab'
+                        ClientSettingName   = 'ClientTest'
+                        Enable              = $null
+                        ClientSettingStatus = 'Present'
+                        ClientType          = 'User'
+                    }
+
+                    $wrongClientType  = 'Client Settings for Delivery Optimization only applies to Default and Device Client settings.'
                 }
 
-                It 'Should throw and call expected commands when setting command when disabled' {
+                It 'Should throw and call expected commands when client settings does not exist' {
                     Mock -CommandName Get-TargetResource -MockWith { $returnAbsent }
 
                     { Set-TargetResource @inputPresent } | Should -Throw -ExpectedMessage $absentMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingDeliveryOptimization -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw and call expected commands when client type is incorrect' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnWrongClientType }
+
+                    { Set-TargetResource @inputPresent } | Should -Throw -ExpectedMessage $wrongClientType
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -212,6 +244,7 @@ try
                     ClientSettingName   = 'ClientTest'
                     Enable              = $true
                     ClientSettingStatus = 'Present'
+                    ClientType          = 'Default'
                 }
 
                 $returnAbsent = @{
@@ -219,6 +252,7 @@ try
                     ClientSettingName   = 'ClientTest'
                     Enable              = $null
                     ClientSettingStatus = 'Absent'
+                    ClientType          = $null
                 }
 
                 $returnNotConfig = @{
@@ -226,6 +260,15 @@ try
                     ClientSettingName   = 'ClientTest'
                     Enable              = $null
                     ClientSettingStatus = 'Present'
+                    ClientType          = 'Device'
+                }
+
+                $returnWrongClientType = @{
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'ClientTest'
+                    Enable              = $null
+                    ClientSettingStatus = 'Present'
+                    ClientType          = 'User'
                 }
 
                 $inputPresent = @{
@@ -258,8 +301,14 @@ try
                     Test-TargetResource @inputPresent | Should -Be $false
                 }
 
-                It 'Should return desired result false when client policy exists but does not set Delivery optimization settings' {
+                It 'Should return desired result false when client policy exists but currently does not set Delivery optimization settings' {
                     Mock -CommandName Get-TargetResource -MockWith { $returnNotConfig }
+
+                    Test-TargetResource @inputPresent | Should -Be $false
+                }
+
+                It 'Should return desired result false when client policy exists but is currently a User based client policy' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnWrongClientType }
 
                     Test-TargetResource @inputPresent | Should -Be $false
                 }

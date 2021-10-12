@@ -13,4 +13,5 @@ class DSC_CMClientSettingsClientCache : OMI_BaseResource
     [Write, Description("Specifies the port for initial network broadcast.")] UInt32 BroadcastPort;
     [Write, Description("Specifies the port for content download from peers.")] UInt32 DownloadPort;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
 };

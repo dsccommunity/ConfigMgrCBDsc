@@ -40,6 +40,10 @@ try
 
         Describe 'ConfigMgrCBDsc - DSC_CMClientSettingsCloudService\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
+                $returnClientType = @{
+                    Type = 1
+                }
+
                 $clientReturn = @{
                     AllowCloudDP = 1
                     AutoAADJoin  = 0
@@ -58,7 +62,8 @@ try
             Context 'When retrieving Client Policy Settings for Cloud Services' {
 
                 It 'Should return desired results when client settings exist' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $returnClientType }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn } -ParameterFilter { $Setting -eq 'Cloud' }
 
                     $result = Get-TargetResource @getInput
                     $result                             | Should -BeOfType System.Collections.HashTable
@@ -68,6 +73,7 @@ try
                     $result.AutoAzureADJoin             | Should -Be -ExpectedValue $false
                     $result.AllowCloudManagementGateway | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus         | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                  | Should -Be -ExpectedValue 'Device'
                 }
 
                 It 'Should return desired result when client setting policy does not exist' {
@@ -81,10 +87,11 @@ try
                     $result.AutoAzureADJoin             | Should -Be -ExpectedValue $null
                     $result.AllowCloudManagementGateway | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus         | Should -Be -ExpectedValue 'Absent'
+                    $result.ClientType                  | Should -Be -ExpectedValue $null
                 }
 
                 It 'Should return desired result when client setting policy exist but cloud services is not configured' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $true }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $returnClientType }
                     Mock -CommandName Get-CMClientSetting -MockWith { $null } -ParameterFilter { $Setting -eq 'Cloud' }
 
                     $result = Get-TargetResource @getInput
@@ -95,6 +102,7 @@ try
                     $result.AutoAzureADJoin             | Should -Be -ExpectedValue $null
                     $result.AllowCloudManagementGateway | Should -Be -ExpectedValue $null
                     $result.ClientSettingStatus         | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                  | Should -Be -ExpectedValue 'Device'
                 }
             }
         }
@@ -102,17 +110,14 @@ try
         Describe 'ConfigMgrCBDsc - DSC_CMClientSettingsCloudService\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
                 $inputPresent = @{
-                    SiteCode                   = 'Lab'
-                    ClientSettingName          = 'ClientTest'
-                    EnableBitsMaxBandwidth     = $true
-                    MaxBandwidthBeginHr        = 0
-                    MaxBandwidthEndHr          = 23
-                    MaxTransferRateOnSchedule  = 900
-                    EnableDownloadOffSchedule  = $true
-                    MaxTransferRateOffSchedule = 1000
+                    SiteCode                    = 'Lab'
+                    ClientSettingName           = 'ClientTest'
+                    AllowCloudDistributionPoint = $true
+                    AutoAzureADJoin             = $true
+                    AllowCloudManagementGateway = $true
                 }
 
-                Mock -CommandName Set-CMClientSettingBackgroundIntelligentTransfer
+                Mock -CommandName Set-CMClientSettingCloudService
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
@@ -120,53 +125,49 @@ try
             Context 'When Set-TargetResource runs successfully' {
                 BeforeEach {
                     $returnPresent = @{
-                        SiteCode                   = 'Lab'
-                        ClientSettingName          = 'ClientTest'
-                        EnableBitsMaxBandwidth     = $true
-                        MaxBandwidthBeginHr        = 0
-                        MaxBandwidthEndHr          = 23
-                        MaxTransferRateOnSchedule  = 900
-                        EnableDownloadOffSchedule  = $true
-                        MaxTransferRateOffSchedule = 1000
-                        ClientSettingStatus        = 'Present'
+                        SiteCode                    = 'Lab'
+                        ClientSettingName           = 'ClientTest'
+                        AllowCloudDistributionPoint = $true
+                        AutoAzureADJoin             = $true
+                        AllowCloudManagementGateway = $true
+                        ClientSettingStatus         = 'Present'
+                        ClientType                  = 'Device'
                     }
 
-                    $returnNotConfig = @{
-                        SiteCode                   = 'Lab'
-                        ClientSettingName          = 'ClientTest'
-                        EnableBitsMaxBandwidth     = $null
-                        MaxBandwidthBeginHr        = $null
-                        MaxBandwidthEndHr          = $null
-                        MaxTransferRateOnSchedule  = $null
-                        EnableDownloadOffSchedule  = $null
-                        MaxTransferRateOffSchedule = $null
-                        ClientSettingStatus        = 'Present'
+                    $returnPresentDefault = @{
+                        SiteCode                    = 'Lab'
+                        ClientSettingName           = 'Default Client Setting'
+                        AllowCloudDistributionPoint = $true
+                        AutoAzureADJoin             = $true
+                        AllowCloudManagementGateway = $true
+                        ClientSettingStatus         = 'Present'
+                        ClientType                  = 'Default'
                     }
 
-                    $returnDefaultClient = @{
-                        SiteCode                   = 'Lab'
-                        ClientSettingName          = 'Default Client Agent Settings'
-                        EnableBitsMaxBandwidth     = $true
-                        MaxBandwidthBeginHr        = 0
-                        MaxBandwidthEndHr          = 23
-                        MaxTransferRateOnSchedule  = 900
-                        EnableDownloadOffSchedule  = $true
-                        MaxTransferRateOffSchedule = 1000
-                        ClientSettingStatus        = 'Present'
+                    $returnNotConfigUser = @{
+                        SiteCode                    = 'Lab'
+                        ClientSettingName           = 'UserTest'
+                        AllowCloudDistributionPoint = $null
+                        AutoAzureADJoin             = $null
+                        AllowCloudManagementGateway = $null
+                        ClientSettingStatus         = 'Present'
+                        ClientType                  = 'User'
                     }
 
-                    $inputDefaultClient = @{
-                        SiteCode                   = 'Lab'
-                        ClientSettingName          = 'Default Client Agent Settings'
-                        EnableBitsMaxBandwidth     = $true
-                        MaxBandwidthBeginHr        = 5
-                        MaxBandwidthEndHr          = 11
+                    $inputPresent = @{
+                        SiteCode                    = 'Lab'
+                        ClientSettingName           = 'ClientTest'
+                        AllowCloudDistributionPoint = $true
+                        AutoAzureADJoin             = $true
+                        AllowCloudManagementGateway = $true
                     }
 
-                    $inputBitsDisabled = @{
-                        SiteCode               = 'Lab'
-                        ClientSettingName      = 'ClientTest'
-                        EnableBitsMaxBandwidth = $false
+                    $inputMismatch = @{
+                        SiteCode                    = 'Lab'
+                        ClientSettingName           = 'ClientTest'
+                        AllowCloudDistributionPoint = $true
+                        AutoAzureADJoin             = $true
+                        AllowCloudManagementGateway = $false
                     }
                 }
 
@@ -177,52 +178,50 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientSettingBackgroundIntelligentTransfer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMClientSettingCloudService -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands when settings do not match' {
-                    Mock -CommandName Get-TargetResource -MockWith { $returnNotConfig }
-
-                    Set-TargetResource @inputPresent
-                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientSettingBackgroundIntelligentTransfer -Exactly -Times 1 -Scope It
-                }
-
-                It 'Should call expected commands when disabling BITs' {
                     Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
 
-                    Set-TargetResource @inputBitsDisabled
+                    Set-TargetResource @inputMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientSettingBackgroundIntelligentTransfer -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingCloudService -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when client policy exists with no Cloud Services settings' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnNotConfigUser }
+
+                    Set-TargetResource @inputMismatch
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingCloudService -Exactly -Times 1 -Scope It
                 }
 
                 It 'Should call expected commands when modifying default client settings' {
-                    Mock -CommandName Get-TargetResource -MockWith { $returnDefaultClient }
+                    Mock -CommandName Get-TargetResource -MockWith { $returnPresentDefault }
 
-                    Set-TargetResource @inputDefaultClient
+                    Set-TargetResource @inputMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientSettingBackgroundIntelligentTransfer -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingCloudService -Exactly -Times 1 -Scope It
                 }
             }
 
             Context 'When running Set-TargetResource should throw' {
                 BeforeEach {
                     $returnAbsent = @{
-                        SiteCode                   = 'Lab'
-                        ClientSettingName          = 'ClientTest'
-                        EnableBitsMaxBandwidth     = $null
-                        MaxBandwidthBeginHr        = $null
-                        MaxBandwidthEndHr          = $null
-                        MaxTransferRateOnSchedule  = $null
-                        EnableDownloadOffSchedule  = $null
-                        MaxTransferRateOffSchedule = $null
-                        ClientSettingStatus        = 'Absent'
+                        SiteCode                    = 'Lab'
+                        ClientSettingName           = 'ClientTest'
+                        AllowCloudDistributionPoint = $null
+                        AutoAzureADJoin             = $null
+                        AllowCloudManagementGateway = $null
+                        ClientSettingStatus         = 'Absent'
+                        ClientType                  = $null
                     }
 
                     $absentMsg = 'Client Policy setting ClientTest does not exist, and will need to be created prior to making client setting changes.'
@@ -235,7 +234,7 @@ try
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Set-CMClientSettingBackgroundIntelligentTransfer -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Set-CMClientSettingCloudService -Exactly -Times 0 -Scope It
                 }
             }
         }
@@ -243,56 +242,49 @@ try
         Describe 'ConfigMgrCBDsc - DSC_CMClientSettingsCloudService\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
                 $returnPresent = @{
-                    SiteCode                   = 'Lab'
-                    ClientSettingName          = 'ClientTest'
-                    EnableBitsMaxBandwidth     = $true
-                    MaxBandwidthBeginHr        = 0
-                    MaxBandwidthEndHr          = 23
-                    MaxTransferRateOnSchedule  = 900
-                    EnableDownloadOffSchedule  = $true
-                    MaxTransferRateOffSchedule = 1000
-                    ClientSettingStatus        = 'Present'
+                    SiteCode                    = 'Lab'
+                    ClientSettingName           = 'ClientTest'
+                    AllowCloudDistributionPoint = $true
+                    AutoAzureADJoin             = $true
+                    AllowCloudManagementGateway = $true
+                    ClientSettingStatus         = 'Present'
+                    ClientType                  = 'Device'
                 }
 
                 $returnAbsent = @{
-                    SiteCode                   = 'Lab'
-                    ClientSettingName          = 'ClientTest'
-                    EnableBitsMaxBandwidth     = $null
-                    MaxBandwidthBeginHr        = $null
-                    MaxBandwidthEndHr          = $null
-                    MaxTransferRateOnSchedule  = $null
-                    EnableDownloadOffSchedule  = $null
-                    MaxTransferRateOffSchedule = $null
-                    ClientSettingStatus        = 'Absent'
+                    SiteCode                    = 'Lab'
+                    ClientSettingName           = 'ClientTest'
+                    AllowCloudDistributionPoint = $null
+                    AutoAzureADJoin             = $null
+                    AllowCloudManagementGateway = $null
+                    ClientSettingStatus         = 'Absent'
+                    ClientType                  = $null
                 }
 
-                $returnNotConfig = @{
-                    SiteCode                   = 'Lab'
-                    ClientSettingName          = 'ClientTest'
-                    EnableBitsMaxBandwidth     = $null
-                    MaxBandwidthBeginHr        = $null
-                    MaxBandwidthEndHr          = $null
-                    MaxTransferRateOnSchedule  = $null
-                    EnableDownloadOffSchedule  = $null
-                    MaxTransferRateOffSchedule = $null
-                    ClientSettingStatus        = 'Present'
+                $returnNotConfigUser = @{
+                    SiteCode                    = 'Lab'
+                    ClientSettingName           = 'UserTest'
+                    AllowCloudDistributionPoint = $null
+                    AutoAzureADJoin             = $null
+                    AllowCloudManagementGateway = $null
+                    ClientSettingStatus         = 'Present'
+                    ClientType                  = 'User'
                 }
 
                 $inputPresent = @{
-                    SiteCode                   = 'Lab'
-                    ClientSettingName          = 'ClientTest'
-                    EnableBitsMaxBandwidth     = $true
-                    MaxBandwidthBeginHr        = 0
-                    MaxBandwidthEndHr          = 23
-                    MaxTransferRateOnSchedule  = 900
-                    EnableDownloadOffSchedule  = $true
-                    MaxTransferRateOffSchedule = 1000
+                    SiteCode                    = 'Lab'
+                    ClientSettingName           = 'ClientTest'
+                    AllowCloudDistributionPoint = $true
+                    AutoAzureADJoin             = $true
+                    AllowCloudManagementGateway = $true
                 }
 
-                $inputBitsDisabled = @{
-                    SiteCode               = 'Lab'
-                    ClientSettingName      = 'ClientTest'
-                    EnableBitsMaxBandwidth = $false
+                $inputMismatch = @{
+                    SiteCode                    = 'Lab'
+                    ClientSettingName           = 'ClientTest'
+                    AllowCloudDistributionPoint = $true
+                    AutoAzureADJoin             = $true
+                    AllowCloudManagementGateway = $false
                 }
 
                 Mock -CommandName Set-Location
@@ -308,21 +300,21 @@ try
                 }
 
                 It 'Should return desired result false settings do not match' {
-                    Mock -CommandName Get-TargetResource -MockWith { $returnAbsent }
-
-                    Test-TargetResource @inputPresent | Should -Be $false
-                }
-
-                It 'Should return desired result false when client policy exists but does not set BITs settings' {
-                    Mock -CommandName Get-TargetResource -MockWith { $returnNotConfig }
-
-                    Test-TargetResource @inputPresent | Should -Be $false
-                }
-
-                It 'Should return desired result false when setting bits to disabled' {
                     Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
 
-                    Test-TargetResource @inputBitsDisabled | Should -Be $false
+                    Test-TargetResource @inputMismatch | Should -Be $false
+                }
+
+                It 'Should return desired result false when client policy exists with no Cloud Services settings' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnNotConfigUser }
+
+                    Test-TargetResource @inputMismatch | Should -Be $false
+                }
+
+                It 'Should return desired result false when client policy settings does not exist' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnAbsent }
+
+                    Test-TargetResource @inputMismatch | Should -Be $false
                 }
             }
         }

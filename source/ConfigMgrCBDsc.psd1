@@ -82,6 +82,21 @@
         'CMEmailNotificationComponent'
         'CMGroupDiscovery'
         'CMSoftwareUpdatePointComponent'
+        'CMClientSettings'
+        'CMClientSettingsClientCache'
+        'CMClientSettingsClientPolicy'
+        'CMClientSettingsCloudService'
+        'CMClientSettingsCompliance'
+        'CMClientSettingsDelivery'
+        'CMClientSettingsHardware'
+        'CMClientSettingsMetered'
+        'CMClientSettingsPower'
+        'CMClientSettingsSoftwareCenter'
+        'CMClientSettingsSoftwareDeployment'
+        'CMClientSettingsSoftwareInventory'
+        'CMClientSettingsSoftwareMetering'
+        'CMClientSettingsStateMessaging'
+        'CMClientSettingsUserDeviceAffinity'
     )
 
     <#
@@ -100,7 +115,10 @@
             'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint',
             'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
             'DistributionPointGroupMembers','SecurityScopes','UserDiscovery','SecurityRoles','ClientPushSettings','SoftwareDistributionComponent',
-            'MaintenanceWindows','FileReplication','EmailNotificationComponent','CMGroupDiscovery','SoftwareUpdatePointComponent')
+            'MaintenanceWindows','FileReplication','EmailNotificationComponent','CMGroupDiscovery','SoftwareUpdatePointComponent','ClientSettings',
+            'ClientSettingsClientCache','ClientSettingsClientPolicy','ClientSettingsCompliance','ClientSettingsDelivery','ClientSettingsHardware',
+            'ClientSettingsMetered','ClientSettingsPower','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
+            'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

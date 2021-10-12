@@ -1,0 +1,14 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsBits")]
+class DSC_CMClientSettingsBits : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Required, Description("Specifies if limit the maximum network bandwidth for BITS background transfers is enabled or disabled.")] Boolean EnableBitsMaxBandwidth;
+    [Write, Description("Specifies the throttling window start time, use 0 for 12 a.m. and 23 for 11 p.m..")] UInt32 MaxBandwidthBeginHr;
+    [Write, Description("Specifies the throttling window end time, use 0 for 12 a.m. and 23 for 11 p.m..")] UInt32 MaxBandwidthEndHr;
+    [Write, Description("Specifies the maximum transfer rate during throttling window in Kbps.")] UInt32 MaxTransferRateOnSchedule;
+    [Write, Description("Specifies if BITS downloads are allowed outside the throttling window.")] Boolean EnableDownloadOffSchedule;
+    [Write, Description("Specifies the maximum transfer rate outside the throttling window in Kbps.")] UInt32 MaxTransferRateOffSchedule;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+};

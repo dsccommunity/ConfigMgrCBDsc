@@ -47,13 +47,18 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting ComplianceSettings
 
         if ($settings)
         {
             $enabled = [System.Convert]::ToBoolean($settings.Enabled)
             $userState = [System.Convert]::ToBoolean($settings.EnableUserStateManagement)
-            $schedule = Get-CMSchedule -ScheduleString $settings.EvaluationSchedule
+
+            if ($type -eq 'Default')
+            {
+                $schedule = Get-CMSchedule -ScheduleString $settings.EvaluationSchedule
+            }
         }
 
         $status = 'Present'
@@ -75,6 +80,7 @@ function Get-TargetResource
         DayofMonth               = $schedule.MonthDay
         RecurInterval            = $schedule.RecurInterval
         ClientSettingStatus      = $status
+        ClientType               = $type
     }
 }
 
@@ -165,7 +171,8 @@ function Set-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode -ClientSettingName $ClientSettingName
+    $state = Get-TargetResource -SiteCode $SiteCode -ClientSettingName $ClientSettingName -Enable $Enable
+    $schedResult = $true
 
     try
     {
@@ -174,13 +181,28 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
+        if ($state.ClientType -eq 'User')
+        {
+            throw $script:localizedData.WrongClientType
+        }
+
         if ($Enable -eq $true)
         {
-            if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
+            if (($state.ClientType -eq 'Default' -and -not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
                 $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
                 $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
             {
-                throw 'In order to create a schedule you must specify ScheduleType'
+                throw $script:localizedData.RequiredSchedule
+            }
+
+            if (($state.ClientType -ne 'Default') -and ($PSBoundParameters.ContainsKey('ScheduleType') -or
+                $PSBoundParameters.ContainsKey('Start') -or
+                $PSBoundParameters.ContainsKey('RecurInterval') -or
+                $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
+                $PSBoundParameters.ContainsKey('DayOfWeek') -or
+                $PSBoundParameters.ContainsKey('DayOfMonth')))
+            {
+                Write-Warning -Message $script:localizedData.ScheduleDefault
             }
 
             $defaultValues = @('Enable','EnableUserDataAndProfile')
@@ -199,7 +221,7 @@ function Set-TargetResource
                 }
             }
 
-            if ($ScheduleType)
+            if ($ScheduleType -and $state.ClientType -eq 'Default')
             {
                 $valuesToValidate = @('ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
                 foreach ($item in $valuesToValidate)
@@ -233,7 +255,7 @@ function Set-TargetResource
                 $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or $PSBoundParameters.ContainsKey('DayOfWeek') -or
                 $PSBoundParameters.ContainsKey('DayOfMonth'))
             {
-                Write-Warning -Message 'In order to set a schedule or EnableUserDataAndProfile, Enable must be set to true, ignoring settings'
+                Write-Warning -Message $script:localizedData.EnableFalse
             }
 
             $buildingParams = @{
@@ -243,7 +265,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingComplianceSetting -DefaultSetting @buildingParams
             }
@@ -351,7 +373,7 @@ function Test-TargetResource
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
     Set-Location -Path "$($SiteCode):\"
-    $state = Get-TargetResource -SiteCode $SiteCode -ClientSettingName $ClientSettingName
+    $state = Get-TargetResource -SiteCode $SiteCode -ClientSettingName $ClientSettingName  -Enable $Enable
     $result = $true
     $schedResult = $true
 
@@ -360,16 +382,31 @@ function Test-TargetResource
         Write-Warning -Message ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         $result = $false
     }
+    elseif ($state.ClientType -eq 'User')
+    {
+        Write-Warning -Message $script:localizedData.WrongClientType
+        $result = $false
+    }
     else
     {
         if ($Enable -eq $true)
         {
-            if ((-not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
+            if (($state.ClientType -eq 'Default' -and -not $PSBoundParameters.ContainsKey('ScheduleType')) -and ($PSBoundParameters.ContainsKey('Start') -or
                 $PSBoundParameters.ContainsKey('RecurInterval') -or $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
                 $PSBoundParameters.ContainsKey('DayOfWeek') -or $PSBoundParameters.ContainsKey('DayOfMonth')))
             {
-                Write-Warning -Message 'In order to create a schedule you must specify ScheduleType'
+                Write-Warning -Message $script:localizedData.RequiredSchedule
                 $badInput = $true
+            }
+
+            if (($state.ClientType -ne 'Default') -and ($PSBoundParameters.ContainsKey('ScheduleType') -or
+                $PSBoundParameters.ContainsKey('Start') -or
+                $PSBoundParameters.ContainsKey('RecurInterval') -or
+                $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or
+                $PSBoundParameters.ContainsKey('DayOfWeek') -or
+                $PSBoundParameters.ContainsKey('DayOfMonth')))
+            {
+                Write-Warning -Message $script:localizedData.ScheduleDefault
             }
 
             $defaultValues = @('Enable','EnableUserDataAndProfile')
@@ -382,7 +419,7 @@ function Test-TargetResource
 
             $result = Test-DscParameterState @testParams -TurnOffTypeChecking -Verbose
 
-            if ($ScheduleType)
+            if ($ScheduleType -and $state.ClientType -eq 'Default')
             {
                 $valuesToValidate = @('ScheduleType','RecurInterval','MonthlyWeekOrder','DayOfWeek','DayOfMonth','Start')
                 foreach ($item in $valuesToValidate)
@@ -397,7 +434,6 @@ function Test-TargetResource
 
                 $schedResult = Test-CMSchedule @scheduleCheck -State $state
             }
-
         }
         else
         {
@@ -406,7 +442,7 @@ function Test-TargetResource
                 $PSBoundParameters.ContainsKey('MonthlyWeekOrder') -or $PSBoundParameters.ContainsKey('DayOfWeek') -or
                 $PSBoundParameters.ContainsKey('DayOfMonth'))
             {
-                Write-Warning -Message 'In order to set a schedule or EnableUserDataAndProfile, Enable must be set to true, ignoring settings'
+                Write-Warning -Message $script:localizedData.EnableFalse
             }
 
             if ($state.Enable -eq $true)

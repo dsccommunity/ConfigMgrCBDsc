@@ -1,0 +1,16 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsPower")]
+class DSC_CMClientSettingsPower : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies if power management plan is to be used.")] Boolean Enable;
+    [Write, Description("Specifies if users are allowed to out out from the power plan.")] Boolean AllowUserToOptOutFromPowerPlan;
+    [Write, Description("Specifies if network wake up is not configured, enabled or disabled."), ValueMap{"NotConfigured","Enabled","Disabled"}, Values{"NotConfigured","Enabled","Disabled"}] String NetworkWakeUpOption;
+    [Write, Description("Specifies if the wake up proxy will be enabled or disabled.")] Boolean EnableWakeUpProxy;
+    [Write, Description("Specifies the wake up proxy port.")] UInt32 WakeupProxyPort;
+    [Write, Description("Specifies the wake on lan port.")] UInt32 WakeOnLanPort;
+    [Write, Description("Specifies the which firewall states will be configured for wakeup proxy."), ValueMap{"None","Domain","Private","Public"}, Values{"None","Domain","Private","Public"}] String FirewallExceptionForWakeupProxy[];
+    [Write, Description("Specifies the IPV6 direct access prefix for the wake up proxy.")] String WakeupProxyDirectAccessPrefix[];
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+};

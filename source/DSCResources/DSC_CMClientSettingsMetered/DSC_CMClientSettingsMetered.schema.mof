@@ -3,6 +3,7 @@ class DSC_CMClientSettingsMetered : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
-    [Write, Description("Specifies setting for client communication on a metered internet connection.")] String MeteredNetworkUsage;
+    [Write, Description("Specifies setting for client communication on a metered internet connection."), ValueMap{"Allow","Limit","Block"}, Values{"Allow","Limit","Block"}] String MeteredNetworkUsage;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
 };

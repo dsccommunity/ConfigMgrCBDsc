@@ -39,6 +39,7 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting Cloud
 
         if ($settings)
@@ -62,6 +63,7 @@ function Get-TargetResource
         AutoAzureADJoin             = $autoAZJoin
         AllowCloudManagementGateway = $cmg
         ClientSettingStatus         = $status
+        ClientType                  = $type
     }
 }
 
@@ -122,7 +124,19 @@ function Set-TargetResource
             throw ($script:localizedData.ClientPolicySetting -f $ClientSettingName)
         }
 
-        $defaultValues = @('AllowCloudDistributionPoint','AutoAzureADJoin','AllowCloudManagementGateway')
+        if ($state.ClientType -eq 'User')
+        {
+            $defaultValues = @('AllowCloudDistributionPoint')
+            if ($PSBoundParameters.ContainsKey('AutoAzureADJoin') -or
+                $PSBoundParameters.ContainsKey('AllowCloudManagementGateway'))
+            {
+                Write-Warning -Message $script:localizedData.DeviceSettings
+            }
+        }
+        else
+        {
+            $defaultValues = @('AllowCloudDistributionPoint','AutoAzureADJoin','AllowCloudManagementGateway')
+        }
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
@@ -140,7 +154,7 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
-            if ($ClientSettingName -eq 'Default Client Agent Settings')
+            if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingCloudService -DefaultSetting @buildingParams
             }
@@ -219,7 +233,19 @@ function Test-TargetResource
     }
     else
     {
-        $defaultValues = @('AllowCloudDistributionPoint','AutoAzureADJoin','AllowCloudManagementGateway')
+        if ($state.ClientType -eq 'User')
+        {
+            $defaultValues = @('AllowCloudDistributionPoint')
+            if ($PSBoundParameters.ContainsKey('AutoAzureADJoin') -or
+                $PSBoundParameters.ContainsKey('AllowCloudManagementGateway'))
+            {
+                Write-Warning -Message $script:localizedData.DeviceSettings
+            }
+        }
+        else
+        {
+            $defaultValues = @('AllowCloudDistributionPoint','AutoAzureADJoin','AllowCloudManagementGateway')
+        }
 
         $testParams = @{
             CurrentValues = $state
