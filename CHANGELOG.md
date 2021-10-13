@@ -39,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Added support for VPN and IPv6Prefix boundaries to the CMBoundaries resource.
+- Updated module versions for SqlServerDsc, NetworkingDsc, ComputerManagementDsc
 
 ## [1.0.2] - 2021-05-12
 
