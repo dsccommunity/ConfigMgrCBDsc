@@ -130,12 +130,20 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   Group Discovery method.
 - **CMSoftwareUpdatePointComponent**: Provides a resource for modifying the
   Software Update Point Component settings in Configuration Manager.
+- **CMClientSettings**: Provides a resource for creating, modifying, or
+  removing the client policies.
+- **CMClientSettingsBits**: Provides a resource for modifying the
+  client policy settings for Bits settings.
 - **CMClientSettingsClientCache**: Provides a resource for modifying the
   client policy settings for Client Cache settings.
 - **CMClientSettingsClientPolicy**: Provides a resource for modifying the
   client policy settings for Client Policy settings.
 - **CMClientSettingsCloudService**: Provides a resource for modifying the
   client policy settings for Cloud Service settings.
+- **CMClientSettingsCompliance**: Provides a resource for modifying the
+  client policy settings for Compliance settings.
+- **CMClientSettingsComputerAgent**: Provides a resource for modifying the
+  client policy settings for Computer Agent settings.
 - **CMClientSettingsDelivery**: Provides a resource for modifying the
   client policy settings for Delivery settings.
 - **CMClientSettingsHardware**: Provides a resource for modifying the
@@ -144,12 +152,16 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   client policy settings for Metered settings.
 - **CMClientSettingsPower**: Provides a resource for modifying the
   client policy settings for Power settings.
+- **CMClientSettingsRemoteTools**: Provides a resource for modifying the
+  client policy settings for Remote Tools settings.
 - **CMClientSettingsSoftwareCenter**: Provides a resource for modifying the
   client policy settings for Software Center.
 - **CMClientSettingsSoftwareDeployment**: Provides a resource for modifying the
   client policy settings for Software Deployment settings.
 - **CMClientSettingsSoftwareInventory**: Provides a resource for modifying the
   client policy settings for Software Inventory settings.
+- **CMClientSettingsSoftwareUpdate**: Provides a resource for modifying the
+  client policy setting for Software Updates settings.
 - **CMClientSettingsSoftwareMetering**: Provides a resource for modifying the
   client policy settings for Software Metering settings.
 - **CMClientSettingsStateMessaging**: Provides a resource for modifying the
@@ -1549,6 +1561,58 @@ you are using apply and auto correct.
 - [CMSoftwareUpdatePointComponent_Match](Source\Examples\Resources\CMSoftwareUpdatePointComponent\CMSoftwareUpdatePointComponent_Match.ps1)
 - [CMSoftwareUpdatePointComponent_TopLevel](Source\Examples\Resources\CMSoftwareUpdatePointComponent\CMSoftwareUpdatePointComponent_TopLevel.ps1)
 
+### CMClientSettings
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] ClientSettingName** _(Key)_: Specifies which client settings policy
+  to modify.
+- **[String] Type** _(Required)_: Specifies the type of client policy.
+  - Values include: { Device | User }
+- **[String] Description** _(Write)_: Specifies the description of the client policy.
+- **[String] SecurityScopes[]** _(Write)_: Specifies an array of Security Scopes
+  to match.
+- **[String] SecurityScopesToInclude[]** _(Write)_: Specifies an array of Security
+  Scopes to include.
+- **[String] SecurityScopesToExclude[]** _(Write)_: Specifies an array of Security
+  Scopes to exclude.
+- **[String] Ensure** _(Write)_: Specifies if the client policy is present or absent.
+  - Values include: { Present | Absent }
+
+#### CMClientSettings Examples
+
+- [CMClientSettings](Source\Examples\Resources\CMClientSettings\CMClientSettings.ps1)
+
+### CMClientSettingsBits
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] ClientSettingName** _(Key)_: Specifies which client settings policy
+  to modify.
+- **[Boolean] EnableBitsMaxBandwidth** _(Required)_: Specifies if limit the
+  maximum network bandwidth for BITS background transfers is enabled or disabled.
+- **[Uint32] MaxBandwidthBeginHr** _(Write)_: Specifies the throttling window
+  start time, use 0 for 12 a.m. and 23 for 11 p.m..
+  - Values Range:  0 - 23
+- **[Uint32] MaxBandwidthEndHr** _(Write)_: Specifies the throttling window end
+  time, use 0 for 12 a.m. and 23 for 11 p.m..
+  - Values Range:  0 - 23
+- **[UInt32] MaxTransferRateOnSchedule** _(Write)_: Specifies the maximum transfer
+  rate during throttling window in Kbps.
+  - Values Range: 1 - 9999
+- **[Boolean] EnableDownloadOffSchedule** _(Write)_: Specifies if BITS downloads
+  are allowed outside the throttling window.
+- **[UInt32] MaxTransferRateOffSchedule** _(Write)_: Specifies the maximum transfer
+  rate outside the throttling window in Kbps.
+  - Values Range: 1- 999999
+- **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy
+  exists.
+- **[String] ClientType** _(Read)_: Specifies the type of client policy setting.
+
+#### CMClientSettingsBits Examples
+
+- [CMClientSettingsBits](Source\Examples\Resources\CMClientSettingsBits\CMClientSettingsBits.ps1)
+
 ### CMClientSettingsClientCache
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
@@ -1652,6 +1716,51 @@ you are using apply and auto correct.
 
 - [CMClientSettingsCompliance](Source\Examples\Resources\CMClientSettingsCompliance\CMClientSettingsCompliance.ps1)
 
+### CMClientSettingsComputerAgent
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] ClientSettingName** _(Key)_: Specifies which client settings policy
+  to modify.
+- **[UInt32] InitialReminderHr** _(Write)_: Specifies reminder, in hours, for
+  deployment deadlines greater than 24 hours.
+  - Values Range: 1 - 999
+- **[UInt32] InterimReminderHr** _(Write)_: Specifies reminder, in hours, for deployment
+  deadlines less than 24 hours.
+  - Values Range: 1 - 24
+- **[UInt32] FinalReminderMins** _(Write)_: Specifies reminder, in minutes, for
+  deployment deadlines less than 1 hours.
+  - Values Range: 5 - 25
+- **[String] BrandingTitle** _(Write)_: Specifies the organizational name
+  displayed in software center.
+- **[Boolean] UseNewSoftwareCenter** _(Write)_: Specifies if the new software center
+  is enabled or disabled.
+- **[Boolean] EnableHealthAttestation** _(Write)_: Specifies if communication with
+  the Health Attestation service is enabled or disabled.
+- **[Boolean] UseOnPremisesHealthAttestation** _(Write)_: Specifies if the on-premises
+  health service is enabled or disabled.
+- **[String] InstallRestriction** _(Write)_: Specifies the install permissions.
+  - Values include: { AllUsers | OnlyAdministrators | OnlyAdministratorsAndPrimaryUsers |
+    NoUsers }
+- **[String] SuspendBitLocker** _(Write)_: Specifies the suspend BitLocker PIN
+  entry on restart.
+  - Values include: { Never | Always }
+- **[String] EnableThirdPartyOrchestration** _(Write)_: Specifies if additional
+  software manages the deployment of applications and updates.
+  - Values include: { No | Yes }
+- **[String] PowerShellExecutionPolicy** _(Write)_: Specifies powershell execution
+  policy settings.
+  - Values include: { AllSigned | Bypass | Restricted }
+- **[Boolean] DisplayNewProgramNotification** _(Write)_: Specifies if notifications
+  are shown for new deployments.
+- **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy
+  exists.
+- **[String] ClientType** _(Read)_: Specifies the type of client policy setting.
+
+#### CMClientSettingsComputerAgent Examples
+
+- [CMClientSettingsComputerAgent](Source\Examples\Resources\CMClientSettingsComputerAgent\CMClientSettingsComputerAgent.ps1)
+
 ### CMClientSettingsDelivery
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
@@ -1739,10 +1848,10 @@ you are using apply and auto correct.
   will be enabled or disabled.
 - **[UInt32] WakeupProxyPort** _(Write)_: Specifies the wake up proxy port.
 - **[UInt32] WakeOnLanPort** _(Write)_: Specifies the wake on lan port.
-- **[String[]] FirewallExceptionForWakeupProxy** _(Write)_: Specifies the which
+- **[String] FirewallExceptionForWakeupProxy[]** _(Write)_: Specifies the which
   firewall states will be configured for wakeup proxy.
   - Values include: { None | Domain | Private | Public }
-- **[String[]] WakeupProxyDirectAccessPrefix** _(Write)_: Specifies the IPV6
+- **[String] WakeupProxyDirectAccessPrefix[]** _(Write)_: Specifies the IPV6
   direct access prefix for the wake up proxy.
 - **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy
   exists.
@@ -1751,6 +1860,59 @@ you are using apply and auto correct.
 #### CMClientSettingsPower Examples
 
 - [CMClientSettingsPower](Source\Examples\Resources\CMClientSettingsPower\CMClientSettingsPower.ps1)
+
+### CMClientSettingsRemoteTools
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] ClientSettingName** _(Key)_: Specifies which client settings policy
+  to modify.
+- **[String] FirewallExceptionProfile[]** _(Write)_: Specifies if the firewall
+  exceptions profiles for Remote Tools.
+  - Values include: { Domain | Private | Public }
+- **[Boolean] AllowClientChange** _(Write)_: Specifies if users can change policy
+  or notifications settings in software center.
+- **[Boolean] AllowUnattendedComputer** _(Write)_: Specifies if allow remote control
+  of an unattended computer is enabled or disabled.
+- **[Boolean] PromptUserForPermission** _(Write)_: Specifies if users are prompted
+  for remote control permissions.
+- **[Boolean] PromptUserForClipboardPermission** _(Write)_: Specifies if users are
+  prompted for permission to transfer content from share clipboard.
+- **[Boolean] GrantPermissionToLocalAdministrator** _(Write)_: Specifies if remote
+  control permissions are granted to the local administrators group.
+- **[String] AccessLevel** _(Write)_: Specifies the access level allowed.
+  - Values include: { NoAccess | ViewOnly | FullControl }
+- **[String] PermittedViewer[]** _(Write)_: Specifies the permitted viewers for
+  remote control and remote assistance.
+- **[Boolean] ShowNotificationIconOnTaskbar** _(Write)_: Specifies if session
+  notifications are shown on the taskbar.
+- **[Boolean] ShowSessionConnectionBar** _(Write)_: Specifies if the session
+  connection bar is shown.
+- **[String] AudibleSignal** _(Write)_: Specifies if sound is played on the client.
+  - Values include: { PlayNoSound | PlaySoundAtBeginAndEnd |
+    PlaySoundRepeatedly }
+- **[Boolean] ManageUnsolicitedRemoteAssistance** _(Write)_: Specifies if unsolicited
+  remote assistance settings are managed.
+- **[Boolean] ManageSolicitedRemoteAssistance** _(Write)_: Specifies if solicited
+  remote assistance settings are managed.
+- **[String] RemoteAssistanceAccessLevel** _(Write)_: Specifies the level of
+  access for remote assistance.
+  - Values include: { None | RemoteViewing | FullControl }
+- **[Boolean] ManageRemoteDesktopSetting** _(Write)_: Specifies if remote desktop
+  settings are managed.
+- **[Boolean] AllowPermittedViewer** _(Write)_: Specifies if permitted viewers are
+  allowed to connect by using remote desktop connection.
+- **[Boolean] RequireAuthentication** _(Write)_: Specifies network level required
+  authentication on computers that run Vista or later versions.
+- **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy
+  exists.
+- **[String] ClientType** _(Read)_: Specifies the type of client policy setting.
+- **[String] RemoteToolsStatus** _(Read)_: Specifies if the Remote Tools settings
+  is enabled or disabled.
+
+#### CMClientSettingsRemoteTools Examples
+
+- [CMClientSettingsRemoteTools](Source\Examples\Resources\CMClientSettingsRemoteTools\CMClientSettingsRemoteTools.ps1)
 
 ### CMClientSettingsSoftwareCenter
 
@@ -1880,6 +2042,72 @@ you are using apply and auto correct.
 
 - [CMClientSettingsSoftwareMetering](Source\Examples\Resources\CMClientSettingsSoftwareMetering\CMClientSettingsSoftwareMetering.ps1)
 
+### CMClientSettingsSoftwareUpdate
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] ClientSettingName** _(Key)_: Specifies which client settings policy
+  to modify.
+- **[Boolean] Enable** _(Required)_: Specifies if software updates on clients
+  is enabled or disabled.
+- **[String] ScanStart** _(Write)_:Specifies the start date and start time for the
+  software update scan schedule Month/Day/Year, example 1/1/2020 02:00.
+- **[String] ScanScheduleType** _(Write)_: Specifies the schedule type for the
+  software updates scan schedule.
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | Hours }
+- **[UInt32] ScanRecurInterval** _(Write)_: Specifies how often the scan ScheduleType
+  is run.
+- **[String] ScanMonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
+  scan schedule type.
+  - Values include: { First | Second | Third | Fourth | Last }
+- **[String] ScanDayOfWeek** _(Write)_: Specifies the day of week name for MonthlyByWeek
+  and Weekly scan schedules.
+  - Values include: { Sunday | Monday | Tuesday | Wednesday | Thursday | Friday
+  | Saturday }
+- **[UInt32] ScanDayOfMonth** _(Write)_: Specifies the day number for MonthlyByDay
+  scan schedules.
+  - Values Range: 0 - 31
+- **[String] EvalStart** _(Write)_:Specifies the start date and start time for the
+  software update eval schedule Month/Day/Year, example 1/1/2020 02:00.
+- **[String] EvalScheduleType** _(Write)_: Specifies the schedule type for the
+  software updates eval schedule.
+  - Values include: { MonthlyByDay | MonthlyByWeek | Weekly | Days | Hours }
+- **[UInt32] EvalRecurInterval** _(Write)_: Specifies how often the eval ScheduleType
+  is run.
+- **[String] EvalMonthlyWeekOrder** _(Write)_: Specifies week order for MonthlyByWeek
+  eval schedule type.
+  - Values include: { First | Second | Third | Fourth | Last }
+- **[String] EvalDayOfWeek** _(Write)_: Specifies the day of week name for MonthlyByWeek
+  and Weekly eval schedules.
+  - Values include: { Sunday | Monday | Tuesday | Wednesday | Thursday | Friday
+  | Saturday }
+- **[UInt32] EvalDayOfMonth** _(Write)_: Specifies the day number for MonthlyByDay
+  eval schedules.
+  - Values Range: 0 - 31
+- **[Boolean] EnforceMandatory** _(Write)_: Specifies if any software update
+  deployment deadline is reached to install all deployments with dealing coming
+  within a specific time period.
+- **[String] TimeUnit** _(Write)_: Specifies the unit of time, hours or days
+  time frame to install pending software updates.
+  - Values include: { Hours | Days }
+- **[UInt32] BatchingTimeOut** _(Write)_: Specifies the time within TimeUnit to
+  install the depending updates.
+- **[Boolean] EnableDeltaDownload** _(Write)_: Specifies if clients are allowed to
+  download delta content when available.
+- **[UInt32] DeltaDownloadPort** _(Write)_: Specifies the port that clients will
+  use to receive requests for delta content.
+- **[Boolean] Office365ManagementType** _(Write)_: Specifies if management of the
+  Office 365 client is enabled.
+- **[Boolean] EnableThirdPartyUpdates** _(Write)_: Specifies if third party updates
+  is enabled or disabled.
+- **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy
+  exists.
+- **[String] ClientType** _(Read)_: Specifies the type of client policy setting.
+
+#### CMClientSettingsSoftwareUpdate Examples
+
+- [CMClientSettingsSoftwareUpdate](Source\Examples\Resources\CMClientSettingsSoftwareUpdate\CMClientSettingsSoftwareUpdate.ps1)
+
 ### CMClientSettingsStateMessaging
 
 - **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
@@ -1892,7 +2120,7 @@ you are using apply and auto correct.
   exists.
 - **[String] ClientType** _(Read)_: Specifies the type of client policy setting.
 
-#### CMClientSettingsMetered Examples
+#### CMClientSettingsStateMessaging Examples
 
 - [CMClientSettingsStateMessaging](Source\Examples\Resources\CMClientSettingsStateMessaging\CMClientSettingsStateMessaging.ps1)
 
@@ -1965,18 +2193,23 @@ all of the modules and specify if it is currently supported by ReverseDSC.
   and will not populate or gather the boundaries within the group.
 - DSC_CMClientPushSettings: Fully Supported
 - DSC_CMClientStatusSettings: Fully Supported
+- DSC_CMClientSettings : Fully Supported
+- DSC_CMClientSettingsBits : Fully Supported
 - DSC_CMClientSettingsClientCache : Fully Supported
 - DSC_CMClientSettingsClientPolicy : Fully Supported
 - DSC_CMClientSettingsCloudService : Fully Supported
 - DSC_CMClientSettingsCompliance : Fully Supported
+- DSC_CMClientSettingsComputerAgent : Fully Supported
 - DSC_CMClientSettingsDelivery : Fully Supported
 - DSC_CMClientSettingsHardware : Fully Supported
 - DSC_CMClientSettingsMetered : Fully Supported
 - DSC_CMClientSettingsPower : Fully Supported
+- DSC_CMClientSettingsRemoteTools : Fully Supported
 - DSC_CMClientSettingsSoftwareCenter : Fully Supported
 - DSC_CMClientSettingsSoftwareDeployment : Fully Supported
 - DSC_CMClientSettingsSoftwareInventory : Fully Supported
 - DSC_CMClientSettingsSoftwareMetering : Fully Supported
+- DSC_CMClientSettingsSoftwareUpdate : Fully Supported
 - DSC_CMClientSettingsStateMessaging : Fully Supported
 - DSC_CMClientSettingsUserDeviceAffinity : Fully Supported
 - DSC_CMCollectionMembershipEvaluationComponent: Fully Supported
@@ -2038,11 +2271,13 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|SoftwareupdatePointComponent|
-  StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly|ClientSettingsClientCache|
-  ClientSettingsClientPolicy|ClientSettingsCloudService|ClientSettingsCompliance|
-  ClientSettingsDelivery|ClientSettingsHardware|ClientSettingsMetered|ClientSettingsPower|
-  ClientSettingsSoftwareCenter|ClientSettingsSoftwareDeployment|ClientSettingsSoftwareInventory|
-  ClientSettingsSoftwareMetering|ClientSettingsStateMessaging|ClientSettingsUserDeviceAffinity }
+  StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly|ClientSettings|
+  ClientSettingsBits|ClientSettingsClientCache|ClientSettingsClientPolicy|ClientSettingsCloudService|
+  ClientSettingsCompliance|ClientSettingsComputerAgent|ClientSettingsDelivery|ClientSettingsHardware|
+  ClientSettingsMetered|ClientSettingsPower|ClientSettingsRemoteTools|ClientSettingsSoftwareCenter|
+  ClientSettingsSoftwareDeployment|ClientSettingsSoftwareInventory|ClientSettingsSoftwareMetering|
+  ClientSettingsSoftwareUpdate|ClientSettingsStateMessaging|
+  ClientSettingsUserDeviceAffinity }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
   - Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
@@ -2052,11 +2287,13 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
   ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|SoftwareupdatePointComponent|
-  StatusReportingComponent|SystemDiscovery|UserDiscovery|ClientSettingsClientCache|
-  ClientSettingsClientPolicy|ClientSettingsCloudService|ClientSettingsCompliance|
-  ClientSettingsDelivery|ClientSettingsHardware|ClientSettingsMetered|ClientSettingsPower|
-  ClientSettingsSoftwareCenter|ClientSettingsSoftwareDeployment|ClientSettingsSoftwareInventory|
-  ClientSettingsSoftwareMetering|ClientSettingsStateMessaging|ClientSettingsUserDeviceAffinity }
+  StatusReportingComponent|SystemDiscovery|UserDiscovery|ClientSettings|
+  ClientSettingsBits|ClientSettingsClientCache|ClientSettingsClientPolicy|ClientSettingsCloudService|
+  ClientSettingsCompliance|ClientSettingsComputerAgent|ClientSettingsDelivery|ClientSettingsHardware|
+  ClientSettingsMetered|ClientSettingsPower|ClientSettingsRemoteTools|ClientSettingsSoftwareCenter|
+  ClientSettingsSoftwareDeployment|ClientSettingsSoftwareInventory|ClientSettingsSoftwareMetering|
+  ClientSettingsSoftwareUpdate|ClientSettingsStateMessaging|
+  ClientSettingsUserDeviceAffinity }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
   Filename must end with .psd1. Not specifying DataFile the output will be displayed
   in the output screen only if Include does not equal ConfigFileOnly.

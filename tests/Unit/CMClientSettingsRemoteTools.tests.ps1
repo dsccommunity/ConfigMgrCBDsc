@@ -40,6 +40,69 @@ try
 
         Describe 'ConfigMgrCBDsc - DSC_CMClientSettingsRemoteTools\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
+                $cimFullControl = New-Object -TypeName PSObject -Property  @{
+                    'SiteCode' = 'Lab'
+                    'ItemType' = 'Client Component'
+                    'FileType' = 2
+                    'ItemName' = 'Remote Control'
+                    'Props'    = @(
+                        @{
+                            'PropertyName' = 'Enable RA'
+                            'Value'        = 1
+                        }
+                        @{
+                            'PropertyName' = 'Allow RA Unsolicited Control'
+                            'Value'        = 1
+                        }
+                        @{
+                            'PropertyName' = 'Allow RA Unsolicited View'
+                            'Value'        = 1
+                        }
+                    )
+                }
+
+                $cimViewOnly = New-Object -TypeName PSObject -Property  @{
+                    'SiteCode' = 'Lab'
+                    'ItemType' = 'Client Component'
+                    'FileType' = 2
+                    'ItemName' = 'Remote Control'
+                    'Props'    = @(
+                        @{
+                            PropertyName = 'Enable RA'
+                            Value        = 1
+                        }
+                        @{
+                            PropertyName = 'Allow RA Unsolicited Control'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Allow RA Unsolicited View'
+                            Value        = 1
+                        }
+                    )
+                }
+
+                $cimNone = New-Object -TypeName PSObject -Property  @{
+                    'SiteCode' = 'Lab'
+                    'ItemType' = 'Client Component'
+                    'FileType' = 2
+                    'ItemName' = 'Remote Control'
+                    'Props'    = @(
+                        @{
+                            PropertyName = 'Enable RA'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Allow RA Unsolicited Control'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Allow RA Unsolicited View'
+                            Value        = 0
+                        }
+                    )
+                }
+
                 $clientReturnNone = @{
                     FirewallExceptionProfiles           = 0
                     AllowClientChange                   = $true
@@ -201,12 +264,23 @@ try
                 }
 
                 $clientType = @{
-                    Type = 1
+                    SiteCode = 'Lab'
+                    Type     = 1
+                }
+
+                $clientTypeDefault = @{
+                    Type     = 0
+                    SiteCode = 'Lab'
                 }
 
                 $getInput = @{
                     SiteCode          = 'Lab'
                     ClientSettingName = 'ClientTest'
+                }
+
+                $getInputDefault = @{
+                    SiteCode          = 'Lab'
+                    ClientSettingName = 'Default Agent'
                 }
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -246,13 +320,14 @@ try
                 }
 
                 It 'Should return desired results when client settings exist firewall Public' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientTypeDefault }
                     Mock -CommandName Get-CMClientSetting -MockWith { $clientReturnPublic } -ParameterFilter { $Setting -eq 'RemoteTools' }
+                    Mock -CommandName Get-CimInstance -MockWith { $cimFullControl }
 
-                    $result = Get-TargetResource @getInput
+                    $result = Get-TargetResource @getInputDefault
                     $result                                     | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode                            | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName                   | Should -Be -ExpectedValue 'ClientTest'
+                    $result.ClientSettingName                   | Should -Be -ExpectedValue 'Default Agent'
                     $result.FirewallExceptionProfile            | Should -Be -ExpectedValue 'Public'
                     $result.AllowClientChange                   | Should -Be -ExpectedValue $true
                     $result.AllowUnattendedComputer             | Should -Be -ExpectedValue $true
@@ -271,18 +346,19 @@ try
                     $result.AllowPermittedViewer                | Should -Be -ExpectedValue $true
                     $result.RequireAuthentication               | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus                 | Should -Be -ExpectedValue 'Present'
-                    $result.ClientType                          | Should -Be -ExpectedValue 'Device'
+                    $result.ClientType                          | Should -Be -ExpectedValue 'Default'
                     $result.RemoteToolsStatus                   | Should -Be -ExpectedValue 'Enabled'
                 }
 
                 It 'Should return desired results when client settings exist firewall Private' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientTypeDefault }
                     Mock -CommandName Get-CMClientSetting -MockWith { $clientReturnPrivate } -ParameterFilter { $Setting -eq 'RemoteTools' }
+                    Mock -CommandName Get-CimInstance -MockWith { $cimViewOnly }
 
-                    $result = Get-TargetResource @getInput
+                    $result = Get-TargetResource @getInputDefault
                     $result                                     | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode                            | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName                   | Should -Be -ExpectedValue 'ClientTest'
+                    $result.ClientSettingName                   | Should -Be -ExpectedValue 'Default Agent'
                     $result.FirewallExceptionProfile            | Should -Be -ExpectedValue 'Private'
                     $result.AllowClientChange                   | Should -Be -ExpectedValue $true
                     $result.AllowUnattendedComputer             | Should -Be -ExpectedValue $true
@@ -296,23 +372,24 @@ try
                     $result.AudibleSignal                       | Should -Be -ExpectedValue 'PlaySoundAtBeginAndEnd'
                     $result.ManageUnsolicitedRemoteAssistance   | Should -Be -ExpectedValue $true
                     $result.ManageSolicitedRemoteAssistance     | Should -Be -ExpectedValue $true
-                    $result.RemoteAssistanceAccessLevel         | Should -Be -ExpectedValue 'FullControl'
+                    $result.RemoteAssistanceAccessLevel         | Should -Be -ExpectedValue 'RemoteViewing'
                     $result.ManageRemoteDesktopSetting          | Should -Be -ExpectedValue $true
                     $result.AllowPermittedViewer                | Should -Be -ExpectedValue $true
                     $result.RequireAuthentication               | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus                 | Should -Be -ExpectedValue 'Present'
-                    $result.ClientType                          | Should -Be -ExpectedValue 'Device'
+                    $result.ClientType                          | Should -Be -ExpectedValue 'Default'
                     $result.RemoteToolsStatus                   | Should -Be -ExpectedValue 'Enabled'
                 }
 
                 It 'Should return desired results when client settings exist firewall Private and Public' {
-                    Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
+                    Mock -CommandName Get-CMClientSetting -MockWith { $clientTypeDefault }
                     Mock -CommandName Get-CMClientSetting -MockWith { $clientReturnPubPriv } -ParameterFilter { $Setting -eq 'RemoteTools' }
+                    Mock -CommandName Get-CimInstance -MockWith { $cimNone }
 
-                    $result = Get-TargetResource @getInput
+                    $result = Get-TargetResource @getInputDefault
                     $result                                     | Should -BeOfType System.Collections.HashTable
                     $result.SiteCode                            | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName                   | Should -Be -ExpectedValue 'ClientTest'
+                    $result.ClientSettingName                   | Should -Be -ExpectedValue 'Default Agent'
                     $result.FirewallExceptionProfile            | Should -Be -ExpectedValue 'Private','Public'
                     $result.AllowClientChange                   | Should -Be -ExpectedValue $true
                     $result.AllowUnattendedComputer             | Should -Be -ExpectedValue $true
@@ -326,12 +403,12 @@ try
                     $result.AudibleSignal                       | Should -Be -ExpectedValue 'PlaySoundAtBeginAndEnd'
                     $result.ManageUnsolicitedRemoteAssistance   | Should -Be -ExpectedValue $true
                     $result.ManageSolicitedRemoteAssistance     | Should -Be -ExpectedValue $true
-                    $result.RemoteAssistanceAccessLevel         | Should -Be -ExpectedValue 'FullControl'
+                    $result.RemoteAssistanceAccessLevel         | Should -Be -ExpectedValue 'None'
                     $result.ManageRemoteDesktopSetting          | Should -Be -ExpectedValue $true
                     $result.AllowPermittedViewer                | Should -Be -ExpectedValue $true
                     $result.RequireAuthentication               | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus                 | Should -Be -ExpectedValue 'Present'
-                    $result.ClientType                          | Should -Be -ExpectedValue 'Device'
+                    $result.ClientType                          | Should -Be -ExpectedValue 'Default'
                     $result.RemoteToolsStatus                   | Should -Be -ExpectedValue 'Enabled'
                 }
 

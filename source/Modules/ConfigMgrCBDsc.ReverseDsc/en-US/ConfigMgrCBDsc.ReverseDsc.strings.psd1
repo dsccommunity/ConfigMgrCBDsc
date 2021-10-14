@@ -26,6 +26,7 @@ ConvertFrom-StringData @'
     NewConfigFile      = Creating Configuration file {0}.
     ConfigFileComplete = Completed creating new Configuration file only.
     ClientSettings     = Processing CMClientSettings for client: {0}.
+    ClientBits         = Processing CMClientSettingsBits for client: {0}.
     ClientClientCache  = Processing CMClientSettingsClientCache for client policy: {0}.
     ClientClientPolicy = Processing CMClientSettingsClientPolicy for client policy: {0}.
     ClientCloud        = Processing CMClientSettingsCloud for client policy: {0}.
@@ -40,6 +41,7 @@ ConvertFrom-StringData @'
     ClientSoftDeploy   = Processing CMClientSettingsSoftwareDeployment for client policy: {0}.
     ClientSoftInven    = Processing CMClientSettingsSoftwareInventory for client policy: {0}.
     ClientSoftMet      = Processing CMClientSettingsSoftwareMetering for client policy: {0}.
+    ClientSoftUp       = Processing CMClientSettingsSoftwareUpdate for client policy: {0}.
     ClientStateMessage = Processing CMClientSettingsStateMessaging for client policy: {0}.
     ClientAffinity     = Processing CMClientSettingsUserDeviceAffinity for client policy: {0}.
 '@

@@ -11,4 +11,5 @@ ConvertFrom-StringData @'
     MissingEnforce       = When settings EnforceMandatory to true you must specify both TimeUnit and BatchingTimeOut.
     MaxBatchHours        = TimeUnits is set to hours, BatchingTimeOut max value is 23, setting BatchingTimeOut to 23.
     TimeBatchIgnore      = TimeUnit or BatchingTimeOut are specified, to set these settings EnforceMandatory must be set to true, ignoring settings.
+    DisableIgnore        = Currently setting SoftwareUpdates to disabled all other parameters specified will be ignored.
 '@

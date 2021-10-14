@@ -83,18 +83,22 @@
         'CMGroupDiscovery'
         'CMSoftwareUpdatePointComponent'
         'CMClientSettings'
+        'CMClientSettingsBits'
         'CMClientSettingsClientCache'
         'CMClientSettingsClientPolicy'
         'CMClientSettingsCloudService'
         'CMClientSettingsCompliance'
+        'CMClientSettingsComputerAgent'
         'CMClientSettingsDelivery'
         'CMClientSettingsHardware'
         'CMClientSettingsMetered'
         'CMClientSettingsPower'
+        'CMClientSettingsRemoteTools'
         'CMClientSettingsSoftwareCenter'
         'CMClientSettingsSoftwareDeployment'
         'CMClientSettingsSoftwareInventory'
         'CMClientSettingsSoftwareMetering'
+        'CMClientSettingsSoftwareUpdate'
         'CMClientSettingsStateMessaging'
         'CMClientSettingsUserDeviceAffinity'
     )
@@ -116,9 +120,10 @@
             'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
             'DistributionPointGroupMembers','SecurityScopes','UserDiscovery','SecurityRoles','ClientPushSettings','SoftwareDistributionComponent',
             'MaintenanceWindows','FileReplication','EmailNotificationComponent','CMGroupDiscovery','SoftwareUpdatePointComponent','ClientSettings',
-            'ClientSettingsClientCache','ClientSettingsClientPolicy','ClientSettingsCompliance','ClientSettingsDelivery','ClientSettingsHardware',
-            'ClientSettingsMetered','ClientSettingsPower','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
-            'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')
+            'ClientSettingsBits','ClientSettingsClientCache','ClientSettingsClientPolicy','ClientSettingsCompliance','ClientSettingsComputerAgent',
+            'ClientSettingsDelivery','ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower','ClientSettingsRemoteTools',
+            'ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment','ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering',
+            'ClientSettingsSoftwareUpdate','ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

@@ -74,10 +74,38 @@ function Get-TargetResource
                 $audible = @('PlayNoSound','PlaySoundAtBeginAndEnd','PlaySoundRepeatedly')[[UInt32]$settings.AudibleSignal]
                 $unsolRemoteAssist = [System.Convert]::ToBoolean($settings.ManageRA)
                 $solRemoteAssist = [System.Convert]::ToBoolean($settings.EnforceRAandTSSettings)
-                $levels = $settings.RemoteAssistanceAccessLevel
                 $manageTS = [System.Convert]::ToBoolean($settings.ManageTS)
                 $enableTS = [System.Convert]::ToBoolean($settings.EnableTS)
                 $userAuth = [System.Convert]::ToBoolean($settings.TSUserAuthentication)
+
+                if ($type -eq 'Default')
+                {
+                    $mainSite = $clientSetting.SiteCode
+                    $query = "Select * from SMS_SCI_ClientComp Where SiteCode = '$mainSite' AND ItemType = 'Client Component' AND FileType = 2 and ItemName='Remote Control'"
+                    $cimQuery = (Get-CimInstance -Namespace root\SMS\Site_$SiteCode -Query $query -ErrorAction SilentlyContinue).Props
+                    if ($cimQuery -ne $null)
+                    {
+                        $enableRA = ($cimQuery | Where-Object -FilterScript {$_.PropertyName -eq 'Enable RA'}).Value
+                        $fullControl = ($cimQuery | Where-Object -FilterScript {$_.PropertyName -eq 'Allow RA Unsolicited Control'}).Value
+                        if ($enableRA -eq 0)
+                        {
+                            $levels = 'None'
+                        }
+                        elseif ($fullcontrol -eq '1')
+                        {
+                            $levels = 'FullControl'
+                        }
+                        else
+                        {
+                            $levels = 'RemoteViewing'
+                        }
+                    }
+                }
+                else
+                {
+                    $levels = $settings.RemoteAssistanceAccessLevel
+                }
+
                 $toolsStatus = 'Enabled'
             }
         }

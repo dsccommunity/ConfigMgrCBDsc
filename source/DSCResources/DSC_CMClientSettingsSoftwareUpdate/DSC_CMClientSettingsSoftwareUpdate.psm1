@@ -131,52 +131,65 @@ function Get-TargetResource
     .Parameter Enable
         Specifies if software update for clients is enabled or disabled.
 
-    .Parameter MaxRandomDelayMins
-        Specifies the maximum random delay in minutes.
+    .PARAMETER ScanStart
+        Specifies the start date and start time for the software update scan schedule Month/Day/Year, example 1/1/2020 02:00.
 
-    .PARAMETER Start
-        Specifies the start date and start time for the hardware inventory schedule Month/Day/Year, example 1/1/2020 02:00.
+    .PARAMETER ScanScheduleType
+        Specifies the schedule type for the software update scan schedule.
 
-    .PARAMETER ScheduleType
-        Specifies the schedule type for the hardware inventory schedule.
+    .PARAMETER ScanRecurInterval
+        Specifies how often the ScanScheduleType is run.
 
-    .PARAMETER RecurInterval
-        Specifies how often the ScheduleType is run.
+    .PARAMETER ScanMonthlyByWeek
+        Specifies week order for MonthlyByWeek scan schedule type.
 
-    .PARAMETER MonthlyByWeek
-        Specifies week order for MonthlyByWeek schedule type.
+    .PARAMETER ScanDayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly scan schedules.
 
-    .PARAMETER DayOfWeek
-        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
-
-    .PARAMETER DayOfMonth
-        Specifies the day number for MonthlyByDay schedules.
+    .PARAMETER ScanDayOfMonth
+        Specifies the day number for MonthlyByDay scan schedules.
         Note specifying 0 sets the schedule to run the last day of the month.
 
-    .PARAMETER Start
-        Specifies the start date and start time for the hardware inventory schedule Month/Day/Year, example 1/1/2020 02:00.
+    .PARAMETER EvalStart
+        Specifies the start date and start time for the software update eval schedule Month/Day/Year, example 1/1/2020 02:00.
 
-    .PARAMETER ScheduleType
-        Specifies the schedule type for the hardware inventory schedule.
+    .PARAMETER EvalScheduleType
+        Specifies the schedule type for the software update eval schedule.
 
-    .PARAMETER RecurInterval
-        Specifies how often the ScheduleType is run.
+    .PARAMETER EvalRecurInterval
+        Specifies how often the EvalScheduleType is run.
 
-    .PARAMETER MonthlyByWeek
-        Specifies week order for MonthlyByWeek schedule type.
+    .PARAMETER EvalMonthlyByWeek
+        Specifies week order for MonthlyByWeek eval schedule type.
 
-    .PARAMETER DayOfWeek
-        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
+    .PARAMETER EvalDayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly eval schedules.
 
-    .PARAMETER DayOfMonth
-        Specifies the day number for MonthlyByDay schedules.
+    .PARAMETER EvalDayOfMonth
+        Specifies the day number for MonthlyByDay eval schedules.
         Note specifying 0 sets the schedule to run the last day of the month.
 
-    .Parameter CollectMifFile
-        Specifies the collected MIF files.
+    .Parameter EnforceMandatory
+        Specifies if any software update deployment deadline is
+        reached to install all deployments with dealing coming within a specific time period.
 
-    .Parameter MaxThirdPartyMifSize
-        Specifies the maximum custom MIF file size in KB.
+    .Parameter TimeUnit
+        Specifies the unit of time, hours or days time frame to install pending software updates.
+
+    .Parameter BatchingTimeOut
+        Specifies the time within TimeUnit to install the depending updates.
+
+    .Parameter EnableDeltaDownload
+        Specifies if client are allowed to download delta content when available.
+
+    .Parameter DeltaDownloadPort
+        Specifies the port that clients will use to receive requests for delta content.
+
+    .Parameter Office365ManagementType
+        Specifies if management of the Office 365 client is enabled.
+
+    .Parameter EnableThirdPartyUpdates
+        Specifies if third party updates is enabled or disabled.
 #>
 function Set-TargetResource
 {
@@ -330,7 +343,7 @@ function Set-TargetResource
             if ($EnforceMandatory -eq $true)
             {
                 $defaultValues += ('TimeUnit','BatchingTimeOut')
-                if (-not $PSBoundParameters.ContainsKey('TimeUnit') -and -not $PSBoundParameters.ContainsKey('BatchingTimeOut'))
+                if (-not $PSBoundParameters.ContainsKey('TimeUnit') -or -not $PSBoundParameters.ContainsKey('BatchingTimeOut'))
                 {
                     throw $script:localizedData.MissingEnforce
                 }
@@ -483,35 +496,67 @@ function Set-TargetResource
         Specifies which client settings policy to modify.
 
     .Parameter Enable
-        Specifies if hardware inventory for clients is enabled or disabled.
+        Specifies if software update for clients is enabled or disabled.
 
-    .Parameter MaxRandomDelayMins
-        Specifies the maximum random delay in minutes.
+    .PARAMETER ScanStart
+        Specifies the start date and start time for the software update scan schedule Month/Day/Year, example 1/1/2020 02:00.
 
-    .PARAMETER Start
-        Specifies the start date and start time for the hardware inventory schedule Month/Day/Year, example 1/1/2020 02:00.
+    .PARAMETER ScanScheduleType
+        Specifies the schedule type for the software update scan schedule.
 
-    .PARAMETER ScheduleType
-        Specifies the schedule type for the hardware inventory schedule.
+    .PARAMETER ScanRecurInterval
+        Specifies how often the ScanScheduleType is run.
 
-    .PARAMETER RecurInterval
-        Specifies how often the ScheduleType is run.
+    .PARAMETER ScanMonthlyByWeek
+        Specifies week order for MonthlyByWeek scan schedule type.
 
-    .PARAMETER MonthlyByWeek
-        Specifies week order for MonthlyByWeek schedule type.
+    .PARAMETER ScanDayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly scan schedules.
 
-    .PARAMETER DayOfWeek
-        Specifies the day of week name for MonthlyByWeek and Weekly schedules.
-
-    .PARAMETER DayOfMonth
-        Specifies the day number for MonthlyByDay schedules.
+    .PARAMETER ScanDayOfMonth
+        Specifies the day number for MonthlyByDay scan schedules.
         Note specifying 0 sets the schedule to run the last day of the month.
 
-    .Parameter CollectMifFile
-        Specifies the collected MIF files.
+    .PARAMETER EvalStart
+        Specifies the start date and start time for the software update eval schedule Month/Day/Year, example 1/1/2020 02:00.
 
-    .Parameter MaxThirdPartyMifSize
-        Specifies the maximum custom MIF file size in KB.
+    .PARAMETER EvalScheduleType
+        Specifies the schedule type for the software update eval schedule.
+
+    .PARAMETER EvalRecurInterval
+        Specifies how often the EvalScheduleType is run.
+
+    .PARAMETER EvalMonthlyByWeek
+        Specifies week order for MonthlyByWeek eval schedule type.
+
+    .PARAMETER EvalDayOfWeek
+        Specifies the day of week name for MonthlyByWeek and Weekly eval schedules.
+
+    .PARAMETER EvalDayOfMonth
+        Specifies the day number for MonthlyByDay eval schedules.
+        Note specifying 0 sets the schedule to run the last day of the month.
+
+    .Parameter EnforceMandatory
+        Specifies if any software update deployment deadline is
+        reached to install all deployments with dealing coming within a specific timer period.
+
+    .Parameter TimeUnit
+        Specifies the unit of time, hours or days time frame to install pending software updates.
+
+    .Parameter BatchingTimeOut
+        Specifies the time within TimeUnit to install the depending updates.
+
+    .Parameter EnableDeltaDownload
+        Specifies if client are allowed to download delta content when available.
+
+    .Parameter DeltaDownloadPort
+        Specifies the port that clients will use to receive requests for delta content.
+
+    .Parameter Office365ManagementType
+        Specifies if management of the Office 365 client is enabled.
+
+    .Parameter EnableThirdPartyUpdates
+        Specifies if third party updates is enabled or disabled.
 #>
 function Test-TargetResource
 {
@@ -669,9 +714,9 @@ function Test-TargetResource
             if ($EnforceMandatory -eq $true)
             {
                 $defaultValues += ('TimeUnit','BatchingTimeOut')
-                if (-not $PSBoundParameters.ContainsKey('TimeUnit') -and -not $PSBoundParameters.ContainsKey('BatchingTimeOut'))
+                if (-not $PSBoundParameters.ContainsKey('TimeUnit') -or -not $PSBoundParameters.ContainsKey('BatchingTimeOut'))
                 {
-                    Write-Warning -Messaging $script:localizedData.MissingEnforce
+                    Write-Warning -Message $script:localizedData.MissingEnforce
                     $badInput = $true
                 }
 

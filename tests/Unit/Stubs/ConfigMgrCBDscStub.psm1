@@ -36290,7 +36290,6 @@ function Set-CMClientSettingHardwareInventory
         ${Enable},
 
         [Alias('InventorySchedule','HardwareInventorySchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -36801,12 +36800,10 @@ function Set-CMClientSettingSoftwareUpdate
         ${Enable},
 
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${ScanSchedule},
 
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${DeploymentEvaluationSchedule},
 
@@ -36818,6 +36815,15 @@ function Set-CMClientSettingSoftwareUpdate
 
         [System.Nullable[bool]]
         ${Office365ManagementType},
+
+        [System.Nullable[bool]]
+        ${EnableDeltaDownload},
+
+        [int]
+        ${DeltaDownloadPort},
+
+        [System.Nullable[bool]]
+        ${EnableThirdPartyUpdates},
 
         [Parameter(ParameterSetName='SetDefaultSetting', Mandatory=$true)]
         [switch]

@@ -559,11 +559,11 @@ Configuration ConfigureSccm
 
         [Parameter()]
         [HashTable[]]
-        `$CMClientSettingsSoftwareMetering,
+        `$CMClientSettingsSoftwareInventory,
 
         [Parameter()]
         [HashTable[]]
-        `$CMClientSettingsSoftwareInventory,
+        `$CMClientSettingsSoftwareMetering,
 
         [Parameter()]
         [HashTable[]]
@@ -7277,11 +7277,11 @@ Configuration ConfigureSccm
         {
             foreach (`$agent in `$CMClientSettingsComputerAgent)
             {
-                if (`$agent.EnableHealthAttestation -eq $true)
+                if (`$agent.EnableHealthAttestation -eq `$true)
                 {
                     CMClientSettingsComputerAgent `$agent.ClientSettingName
                     {
-                        SiteCode                       = $SiteCode
+                        SiteCode                       = `$SiteCode
                         ClientSettingName              = `$agent.ClientSettingName
                         InitialReminderHr              = `$agent.InitialReminderHr
                         InterimReminderHr              = `$agent.InterimReminderHr
@@ -7295,13 +7295,14 @@ Configuration ConfigureSccm
                         EnableThirdPartyOrchestration  = `$agent.EnableThirdPartyOrchestration
                         PowerShellExecutionPolicy      = `$agent.PowerShellExecutionPolicy
                         DisplayNewProgramNotification  = `$agent.DisplayNewProgramNotification
+                        DependsOn                      = `$cmClientSettingsDependsOn
                     }
                 }
                 else
                 {
                     CMClientSettingsComputerAgent `$agent.ClientSettingName
                     {
-                        SiteCode                       = $SiteCode
+                        SiteCode                       = `$SiteCode
                         ClientSettingName              = `$agent.ClientSettingName
                         InitialReminderHr              = `$agent.InitialReminderHr
                         InterimReminderHr              = `$agent.InterimReminderHr
@@ -7314,6 +7315,7 @@ Configuration ConfigureSccm
                         EnableThirdPartyOrchestration  = `$agent.EnableThirdPartyOrchestration
                         PowerShellExecutionPolicy      = `$agent.PowerShellExecutionPolicy
                         DisplayNewProgramNotification  = `$agent.DisplayNewProgramNotification
+                        DependsOn                      = `$cmClientSettingsDependsOn
                     }
                 }
             }
@@ -7771,6 +7773,2365 @@ Configuration ConfigureSccm
             }
         }
 
+        if (`$CMClientSettingsSoftwareUpdate)
+        {
+            foreach (`$update in `$CMClientSettingsSoftwareUpdate)
+            {
+                if (`$update.Enable -eq `$false)
+                {
+                    CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                    {
+                        SiteCode          = `$SiteCode
+                        ClientSettingName = `$update.ClientSettingName
+                        Enable            = `$update.Enable
+                        DependsOn         = `$cmClientSettingsDependsOn
+                    }
+                }
+                elseif (`$update.EnforceMandatory -eq `$true -and `$update.EnableDeltaDownload -eq `$true)
+                {
+                    if (`$update.ScanScheduleType -eq 'MonthlyByDay')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'MonthlyByWeek')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'Weekly')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'None')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                }
+                elseif (`$update.EnforceMandatory -eq `$true -and `$update.EnableDeltaDownload -eq `$false)
+                {
+                    if (`$update.ScanScheduleType -eq 'MonthlyByDay')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'MonthlyByWeek')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'Weekly')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'None')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                TimeUnit                = `$update.TimeUnit
+                                BatchingTimeOut         = `$update.BatchingTimeOut
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                }
+                elseif (`$update.EnforceMandatory -eq `$false -and `$update.EnableDeltaDownload -eq `$true)
+                {
+                    if (`$update.ScanScheduleType -eq 'MonthlyByDay')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'MonthlyByWeek')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'Weekly')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'None')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                DeltaDownloadPort       = `$update.DeltaDownloadPort
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                }
+                elseif (`$update.EnforceMandatory -eq `$false -and `$update.EnableDeltaDownload -eq `$false)
+                {
+                    if (`$update.ScanScheduleType -eq 'MonthlyByDay')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfMonth          = `$update.ScanDayOfMonth
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'MonthlyByWeek')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                ScanMonthlyWeekOrder    = `$update.ScanMonthlyWeekOrder
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'Weekly')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                ScanDayOfWeek           = `$update.ScanDayOfWeek
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    elseif (`$update.ScanScheduleType -eq 'None')
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (`$update.EvalScheduleType -eq 'MonthlyByDay')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfMonth          = `$update.EvalDayOfMonth
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'MonthlyByWeek')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EvalMonthlyWeekOrder    = `$update.MonthlyWeekOrder
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'Weekly')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EvalDayOfWeek           = `$update.EvalDayOfWeek
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        elseif (`$update.EvalScheduleType -eq 'None')
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsSoftwareUpdate `$update.ClientSettingName
+                            {
+                                SiteCode                = `$SiteCode
+                                ClientSettingName       = `$update.ClientSettingName
+                                Enable                  = `$update.Enable
+                                ScanStart               = `$update.ScanStart
+                                ScanScheduleType        = `$update.ScanScheduleType
+                                ScanRecurInterval       = `$update.ScanRecurInterval
+                                EvalStart               = `$update.EvalStart
+                                EvalScheduleType        = `$update.EvalScheduleType
+                                EvalRecurInterval       = `$update.EvalRecurInterval
+                                EnforceMandatory        = `$update.EnforceMandatory
+                                EnableDeltaDownload     = `$update.EnableDeltaDownload
+                                Office365ManagementType = `$update.Office365ManagementType
+                                EnableThirdPartyUpdates = `$update.EnableThirdPartyUpdates
+                                DependsOn               = `$cmClientSettingsDependsOn
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         if (`$CMClientSettingsPower)
         {
             foreach (`$powerSetting in `$CMClientSettingsPower)
@@ -7828,56 +10189,114 @@ Configuration ConfigureSccm
         {
             foreach (`$remoteTool in `$CMClientSettingsRemoteTools)
             {
-                if (`$remoteTool.ManageRemoteDesktopSetting -eq $true)
+                if (`$remoteTool.ManageRemoteDesktopSetting -eq `$true)
                 {
                     if (`$remoteTool.PermittedViewer)
                     {
-                        CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                        if (`$remoteTool.FirewallExceptionProfile)
                         {
-                            SiteCode                            = `$SiteCode
-                            ClientSettingName                   = `$remoteTool.ClientSettingName
-                            FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
-                            AllowClientChange                   = `$remoteTool.AllowClientChange
-                            AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
-                            PromptUserForPermission             = `$remoteTool.PromptUserForPermission
-                            PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
-                            GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
-                            AccessLevel                         = `$remoteTool.AccessLevel
-                            PermittedViewer                     = `$remoteTool.PermittedViewer
-                            ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
-                            ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
-                            AudibleSignal                       = `$remoteTool.AudibleSignal
-                            ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
-                            ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
-                            RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
-                            ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
-                            AllowPermittedViewer                = `$remoteTool.AllowPermittedViewer
-                            RequireAuthentication               = `$remoteTool.RequireAuthentication
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                PermittedViewer                     = `$remoteTool.PermittedViewer
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                AllowPermittedViewer                = `$remoteTool.AllowPermittedViewer
+                                RequireAuthentication               = `$remoteTool.RequireAuthentication
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                PermittedViewer                     = `$remoteTool.PermittedViewer
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                AllowPermittedViewer                = `$remoteTool.AllowPermittedViewer
+                                RequireAuthentication               = `$remoteTool.RequireAuthentication
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
                         }
                     }
                     else
                     {
-                        CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                        if (`$remoteTool.FirewallExceptionProfile)
                         {
-                            SiteCode                            = `$SiteCode
-                            ClientSettingName                   = `$remoteTool.ClientSettingName
-                            FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
-                            AllowClientChange                   = `$remoteTool.AllowClientChange
-                            AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
-                            PromptUserForPermission             = `$remoteTool.PromptUserForPermission
-                            PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
-                            GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
-                            AccessLevel                         = `$remoteTool.AccessLevel
-                            PermittedViewer                     = `$remoteTool.PermittedViewer
-                            ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
-                            ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
-                            AudibleSignal                       = `$remoteTool.AudibleSignal
-                            ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
-                            ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
-                            RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
-                            ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
-                            AllowPermittedViewer                = `$remoteTool.AllowPermittedViewer
-                            RequireAuthentication               = `$remoteTool.RequireAuthentication
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                PermittedViewer                     = `$remoteTool.PermittedViewer
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                AllowPermittedViewer                = `$remoteTool.AllowPermittedViewer
+                                RequireAuthentication               = `$remoteTool.RequireAuthentication
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                PermittedViewer                     = `$remoteTool.PermittedViewer
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                AllowPermittedViewer                = `$remoteTool.AllowPermittedViewer
+                                RequireAuthentication               = `$remoteTool.RequireAuthentication
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
                         }
                     }
                 }
@@ -7885,46 +10304,98 @@ Configuration ConfigureSccm
                 {
                     if (`$remoteTool.PermittedViewer)
                     {
-                        CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                        if (`$remoteTool.FirewallExceptionProfile)
                         {
-                            SiteCode                            = `$SiteCode
-                            ClientSettingName                   = `$remoteTool.ClientSettingName
-                            FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
-                            AllowClientChange                   = `$remoteTool.AllowClientChange
-                            AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
-                            PromptUserForPermission             = `$remoteTool.PromptUserForPermission
-                            PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
-                            GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
-                            AccessLevel                         = `$remoteTool.AccessLevel
-                            ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
-                            ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
-                            AudibleSignal                       = `$remoteTool.AudibleSignal
-                            ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
-                            ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
-                            RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
-                            ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
                         }
                     }
                     else
                     {
-                        CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                        if (`$remoteTool.FirewallExceptionProfile)
                         {
-                            SiteCode                            = `$SiteCode
-                            ClientSettingName                   = `$remoteTool.ClientSettingName
-                            FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
-                            AllowClientChange                   = `$remoteTool.AllowClientChange
-                            AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
-                            PromptUserForPermission             = `$remoteTool.PromptUserForPermission
-                            PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
-                            GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
-                            AccessLevel                         = `$remoteTool.AccessLevel
-                            ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
-                            ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
-                            AudibleSignal                       = `$remoteTool.AudibleSignal
-                            ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
-                            ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
-                            RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
-                            ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                FirewallExceptionProfile            = `$remoteTool.FirewallExceptionProfile
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
+                        }
+                        else
+                        {
+                            CMClientSettingsRemoteTools `$remoteTool.ClientSettingName
+                            {
+                                SiteCode                            = `$SiteCode
+                                ClientSettingName                   = `$remoteTool.ClientSettingName
+                                AllowClientChange                   = `$remoteTool.AllowClientChange
+                                AllowUnattendedComputer             = `$remoteTool.AllowUnattendedComputer
+                                PromptUserForPermission             = `$remoteTool.PromptUserForPermission
+                                PromptUserForClipboardPermission    = `$remoteTool.PromptUserForClipboardPermission
+                                GrantPermissionToLocalAdministrator = `$remoteTool.GrantPermissionToLocalAdministrator
+                                AccessLevel                         = `$remoteTool.AccessLevel
+                                ShowNotificationIconOnTaskbar       = `$remoteTool.ShowNotificationIconOnTaskbar
+                                ShowSessionConnectionBar            = `$remoteTool.ShowSessionConnectionBar
+                                AudibleSignal                       = `$remoteTool.AudibleSignal
+                                ManageUnsolicitedRemoteAssistance   = `$remoteTool.ManageUnsolicitedRemoteAssistance
+                                ManageSolicitedRemoteAssistance     = `$remoteTool.ManageSolicitedRemoteAssistance
+                                RemoteAssistanceAccessLevel         = `$remoteTool.RemoteAssistanceAccessLevel
+                                ManageRemoteDesktopSetting          = `$remoteTool.ManageRemoteDesktopSetting
+                                DependsOn                           = `$cmClientSettingsDependsOn
+                            }
                         }
                     }
                 }
@@ -8084,8 +10555,6 @@ Configuration ConfigureSccm
                 }
             }
         }
-        #next set of client settings go here
-
     }
 }
 
@@ -8148,7 +10617,7 @@ function Set-ConfigMgrCBDscReverse
             'ClientSettingsCompliance','ClientSettingsComputerAgent','ClientSettingsDelivery',
             'ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower',
             'ClientSettingsRemoteTools','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
-            'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering',
+            'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsSoftwareUpdate',
             'ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')]
         [String[]]
         $Include = 'All',
@@ -8167,7 +10636,7 @@ function Set-ConfigMgrCBDscReverse
             'ClientSettingsCompliance','ClientSettingsComputerAgent','ClientSettingsDelivery',
             'ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower',
             'ClientSettingsRemoteTools','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
-            'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering',
+            'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsSoftwareUpdate',
             'ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')]
         [String[]]
         $Exclude,
@@ -8377,7 +10846,7 @@ function Set-ConfigMgrCBDscReverse
         $clientSettings = Get-CMClientSetting
 
         if (($Include -eq 'All' -and $Exclude -notcontains 'ClientSettings') -or
-            ($Inclde -contains 'ClientSettings'))
+            ($Include -contains 'ClientSettings'))
         {
             foreach ($item in $clientSettings)
             {
@@ -8424,7 +10893,7 @@ function Set-ConfigMgrCBDscReverse
                         $wCSBits = "$resourceName = @(`r`n"
                     }
 
-                    Write-Verbose -Message ($script:localizedData.ClientClientCache -f $item.Name) -Verbose
+                    Write-Verbose -Message ($script:localizedData.ClientBits -f $item.Name) -Verbose
                     $params = @{
                         ResourceName = $resourceName
                         SiteCode     = $SiteCode
@@ -8834,7 +11303,7 @@ function Set-ConfigMgrCBDscReverse
                         $wCSSoftCenter = "$resourceName = @(`r`n"
                     }
 
-                    Write-Verbose -Message ($script:localizedData.ClientPower -f $item.Name) -Verbose
+                    Write-Verbose -Message ($script:localizedData.ClientSoftCenter -f $item.Name) -Verbose
                     $params = @{
                         ResourceName = $resourceName
                         SiteCode     = $SiteCode
@@ -8961,6 +11430,41 @@ function Set-ConfigMgrCBDscReverse
             }
         }
 
+        if (($Include -eq 'All' -and $Exclude -notcontains 'ClientSettingsSoftwareUpdate') -or
+            ($Include -contains 'ClientSettingsSoftwareUpdate'))
+        {
+            foreach ($item in $clientSettings)
+            {
+                if (Get-CMClientSetting -Setting SoftwareUpdates -Name $item.Name)
+                {
+                    if ([string]::IsNullOrEmpty($wCSSoftUp))
+                    {
+                        $resourceName = 'CMClientSettingsSoftwareUpdate'
+                        $wCSSoftUp = "$resourceName = @(`r`n"
+                    }
+
+                    Write-Verbose -Message ($script:localizedData.ClientSoftUp -f $item.Name) -Verbose
+                    $params = @{
+                        ResourceName = $resourceName
+                        SiteCode     = $SiteCode
+                        Indent       = 2
+                        MultiEntry   = $true
+                        Resources    = $resources
+                        StringValue  = $item.Name
+                    }
+
+                    $testThing = Set-OutFile @params
+                    $wCSSoftUp += "$testThing"
+                }
+            }
+
+            if ($wCSSoftUp)
+            {
+                $wCSSoftUp += ")"
+                $fileOut += "$wCSSoftUp`r`n"
+            }
+        }
+
         if (($Include -eq 'All' -and $Exclude -notcontains 'ClientSettingsStateMessaging') -or
         ($Include -contains 'ClientSettingsStateMessaging'))
         {
@@ -9009,7 +11513,7 @@ function Set-ConfigMgrCBDscReverse
                         $wCSUDAffinity = "$resourceName = @(`r`n"
                     }
 
-                    Write-Verbose -Message ($script:localizedData.ClientStateMessage -f $item.Name) -Verbose
+                    Write-Verbose -Message ($script:localizedData.ClientAffinity -f $item.Name) -Verbose
                     $params = @{
                         ResourceName = $resourceName
                         SiteCode     = $SiteCode

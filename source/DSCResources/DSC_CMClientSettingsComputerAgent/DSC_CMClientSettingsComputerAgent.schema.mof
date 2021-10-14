@@ -7,7 +7,7 @@ class DSC_CMClientSettingsComputerAgent : OMI_BaseResource
     [Write, Description("Specifies reminder, in hours, for deployment deadlines less than 24 hours.")] UInt32 InterimReminderHr;
     [Write, Description("Specifies reminder, in minutes, for deployment deadlines less than 1 hours.")] UInt32 FinalReminderMins;
     [Write, Description("Specifies the organizational name displayed in software center.")] String BrandingTitle;
-    [Write, Description("Specifies if new software center is enabled or disabled.")] Boolean UseNewSoftwareCenter;
+    [Write, Description("Specifies if the new software center is enabled or disabled.")] Boolean UseNewSoftwareCenter;
     [Write, Description("Specifies if communication with the Health Attestation service is enabled or disabled.")] Boolean EnableHealthAttestation;
     [Write, Description("Specifies if the on-premises health service is enabled or disabled.")] Boolean UseOnPremisesHealthAttestation;
     [Write, Description("Specifies the install permissions."), ValueMap{"AllUsers","OnlyAdministrators","OnlyAdministratorsAndPrimaryUsers","NoUsers"}, Values{"AllUsers","OnlyAdministrators","OnlyAdministratorsAndPrimaryUsers","NoUsers"}] String InstallRestriction;

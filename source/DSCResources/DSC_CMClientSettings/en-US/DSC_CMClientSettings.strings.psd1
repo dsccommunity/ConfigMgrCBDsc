@@ -8,8 +8,8 @@ ConvertFrom-StringData @'
     DefaultClient        = Not able to modify the default client settings.
     ParamIgnoreScopes    = SecurityScopes was specifed, ignoring SecurityScopesToInclude and SecurityScopesToExclude.
     ScopeInEx            = SecurityScopesToInclude and SecurityScopesToExclude contain to same entry {0}, remove from one of the arrays.
-    ScopeMissing         = NOTMatch:  Client Settings Policy expected the following Scopes: {0}.
-    ScopeRemove          = NOTMATCH:  Client Settings Policy expected the following Scopes to be absent: {0}.
+    ScopeMissing         = NOT MATCH:  Client Settings Policy expected the following Scopes: {0}.
+    ScopeRemove          = NOT MATCH:  Client Settings Policy expected the following Scopes to be absent: {0}.
     AddScope             = Adding Security Scope {0} to {1}.
     RemoveScope          = Removing Security Scope {0} from {1}.
     ScopeExcludeAll      = Client Settings Policy must have at least 1 Security Scope assigned, SecurityScopesToExclude is currently set to remove all Security Scopes.

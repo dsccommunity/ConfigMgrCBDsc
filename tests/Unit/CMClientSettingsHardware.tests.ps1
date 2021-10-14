@@ -44,12 +44,6 @@ try
                     Type = 0
                 }
 
-                <# mif
-                    '0'  { 'None' }
-                    '4'  { 'CollectNoIdMifFile' }
-                    '8'  { 'CollectIdMifFile' }
-                    '12' { 'CollectIdMifAndNoIdMifFile' }
-                #>
                 $hardwareReturnNone = @{
                     Enabled               = $true
                     MaxRandomDelayMinutes = 40
