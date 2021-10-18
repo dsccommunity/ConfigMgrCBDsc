@@ -197,7 +197,7 @@ try
                     $result.PortalType                 | Should -Be -ExpectedValue $null
                 }
 
-                It 'Should return desired result when client setting policy exist but power management is not configured' {
+                It 'Should return desired result when client setting policy exist but software center is not configured' {
                     Mock -CommandName Get-CMClientSetting -MockWith { $clientType }
                     Mock -CommandName Get-CMClientSetting -MockWith { $null } -ParameterFilter { $Setting -eq 'SoftwareCenter' }
 
@@ -269,19 +269,6 @@ try
 
             Context 'When Set-TargetResource runs successfully' {
                 BeforeEach {
-                    $inputMisMatch = @{
-                        SiteCode                        = 'Lab'
-                        ClientSettingName               = 'ClientTest'
-                        Enable                          = $true
-                        AllowUserToOptOutFromPowerPlan  = $true
-                        EnableWakeupProxy               = $true
-                        WakeupProxyPort                 = 42
-                        WakeOnLanPort                   = 43
-                        FirewallExceptionForWakeupProxy = @('Private','Public')
-                        WakeupProxyDirectAccessPrefix   = @('fe80::6013:b219:6a1b:4767','fe80::6013:b219:6a1b:4769')
-                        NetworkWakeupOption             = 'Enabled'
-                    }
-
                     $returnNotConfig = @{
                         SiteCode                   = 'Lab'
                         ClientSettingName          = 'ClientTest'

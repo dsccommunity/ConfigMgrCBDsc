@@ -538,7 +538,7 @@ function Set-TargetResource
 
     .Parameter EnforceMandatory
         Specifies if any software update deployment deadline is
-        reached to install all deployments with dealing coming within a specific timer period.
+        reached to install all deployments with dealing coming within a specific time period.
 
     .Parameter TimeUnit
         Specifies the unit of time, hours or days time frame to install pending software updates.

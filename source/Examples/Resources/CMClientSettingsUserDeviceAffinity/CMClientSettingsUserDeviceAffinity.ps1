@@ -22,9 +22,9 @@ Configuration Example
         {
             SiteCode            = 'Lab'
             UsageThresholdDays  = 30
-		    AutoApproveAffinity = $false
-		    ClientSettingName   = 'ClientTest'
-		    LogOnThresholdMins  = 2880
+            AutoApproveAffinity = $false
+            ClientSettingName   = 'ClientTest'
+            LogOnThresholdMins  = 2880
         }
 
         CMClientSettingsUserDeviceAffinity UserAgent

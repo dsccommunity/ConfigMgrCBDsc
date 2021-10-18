@@ -255,7 +255,6 @@ function Set-TargetResource
 
         if ($EnableCustomize -eq $true)
         {
-
             if ($PSBoundParameters.ContainsKey('ColorScheme'))
             {
                 $regexPrefix = '^(#|0x)?[0-9,a-f]*$'
@@ -448,7 +447,6 @@ function Test-TargetResource
     }
     elseif ($EnableCustomize -eq $true)
     {
-
         if ($PSBoundParameters.ContainsKey('ColorScheme'))
         {
             $regexPrefix = '^(#|0x)?[0-9,a-f]*$'

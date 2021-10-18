@@ -36549,7 +36549,7 @@ function Set-CMClientSettingSoftwareCenter
         [string]
         ${CompanyName},
 
-        [System.Drawing.Color]
+        [string]
         ${ColorScheme},
 
         [string]
