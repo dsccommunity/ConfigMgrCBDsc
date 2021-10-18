@@ -276,7 +276,7 @@ function Set-TargetResource
             if ($setDirect -eq $true)
             {
                 $proxy = $WakeupProxyDirectAccessPrefix -Join ','
-                Write-Verbose -Message ($script:localizedData.SetFirewall -f $directProxy)
+                Write-Verbose -Message ($script:localizedData.DirectProxy -f $proxy)
                 $buildingParams += @{
                     WakeupProxyDirectAccessPrefix = $proxy
                 }

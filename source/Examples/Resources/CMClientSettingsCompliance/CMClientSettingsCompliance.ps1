@@ -22,8 +22,8 @@ Configuration Example
         {
             SiteCode                 = 'Lab'
             Enable                   = $True
-		    ClientSettingName        = 'ClientTest'
-		    EnableUserDataAndProfile = $False
+            ClientSettingName        = 'ClientTest'
+            EnableUserDataAndProfile = $False
         }
     }
 }

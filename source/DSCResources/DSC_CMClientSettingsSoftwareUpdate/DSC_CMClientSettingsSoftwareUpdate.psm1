@@ -35,7 +35,7 @@ function Get-TargetResource
         $ClientSettingName,
 
         [Parameter(Mandatory = $true)]
-        [String]
+        [Boolean]
         $Enable
     )
 

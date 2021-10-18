@@ -9,7 +9,7 @@ Configuration Example
     Node localhost
     {
         CMClientSettingsSoftwareCenter 'Default Client Agent Settings'
-	    {
+        {
             SiteCode                   = 'Lab'
             HideUnapprovedApplication  = $false
             CompanyName                = 'Test'
@@ -24,13 +24,13 @@ Configuration Example
             ColorScheme                = '#CB4154'
             EnableUpdatesTab           = $true
             EnableOperatingSystemsTab  = $true
-	    }
+        }
 
         CMClientSettingsSoftwareCenter 'TestClient'
         {
-		    SiteCode          = 'Lab'
+            SiteCode          = 'Lab'
             EnableCustomize   = $false
-		    ClientSettingName = 'TestClient'
-	    }
+            ClientSettingName = 'TestClient'
+        }
     }
 }

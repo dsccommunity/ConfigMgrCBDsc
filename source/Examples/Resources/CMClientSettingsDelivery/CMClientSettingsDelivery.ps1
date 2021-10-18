@@ -19,7 +19,7 @@ Configuration Example
         {
             SiteCode          = 'Lab'
             Enable            = $false
-		    ClientSettingName = 'ClientTest'
+            ClientSettingName = 'ClientTest'
         }
     }
 }
