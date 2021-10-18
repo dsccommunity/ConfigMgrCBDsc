@@ -76,6 +76,38 @@ try
             Ensure      = 'Absent'
         }
 
+        $inputVpnPresent = @{
+            SiteCode    = 'Lab'
+            DisplayName = 'VPN 1'
+            Type        = 'VPN'
+            Value       = 'Auto:On'
+        }
+
+        $inputIPv6Present = @{
+            SiteCode    = 'Lab'
+            DisplayName = 'IPv6 1'
+            Type        = 'IPv6Prefix'
+            Value       = '2001:0DB8:0000:000b'
+        }
+
+        $boundaryVpnReturn = @(
+            @{
+                BoundaryId   = 1677726
+                BoundaryType = 4
+                DisplayName  = 'VPN 1'
+                Value        = 'Auto:On'
+            }
+        )
+
+        $boundaryIPv6Return = @(
+            @{
+                BoundaryId   = 1677726
+                BoundaryType = 2
+                DisplayName  = 'IPv6 1'
+                Value        = '2001:0DB8:0000:000b'
+            }
+        )
+
         $boundarySubnetReturn = @(
             @{
                 BoundaryId   = 1677726
@@ -187,6 +219,32 @@ try
                     $result.DisplayName | Should -Be -ExpectedValue 'Test Site'
                     $result.Value       | Should -Be -ExpectedValue 'Default-First-Site'
                     $result.Type        | Should -Be -ExpectedValue 'ADSite'
+                    $result.Ensure      | Should -Be -ExpectedValue 'Present'
+                    $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
+                }
+
+                It 'Should return desired result for Vpn return' {
+                    Mock -CommandName Get-CMBoundary -MockWith { $boundaryVpnReturn }
+
+                    $result = Get-TargetResource @inputVpnPresent
+                    $result             | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode    | Should -Be -ExpectedValue 'Lab'
+                    $result.DisplayName | Should -Be -ExpectedValue 'VPN 1'
+                    $result.Value       | Should -Be -ExpectedValue 'Auto:On'
+                    $result.Type        | Should -Be -ExpectedValue 'VPN'
+                    $result.Ensure      | Should -Be -ExpectedValue 'Present'
+                    $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
+                }
+
+                It 'Should return desired result for IPv6 return' {
+                    Mock -CommandName Get-CMBoundary -MockWith { $boundaryIPv6Return }
+
+                    $result = Get-TargetResource @inputIPv6Present
+                    $result             | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode    | Should -Be -ExpectedValue 'Lab'
+                    $result.DisplayName | Should -Be -ExpectedValue 'IPv6 1'
+                    $result.Value       | Should -Be -ExpectedValue '2001:0DB8:0000:000b'
+                    $result.Type        | Should -Be -ExpectedValue 'IPv6Prefix'
                     $result.Ensure      | Should -Be -ExpectedValue 'Present'
                     $result.BoundaryId  | Should -Be -ExpectedValue '1677726'
                 }

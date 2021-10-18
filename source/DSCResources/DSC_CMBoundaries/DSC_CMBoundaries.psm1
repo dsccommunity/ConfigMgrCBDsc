@@ -18,7 +18,7 @@ $script:localizedData = Get-LocalizedData -DefaultUICulture 'en-US'
         Not used in Get-TargetResource.
 
     .Parameter Type
-        Specifies the type of boundary ADSite, IPSubnet, or IPRange.
+        Specifies the type of boundary ADSite, IPSubnet, IPRange, VPN, or IPv6Prefix.
 
     .Parameter Value
         Specifies the value for the boundary.
@@ -38,7 +38,7 @@ function Get-TargetResource
         $DisplayName,
 
         [Parameter(Mandatory = $true)]
-        [ValidateSet('ADSite','IPSubnet','IPRange')]
+        [ValidateSet('ADSite','IPSubnet','IPRange','VPN','IPv6Prefix')]
         [String]
         $Type,
 
@@ -53,9 +53,11 @@ function Get-TargetResource
 
     $convertBoundary = switch ($Type)
     {
-        'IPSubnet' { '0' }
-        'AdSite'   { '1' }
-        'IPRange'  { '3' }
+        'IPSubnet'   { '0' }
+        'AdSite'     { '1' }
+        'IPv6Prefix' { '2' }
+        'IPRange'    { '3' }
+        'Vpn'        { '4' }
     }
 
     if ($Type -eq 'IPSubnet')
@@ -102,7 +104,7 @@ function Get-TargetResource
         Specifies the display name of the boundary.
 
     .Parameter Type
-        Specifies the type of boundary ADSite, IPSubnet, or IPRange.
+        Specifies the type of boundary ADSite, IPSubnet, IPRange, VPN, or IPv6Prefix.
 
     .Parameter Value
         Specifies the value for the boundary.
@@ -124,7 +126,7 @@ function Set-TargetResource
         $DisplayName,
 
         [Parameter(Mandatory = $true)]
-        [ValidateSet('ADSite','IPSubnet','IPRange')]
+        [ValidateSet('ADSite','IPSubnet','IPRange','VPN','IPv6Prefix')]
         [String]
         $Type,
 
@@ -187,7 +189,7 @@ function Set-TargetResource
         Specifies the display name of the boundary.
 
     .Parameter Type
-        Specifies the type of boundary ADSite, IPSubnet, or IPRange.
+        Specifies the type of boundary ADSite, IPSubnet, IPRange, VPN, or IPv6Prefix.
 
     .Parameter Value
         Specifies the value for the boundary.
@@ -210,7 +212,7 @@ function Test-TargetResource
         $DisplayName,
 
         [Parameter(Mandatory = $true)]
-        [ValidateSet('ADSite','IPSubnet','IPRange')]
+        [ValidateSet('ADSite','IPSubnet','IPRange','VPN','IPv6Prefix')]
         [String]
         $Type,
 

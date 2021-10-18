@@ -3,7 +3,7 @@ class DSC_CMBoundaries : OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Key, Description("Specifies the value for the boundary.")] String Value;
-    [Key, Description("Specifies the type of boundary"), ValueMap {"ADSite","IPSubnet","IPRange"}, Values {"ADSite","IPSubnet","IPRange"}] String Type;
+    [Key, Description("Specifies the type of boundary"), ValueMap {"ADSite","IPSubnet","IPRange","VPN","IPv6Prefix"}, Values {"ADSite","IPSubnet","IPRange","VPN","IPv6Prefix"}] String Type;
     [Required, Description("Specifies the display name of the boundary")] String DisplayName;
     [Write, Description("Specifies whether the boundary is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
     [Read, Description("Specifies the SiteCode for the Configuration Manager site.")] String BoundaryID;

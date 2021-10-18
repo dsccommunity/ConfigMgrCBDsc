@@ -493,7 +493,7 @@ you are using apply and auto correct.
 - **[String] Value** _(Key)_: Specifies the value for the boundary.
 - **[String] DisplayName** _(Required)_: Specifies the display name of the boundary.
 - **[String] Type** _(Required)_: Specifies the type of boundary.
-  - Values include: { ADSite | IPSubnet | IPRange
+  - Values include: { ADSite | IPSubnet | IPRange | VPN | IPv6Prefix }
 - **[String] Ensure** _(Write)_: Specifies whether the boundary is present or
   absent.
   - Values include: { Present | Absent }
