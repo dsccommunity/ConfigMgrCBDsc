@@ -221,7 +221,7 @@ Configuration xSccmSqlSetup
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 15.2.0
+    Import-DscResource -ModuleName SqlServerDsc
 
     switch ($SqlVersion)
     {
