@@ -57,8 +57,8 @@ function Get-TargetResource
     }
 
     # Communication Security
-    $props = (Get-CMSiteComponent -ComponentName 'SMS_Site_Component_Manager' -SiteCode $SiteCode).Props
-    $clientComms = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'IISSSLState'}).Value
+    $comSec = Get-CMSiteComponent -ComponentName 'SMS_Site_Component_Manager' -SiteCode $SiteCode
+    $clientComms = ($comSec.Props | Where-Object -FilterScript {$_.PropertyName -eq 'IISSSLState'}).Value
 
     if ($clientComms -eq 0)
     {
@@ -131,6 +131,36 @@ function Get-TargetResource
         $sccmCert = $true
     }
 
+    foreach ($item in $comSec.Props)
+    {
+        switch ($item.PropertyName)
+        {
+            'Certificate Store'              { $customStore = $item.Value1 }
+            'Select First Certificate'       { $certSel = @('FailSelectionAndSendErrorMessage','SelectCertificateWithLongestValidityPeriod')[($item.Value)] }
+            'Certificate Selection Criteria' {
+                                                $criteria = $item.Value1
+                                                if ([string]::IsNullOrEmpty($criteria))
+                                                {
+                                                    $criteriaType = 'ClientAuthentication'
+                                                    $criteriaValue = ''
+                                                }
+                                                else
+                                                {
+                                                    $criteriaValue = $criteria.Split(':')[1]
+
+                                                    if ($criteria.Split(':')[0] -eq 'SubjectStr')
+                                                    {
+                                                        $criteriaType = 'CertificateSubjectContainsString'
+                                                    }
+                                                    else
+                                                    {
+                                                        $criteriaType = 'CertificateSubjectOrSanIncludesAtrributes'
+                                                    }
+                                                }
+                                              }
+        }
+    }
+
     if ($siteDef.SiteType -eq 2)
     {
         $sType = 'Primary'
@@ -149,12 +179,49 @@ function Get-TargetResource
             $freeSpaceAlert = $false
         }
 
-        [boolean]$hash = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Enhanced Hash Algorithm'}).Value
-        [boolean]$signing = ($props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Message Signing'}).Value
+        [boolean]$hash = ($comSec.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Enhanced Hash Algorithm'}).Value
+        [boolean]$signing = ($comSec.Props | Where-Object -FilterScript {$_.PropertyName -eq 'Enforce Message Signing'}).Value
 
         $siteSecurity = (Get-CMSiteComponent -ComponentName SMS_POLICY_PROVIDER).Props
 
         [boolean]$threeDes = ($siteSecurity | Where-Object -FilterScript {$_.PropertyName -eq 'Use Encryption'}).Value
+
+        # Wake On LAN
+        $wol = Get-CMSiteComponent -ComponentName 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' -sitecode $SiteCode
+
+        if ($wol.Flag -eq 6)
+        {
+            $wolEnabled = $true
+        }
+        else
+        {
+            $wolEnabled = $false
+        }
+
+        foreach ($item in $wol.Props)
+        {
+            switch ($item.PropertyName)
+            {
+                'SendRetryMax'         { $sendRetryMax = $item.Value }
+                'SendRetryInterval'    { $sendRetryInterval = $item.Value / 60 }
+                'SendThrottleMax'      { $sendThrottleMax = $item.Value }
+                'SendThrottleInterval' { $sendThrottleInterval = $item.Value }
+                'MaxThreads'           { $maxThreads = $item.Value }
+                'SendMode'             {
+                                            if ($item.Value -eq 1)
+                                            {
+                                                $sendMode = 'Unicast'
+                                            }
+                                            else
+                                            {
+                                                $sendMode = 'SubnetDirectedBroadcasts'
+                                            }
+                                        }
+            }
+        }
+
+        $wolComponent = (Get-CMSiteComponent -ComponentName 'SMS_WAKEONLAN_MANAGER' -sitecode $SiteCode).Props
+        $scheduleOffset = ($wolComponent | Where-Object -FilterScript {$_.PropertyName -eq 'ScheduleOffset'}).Value / 60
     }
     elseif ($siteDef.SiteType -eq 4)
     {
@@ -184,6 +251,18 @@ function Get-TargetResource
         RequireSigning                                    = $signing
         UseEncryption                                     = $threeDes
         SiteType                                          = $sType
+        EnableWakeOnLan                                   = $wolEnabled
+        WakeOnLanTransmissionMethodType                   = $sendMode
+        RetryNumberOfSendingWakeupPacketTransmission      = $sendRetryMax
+        SendingWakeupPacketTransmissionDelayMins          = $sendRetryInterval
+        MaximumNumberOfSendingWakeupPacketBeforePausing   = $sendThrottleMax
+        SendingWakeupPacketBeforePausingWaitSec           = $sendThrottleInterval
+        ThreadNumberOfSendingWakeupPacket                 = $maxThreads
+        SendingWakeupPacketTransmissionOffsetMins         = $scheduleOffset
+        ClientCertificateCustomStoreName                  = $customStore
+        TakeActionForMultipleCertificateMatchCriteria     = $certSel
+        ClientCertificateSelectionCriteriaType            = $criteriaType
+        ClientCertificateSelectionCriteriaValue           = $criteriaValue
     }
 }
 
@@ -256,6 +335,61 @@ function Get-TargetResource
     .PARAMETER SiteSystemCollectionBehavior
         Specify the behavior to take when the selected collection includes computers that
         host site systems roles.
+
+    .PARAMETER EnableWakeOnLan
+        Indicates whether to send Wake On LAN packets for scheduled activities such as deployments
+        of software updates.
+
+    .PARAMETER WakeOnLanTransmissionMethodType
+        Specifies the type of transmission method to use for Wake On LAN transmissions.
+
+    .PARAMETER RetryNumberOfSendingWakeupPacketTransmission
+        Specifies the number of times a wake up packet is sent to a target computer.
+
+    .PARAMETER SendingWakeupPacketTransmissionDelayMins
+        Specifies the number of minutes to delay between wake up retries.
+
+    .PARAMETER MaximumNumberOfSendingWakeupPacketBeforePausing
+        Specifies the maximum number of wake up packets transmitted by this site server before pausing.
+
+    .PARAMETER SendingWakeupPacketBeforePausingWaitSec
+        Specifies the number of seconds to wait between sending wake up packets to a target computer.
+
+    .PARAMETER ThreadNumberOfSendingWakeupPacket
+        Specifies the number of threads to use when sending wake up packets.
+
+    .PARAMETER SendingWakeupPacketTransmissionOffsetMins
+        Specifies when wake up packets should be sent prior to a scheduled activity.
+
+    .PARAMETER ClientCertificateCustomStoreName
+        Specifies the store name where the client certificate is located in the Computer store when
+        you don't use the default store of Personal.
+
+    .PARAMETER TakeActionForMultipleCertificateMatchCriteria
+        Specifies the action to take if multiple certificates match criteria.
+
+    .PARAMETER ClientCertificateSelectionCriteriaType
+        Specifies the criteria type to match in a client certificate when more than one
+        certificate is available.
+
+    .PARAMETER ClientCertificateSelectionCriteriaValue
+        Specifies a value for the ClientCertificateSelectionCriteriaType parameter.
+
+    <#
+    EnableWakeOnLan                                   = $wolEnabled #bool (pri only)
+    WakeOnLanTransmissionMethodType                   = $sendMode #validate Unicast, SubnetDirectedBroadcasts (pri only)
+    RetryNumberOfSendingWakeupPacketTransmission      = $sendRetryMax #1 to 5 (pri only)
+    SendingWakeupPacketTransmissionDelayMins          = $sendRetryInterval #1 to 5 (pri only)
+    MaximumNumberOfSendingWakeupPacketBeforePausing   = $sendThrottleMax #1000 to 300000 (pri only)
+    SendingWakeupPacketBeforePausingWaitSec           = $sendThrottleInterval #0 to 100 (pri only)
+    ThreadNumberOfSendingWakeupPacket                 = $maxThreads #1 to 9 (pri only)
+    SendingWakeupPacketTransmissionOffsetMins         = $scheduleOffset #0 to 60 (pri only)
+
+    ClientCertificateCustomStoreName                  = $customStore # string (pri only)
+    TakeActionForMultipleCertificateMatchCriteria     = $certSel #validate 'FailSelectionAndSendErrorMessage','SelectCertificateWithLongestValidityPeriod' (pri only)
+    ClientCertificateSelectionCriteriaType            = $criteriaType #validate 'ClientAuthentication','CertificateSubjectContainsString','CertificateSubjectOrSanIncludesAttributes' (pri only)
+    ClientCertificateSelectionCriteriaValue           = $criteriaValue # string (pri only)
+    #>
 #>
 function Set-TargetResource
 {
@@ -346,7 +480,64 @@ function Set-TargetResource
         [Parameter()]
         [ValidateSet('Warn','Block')]
         [String]
-        $SiteSystemCollectionBehavior
+        $SiteSystemCollectionBehavior,
+
+        [Parameter()]
+        [Boolean]
+        $EnableWakeOnLan,
+
+        [Parameter()]
+        [ValidateSet('Unicast','SubnetDirectedBroadcasts')]
+        [String]
+        $WakeOnLanTransmissionMethodType,
+
+        [Parameter()]
+        [ValidateRange(1,5)]
+        [UInt32]
+        $RetryNumberOfSendingWakeupPacketTransmission,
+
+        [Parameter()]
+        [ValidateRange(1,5)]
+        [UInt32]
+        $SendingWakeupPacketTransmissionDelayMins,
+
+        [Parameter()]
+        [ValidateRange(1000,300000)]
+        [UInt32]
+        $MaximumNumberOfSendingWakeupPacketBeforePausing,
+
+        [Parameter()]
+        [ValidateRange(0,100)]
+        [UInt32]
+        $SendingWakeupPacketBeforePausingWaitSec,
+
+        [Parameter()]
+        [ValidateRange(1,9)]
+        [UInt32]
+        $ThreadNumberOfSendingWakeupPacket,
+
+        [Parameter()]
+        [ValidateRange(0,60)]
+        [UInt32]
+        $SendingWakeupPacketTransmissionOffsetMins,
+
+        [Parameter()]
+        [String]
+        $ClientCertificateCustomStoreName,
+
+        [Parameter()]
+        [ValidateSet('FailSelectionAndSendErrorMessage','SelectCertificateWithLongestValidityPeriod')]
+        [String]
+        $TakeActionForMultipleCertificateMatchCriteria,
+
+        [Parameter()]
+        [ValidateSet('ClientAuthentication','CertificateSubjectContainsString','CertificateSubjectOrSanIncludesAttributes')]
+        [String]
+        $ClientCertificateSelectionCriteriaType,
+
+        [Parameter()]
+        [String]
+        $ClientCertificateSelectionCriteriaValue
     )
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
@@ -545,6 +736,45 @@ function Set-TargetResource
     .PARAMETER SiteSystemCollectionBehavior
         Specify the behavior to take when the selected collection includes computers that
         host site systems roles.
+
+    .PARAMETER EnableWakeOnLan
+        Indicates whether to send Wake On LAN packets for scheduled activities such as deployments
+        of software updates.
+
+    .PARAMETER WakeOnLanTransmissionMethodType
+        Specifies the type of transmission method to use for Wake On LAN transmissions.
+
+    .PARAMETER RetryNumberOfSendingWakeupPacketTransmission
+        Specifies the number of times a wake up packet is sent to a target computer.
+
+    .PARAMETER SendingWakeupPacketTransmissionDelayMins
+        Specifies the number of minutes to delay between wake up retries.
+
+    .PARAMETER MaximumNumberOfSendingWakeupPacketBeforePausing
+        Specifies the maximum number of wake up packets transmitted by this site server before pausing.
+
+    .PARAMETER SendingWakeupPacketBeforePausingWaitSec
+        Specifies the number of seconds to wait between sending wake up packets to a target computer.
+
+    .PARAMETER ThreadNumberOfSendingWakeupPacket
+        Specifies the number of threads to use when sending wake up packets.
+
+    .PARAMETER SendingWakeupPacketTransmissionOffsetMins
+        Specifies when wake up packets should be sent prior to a scheduled activity.
+
+    .PARAMETER ClientCertificateCustomStoreName
+        Specifies the store name where the client certificate is located in the Computer store when
+        you don't use the default store of Personal.
+
+    .PARAMETER TakeActionForMultipleCertificateMatchCriteria
+        Specifies the action to take if multiple certificates match criteria.
+
+    .PARAMETER ClientCertificateSelectionCriteriaType
+        Specifies the criteria type to match in a client certificate when more than one
+        certificate is available.
+
+    .PARAMETER ClientCertificateSelectionCriteriaValue
+        Specifies a value for the ClientCertificateSelectionCriteriaType parameter.
 #>
 function Test-TargetResource
 {
@@ -636,7 +866,64 @@ function Test-TargetResource
         [Parameter()]
         [ValidateSet('Warn','Block')]
         [String]
-        $SiteSystemCollectionBehavior
+        $SiteSystemCollectionBehavior,
+
+        [Parameter()]
+        [Boolean]
+        $EnableWakeOnLan,
+
+        [Parameter()]
+        [ValidateSet('Unicast','SubnetDirectedBroadcasts')]
+        [String]
+        $WakeOnLanTransmissionMethodType,
+
+        [Parameter()]
+        [ValidateRange(1,5)]
+        [UInt32]
+        $RetryNumberOfSendingWakeupPacketTransmission,
+
+        [Parameter()]
+        [ValidateRange(1,5)]
+        [UInt32]
+        $SendingWakeupPacketTransmissionDelayMins,
+
+        [Parameter()]
+        [ValidateRange(1000,300000)]
+        [UInt32]
+        $MaximumNumberOfSendingWakeupPacketBeforePausing,
+
+        [Parameter()]
+        [ValidateRange(0,100)]
+        [UInt32]
+        $SendingWakeupPacketBeforePausingWaitSec,
+
+        [Parameter()]
+        [ValidateRange(1,9)]
+        [UInt32]
+        $ThreadNumberOfSendingWakeupPacket,
+
+        [Parameter()]
+        [ValidateRange(0,60)]
+        [UInt32]
+        $SendingWakeupPacketTransmissionOffsetMins,
+
+        [Parameter()]
+        [String]
+        $ClientCertificateCustomStoreName,
+
+        [Parameter()]
+        [ValidateSet('FailSelectionAndSendErrorMessage','SelectCertificateWithLongestValidityPeriod')]
+        [String]
+        $TakeActionForMultipleCertificateMatchCriteria,
+
+        [Parameter()]
+        [ValidateSet('ClientAuthentication','CertificateSubjectContainsString','CertificateSubjectOrSanIncludesAttributes')]
+        [String]
+        $ClientCertificateSelectionCriteriaType,
+
+        [Parameter()]
+        [String]
+        $ClientCertificateSelectionCriteriaValue
     )
 
     Import-ConfigMgrPowerShellModule -SiteCode $SiteCode
