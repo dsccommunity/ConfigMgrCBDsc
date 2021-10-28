@@ -66,8 +66,8 @@ function Get-TargetResource
                 $unattended = [System.Convert]::ToBoolean($settings.AllowRemCtrlToUnattended)
                 $permRequired = [System.Convert]::ToBoolean($settings.PermissionRequired)
                 $clipboard = [System.Convert]::ToBoolean($settings.ClipboardAccessPermissionRequired)
-                $localAdmin = [System.Convert]::ToBoolean($settings.GrantPermissionToLocalAdministrator)
-                $accessLevel = @('NoAccess','ViewOnly','FullControl')[[UInt32]$settings.AccessLevel]
+                $localAdmin = [System.Convert]::ToBoolean($settings.AllowLocalAdminToDoRemoteControl)
+                $access = @('NoAccess','ViewOnly','FullControl')[[UInt32]$settings.AccessLevel]
                 $viewers = [array]$settings.PermittedViewers
                 $taskBar = [System.Convert]::ToBoolean($settings.RemCtrlTaskbarIcon)
                 $sessionBar = [System.Convert]::ToBoolean($settings.RemCtrlConnectionBar)
@@ -126,7 +126,7 @@ function Get-TargetResource
         PromptUserForPermission             = $permRequired
         PromptUserForClipboardPermission    = $clipboard
         GrantPermissionToLocalAdministrator = $localAdmin
-        AccessLevel                         = $accessLevel
+        AccessLevel                         = $access
         PermittedViewer                     = $viewers
         ShowNotificationIconOnTaskbar       = $taskBar
         ShowSessionConnectionBar            = $sessionBar
@@ -312,22 +312,32 @@ function Set-TargetResource
             throw $script:localizedData.RemoteToolsDisabled
         }
 
+        if ([string]::IsNullOrEmpty($state.RemoteToolsStatus) -and
+            -not $PSBoundParameters.ContainsKey('FirewallExceptionProfile'))
+        {
+            throw ($script:localizedData.MissingFirewall -f $ClientSettingName)
+        }
+
+        $defaultValues = @('AllowClientChange','AllowUnattendedComputer','PromptUserForPermission',
+            'PromptUserForClipboardPermission','GrantPermissionToLocalAdministrator','AccessLevel',
+            'ShowNotificationIconOnTaskbar','ShowSessionConnectionBar','AudibleSignal','ManageUnsolicitedRemoteAssistance',
+            'ManageSolicitedRemoteAssistance','RemoteAssistanceAccessLevel','ManageRemoteDesktopSetting')
+
         if (($PSBoundParameters.ContainsKey('AllowPermittedViewer') -or $PSBoundParameters.ContainsKey('RequireAuthentication')) -and
             ($ManageRemoteDesktopSetting -ne $true))
         {
             Write-Warning -Message $script:localizedData.ExtraSettings
-            $defaultValues = @('AllowClientChange','AllowUnattendedComputer','PromptUserForPermission',
-                'PromptUserForClipboardPermission','GrantPermissionToLocalAdministrator','AccessLevel',
-                'ShowNotificationIconOnTaskbar','ShowSessionConnectionBar','AudibleSignal','ManageUnsolicitedRemoteAssistance',
-                'ManageSolicitedRemoteAssistance','RemoteAssistanceAccessLevel','ManageRemoteDesktopSetting')
+        }
+        elseif (($PSBoundParameters.ContainsKey('RequireAuthentication')) -and
+                (($PSBoundParameters.ContainsKey('AllowPermittedViewer') -and $AllowPermittedViewer -eq $false) -or
+                (-not $PSBoundParameters.ContainsKey('AllowPermittedViewer') -and $state.AllowPermittedViewer -eq $false)))
+        {
+            $defaultValues += @('AllowPermittedViewer')
+            Write-Warning -Message $script:localizedData.RequireAuth
         }
         else
         {
-            $defaultValues = @('AllowClientChange','AllowUnattendedComputer','PromptUserForPermission',
-                'PromptUserForClipboardPermission','GrantPermissionToLocalAdministrator','AccessLevel',
-                'ShowNotificationIconOnTaskbar','ShowSessionConnectionBar','AudibleSignal','ManageUnsolicitedRemoteAssistance',
-                'ManageSolicitedRemoteAssistance','RemoteAssistanceAccessLevel','ManageRemoteDesktopSetting','AllowPermittedViewer',
-                'RequireAuthentication')
+            $defaultValues += @('AllowPermittedViewer','RequireAuthentication')
         }
 
         foreach ($param in $PSBoundParameters.GetEnumerator())
@@ -589,24 +599,34 @@ function Test-TargetResource
         Write-Warning -Message $script:localizedData.RemoteToolsDisabled
         $result = $false
     }
+    elseif ([string]::IsNullOrEmpty($state.RemoteToolsStatus) -and
+            -not $PSBoundParameters.ContainsKey('FirewallExceptionProfile'))
+    {
+        Write-Warning -Message ($script:localizedData.MissingFirewall -f $ClientSettingName)
+        $result = $false
+    }
     else
     {
+        $defaultValues = @('AllowClientChange','AllowUnattendedComputer','PromptUserForPermission',
+            'PromptUserForClipboardPermission','GrantPermissionToLocalAdministrator','AccessLevel',
+            'ShowNotificationIconOnTaskbar','ShowSessionConnectionBar','AudibleSignal','ManageUnsolicitedRemoteAssistance',
+            'ManageSolicitedRemoteAssistance','RemoteAssistanceAccessLevel','ManageRemoteDesktopSetting')
+
         if (($PSBoundParameters.ContainsKey('AllowPermittedViewer') -or $PSBoundParameters.ContainsKey('RequireAuthentication')) -and
             ($ManageRemoteDesktopSetting -ne $true))
         {
             Write-Warning -Message $script:localizedData.ExtraSettings
-            $defaultValues = @('FirewallExceptionProfile','AllowClientChange','AllowUnattendedComputer','PromptUserForPermission',
-                'PromptUserForClipboardPermission','GrantPermissionToLocalAdministrator','AccessLevel','PermittedViewer',
-                'ShowNotificationIconOnTaskbar','ShowSessionConnectionBar','AudibleSignal','ManageUnsolicitedRemoteAssistance',
-                'ManageSolicitedRemoteAssistance','RemoteAssistanceAccessLevel','ManageRemoteDesktopSetting')
+        }
+        elseif (($PSBoundParameters.ContainsKey('RequireAuthentication')) -and
+                (($PSBoundParameters.ContainsKey('AllowPermittedViewer') -and $AllowPermittedViewer -eq $false) -or
+                (-not $PSBoundParameters.ContainsKey('AllowPermittedViewer') -and $state.AllowPermittedViewer -eq $false)))
+        {
+            $defaultValues += @('AllowPermittedViewer')
+            Write-Warning -Message $script:localizedData.RequireAuth
         }
         else
         {
-            $defaultValues = @('FirewallExceptionProfile','AllowClientChange','AllowUnattendedComputer','PromptUserForPermission',
-                'PromptUserForClipboardPermission','GrantPermissionToLocalAdministrator','AccessLevel','PermittedViewer',
-                'ShowNotificationIconOnTaskbar','ShowSessionConnectionBar','AudibleSignal','ManageUnsolicitedRemoteAssistance',
-                'ManageSolicitedRemoteAssistance','RemoteAssistanceAccessLevel','ManageRemoteDesktopSetting','AllowPermittedViewer',
-                'RequireAuthentication')
+            $defaultValues += @('AllowPermittedViewer','RequireAuthentication')
         }
 
         $testParams = @{

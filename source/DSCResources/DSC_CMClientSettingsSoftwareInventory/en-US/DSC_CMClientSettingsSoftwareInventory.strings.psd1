@@ -8,4 +8,5 @@ ConvertFrom-StringData @'
     RequiredSchedule     = In order to create a schedule you must specify ScheduleType.
     WrongClientType      = Client Settings for software inventory settings only applies to Default and Device client settings.
     EnableFalse          = In order to set a schedule or ReportOptions, Enable must be set to true, ignoring settings.
+    DisableIgnore        = Currently setting EnableCustomize to false all other parameters specified will be ignored.
 '@

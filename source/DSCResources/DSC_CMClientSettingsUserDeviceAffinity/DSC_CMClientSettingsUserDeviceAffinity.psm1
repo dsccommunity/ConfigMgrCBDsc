@@ -39,12 +39,11 @@ function Get-TargetResource
 
     if ($clientSetting)
     {
+        $type = @('Default','Device','User')[$clientSetting.Type]
         $settings = Get-CMClientSetting -Name $ClientSettingName -Setting UserAndDeviceAffinity
 
         if ($settings)
         {
-            $type = @('Default','Device','User')[$clientSetting.Type]
-
             if ($type -eq 'Default' -or $type -eq 'Device')
             {
                 $console = $settings.ConsoleMinutes

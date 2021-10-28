@@ -250,10 +250,10 @@ function Set-TargetResource
         Specifies if limit the maximum network bandwidth for BITS background transfers is enabled or disabled.
 
     .PARAMETER MaxBandwidthBeginHr
-        Specifies the throttling window start time, in 2 digit form.
+        Specifies the throttling window start time, use 0 for 12 a.m. and 23 for 11 p.m..
 
     .PARAMETER MaxBandwidthEndHr
-        Specifies the throttling window end time, in 2 digit form.
+        Specifies the throttling window end time, use 0 for 12 a.m. and 23 for 11 p.m..
 
     .PARAMETER MaxTransferRateOnSchedule
         Specifies the maximum transfer rate during throttling window in Kbps.

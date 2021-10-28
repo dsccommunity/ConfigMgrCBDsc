@@ -235,8 +235,8 @@ try
                     Assert-MockCalled New-CMClientSetting -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMClientSetting -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-CMClientSetting -Exactly -Times 1 -Scope It
-                    Assert-MockCalled Get-CMSecurityScope -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-CMSecurityScope -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMClientSetting -Exactly -Times 0 -Scope It
                 }

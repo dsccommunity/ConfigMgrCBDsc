@@ -13,14 +13,14 @@ Configuration Example
             SiteCode                  = 'Lab'
             BroadcastPort             = 8004
             MaxCacheSizePercent       = 20
-            ConfigureBranchCache      = $false
+            ConfigureBranchCache      = $true
             MaxCacheSize              = 20000
             MaxBranchCacheSizePercent = 10
             ConfigureCacheSize        = $true
             ClientSettingName         = 'Default Client Agent Settings'
-            EnableSuperPeer           = $false
+            EnableSuperPeer           = $true
             DownloadPort              = 8003
-            EnableBranchCache         = $false
+            EnableBranchCache         = $true
         }
 
         CMClientSettingsClientCache DeviceAgent
@@ -28,14 +28,14 @@ Configuration Example
             SiteCode                  = 'Lab'
             BroadcastPort             = 8004
             MaxCacheSizePercent       = 20
-            ConfigureBranchCache      = $false
+            ConfigureBranchCache      = $true
             MaxCacheSize              = 20000
             MaxBranchCacheSizePercent = 10
             ConfigureCacheSize        = $true
             ClientSettingName         = 'ClientTest'
-            EnableSuperPeer           = $false
+            EnableSuperPeer           = $true
             DownloadPort              = 8003
-            EnableBranchCache         = $false
+            EnableBranchCache         = $true
         }
     }
 }

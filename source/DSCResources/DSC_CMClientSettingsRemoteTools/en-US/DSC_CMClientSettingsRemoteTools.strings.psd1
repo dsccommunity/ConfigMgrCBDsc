@@ -8,4 +8,6 @@ ConvertFrom-StringData @'
     ExtraSettings        = AllowPermittedViewer or RequireAuthentication was specified, these settings can only be set when ManageRemoteDesktopSetting is set to true, ignoring settings.
     SetFirewall          = Setting FirewallExceptionProfile to {0}.
     SetPermittViewer     = Setting PermittedViewer to {0}.
+    MissingFirewall      = ClientSettingName: {0}, is currently not configured. FirewallExceptionProfile must be specified to configure additional settings.
+    RequireAuth          = AllowPermittedViewer is currently or a desired state of false, to modify RequireAuthenication, AllowPermittedViewer must be set to true, ignoring setting.
 '@

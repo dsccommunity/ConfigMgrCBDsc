@@ -215,11 +215,21 @@ function Set-TargetResource
 
             if ($SecurityScopes -or $SecurityScopesToInclude -or $SecurityScopesToExclude)
             {
+                if ($newClient -eq $true)
+                {
+                    [array]$updateState = $state.SecurityScopes
+                    $updateState += @('Default')
+                }
+                else
+                {
+                    $updateState = $state.SecurityScopes
+                }
+
                 $scopeArray = @{
                     Match        = $SecurityScopes
                     Include      = $SecurityScopesToInclude
                     Exclude      = $SecurityScopesToExclude
-                    CurrentState = $state.SecurityScopes
+                    CurrentState = $updateState
                 }
 
                 $scopeCompare = Compare-MultipleCompares @scopeArray

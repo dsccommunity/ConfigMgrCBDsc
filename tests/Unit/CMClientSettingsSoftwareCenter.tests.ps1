@@ -310,6 +310,7 @@ try
                         SiteCode          = 'Lab'
                         ClientSettingName = 'ClientTest'
                         EnableCustomize   = $false
+                        EnableOptionsTab  = $true
                     }
                 }
 
@@ -614,6 +615,7 @@ try
                     SiteCode          = 'Lab'
                     ClientSettingName = 'ClientTest'
                     EnableCustomize   = $false
+                    EnableOptionsTab  = $true
                 }
 
                 $inputBadColorScheme = @{

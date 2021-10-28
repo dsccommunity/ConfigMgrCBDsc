@@ -46,7 +46,7 @@ function Get-TargetResource
         {
             $initialReminder = $settings.ReminderInterval
             $interimReminder = $settings.DayReminderInterval
-            $finalreminder = $settings.HourReminderInterval
+            $finalReminder = $settings.HourReminderInterval
             $titleBranding = $settings.BrandingTitle
             $useSoftCenter = [System.Convert]::ToBoolean($settings.UseNewSoftwareCenter)
             $healthAttest = [System.Convert]::ToBoolean($settings.EnableHealthAttestation)
@@ -71,7 +71,7 @@ function Get-TargetResource
         ClientSettingName              = $ClientSettingName
         InitialReminderHr              = $initialReminder
         InterimReminderHr              = $interimReminder
-        FinalReminderMins              = $finalreminder
+        FinalReminderMins              = $finalReminder
         BrandingTitle                  = $titleBranding
         UseNewSoftwareCenter           = $useSoftCenter
         EnableHealthAttestation        = $healthAttest
@@ -246,6 +246,14 @@ function Set-TargetResource
 
         if ($buildingParams)
         {
+            if ($buildingParams.ContainsKey('UseOnPremisesHealthAttestation') -and
+                -not $buildingParams.ContainsKey('EnableHealthAttestation'))
+            {
+                $buildingParams += @{
+                    EnableHealthAttestation = $EnableHealthAttestation
+                }
+            }
+
             if ($state.ClientType -eq 'Default')
             {
                 Set-CMClientSettingComputerAgent -DefaultSetting @buildingParams

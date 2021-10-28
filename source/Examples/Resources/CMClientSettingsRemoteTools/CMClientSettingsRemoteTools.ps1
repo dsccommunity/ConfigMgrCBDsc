@@ -51,6 +51,7 @@ Configuration Example
             ManageUnsolicitedRemoteAssistance   = $false
             AllowPermittedViewer                = $true
             ShowNotificationIconOnTaskbar       = $false
+            FirewallExceptionProfile            = 'Domain','Private'
         }
     }
 }

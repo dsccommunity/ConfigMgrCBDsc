@@ -11,19 +11,19 @@ Configuration Example
         CMClientSettingsCompliance DefaultAgent
         {
             SiteCode                 = 'Lab'
-            Enable                   = $True
+            Enable                   = $true
             ScheduleType             = 'None'
             Start                    = '9/22/2021 21:48'
             ClientSettingName        = 'Default Client Agent Settings'
-            EnableUserDataAndProfile = $True
+            EnableUserDataAndProfile = $true
         }
 
         CMClientSettingsCompliance DeviceAgent
         {
             SiteCode                 = 'Lab'
-            Enable                   = $True
+            Enable                   = $true
             ClientSettingName        = 'ClientTest'
-            EnableUserDataAndProfile = $False
+            EnableUserDataAndProfile = $false
         }
     }
 }

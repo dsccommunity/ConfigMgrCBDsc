@@ -7,4 +7,5 @@ ConvertFrom-StringData @'
     WrongClientType      = Client Settings for Software Center only applies to default and device client settings.
     ColorSchemeErrorMsg  = ColorSchema is not formated correct: {0}, example format would be #CB4154.
     CompanyPortalMsg     = Software Center is currently set to use Company Portal in order to modify these settings, you must manually set client policy to Software Center.
+    DisableIgnore        = Currently setting EnableCustomize to false all other parameters specified will be ignored.
 '@

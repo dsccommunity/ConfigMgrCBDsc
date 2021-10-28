@@ -219,6 +219,14 @@ try
                         ClientSettingStatus            = 'Present'
                         ClientType                     = 'Default'
                     }
+
+                    $inputMismatchHealth = @{
+                        SiteCode                       = 'Lab'
+                        ClientSettingName              = 'ClientTest'
+                        UseNewSoftwareCenter           = $true
+                        EnableHealthAttestation        = $true
+                        UseOnPremisesHealthAttestation = $false
+                    }
                 }
 
                 It 'Should call expected commands when settings match' {
@@ -235,6 +243,16 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
 
                     Set-TargetResource @inputMismatch
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingComputerAgent -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when settings do not match when EnableHealth matches and UseOnPremise does not match' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
+
+                    Set-TargetResource @inputMismatchHealth
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It

@@ -81,7 +81,7 @@ function Get-TargetResource
         Specifies if allow access to cloud distribution point is enabled or disabled.
 
     .PARAMETER AutoAzureADJoin
-        Specifies if automatically register new Windows 10 domain joined devices with
+        Specifies whether to automatically register new Windows 10 domain joined devices with
         Azure Active Directory.
 
     .PARAMETER AllowCloudManagementGateway
@@ -188,7 +188,7 @@ function Set-TargetResource
         Specifies if allow access to cloud distribution point is enabled or disabled.
 
     .PARAMETER AutoAzureADJoin
-        Specifies if automatically register new Windows 10 domain joined devices with
+        Specifies whether to automatically register new Windows 10 domain joined devices with
         Azure Active Directory.
 
     .PARAMETER AllowCloudManagementGateway

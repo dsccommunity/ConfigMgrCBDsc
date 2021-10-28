@@ -1671,8 +1671,8 @@ you are using apply and auto correct.
   to modify.
 - **[Boolean] AllowCloudDistributionPoint** _(Write)_: Specifies if allow access
   to cloud distribution point is enabled or disabled.
-- **[Boolean] AutoAzureADJoin** _(Write)_: Specifies if automatically register
-  new Windows 10 domain joined devices with Azure Active Directory.
+- **[Boolean] AutoAzureADJoin** _(Write)_: Specifies whether to automatically
+  register new Windows 10 domain joined devices with Azure Active Directory.
 - **[Boolean] AllowCloudManagementGateway** _(Write)_: Specifies if allow access
   to cloud management gateway is enabled or disabled.
 - **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy

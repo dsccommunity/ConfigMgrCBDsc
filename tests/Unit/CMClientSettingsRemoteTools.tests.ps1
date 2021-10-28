@@ -104,163 +104,163 @@ try
                 }
 
                 $clientReturnNone = @{
-                    FirewallExceptionProfiles           = 0
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 0
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientReturnPublic = @{
-                    FirewallExceptionProfiles           = 9
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 9
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientReturnPrivate = @{
-                    FirewallExceptionProfiles           = 10
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 10
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientReturnPubPriv = @{
-                    FirewallExceptionProfiles           = 11
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 11
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientReturnDomain = @{
-                    FirewallExceptionProfiles           = 12
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 12
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientReturnPubDom = @{
-                    FirewallExceptionProfiles           = 13
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 13
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientReturnPrivDom = @{
-                    FirewallExceptionProfiles           = 14
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 14
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientReturnPubPrivDom = @{
-                    FirewallExceptionProfiles           = 15
-                    AllowClientChange                   = $true
-                    AllowRemCtrlToUnattended            = $true
-                    PermissionRequired                  = $true
-                    ClipboardAccessPermissionRequired   = $true
-                    GrantPermissionToLocalAdministrator = $true
-                    AccessLevel                         = 2
-                    PermittedViewers                    = @('RemoteGroup1','RemoteGroup2')
-                    RemCtrlTaskbarIcon                  = $true
-                    RemCtrlConnectionBar                = $true
-                    AudibleSignal                       = 1
-                    ManageRA                            = $true
-                    EnforceRAandTSSettings              = $true
-                    RemoteAssistanceAccessLevel         = 'FullControl'
-                    ManageTS                            = $true
-                    EnableTS                            = $true
-                    TSUserAuthentication                = $true
+                    FirewallExceptionProfiles         = 15
+                    AllowClientChange                 = $true
+                    AllowRemCtrlToUnattended          = $true
+                    PermissionRequired                = $true
+                    ClipboardAccessPermissionRequired = $true
+                    AllowLocalAdminToDoRemoteControl  = $true
+                    AccessLevel                       = 2
+                    PermittedViewers                  = @('RemoteGroup1','RemoteGroup2')
+                    RemCtrlTaskbarIcon                = $true
+                    RemCtrlConnectionBar              = $true
+                    AudibleSignal                     = 1
+                    ManageRA                          = $true
+                    EnforceRAandTSSettings            = $true
+                    RemoteAssistanceAccessLevel       = 'FullControl'
+                    ManageTS                          = $true
+                    EnableTS                          = $true
+                    TSUserAuthentication              = $true
                 }
 
                 $clientType = @{
@@ -642,6 +642,31 @@ try
                     RequireAuthentication               = $true
                 }
 
+                $returnNotConfig = @{
+                    SiteCode                            = 'Lab'
+                    ClientSettingName                   = 'ClientTest'
+                    FirewallExceptionProfile            = $null
+                    AllowClientChange                   = $null
+                    AllowUnattendedComputer             = $null
+                    PromptUserForPermission             = $null
+                    PromptUserForClipboardPermission    = $null
+                    GrantPermissionToLocalAdministrator = $null
+                    AccessLevel                         = $null
+                    PermittedViewer                     = $null
+                    ShowNotificationIconOnTaskbar       = $null
+                    ShowSessionConnectionBar            = $null
+                    AudibleSignal                       = $null
+                    ManageUnsolicitedRemoteAssistance   = $null
+                    ManageSolicitedRemoteAssistance     = $null
+                    RemoteAssistanceAccessLevel         = $null
+                    ManageRemoteDesktopSetting          = $null
+                    AllowPermittedViewer                = $null
+                    RequireAuthentication               = $null
+                    ClientSettingStatus                 = 'Present'
+                    ClientType                          = 'Default'
+                    RemoteToolsStatus                   = $null
+                }
+
                 Mock -CommandName Set-CMClientSettingRemoteTool
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
@@ -676,29 +701,13 @@ try
                         FirewallExceptionProfile            = @('Public')
                     }
 
-                    $returnNotConfig = @{
-                        SiteCode                            = 'Lab'
-                        ClientSettingName                   = 'ClientTest'
-                        FirewallExceptionProfile            = $null
-                        AllowClientChange                   = $null
-                        AllowUnattendedComputer             = $null
-                        PromptUserForPermission             = $null
-                        PromptUserForClipboardPermission    = $null
-                        GrantPermissionToLocalAdministrator = $null
-                        AccessLevel                         = $null
-                        PermittedViewer                     = $null
-                        ShowNotificationIconOnTaskbar       = $null
-                        ShowSessionConnectionBar            = $null
-                        AudibleSignal                       = $null
-                        ManageUnsolicitedRemoteAssistance   = $null
-                        ManageSolicitedRemoteAssistance     = $null
-                        RemoteAssistanceAccessLevel         = $null
-                        ManageRemoteDesktopSetting          = $null
-                        AllowPermittedViewer                = $null
-                        RequireAuthentication               = $null
-                        ClientSettingStatus                 = 'Present'
-                        ClientType                          = 'Default'
-                        RemoteToolsStatus                   = $null
+                    $inputRequireAuth = @{
+                        SiteCode                   = 'Lab'
+                        ClientSettingName          = 'ClientTest'
+                        FirewallExceptionProfile   = 'Domain','Public'
+                        ManageRemoteDesktopSetting = $true
+                        AllowPermittedViewer       = $false
+                        RequireAuthentication      = $true
                     }
                 }
 
@@ -736,6 +745,16 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $returnNotConfig }
 
                     Set-TargetResource @inputPresent
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingRemoteTool -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when setting AllowPrermitted user to false and specifying RequireAuth' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
+
+                    Set-TargetResource @inputRequireAuth
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -826,6 +845,14 @@ try
 
                     $remoteToolsDisabled = 'Remote tools is currenly disabled and must be enabled to set settings for Remote Tools.'
 
+                    $inputNotConfiguredMissingFirewall = @{
+                        SiteCode                   = 'Lab'
+                        ClientSettingName          = 'ClientTest'
+                        ManageRemoteDesktopSetting = $true
+                    }
+
+                    $missingFireWall = 'ClientSettingName: ClientTest, is currently not configured. FirewallExceptionProfile must be specified to configure additional settings.'
+
                 }
 
                 It 'Should throw and call expected commands when client policy is absent' {
@@ -852,6 +879,16 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $returnDisabled }
 
                     { Set-TargetResource @inputPresent } | Should -Throw -ExpectedMessage $remoteToolsDisabled
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingRemoteTool -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should throw and call expected commands when client setting is not configured and not specifying FirewallExceptionProfile' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnNotConfig }
+
+                    { Set-TargetResource @inputNotConfiguredMissingFirewall } | Should -Throw -ExpectedMessage $missingFireWall
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -1028,6 +1065,21 @@ try
                     AllowPermittedViewer                = $true
                 }
 
+                $inputRequireAuth = @{
+                    SiteCode                   = 'Lab'
+                    ClientSettingName          = 'ClientTest'
+                    FirewallExceptionProfile   = 'Domain','Public'
+                    ManageRemoteDesktopSetting = $true
+                    AllowPermittedViewer       = $false
+                    RequireAuthentication      = $true
+                }
+
+                $inputNotConfiguredMissingFirewall = @{
+                    SiteCode                   = 'Lab'
+                    ClientSettingName          = 'ClientTest'
+                    ManageRemoteDesktopSetting = $true
+                }
+
                 Mock -CommandName Set-Location
                 Mock -CommandName Import-ConfigMgrPowerShellModule
             }
@@ -1068,6 +1120,18 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $returnDisabled }
 
                     Test-TargetResource @inputMisMatch | Should -Be $false
+                }
+
+                It 'Should return desired result false and warn when setting AllowPrermitted user to false and specifying RequireAuth' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
+
+                    Test-TargetResource @inputRequireAuth | Should -Be $false
+                }
+
+                It 'Should return desired result false and warn client setting is not configured and not specifying FirewallExceptionProfile' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnNotConfig }
+
+                    Test-TargetResource @inputNotConfiguredMissingFirewall | Should -Be $false
                 }
             }
         }

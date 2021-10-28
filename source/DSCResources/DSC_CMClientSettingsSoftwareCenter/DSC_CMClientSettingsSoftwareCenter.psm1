@@ -287,6 +287,11 @@ function Set-TargetResource
         }
         elseif ($state.EnableCustomize -eq $true)
         {
+            if ($PSBoundParameters.Keys.Count -ge 4)
+            {
+                Write-Warning -Message $script:localizedData.DisableIgnore
+            }
+
             Write-Verbose -Message $script:localizedData.TestDisabled
 
             $buildingParams += @{
@@ -474,6 +479,11 @@ function Test-TargetResource
     }
     elseif ($state.EnableCustomize -eq $true)
     {
+        if ($PSBoundParameters.Keys.Count -ge 4)
+        {
+            Write-Warning -Message $script:localizedData.DisableIgnore
+        }
+
         Write-Verbose -Message $script:localizedData.TestDisabled
         $result = $false
     }
