@@ -13,7 +13,7 @@ Configuration Example
             SiteCode                = 'Lab'
             ClientSettingName       = 'Default Client Agent Settings'
             Enable                  = $true
-            EnableDeltaDownload     = $false
+            EnableDeltaDownload     = $true
             DeltaDownloadPort       = 8005
             ScanStart               = '2/1/1970 00:00'
             ScanRecurInterval       = 8
