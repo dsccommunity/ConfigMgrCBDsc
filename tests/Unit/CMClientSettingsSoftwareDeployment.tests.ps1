@@ -77,34 +77,34 @@ try
                     Mock -CommandName Get-CMClientSetting -MockWith { $settingsReturn } -ParameterFilter { $Setting -eq 'SoftwareDeployment' }
 
                     $result = Get-TargetResource @getInput
-                    $result                          | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                 | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName        | Should -Be -ExpectedValue 'Default Client Agent Settings'
-                    $result.Start                    | Should -Be -ExpectedValue '9/21/2021 16:54'
-                    $result.ScheduleType             | Should -Be -ExpectedValue 'MonthlyByDay'
-                    $result.DayOfWeek                | Should -Be -ExpectedValue $null
-                    $result.MonthlyWeekOrder         | Should -Be -ExpectedValue $null
-                    $result.DayofMonth               | Should -Be -ExpectedValue 0
-                    $result.RecurInterval            | Should -Be -ExpectedValue 1
-                    $result.ClientSettingStatus      | Should -Be -ExpectedValue 'Present'
-                    $result.ClientType               | Should -Be -ExpectedValue 'Default'
+                    $result                     | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode            | Should -Be -ExpectedValue 'Lab'
+                    $result.ClientSettingName   | Should -Be -ExpectedValue 'Default Client Agent Settings'
+                    $result.Start               | Should -Be -ExpectedValue '9/21/2021 16:54'
+                    $result.ScheduleType        | Should -Be -ExpectedValue 'MonthlyByDay'
+                    $result.DayOfWeek           | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder    | Should -Be -ExpectedValue $null
+                    $result.DayofMonth          | Should -Be -ExpectedValue 0
+                    $result.RecurInterval       | Should -Be -ExpectedValue 1
+                    $result.ClientSettingStatus | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType          | Should -Be -ExpectedValue 'Default'
                 }
 
                 It 'Should return desired result when client setting policy does not exist' {
                     Mock -CommandName Get-CMClientSetting
 
                     $result = Get-TargetResource @getInput
-                    $result                          | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                 | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName        | Should -Be -ExpectedValue 'Default Client Agent Settings'
-                    $result.Start                    | Should -Be -ExpectedValue $null
-                    $result.ScheduleType             | Should -Be -ExpectedValue $null
-                    $result.DayOfWeek                | Should -Be -ExpectedValue $null
-                    $result.MonthlyWeekOrder         | Should -Be -ExpectedValue $null
-                    $result.DayofMonth               | Should -Be -ExpectedValue $null
-                    $result.RecurInterval            | Should -Be -ExpectedValue $null
-                    $result.ClientSettingStatus      | Should -Be -ExpectedValue 'Absent'
-                    $result.ClientType               | Should -Be -ExpectedValue $null
+                    $result                     | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode            | Should -Be -ExpectedValue 'Lab'
+                    $result.ClientSettingName   | Should -Be -ExpectedValue 'Default Client Agent Settings'
+                    $result.Start               | Should -Be -ExpectedValue $null
+                    $result.ScheduleType        | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek           | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder    | Should -Be -ExpectedValue $null
+                    $result.DayofMonth          | Should -Be -ExpectedValue $null
+                    $result.RecurInterval       | Should -Be -ExpectedValue $null
+                    $result.ClientSettingStatus | Should -Be -ExpectedValue 'Absent'
+                    $result.ClientType          | Should -Be -ExpectedValue $null
                 }
 
                 It 'Should return desired result when client setting policy exist but software deployment is not configured' {
@@ -112,17 +112,17 @@ try
                     Mock -CommandName Get-CMClientSetting -MockWith { $null } -ParameterFilter { $Setting -eq 'SoftwareDeployment' }
 
                     $result = Get-TargetResource @getInput
-                    $result                          | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                 | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName        | Should -Be -ExpectedValue 'Default Client Agent Settings'
-                    $result.Start                    | Should -Be -ExpectedValue $null
-                    $result.ScheduleType             | Should -Be -ExpectedValue $null
-                    $result.DayOfWeek                | Should -Be -ExpectedValue $null
-                    $result.MonthlyWeekOrder         | Should -Be -ExpectedValue $null
-                    $result.DayofMonth               | Should -Be -ExpectedValue $null
-                    $result.RecurInterval            | Should -Be -ExpectedValue $null
-                    $result.ClientSettingStatus      | Should -Be -ExpectedValue 'Present'
-                    $result.ClientType               | Should -Be -ExpectedValue 'Default'
+                    $result                     | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode            | Should -Be -ExpectedValue 'Lab'
+                    $result.ClientSettingName   | Should -Be -ExpectedValue 'Default Client Agent Settings'
+                    $result.Start               | Should -Be -ExpectedValue $null
+                    $result.ScheduleType        | Should -Be -ExpectedValue $null
+                    $result.DayOfWeek           | Should -Be -ExpectedValue $null
+                    $result.MonthlyWeekOrder    | Should -Be -ExpectedValue $null
+                    $result.DayofMonth          | Should -Be -ExpectedValue $null
+                    $result.RecurInterval       | Should -Be -ExpectedValue $null
+                    $result.ClientSettingStatus | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType          | Should -Be -ExpectedValue 'Default'
                 }
             }
         }
@@ -130,38 +130,38 @@ try
         Describe 'ConfigMgrCBDsc - DSC_CMClientSettingsSoftwareDeployment\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
                 $returnPresentDevice = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'ClientTest'
-                    Start                    = '9/21/2021 16:54'
-                    ScheduleType             = 'MonthlyByWeek'
-                    DayOfWeek                = 'Monday'
-                    MonthlyWeekOrder         = 'Second'
-                    RecurInterval            = 1
-                    DayofMonth               = $null
-                    ClientSettingStatus      = 'Present'
-                    ClientType               = 'Device'
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'ClientTest'
+                    Start               = '9/21/2021 16:54'
+                    ScheduleType        = 'MonthlyByWeek'
+                    DayOfWeek           = 'Monday'
+                    MonthlyWeekOrder    = 'Second'
+                    RecurInterval       = 1
+                    DayofMonth          = $null
+                    ClientSettingStatus = 'Present'
+                    ClientType          = 'Device'
                 }
 
                 $returnPresentDefault = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'Default Client Agent Settings'
-                    Start                    = '9/21/2021 16:54'
-                    ScheduleType             = 'MonthlyByDay'
-                    DayOfWeek                = $null
-                    MonthlyWeekOrder         = $null
-                    DayofMonth               = 0
-                    RecurInterval            = 1
-                    ClientSettingStatus      = 'Present'
-                    ClientType               = 'Default'
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'Default Client Agent Settings'
+                    Start               = '9/21/2021 16:54'
+                    ScheduleType        = 'MonthlyByDay'
+                    DayOfWeek           = $null
+                    MonthlyWeekOrder    = $null
+                    DayofMonth          = 0
+                    RecurInterval       = 1
+                    ClientSettingStatus = 'Present'
+                    ClientType          = 'Default'
                 }
 
                 $inputPresent = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'ClientTest'
-                    ScheduleType             = 'MonthlyByWeek'
-                    DayOfWeek                = 'Monday'
-                    MonthlyWeekOrder         = 'Second'
-                    RecurInterval            = 1
+                    SiteCode          = 'Lab'
+                    ClientSettingName = 'ClientTest'
+                    ScheduleType      = 'MonthlyByWeek'
+                    DayOfWeek         = 'Monday'
+                    MonthlyWeekOrder  = 'Second'
+                    RecurInterval     = 1
                 }
 
                 Mock -CommandName Set-CMClientSettingSoftwareDeployment
@@ -172,23 +172,23 @@ try
             Context 'When Set-TargetResource runs successfully' {
                 BeforeEach {
                     $returnNotConfig = @{
-                        SiteCode                 = 'Lab'
-                        ClientSettingName        = 'ClientTest'
-                        Start                    = $null
-                        ScheduleType             = $null
-                        DayOfWeek                = $null
-                        MonthlyWeekOrder         = $null
-                        DayofMonth               = $null
-                        RecurInterval            = $null
-                        ClientSettingStatus      = 'Present'
-                        ClientType               = 'Device'
+                        SiteCode            = 'Lab'
+                        ClientSettingName   = 'ClientTest'
+                        Start               = $null
+                        ScheduleType        = $null
+                        DayOfWeek           = $null
+                        MonthlyWeekOrder    = $null
+                        DayofMonth          = $null
+                        RecurInterval       = $null
+                        ClientSettingStatus = 'Present'
+                        ClientType          = 'Device'
                     }
 
                     $inputPresentMismatch = @{
-                        SiteCode                 = 'Lab'
-                        ClientSettingName        = 'ClientTest'
-                        ScheduleType             = 'Days'
-                        RecurInterval            = 10
+                        SiteCode          = 'Lab'
+                        ClientSettingName = 'ClientTest'
+                        ScheduleType      = 'Days'
+                        RecurInterval     = 10
                     }
 
                     $cmScheduleInput = @{
@@ -246,33 +246,31 @@ try
             Context 'When running Set-TargetResource should throw' {
                 BeforeEach {
                     $returnAbsent = @{
-                        SiteCode                 = 'Lab'
-                        ClientSettingName        = 'ClientTest'
-                        Start                    = $null
-                        ScheduleType             = $null
-                        DayOfWeek                = $null
-                        MonthlyWeekOrder         = $null
-                        DayofMonth               = $null
-                        RecurInterval            = $null
-                        ClientSettingStatus      = 'Absent'
-                        ClientType               = $null
+                        SiteCode            = 'Lab'
+                        ClientSettingName   = 'ClientTest'
+                        Start               = $null
+                        ScheduleType        = $null
+                        DayOfWeek           = $null
+                        MonthlyWeekOrder    = $null
+                        DayofMonth          = $null
+                        RecurInterval       = $null
+                        ClientSettingStatus = 'Absent'
+                        ClientType          = $null
                     }
 
                     $absentMsg = 'Client Policy setting ClientTest does not exist, and will need to be created prior to making client setting changes.'
 
                     $returnUser = @{
-                        SiteCode                 = 'Lab'
-                        ClientSettingName        = 'UserTest'
-                        Enable                   = $null
-                        EnableUserDataAndProfile = $null
-                        Start                    = $null
-                        ScheduleType             = $null
-                        DayOfWeek                = $null
-                        MonthlyWeekOrder         = $null
-                        DayofMonth               = $null
-                        RecurInterval            = $null
-                        ClientSettingStatus      = 'Present'
-                        ClientType               = 'User'
+                        SiteCode            = 'Lab'
+                        ClientSettingName   = 'UserTest'
+                        Start               = $null
+                        ScheduleType        = $null
+                        DayOfWeek           = $null
+                        MonthlyWeekOrder    = $null
+                        DayofMonth          = $null
+                        RecurInterval       = $null
+                        ClientSettingStatus = 'Present'
+                        ClientType          = 'User'
                     }
 
                     $clientTypeError = 'Client Settings for software deployment only applies to Default and Device client settings.'
@@ -336,84 +334,84 @@ try
         Describe 'ConfigMgrCBDsc - DSC_CMClientSettingsSoftwareDeployment\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
                 $returnPresentDevice = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'ClientTest'
-                    Start                    = '9/21/2021 16:54'
-                    ScheduleType             = 'MonthlyByWeek'
-                    DayOfWeek                = 'Monday'
-                    MonthlyWeekOrder         = 'Second'
-                    RecurInterval            = 1
-                    DayofMonth               = $null
-                    ClientSettingStatus      = 'Present'
-                    ClientType               = 'Device'
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'ClientTest'
+                    Start               = '9/21/2021 16:54'
+                    ScheduleType        = 'MonthlyByWeek'
+                    DayOfWeek           = 'Monday'
+                    MonthlyWeekOrder    = 'Second'
+                    RecurInterval       = 1
+                    DayofMonth          = $null
+                    ClientSettingStatus = 'Present'
+                    ClientType          = 'Device'
                 }
 
                 $returnPresentDefault = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'Default Client Agent Settings'
-                    Start                    = '9/21/2021 16:54'
-                    ScheduleType             = 'MonthlyByDay'
-                    DayOfWeek                = $null
-                    MonthlyWeekOrder         = $null
-                    DayofMonth               = 0
-                    RecurInterval            = 1
-                    ClientSettingStatus      = 'Present'
-                    ClientType               = 'Default'
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'Default Client Agent Settings'
+                    Start               = '9/21/2021 16:54'
+                    ScheduleType        = 'MonthlyByDay'
+                    DayOfWeek           = $null
+                    MonthlyWeekOrder    = $null
+                    DayofMonth          = 0
+                    RecurInterval       = 1
+                    ClientSettingStatus = 'Present'
+                    ClientType          = 'Default'
                 }
 
                 $returnAbsent = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'ClientTest'
-                    Start                    = $null
-                    ScheduleType             = $null
-                    DayOfWeek                = $null
-                    MonthlyWeekOrder         = $null
-                    DayofMonth               = $null
-                    RecurInterval            = $null
-                    ClientSettingStatus      = 'Absent'
-                    ClientType               = $null
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'ClientTest'
+                    Start               = $null
+                    ScheduleType        = $null
+                    DayOfWeek           = $null
+                    MonthlyWeekOrder    = $null
+                    DayofMonth          = $null
+                    RecurInterval       = $null
+                    ClientSettingStatus = 'Absent'
+                    ClientType          = $null
                 }
 
                 $returnNotConfig = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'ClientTest'
-                    Start                    = $null
-                    ScheduleType             = $null
-                    DayOfWeek                = $null
-                    MonthlyWeekOrder         = $null
-                    DayofMonth               = $null
-                    RecurInterval            = $null
-                    ClientSettingStatus      = 'Present'
-                    ClientType               = 'Device'
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'ClientTest'
+                    Start               = $null
+                    ScheduleType        = $null
+                    DayOfWeek           = $null
+                    MonthlyWeekOrder    = $null
+                    DayofMonth          = $null
+                    RecurInterval       = $null
+                    ClientSettingStatus = 'Present'
+                    ClientType          = 'Device'
                 }
 
                 $returnUser = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'UserTest'
-                    Start                    = $null
-                    ScheduleType             = $null
-                    DayOfWeek                = $null
-                    MonthlyWeekOrder         = $null
-                    DayofMonth               = $null
-                    RecurInterval            = $null
-                    ClientSettingStatus      = 'Present'
-                    ClientType               = 'User'
+                    SiteCode            = 'Lab'
+                    ClientSettingName   = 'UserTest'
+                    Start               = $null
+                    ScheduleType        = $null
+                    DayOfWeek           = $null
+                    MonthlyWeekOrder    = $null
+                    DayofMonth          = $null
+                    RecurInterval       = $null
+                    ClientSettingStatus = 'Present'
+                    ClientType          = 'User'
                 }
 
                 $inputPresent = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'ClientTest'
-                    ScheduleType             = 'MonthlyByWeek'
-                    DayOfWeek                = 'Monday'
-                    MonthlyWeekOrder         = 'Second'
-                    RecurInterval            = 1
+                    SiteCode          = 'Lab'
+                    ClientSettingName = 'ClientTest'
+                    ScheduleType      = 'MonthlyByWeek'
+                    DayOfWeek         = 'Monday'
+                    MonthlyWeekOrder  = 'Second'
+                    RecurInterval     = 1
                 }
 
                 $inputPresentMismatch = @{
-                    SiteCode                 = 'Lab'
-                    ClientSettingName        = 'ClientTest'
-                    ScheduleType             = 'Days'
-                    RecurInterval            = 10
+                    SiteCode          = 'Lab'
+                    ClientSettingName = 'ClientTest'
+                    ScheduleType      = 'Days'
+                    RecurInterval     = 10
                 }
 
                 $inputInvalidSchedule = @{

@@ -78,7 +78,7 @@ function Get-TargetResource
 
                 $express = [System.Convert]::ToBoolean($settings.EnableExpressUpdates)
                 $expressPort = [UInt32]$settings.ExpressUpdatesPort
-                $office = [System.Convert]::ToBoolean([UInt32]$settings.O365Management)
+                $office = @('NotConfigured','Yes','No')[$settings.O365Management]
                 $thirdParty = [System.Convert]::ToBoolean($settings.EnableThirdPartyUpdates)
             }
         }
@@ -186,7 +186,7 @@ function Get-TargetResource
         Specifies the port that clients will use to receive requests for delta content.
 
     .Parameter Office365ManagementType
-        Specifies if management of the Office 365 client is enabled.
+        Specifies the management of the Office 365 client.
 
     .Parameter EnableThirdPartyUpdates
         Specifies if third party updates is enabled or disabled.
@@ -287,7 +287,8 @@ function Set-TargetResource
         $DeltaDownloadPort,
 
         [Parameter()]
-        [Boolean]
+        [ValidateSet('NotConfigured','Yes','No')]
+        [String]
         $Office365ManagementType,
 
         [Parameter()]
@@ -328,8 +329,7 @@ function Set-TargetResource
                 throw $script:localizedData.RequiredSchedule
             }
 
-            $defaultValues = @('Enable','EnforceMandatory','EnableDeltaDownload','Office365ManagementType',
-                'EnableThirdPartyUpdates')
+            $defaultValues = @('Enable','EnforceMandatory','EnableDeltaDownload','EnableThirdPartyUpdates')
 
             if ($EnableDeltaDownload -eq $false -and $PSBoundParameters.ContainsKey('DeltaDownloadPort'))
             {
@@ -370,6 +370,29 @@ function Set-TargetResource
                         $buildingParams += @{
                             $param.Key = $param.Value
                         }
+                    }
+                }
+            }
+
+            if ($PSBoundParameters.ContainsKey('Office365ManagementType') -and
+                $Office365ManagementType -ne $state.Office365ManagementType)
+            {
+                if ($Office365ManagementType -eq 'NotConfigured')
+                {
+                    $buildingParams += @{
+                        Office365ManagementType = $null
+                    }
+                }
+                elseif ($Office365ManagementType -eq 'Yes')
+                {
+                    $buildingParams += @{
+                        Office365ManagementType = $true
+                    }
+                }
+                else
+                {
+                    $buildingParams += @{
+                        Office365ManagementType = $false
                     }
                 }
             }
@@ -553,7 +576,7 @@ function Set-TargetResource
         Specifies the port that clients will use to receive requests for delta content.
 
     .Parameter Office365ManagementType
-        Specifies if management of the Office 365 client is enabled.
+        Specifies the management of the Office 365 client.
 
     .Parameter EnableThirdPartyUpdates
         Specifies if third party updates is enabled or disabled.
@@ -655,7 +678,8 @@ function Test-TargetResource
         $DeltaDownloadPort,
 
         [Parameter()]
-        [Boolean]
+        [ValidateSet('NotConfigured','Yes','No')]
+        [String]
         $Office365ManagementType,
 
         [Parameter()]

@@ -1775,7 +1775,7 @@ InModuleScope $script:subModuleName {
                         }
                         @{
                             Name         = 'Office365ManagementType'
-                            PropertyType = '[bool]'
+                            PropertyType = '[string]'
                             IsMandatory  = $false
                             Values       = '{}'
                         }
@@ -5870,7 +5870,7 @@ InModuleScope $script:subModuleName {
                 BatchingTimeOut         = 2
                 EnableDeltaDownload     = $true
                 DeltaDownloadPort       = 8005
-                Office365ManagementType = $true
+                Office365ManagementType = 'Yes'
                 EnableThirdPartyUpdates = $true
                 ClientSettingStatus     = 'Present'
                 ClientType              = 'Default'

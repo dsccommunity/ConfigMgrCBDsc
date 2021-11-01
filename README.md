@@ -2096,8 +2096,9 @@ you are using apply and auto correct.
   download delta content when available.
 - **[UInt32] DeltaDownloadPort** _(Write)_: Specifies the port that clients will
   use to receive requests for delta content.
-- **[Boolean] Office365ManagementType** _(Write)_: Specifies if management of the
-  Office 365 client is enabled.
+- **[Boolean] Office365ManagementType** _(Write)_: Specifies the management of the
+  Office 365 client.
+  - Values include: { NotConfigured | Yes | No }
 - **[Boolean] EnableThirdPartyUpdates** _(Write)_: Specifies if third party updates
   is enabled or disabled.
 - **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy

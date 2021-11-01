@@ -55,16 +55,16 @@ function Get-TargetResource
     }
 
     return @{
-        SiteCode                 = $SiteCode
-        ClientSettingName        = $ClientSettingName
-        Start                    = $schedule.Start
-        ScheduleType             = $schedule.ScheduleType
-        DayOfWeek                = $schedule.DayofWeek
-        MonthlyWeekOrder         = $schedule.WeekOrder
-        DayofMonth               = $schedule.MonthDay
-        RecurInterval            = $schedule.RecurInterval
-        ClientSettingStatus      = $status
-        ClientType               = $type
+        SiteCode            = $SiteCode
+        ClientSettingName   = $ClientSettingName
+        Start               = $schedule.Start
+        ScheduleType        = $schedule.ScheduleType
+        DayOfWeek           = $schedule.DayofWeek
+        MonthlyWeekOrder    = $schedule.WeekOrder
+        DayofMonth          = $schedule.MonthDay
+        RecurInterval       = $schedule.RecurInterval
+        ClientSettingStatus = $status
+        ClientType          = $type
     }
 }
 

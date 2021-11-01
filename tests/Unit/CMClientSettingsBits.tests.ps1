@@ -181,11 +181,11 @@ try
                     }
 
                     $inputDefaultClient = @{
-                        SiteCode                   = 'Lab'
-                        ClientSettingName          = 'Default Client Agent Settings'
-                        EnableBitsMaxBandwidth     = $true
-                        MaxBandwidthBeginHr        = 5
-                        MaxBandwidthEndHr          = 11
+                        SiteCode               = 'Lab'
+                        ClientSettingName      = 'Default Client Agent Settings'
+                        EnableBitsMaxBandwidth = $true
+                        MaxBandwidthBeginHr    = 5
+                        MaxBandwidthEndHr      = 11
                     }
 
                     $inputBitsDisabled = @{

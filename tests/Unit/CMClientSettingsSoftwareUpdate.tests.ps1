@@ -51,7 +51,7 @@ try
                     AssignmentBatchingTimeout = 0
                     EnableExpressUpdates      = $true
                     ExpressUpdatesPort        = 8005
-                    O365Management            = $true
+                    O365Management            = 2
                     EnableThirdPartyUpdates   = $true
                 }
 
@@ -62,7 +62,7 @@ try
                     AssignmentBatchingTimeout = 0
                     EnableExpressUpdates      = $true
                     ExpressUpdatesPort        = 8005
-                    O365Management            = $true
+                    O365Management            = 2
                     EnableThirdPartyUpdates   = $true
                 }
 
@@ -73,7 +73,7 @@ try
                     AssignmentBatchingTimeout = 345600
                     EnableExpressUpdates      = $true
                     ExpressUpdatesPort        = 8005
-                    O365Management            = $true
+                    O365Management            = 1
                     EnableThirdPartyUpdates   = $true
                 }
 
@@ -84,7 +84,7 @@ try
                     AssignmentBatchingTimeout = 14400
                     EnableExpressUpdates      = $true
                     ExpressUpdatesPort        = 8005
-                    O365Management            = $true
+                    O365Management            = 0
                     EnableThirdPartyUpdates   = $true
                 }
 
@@ -152,7 +152,7 @@ try
                     $result.BatchingTimeout         | Should -Be -ExpectedValue $null
                     $result.EnableDeltaDownload     | Should -Be -ExpectedValue $true
                     $result.DeltaDownloadPort       | Should -Be -ExpectedValue 8005
-                    $result.Office365ManagementType | Should -Be -ExpectedValue $true
+                    $result.Office365ManagementType | Should -Be -ExpectedValue 'No'
                     $result.EnableThirdPartyUpdates | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus     | Should -Be -ExpectedValue 'Present'
                     $result.ClientType              | Should -Be -ExpectedValue 'Default'
@@ -184,7 +184,7 @@ try
                     $result.BatchingTimeout         | Should -Be -ExpectedValue 4
                     $result.EnableDeltaDownload     | Should -Be -ExpectedValue $true
                     $result.DeltaDownloadPort       | Should -Be -ExpectedValue 8005
-                    $result.Office365ManagementType | Should -Be -ExpectedValue $true
+                    $result.Office365ManagementType | Should -Be -ExpectedValue 'Yes'
                     $result.EnableThirdPartyUpdates | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus     | Should -Be -ExpectedValue 'Present'
                     $result.ClientType              | Should -Be -ExpectedValue 'Default'
@@ -216,7 +216,7 @@ try
                     $result.BatchingTimeout         | Should -Be -ExpectedValue 4
                     $result.EnableDeltaDownload     | Should -Be -ExpectedValue $true
                     $result.DeltaDownloadPort       | Should -Be -ExpectedValue 8005
-                    $result.Office365ManagementType | Should -Be -ExpectedValue $true
+                    $result.Office365ManagementType | Should -Be -ExpectedValue 'NotConfigured'
                     $result.EnableThirdPartyUpdates | Should -Be -ExpectedValue $true
                     $result.ClientSettingStatus     | Should -Be -ExpectedValue 'Present'
                     $result.ClientType              | Should -Be -ExpectedValue 'Default'
@@ -342,7 +342,7 @@ try
                     BatchingTimeout         = 4
                     EnableDeltaDownload     = $true
                     DeltaDownloadPort       = 8005
-                    Office365ManagementType = $true
+                    Office365ManagementType = 'Yes'
                     EnableThirdPartyUpdates = $true
                     ClientSettingStatus     = 'Present'
                     ClientType              = 'Device'
@@ -363,7 +363,7 @@ try
                     BatchingTimeout         = 4
                     EnableDeltaDownload     = $true
                     DeltaDownloadPort       = 8005
-                    Office365ManagementType = $true
+                    Office365ManagementType = 'Yes'
                     EnableThirdPartyUpdates = $true
                 }
 
@@ -389,7 +389,7 @@ try
                         BatchingTimeout         = 4
                         EnableDeltaDownload     = $true
                         DeltaDownloadPort       = 8005
-                        Office365ManagementType = $true
+                        Office365ManagementType = 'No'
                         EnableThirdPartyUpdates = $true
                     }
 
@@ -397,6 +397,33 @@ try
                         SiteCode                = 'Lab'
                         ClientSettingName       = 'Default Client Agent Settings'
                         Enable                  = $false
+                        ScanStart               = $null
+                        ScanScheduleType        = $null
+                        ScanDayOfWeek           = $null
+                        ScanMonthlyWeekOrder    = $null
+                        ScanDayofMonth          = $null
+                        ScanRecurInterval       = $null
+                        EvalStart               = $null
+                        EvalScheduleType        = $null
+                        EvalDayOfWeek           = $null
+                        EvalMonthlyWeekOrder    = $null
+                        EvalDayofMonth          = $null
+                        EvalRecurInterval       = $null
+                        EnforceMandatory        = $null
+                        TimeUnit                = $null
+                        BatchingTimeout         = $null
+                        EnableDeltaDownload     = $null
+                        DeltaDownloadPort       = $null
+                        Office365ManagementType = $null
+                        EnableThirdPartyUpdates = $null
+                        ClientSettingStatus     = 'Present'
+                        ClientType              = 'Default'
+                    }
+
+                    $returnNotConfigured = @{
+                        SiteCode                = 'Lab'
+                        ClientSettingName       = 'Default Client Agent Settings'
+                        Enable                  = $null
                         ScanStart               = $null
                         ScanScheduleType        = $null
                         ScanDayOfWeek           = $null
@@ -435,7 +462,7 @@ try
                         BatchingTimeout         = 5
                         EnableDeltaDownload     = $true
                         DeltaDownloadPort       = 8006
-                        Office365ManagementType = $false
+                        Office365ManagementType = 'NotConfigured'
                         EnableThirdPartyUpdates = $false
                     }
 
@@ -443,7 +470,7 @@ try
                         SiteCode                = 'Lab'
                         ClientSettingName       = 'ClientTest'
                         Enable                  = $false
-                        Office365ManagementType = $false
+                        Office365ManagementType = 'NotConfigured'
                         EnableThirdPartyUpdates = $false
                     }
 
@@ -501,6 +528,20 @@ try
                     Mock -CommandName Test-CMSchedule -MockWith { $false }
 
                     Set-TargetResource @inputPersentMismatch
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Test-CMSchedule -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Set-CMSchedule -Exactly -Times 2 -Scope It
+                    Assert-MockCalled New-CMSchedule -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Set-CMClientSettingSoftwareUpdate -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when current state is not configured' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnNotConfigured }
+                    Mock -CommandName Test-CMSchedule -MockWith { $false }
+
+                    Set-TargetResource @inputPresent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -766,7 +807,7 @@ try
                     BatchingTimeout         = 4
                     EnableDeltaDownload     = $true
                     DeltaDownloadPort       = 8005
-                    Office365ManagementType = $true
+                    Office365ManagementType = 'Yes'
                     EnableThirdPartyUpdates = $true
                     ClientSettingStatus     = 'Present'
                     ClientType              = 'Device'
@@ -868,7 +909,7 @@ try
                     BatchingTimeout         = 4
                     EnableDeltaDownload     = $true
                     DeltaDownloadPort       = 8005
-                    Office365ManagementType = $true
+                    Office365ManagementType = 'Yes'
                     EnableThirdPartyUpdates = $true
                 }
 
@@ -887,7 +928,7 @@ try
                     BatchingTimeout         = 5
                     EnableDeltaDownload     = $true
                     DeltaDownloadPort       = 8006
-                    Office365ManagementType = $false
+                    Office365ManagementType = 'No'
                     EnableThirdPartyUpdates = $false
                 }
 
@@ -919,7 +960,7 @@ try
                     SiteCode                = 'Lab'
                     ClientSettingName       = 'ClientTest'
                     Enable                  = $false
-                    Office365ManagementType = $false
+                    Office365ManagementType = 'No'
                     EnableThirdPartyUpdates = $false
                 }
 

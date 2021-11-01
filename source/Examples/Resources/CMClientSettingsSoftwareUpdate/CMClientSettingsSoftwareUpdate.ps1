@@ -25,7 +25,7 @@ Configuration Example
             TimeUnit                = 'Hours'
             BatchingTimeOut         = 1
             EnableThirdPartyUpdates = $true
-            Office365ManagementType = $false
+            Office365ManagementType = 'Yes'
         }
 
         CMClientSettingsSoftwareUpdate DeviceAgent
@@ -45,7 +45,7 @@ Configuration Example
             TimeUnit                = 'Hours'
             BatchingTimeOut         = 23
             EnableThirdPartyUpdates = $true
-            Office365ManagementType = $false
+            Office365ManagementType = 'NotConfigured'
         }
     }
 }

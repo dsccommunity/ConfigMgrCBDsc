@@ -266,10 +266,44 @@ function Set-TargetResource
                 }
             }
 
+            $tabsCheck = @('EnableApplicationsTab','EnableUpdatesTab','EnableOperatingSystemsTab','EnableStatusTab',
+                'EnableComplianceTab','EnableOptionsTab')
+
+            foreach ($item in $tabsCheck)
+            {
+                if ($PSBoundParameters.ContainsKey($item))
+                {
+                    $itemValue = Get-Variable -Name $item
+                    $arrayOfTabs += @{
+                        $item = $itemValue.Value
+                    }
+                }
+                else
+                {
+                    if ([string]::IsNullOrEmpty($state.$item) -or $state.$item -eq $true)
+                    {
+                        $arrayOfTabs += @{
+                            $item = $true
+                        }
+                    }
+                    else
+                    {
+                        $arrayOfTabs += @{
+                            $item = $false
+                        }
+                    }
+                }
+            }
+
+            if ($arrayOfTabs.Values -notcontains $true)
+            {
+                throw $script:localizedData.TabsDisabled
+            }
+
             $defaultValues = @('EnableCustomize','CompanyName','ColorScheme','HideApplicationCatalogLink',
-                            'HideInstalledApplication','HideUnapprovedApplication','EnableApplicationsTab',
-                            'EnableUpdatesTab','EnableOperatingSystemsTab','EnableStatusTab',
-                            'EnableComplianceTab','EnableOptionsTab')
+                'HideInstalledApplication','HideUnapprovedApplication','EnableApplicationsTab',
+                'EnableUpdatesTab','EnableOperatingSystemsTab','EnableStatusTab',
+                'EnableComplianceTab','EnableOptionsTab')
 
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
@@ -464,10 +498,44 @@ function Test-TargetResource
             }
         }
 
+        $tabsCheck = @('EnableApplicationsTab','EnableUpdatesTab','EnableOperatingSystemsTab','EnableStatusTab',
+            'EnableComplianceTab','EnableOptionsTab')
+
+        foreach ($item in $tabsCheck)
+        {
+            if ($PSBoundParameters.ContainsKey($item))
+            {
+                $itemValue = Get-Variable -Name $item
+                $arrayOfTabs += @{
+                    $item = $itemValue.Value
+                }
+            }
+            else
+            {
+                if ([string]::IsNullOrEmpty($state.$item) -or $state.$item -eq $true)
+                {
+                    $arrayOfTabs += @{
+                        $item = $true
+                    }
+                }
+                else
+                {
+                    $arrayOfTabs += @{
+                        $item = $false
+                    }
+                }
+            }
+        }
+
+        if ($arrayOfTabs.Values -notcontains $true)
+        {
+            Write-Warning -Message $script:localizedData.TabsDisabled
+        }
+
         $defaultValues = @('EnableCustomize','CompanyName','ColorScheme','HideApplicationCatalogLink',
-                           'HideInstalledApplication','HideUnapprovedApplication','EnableApplicationsTab',
-                           'EnableUpdatesTab','EnableOperatingSystemsTab','EnableStatusTab',
-                           'EnableComplianceTab','EnableOptionsTab')
+            'HideInstalledApplication','HideUnapprovedApplication','EnableApplicationsTab',
+            'EnableUpdatesTab','EnableOperatingSystemsTab','EnableStatusTab',
+            'EnableComplianceTab','EnableOptionsTab')
 
         $testParams = @{
             CurrentValues = $state

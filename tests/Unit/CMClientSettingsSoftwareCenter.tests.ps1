@@ -262,6 +262,17 @@ try
                     EnableOptionsTab           = $true
                 }
 
+                $inputTabsDisabled = @{
+                    SiteCode                  = 'Lab'
+                    ClientSettingName         = 'ClientTest'
+                    EnableCustomize           = $true
+                    EnableApplicationsTab     = $false
+                    EnableUpdatesTab          = $false
+                    EnableOperatingSystemsTab = $false
+                    EnableStatusTab           = $false
+                    EnableOptionsTab          = $false
+                }
+
                 Mock -CommandName Set-CMClientSettingSoftwareCenter
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
@@ -328,6 +339,16 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
 
                     Set-TargetResource @inputMisMatch
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingSoftwareCenter -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when settings tabs mismatch' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnPresent }
+
+                    Set-TargetResource @inputTabsDisabled
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -431,6 +452,28 @@ try
                     }
 
                     $colorSchemeErrorMsg = 'ColorSchema is not formated correct: 1#CB415Z, example format would be #CB4154.'
+
+                    $returnTabsMisconfigured = @{
+                        SiteCode                   = 'Lab'
+                        ClientSettingName          = 'ClientTest'
+                        EnableCustomize            = $true
+                        CompanyName                = 'Test'
+                        ColorScheme                = '#CB4154'
+                        HideApplicationCatalogLink = $false
+                        HideInstalledApplication   = $true
+                        HideUnapprovedApplication  = $false
+                        EnableApplicationsTab      = $true
+                        EnableUpdatesTab           = $true
+                        EnableOperatingSystemsTab  = $true
+                        EnableStatusTab            = $true
+                        EnableComplianceTab        = $false
+                        EnableOptionsTab           = $true
+                        ClientSettingStatus        = 'Present'
+                        ClientType                 = 'Device'
+                        PortalType                 = 'Software Center'
+                    }
+
+                    $tabMsg = 'With the settings specified all Tabs will be put into a disabled state, you must have at least one tab enabled.'
                 }
 
                 It 'Should throw and call expected commands when client policy is absent' {
@@ -472,6 +515,16 @@ try
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMClientSettingSoftwareCenter -Exactly -Times 0 -Scope It
                 }
+
+                It 'Should throw and call expected commands when the combination of current state and specified state all tabs are disabled' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnTabsMisconfigured }
+
+                    { Set-TargetResource @inputTabsDisabled } | Should -Throw -ExpectedMessage $tabMsg
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMClientSettingSoftwareCenter -Exactly -Times 0 -Scope It
+                }
             }
         }
 
@@ -491,6 +544,26 @@ try
                     EnableOperatingSystemsTab  = $true
                     EnableStatusTab            = $true
                     EnableComplianceTab        = $true
+                    EnableOptionsTab           = $true
+                    ClientSettingStatus        = 'Present'
+                    ClientType                 = 'Device'
+                    PortalType                 = 'Software Center'
+                }
+
+                $returnTabsMisconfigured = @{
+                    SiteCode                   = 'Lab'
+                    ClientSettingName          = 'ClientTest'
+                    EnableCustomize            = $true
+                    CompanyName                = 'Test'
+                    ColorScheme                = '#CB4154'
+                    HideApplicationCatalogLink = $false
+                    HideInstalledApplication   = $true
+                    HideUnapprovedApplication  = $false
+                    EnableApplicationsTab      = $true
+                    EnableUpdatesTab           = $true
+                    EnableOperatingSystemsTab  = $true
+                    EnableStatusTab            = $true
+                    EnableComplianceTab        = $false
                     EnableOptionsTab           = $true
                     ClientSettingStatus        = 'Present'
                     ClientType                 = 'Device'
@@ -594,6 +667,17 @@ try
                     EnableOptionsTab           = $true
                 }
 
+                $inputTabsDisabled = @{
+                    SiteCode                  = 'Lab'
+                    ClientSettingName         = 'ClientTest'
+                    EnableCustomize           = $true
+                    EnableApplicationsTab     = $false
+                    EnableUpdatesTab          = $false
+                    EnableOperatingSystemsTab = $false
+                    EnableStatusTab           = $false
+                    EnableOptionsTab          = $false
+                }
+
                 $inputMisMatch = @{
                     SiteCode                   = 'Lab'
                     ClientSettingName          = 'ClientTest'
@@ -677,6 +761,12 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $returnCompanyPortal }
 
                     Test-TargetResource @inputPresent | Should -Be $false
+                }
+
+                It 'Should return desired result false when Tabs are all set to disabled' {
+                    Mock -CommandName Get-TargetResource -MockWith { $returnTabsMisconfigured }
+
+                    Test-TargetResource @inputTabsDisabled | Should -Be $false
                 }
             }
         }

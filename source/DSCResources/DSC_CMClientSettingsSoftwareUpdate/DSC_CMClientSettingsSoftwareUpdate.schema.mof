@@ -21,7 +21,7 @@ class DSC_CMClientSettingsSoftwareUpdate : OMI_BaseResource
     [Write, Description("Specifies the time within TimeUnit to install the depending updates.")] UInt32 BatchingTimeOut;
     [Write, Description("Specifies if clients are allowed to download delta content when available.")] Boolean EnableDeltaDownload;
     [Write, Description("Specifies the port that clients will use to receive requests for delta content.")] UInt32 DeltaDownloadPort;
-    [Write, Description("Specifies if management of the Office 365 client is enabled.")] Boolean Office365ManagementType;
+    [Write, Description("Specifies the management of the Office 365 client."), ValueMap{"NotConfigured","Yes","No"}, Values{"NotConfigured","Yes","No"}] String Office365ManagementType;
     [Write, Description("Specifies if third party updates is enabled or disabled.")] Boolean EnableThirdPartyUpdates;
     [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
     [Read, Description("Specifies the type of client policy setting.")] String ClientType;
