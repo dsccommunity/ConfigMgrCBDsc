@@ -429,6 +429,1472 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettings'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Type'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Description'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SecurityScopes'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SecurityScopesToInclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SecurityScopesToExclude'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Ensure'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsBits'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableBitsMaxBandwidth'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxBandwidthBeginHr'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxBandwidthEndHr'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxTransferRateOnSchedule'
+                            PropertyType = 'UInt32'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableDownloadOffSchedule'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxTransferRateOffSchedule'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsClientCache'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ConfigureBranchCache'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableBranchCache'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxBranchCacheSizePercent'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ConfigureCacheSize'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxCacheSize'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxCacheSizePercent'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableSuperPeer'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'BroadcastPort'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DownloadPort'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsClientPolicy'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PolicyPollingMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableUserPolicy'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableUserPolicyOnInternet'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableUserPolicyOnTS'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsCloudService'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowCloudDistributionPoint'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AutoAzureADJoin'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowCloudManagementGateway'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsCompliance'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enable'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableUserDataAndProfile'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Start'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'DayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsComputerAgent'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'InitialReminderHr'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'InterimReminderHr'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FinalReminderMins'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'BrandingTitle'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UseNewSoftwareCenter'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableHealthAttestation'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'UseOnPremisesHealthAttestation'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'InstallRestriction'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SuspendBitLocker'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableThirdPartyOrchestration'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PowerShellExecutionPolicy'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DisplayNewProgramNotification'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsDelivery'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enable'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsHardware'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enable'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxRandomDelayMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Start'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'DayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'CollectMifFile'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaxThirdPartyMifSize'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsMetered'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MeteredNetworkUsage'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsPower'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enable'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowUserToOptOutFromPowerPlan'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'NetworkWakeUpOption'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableWakeUpProxy'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'WakeupProxyPort'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'WakeOnLanPort'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FirewallExceptionForWakeupProxy'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'WakeupProxyDirectAccessPrefix'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsRemoteTools'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FirewallExceptionProfile'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowClientChange'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowUnattendedComputer'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PromptUserForPermission'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PromptUserForClipboardPermission'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'GrantPermissionToLocalAdministrator'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AccessLevel'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PermittedViewer'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ShowNotificationIconOnTaskbar'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ShowSessionConnectionBar'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AudibleSignal'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ManageUnsolicitedRemoteAssistance'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ManageSolicitedRemoteAssistance'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RemoteAssistanceAccessLevel'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ManageRemoteDesktopSetting'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowPermittedViewer'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RequireAuthentication'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsSoftwareCenter'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableCustomize'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'CompanyName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ColorScheme'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'HideApplicationCatalogLink'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'HideInstalledApplication'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'HideUnapprovedApplication'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableApplicationsTab'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableUpdatesTab'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableOperatingSystemsTab'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableStatusTab'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableComplianceTab'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableOptionsTab'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsSoftwareDeployment'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Start'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'DayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsSoftwareInventory'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enable'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ReportOption'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Start'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'DayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsSoftwareMetering'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enable'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Start'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'DayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsSoftwareUpdate'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Enable'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScanMonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScanRecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScanScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScanStart'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'ScanDayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ScanDayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EvalMonthlyWeekOrder'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EvalRecurInterval'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EvalScheduleType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EvalStart'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+			            @{
+                            Name         = 'EvalDayOfMonth'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EvalDayOfWeek'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnforceMandatory'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'TimeUnit'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'BatchingTimeOut'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableDeltaDownload'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DeltaDownloadPort'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Office365ManagementType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableThirdPartyUpdates'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsStateMessaging'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ReportingCycleMins'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsUserDeviceAffinity'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'LogOnThresholdMins'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UsageThresholdDays'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AutoApproveAffinity'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowUserAffinity'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
                     Name          = 'CMClientStatusSettings'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
@@ -3933,6 +5399,519 @@ InModuleScope $script:subModuleName {
                 ConfigOutputPath = 'TestDrive:\temp.ps1'
                 MofOutPutPath    = 'TestDrive:\'
             }
+
+            $getCMClientSettingsDefault = @(
+                @{
+                    Name = 'Default Client Agent Settings'
+                    Type = 0
+                }
+            )
+
+            $getCMClientSettingsDevice = @(
+                @{
+                    Name = 'ClientTest'
+                    Type = 1
+                }
+            )
+
+            $getCMClientSettingsUser = @(
+                @{
+                    Name = 'TestUser'
+                    Type = 2
+                }
+            )
+
+            $clientSettingsDevice = @{
+                SiteCode = 'Lab'
+                Include  = 'ClientSettings'
+            }
+
+            $invokeCMClientSettings = @{
+                ConfigurationName       = $null
+                DependsOn               = $null
+                ModuleName              = 'ConfigMgrCBDsc'
+                ModuleVersion           = 1.0.1
+                PsDscRunAsCredential    = $null
+                ResourceId              = $null
+                SourceInfo              = $null
+                ClientSettingName       = 'ClientTest'
+                Description             = 'Test Client Policy'
+                Ensure                  = 'Present'
+                SecurityScopes          = @('Scope1','Scope2')
+                SecurityScopesToInclude = $null
+                SecurityScopesToExclude = $null
+                Type                    = 'Device'
+                SiteCode                = 'Lab'
+                PSComputerName          = 'localhost'
+            }
+
+            $invokeCMClientSettingsBits = @{
+                ConfigurationName          = $null
+                DependsOn                  = $null
+                ModuleName                 = 'ConfigMgrCBDsc'
+                ModuleVersion              = 1.0.1
+                PsDscRunAsCredential       = $null
+                ResourceId                 = $null
+                SourceInfo                 = $null
+                ClientSettingName          = 'Default Client Agent Settings'
+                EnableBitsMaxBandwidth     = $true
+                MaxBandwidthBeginHr        = 1
+                MaxBandwidthEndHr          = 23
+                MaxTransferRateOnSchedule  = 100
+                EnableDownloadOffSchedule  = $true
+                MaxTransferRateOffSchedule = 1000
+                ClientSettingStatus        = 'Present'
+                ClientType                 = 'Default'
+                SiteCode                   = 'Lab'
+                PSComputerName             = 'localhost'
+            }
+
+            $invokeCMClientSettingsClientCache = @{
+                ConfigurationName         = $null
+                DependsOn                 = $null
+                ModuleName                = 'ConfigMgrCBDsc'
+                ModuleVersion             = 1.0.1
+                PsDscRunAsCredential      = $null
+                ResourceId                = $null
+                SourceInfo                = $null
+                ClientSettingName         = 'Default Client Agent Settings'
+                ConfigureBranchCache      = $true
+                EnableBranchCache         = $true
+                MaxBranchCacheSizePercent = 20
+                ConfigureCacheSize        = $true
+                MaxCacheSize              = 1048576
+                MaxCacheSizePercent       = 80
+                EnableSuperPeer           = $true
+                BroadcastPort             = 8006
+                DownloadPort              = 8003
+                ClientSettingStatus       = 'Present'
+                ClientType                = 'Default'
+                SiteCode                  = 'Lab'
+                PSComputerName            = 'localhost'
+            }
+
+            $invokeCMClientSettingsClientPolicy = @{
+                ConfigurationName          = $null
+                DependsOn                  = $null
+                ModuleName                 = 'ConfigMgrCBDsc'
+                ModuleVersion              = 1.0.1
+                PsDscRunAsCredential       = $null
+                ResourceId                 = $null
+                SourceInfo                 = $null
+                ClientSettingName          = 'Default Client Agent Settings'
+                PolicyPollingMins          = 60
+                EnableUserPolicy           = $true
+                EnableUserPolicyOnInternet = $false
+                EnableUserPolicyOnTS       = $true
+                ClientSettingStatus        = 'Present'
+                ClientType                 = 'Default'
+                SiteCode                   = 'Lab'
+                PSComputerName             = 'localhost'
+            }
+
+            $invokeCMClientSettingsCloudService = @{
+                ConfigurationName           = $null
+                DependsOn                   = $null
+                ModuleName                  = 'ConfigMgrCBDsc'
+                ModuleVersion               = 1.0.1
+                PsDscRunAsCredential        = $null
+                ResourceId                  = $null
+                SourceInfo                  = $null
+                ClientSettingName           = 'Default Client Agent Settings'
+                AllowCloudDistributionPoint = $true
+                AutoAzureADJoin             = $true
+                AllowCloudManagementGateway = $true
+                ClientSettingStatus         = 'Present'
+                ClientType                  = 'Default'
+                SiteCode                    = 'Lab'
+                PSComputerName              = 'localhost'
+            }
+
+            $clientSettingsCloudUser = @{
+                SiteCode = 'Lab'
+                Include  = 'ClientSettingsCloudService'
+            }
+
+            $invokeCMClientSettingsCloudServiceUser = @{
+                ConfigurationName           = $null
+                DependsOn                   = $null
+                ModuleName                  = 'ConfigMgrCBDsc'
+                ModuleVersion               = 1.0.1
+                PsDscRunAsCredential        = $null
+                ResourceId                  = $null
+                SourceInfo                  = $null
+                ClientSettingName           = 'TestUser'
+                AllowCloudDistributionPoint = $true
+                AutoAzureADJoin             = $null
+                AllowCloudManagementGateway = $null
+                ClientSettingStatus         = 'Present'
+                ClientType                  = 'User'
+                SiteCode                    = 'Lab'
+                PSComputerName              = 'localhost'
+            }
+
+            $invokeCMClientSettingsCompliance = @{
+                ConfigurationName        = $null
+                DependsOn                = $null
+                ModuleName               = 'ConfigMgrCBDsc'
+                ModuleVersion            = 1.0.1
+                PsDscRunAsCredential     = $null
+                ResourceId               = $null
+                SourceInfo               = $null
+                ClientSettingName        = 'Default Client Agent Settings'
+                Enable                   = $true
+                EnableUserDataAndProfile = $true
+                Start                    = '9/21/2021 16:54'
+                ScheduleType             = 'MonthlyByDay'
+                DayOfWeek                = $null
+                MonthlyWeekOrder         = $null
+                DayofMonth               = 0
+                RecurInterval            = 1
+                ClientSettingStatus      = 'Present'
+                ClientType               = 'Default'
+                SiteCode                 = 'Lab'
+                PSComputerName           = 'localhost'
+            }
+
+            $invokeCMClientSettingsComputerAgent = @{
+                ConfigurationName              = $null
+                DependsOn                      = $null
+                ModuleName                     = 'ConfigMgrCBDsc'
+                ModuleVersion                  = 1.0.1
+                PsDscRunAsCredential           = $null
+                ResourceId                     = $null
+                SourceInfo                     = $null
+                ClientSettingName              = 'Default Client Agent Settings'
+                InitialReminderHr              = 5
+                InterimReminderHr              = 1
+                FinalReminderMins              = 20
+                BrandingTitle                  = 'Test Client'
+                UseNewSoftwareCenter           = $true
+                EnableHealthAttestation        = $true
+                UseOnPremisesHealthAttestation = $true
+                InstallRestriction             = 'OnlyAdministrators'
+                SuspendBitLocker               = 'Never'
+                EnableThirdPartyOrchestration  = 'Yes'
+                PowerShellExecutionPolicy      = 'Bypass'
+                DisplayNewProgramNotification  = $true
+                ClientSettingStatus            = 'Present'
+                ClientType                     = 'Default'
+                SiteCode                       = 'Lab'
+                PSComputerName                 = 'localhost'
+            }
+
+            $invokeCMClientSettingsDelivery = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                Enable               = $true
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $invokeCMClientSettingsHardwareDefault = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                Enable               = $true
+                MaxRandomDelayMins   = 30
+                Start                = '9/21/2021 16:54'
+                ScheduleType         = 'MonthlyByDay'
+                DayOfWeek            = $null
+                MonthlyWeekOrder     = $null
+                DayofMonth           = 0
+                RecurInterval        = 1
+                CollectMifFile       = 'None'
+                MaxThirdPartyMifSize = 5119
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $clientSettingsHardwareDevice = @{
+                SiteCode = 'Lab'
+                Include  = 'ClientSettingsHardware'
+            }
+
+            $invokeCMClientSettingsHardwareDevice = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'ClientTest'
+                Enable               = $true
+                MaxRandomDelayMins   = 30
+                Start                = '9/21/2021 16:54'
+                ScheduleType         = 'MonthlyByDay'
+                DayOfWeek            = $null
+                MonthlyWeekOrder     = $null
+                DayofMonth           = 0
+                RecurInterval        = 1
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Device'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $invokeCMClientSettingsMetered = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                MeteredNetworkUsage  = 'Allow'
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $invokeCMClientSettingsPower = @{
+                ConfigurationName               = $null
+                DependsOn                       = $null
+                ModuleName                      = 'ConfigMgrCBDsc'
+                ModuleVersion                   = 1.0.1
+                PsDscRunAsCredential            = $null
+                ResourceId                      = $null
+                SourceInfo                      = $null
+                ClientSettingName               = 'Default Client Agent Settings'
+                Enable                          = $true
+                AllowUserToOptOutFromPowerPlan  = $false
+                NetworkWakeUpOption             = 'Enabled'
+                EnableWakeUpProxy               = $true
+                WakeupProxyPort                 = 51
+                WakeOnLanPort                   = 50
+                FirewallExceptionForWakeupProxy = 'None'
+                WakeupProxyDirectAccessPrefix   = $null
+                ClientSettingStatus             = 'Present'
+                ClientType                      = 'Default'
+                SiteCode                        = 'Lab'
+                PSComputerName                  = 'localhost'
+            }
+
+            $getCMClientSettingRemoteTools = @{
+                FirewallExceptionProfiles = 12
+            }
+
+            $invokeCMClientSettingsRemoteTools = @{
+                ConfigurationName                   = $null
+                DependsOn                           = $null
+                ModuleName                          = 'ConfigMgrCBDsc'
+                ModuleVersion                       = 1.0.1
+                PsDscRunAsCredential                = $null
+                ResourceId                          = $null
+                SourceInfo                          = $null
+                ClientSettingName                   = 'Default Client Agent Settings'
+                FirewallExceptionProfile            = 'Domain'
+                AllowClientChange                   = $true
+                AllowUnattendedComputer             = $true
+                PromptUserForPermission             = $true
+                PromptUserForClipboardPermission    = $true
+                GrantPermissionToLocalAdministrator = $true
+                AccessLevel                         = 'FullControl'
+                PermittedViewer                     = @('Group1','Group2')
+                ShowNotificationIconOnTaskbar       = $true
+                ShowSessionConnectionBar            = $true
+                AudibleSignal                       = 'PlayNoSound'
+                ManageUnsolicitedRemoteAssistance   = $true
+                ManageSolicitedRemoteAssistance     = $true
+                RemoteAssistanceAccessLevel         = 'FullControl'
+                ManageRemoteDesktopSetting          = $true
+                AllowPermittedViewer                = $true
+                RequireAuthentication               = $true
+                ClientSettingStatus                 = 'Present'
+                ClientType                          = 'Default'
+                RemoteToolsStatus                   = 'Enabled'
+                SiteCode                            = 'Lab'
+                PSComputerName                      = 'localhost'
+            }
+
+            $getCMClientSettingSoftwareCenter = @{
+                SC_UserPortal = 0
+            }
+
+            $invokeCMClientSettingsSoftwareCenter = @{
+                ConfigurationName          = $null
+                DependsOn                  = $null
+                ModuleName                 = 'ConfigMgrCBDsc'
+                ModuleVersion              = 1.0.1
+                PsDscRunAsCredential       = $null
+                ResourceId                 = $null
+                SourceInfo                 = $null
+                ClientSettingName          = 'Default Client Agent Settings'
+                EnableCustomize            = $true
+                CompanyName                = 'Test Company'
+                ColorScheme                = '#CB4154'
+                HideApplicationCatalogLink = $true
+                HideInstalledApplication   = $true
+                HideUnapprovedApplication  = $true
+                EnableApplicationsTab      = $true
+                EnableUpdatesTab           = $true
+                EnableOperatingSystemsTab  = $true
+                EnableStatusTab            = $true
+                EnableComplianceTab        = $true
+                EnableOptionsTab           = $true
+                ClientSettingStatus        = 'Present'
+                ClientType                 = 'Default'
+                PortalType                 = 'Software Center'
+                SiteCode                   = 'Lab'
+                PSComputerName             = 'localhost'
+            }
+
+            $invokeCMClientSettingsSoftwareDeployment = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                Start                = '9/21/2021 16:54'
+                ScheduleType         = 'MonthlyByDay'
+                DayOfWeek            = $null
+                MonthlyWeekOrder     = $null
+                DayofMonth           = 0
+                RecurInterval        = 1
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $invokeCMClientSettingsSoftwareInventory = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                Enable               = $true
+                ReportOption         = 'ProductOnly'
+                Start                = '9/21/2021 16:54'
+                ScheduleType         = 'MonthlyByDay'
+                DayOfWeek            = $null
+                MonthlyWeekOrder     = $null
+                DayofMonth           = 0
+                RecurInterval        = 1
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $invokeCMClientSettingsSoftwareMetering = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                Enable               = $true
+                Start                = '9/21/2021 16:54'
+                ScheduleType         = 'MonthlyByDay'
+                DayOfWeek            = $null
+                MonthlyWeekOrder     = $null
+                DayofMonth           = 0
+                RecurInterval        = 1
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $invokeCMClientSettingsSoftwareUpdate = @{
+                ConfigurationName       = $null
+                DependsOn               = $null
+                ModuleName              = 'ConfigMgrCBDsc'
+                ModuleVersion           = 1.0.1
+                PsDscRunAsCredential    = $null
+                ResourceId              = $null
+                SourceInfo              = $null
+                ClientSettingName       = 'Default Client Agent Settings'
+                Enable                  = $true
+                ScanStart               = '9/21/2021 16:54'
+                ScanScheduleType        = 'MonthlyByDay'
+                ScanDayOfWeek           = $null
+                ScanMonthlyWeekOrder    = $null
+                ScanDayofMonth          = 0
+                ScanRecurInterval       = 1
+                EvalStart               = '9/21/2021 16:54'
+                EvalScheduleType        = 'Hours'
+                EvalDayOfWeek           = $null
+                EvalMonthlyWeekOrder    = $null
+                EvalDayofMonth          = $null
+                EvalRecurInterval       = 1
+                EnforceMandatory        = $true
+                TimeUnit                = 'Days'
+                BatchingTimeOut         = 2
+                EnableDeltaDownload     = $true
+                DeltaDownloadPort       = 8005
+                Office365ManagementType = 'Yes'
+                EnableThirdPartyUpdates = $true
+                ClientSettingStatus     = 'Present'
+                ClientType              = 'Default'
+                SiteCode                = 'Lab'
+                PSComputerName          = 'localhost'
+            }
+
+            $invokeCMClientSettingsStateMessaging = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                ReportingCycleMins   = 100
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
+
+            $invokeCMClientSettingsUserDeviceAffinity = @{
+                ConfigurationName    = $null
+                DependsOn            = $null
+                ModuleName           = 'ConfigMgrCBDsc'
+                ModuleVersion        = 1.0.1
+                PsDscRunAsCredential = $null
+                ResourceId           = $null
+                SourceInfo           = $null
+                ClientSettingName    = 'Default Client Agent Settings'
+                LogOnThresholdMins   = 100
+                UsageThresholdDays   = 10
+                AutoApproveAffinity  = $true
+                AllowUserAffinity    = $true
+                ClientSettingStatus  = 'Present'
+                ClientType           = 'Default'
+                SiteCode             = 'Lab'
+                PSComputerName       = 'localhost'
+            }
         }
 
         Context 'When running the Set-ConfigMgrCBDscReverse' {
@@ -3942,6 +5921,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Get-CMAccount -MockWith { $cmAccounts }
                 Mock -CommandName Get-CMAdministrativeUser -MockWith { $cmAdministrativeUsers }
                 Mock -CommandName Get-CMAssetIntelligenceSynchronizationPoint -MockWith { $cmAssetIntellReturn }
+                Mock -CommandName Get-CMClientSetting
                 Mock -CommandName Get-CMCollection -MockWith { $deviceCollectionsReturn } -ParameterFilter {$CollectionType -match 'Device'}
                 Mock -CommandName Get-CMCollection -MockWith { $userCollectionsReturn } -ParameterFilter {$CollectionType -match 'User' }
                 Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionGroupReturn }
@@ -4008,13 +5988,35 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getSystemDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectorySystemDiscovery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeUserDiscoveryEnabled } -ParameterFilter { $Name -eq 'CMUserDiscovery' }
                 Mock -CommandName Get-CMDiscoveryMethod -MockWith { $getUserDiscoveryEnabled } -ParameterFilter { $Name -eq 'ActiveDirectoryUserDiscovery' }
+                Mock -CommandName Get-CMClientSetting -MockWith { $getCMClientSettingsDefault }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsBits } -ParameterFilter { $Name -eq 'CMClientSettingsBits' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsClientCache } -ParameterFilter { $Name -eq 'CMClientSettingsClientCache' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsClientPolicy } -ParameterFilter { $Name -eq 'CMClientSettingsClientPolicy' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsCloudService } -ParameterFilter { $Name -eq 'CMClientSettingsCloudService' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsCompliance } -ParameterFilter { $Name -eq 'CMClientSettingsCompliance' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsComputerAgent } -ParameterFilter { $Name -eq 'CMClientSettingsComputerAgent' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsDelivery } -ParameterFilter { $Name -eq 'CMClientSettingsDelivery' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsHardwareDefault } -ParameterFilter { $Name -eq 'CMClientSettingsHardware' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsMetered } -ParameterFilter { $Name -eq 'CMClientSettingsMetered' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsPower } -ParameterFilter { $Name -eq 'CMClientSettingsPower' }
+                Mock -CommandName Get-CMClientSetting -MockWith { $getCMClientSettingRemoteTools } -ParameterFilter { $Setting -eq 'RemoteTools' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsRemoteTools } -ParameterFilter { $Name -eq 'CMClientSettingsRemoteTools' }
+                Mock -CommandName Get-CMClientSetting -MockWith { $getCMClientSettingSoftwareCenter } -ParameterFilter { $Setting -eq 'SoftwareCenter' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsSoftwareCenter } -ParameterFilter { $Name -eq 'CMClientSettingsSoftwareCenter' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsSoftwareDeployment } -ParameterFilter { $Name -eq 'CMClientSettingsSoftwareDeployment' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsSoftwareInventory } -ParameterFilter { $Name -eq 'CMClientSettingsSoftwareInventory' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsSoftwareMetering } -ParameterFilter { $Name -eq 'CMClientSettingsSoftwareMetering' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsUpdate } -ParameterFilter { $Name -eq 'CMClientSettingsSoftwareUpdate' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsStateMessaging } -ParameterFilter { $Name -eq 'CMClientSettingsStateMessaging' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsUserDeviceAffinity } -ParameterFilter { $Name -eq 'CMClientSettingsUserDeviceAffinity' }
 
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 28 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 46 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 19 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
@@ -4049,6 +6051,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4082,6 +6085,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4115,6 +6119,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4148,6 +6153,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4181,6 +6187,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4214,6 +6221,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4247,6 +6255,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4280,6 +6289,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 19 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4313,6 +6323,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4346,6 +6357,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4379,6 +6391,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4412,6 +6425,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4445,6 +6459,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4478,6 +6493,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4511,6 +6527,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4544,6 +6561,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4579,6 +6597,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4612,6 +6631,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
@@ -4627,6 +6647,108 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 1 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
+            }
+
+            It 'Should return expected results and call expected commands for CMClientSettings' {
+                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettings } -ParameterFilter { $Name -eq 'CMClientSettings'}
+                Mock -CommandName Get-CMClientSetting -MockWith { $getCMClientSettingsDevice }
+
+                $result = Set-ConfigMgrCBDscReverse @clientSettingsDevice
+                $result | Should -BeOfType System.String
+                $result | Should -Match "CMClientSettings"
+                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
+            }
+
+            It 'Should return expected results and call expected commands for CMClientSettingsCloud User' {
+                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsCloudServiceUser } -ParameterFilter { $Name -eq 'CMClientSettingsCloudService'}
+                Mock -CommandName Get-CMClientSetting -MockWith { $getCMClientSettingsUser }
+
+                $result = Set-ConfigMgrCBDscReverse @clientSettingsCloudUser
+                $result | Should -BeOfType System.String
+                $result | Should -Match "CMClientSettingsCloudService"
+                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 2 -Scope It
+                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
+            }
+
+            It 'Should return expected results and call expected commands for CMClientSettingsHardware device' {
+                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsHardwareDevice } -ParameterFilter { $Name -eq 'CMClientSettingsHardware'}
+                Mock -CommandName Get-CMClientSetting -MockWith { $getCMClientSettingsDevice }
+
+                $result = Set-ConfigMgrCBDscReverse @clientSettingsHardwareDevice
+                $result | Should -BeOfType System.String
+                $result | Should -Match "CMClientSettingsHardware"
+                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 2 -Scope It
+                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
                 Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
                 Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
                 Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It

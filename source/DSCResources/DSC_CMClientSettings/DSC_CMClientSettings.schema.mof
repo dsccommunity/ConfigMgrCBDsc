@@ -1,0 +1,12 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettings")]
+class DSC_CMClientSettings : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Required, Description("Specifies the type of client policy."), ValueMap{"Device","User"}, Values{"Device","User"}] String Type;
+    [Write, Description("Specifies the description of the client policy.")] String Description;
+    [Write, Description("Specifies an array of Security Scopes to match.")] String SecurityScopes[];
+    [Write, Description("Specifies an array of Security Scopes to include.")] String SecurityScopesToInclude[];
+    [Write, Description("Specifies an array of Security Scopes to exclude.")] String SecurityScopesToExclude[];
+    [Write, Description("Specifies if the client policy is present or absent."), ValueMap{"Present","Absent"}, Values{"Present","Absent"}] String Ensure;
+};

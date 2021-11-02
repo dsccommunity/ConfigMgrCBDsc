@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMEmailNotificationComponent
 - Added CMGroupDiscovery Resource
 - Added CMSoftwareUpdatePointComponent resource
+- Added CMClientSettings resource
+- Added CMClientSettingsBits resource
+- Added CMClientSettingsClientCache resource
+- Added CMClientSettingsClientPolicy resource
+- Added CMClientSettingsCloudService resource
+- Added CMClientSettingsCompliance resource
+- Added CMClientSettingsComputerAgent resource
+- Added CMClientSettingsDelivery resource
+- Added CMClientSettingsHardware resource
+- Added CMClientSettingsMetered resource
+- Added CMClientSettingsPower resource
+- Added CMClientSettingsRemoteTools resource
+- Added CMClientSettingsSoftwareCenter resource
+- Added CMClientSettingsSoftwareDeployment resource
+- Added CMClientSettingsSoftwareInventory resource
+- Added CMClientSettingsSoftwareMetering resource
+- Added CMClientSettingsSoftwareUpdate resource
+- Added CMClientSettingsStateMessaging resource
+- Added CMClientSettingsUserDeviceAffinity resource
 
 ### Fixed
 

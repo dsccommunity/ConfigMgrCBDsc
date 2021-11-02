@@ -1,0 +1,28 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsSoftwareUpdate")]
+class DSC_CMClientSettingsSoftwareUpdate : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Required, Description("Specifies if software update for clients is enabled or disabled.")] Boolean Enable;
+    [Write, Description("Specifies the start date and start time for the software update scan schedule Month/Day/Year, example 1/1/2020 02:00.")] String ScanStart;
+    [Write, Description("Specifies the schedule type for the software update scan schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}] String ScanScheduleType;
+    [Write, Description("Specifies how often the ScheduleType is run.")] UInt32 ScanRecurInterval;
+    [Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String ScanMonthlyWeekOrder;
+    [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String ScanDayOfWeek;
+    [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 ScanDayOfMonth;
+    [Write, Description("Specifies the start date and start time for the software update evaluation schedule Month/Day/Year, example 1/1/2020 02:00.")] String EvalStart;
+    [Write, Description("Specifies the schedule type for the software update evaluation schedule."), ValueMap{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}, Values{"MonthlyByDay","MonthlyByWeek","Weekly","Days","Hours","Minutes","None"}] String EvalScheduleType;
+    [Write, Description("Specifies how often the ScheduleType is run.")] UInt32 EvalRecurInterval;
+    [Write, Description("Specifies week order for MonthlyByWeek schedule type."), ValueMap{"First","Second","Third","Fourth","Last"}, Values{"First","Second","Third","Fourth","Last"}] String EvalMonthlyWeekOrder;
+    [Write, Description("Specifies the day of week name for MonthlyByWeek and Weekly schedules."), ValueMap{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}, Values{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}] String EvalDayOfWeek;
+    [Write, Description("Specifies the day number for MonthlyByDay schedules.")] UInt32 EvalDayOfMonth;
+    [Write, Description("Specifies if any software update deployment deadline is reached to install all deployments with dealing coming within a specific time period.")] Boolean EnforceMandatory;
+    [Write, Description("Specifies the unit of time, hours or days time frame to install pending software updates."), ValueMap{"Hours","Days"}, Values{"Hours","Days"}] String TimeUnit;
+    [Write, Description("Specifies the time within TimeUnit to install the depending updates.")] UInt32 BatchingTimeOut;
+    [Write, Description("Specifies if clients are allowed to download delta content when available.")] Boolean EnableDeltaDownload;
+    [Write, Description("Specifies the port that clients will use to receive requests for delta content.")] UInt32 DeltaDownloadPort;
+    [Write, Description("Specifies the management of the Office 365 client."), ValueMap{"NotConfigured","Yes","No"}, Values{"NotConfigured","Yes","No"}] String Office365ManagementType;
+    [Write, Description("Specifies if third party updates is enabled or disabled.")] Boolean EnableThirdPartyUpdates;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+};

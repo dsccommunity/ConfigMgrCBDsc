@@ -1,0 +1,11 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsCloudService")]
+class DSC_CMClientSettingsCloudService : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies if allow access to cloud distribution point is enabled or disabled.")] Boolean AllowCloudDistributionPoint;
+    [Write, Description("Specifies whether to automatically register new Windows 10 domain joined devices with Azure Active Directory.")] Boolean AutoAzureADJoin;
+    [Write, Description("Specifies if allow access to cloud management gateway is enabled or disabled.")] Boolean AllowCloudManagementGateway;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+};
