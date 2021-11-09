@@ -221,7 +221,7 @@ Configuration xSccmSqlSetup
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName SqlServerDsc
+    Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 15.2.0
 
     switch ($SqlVersion)
     {
@@ -316,7 +316,7 @@ Configuration xSccmSqlSetup
             Name      = $SqlManagementStudioName
             Arguments = '/install /quiet /norestart'
             ProductId = $SqlManagemenStudioProductId
-            DependsOn = '[SqlServerNetwork]EnableTcpIp'
+            DependsOn = '[SqlProtocolTcpIp]EnableTcpIp'
         }
     }
 }
