@@ -64,11 +64,11 @@ Configuration PrimaryInstall
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DSCResource -ModuleName ComputerManagementDsc -ModuleVersion 8.2.0
+    Import-DSCResource -ModuleName ComputerManagementDsc -ModuleVersion 8.5.0
     Import-DscResource -ModuleName ConfigMgrCBDsc
-    Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 14.0.0
+    Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 15.2.0
     Import-DscResource -ModuleName UpdateServicesDsc -ModuleVersion 1.2.1
-    Import-DscResource -ModuleName NetworkingDsc -ModuleVersion 7.4.0.0
+    Import-DscResource -ModuleName NetworkingDsc -ModuleVersion 8.2.0
 
     Node localhost
     {

@@ -221,7 +221,7 @@ Configuration xSccmSqlSetup
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 14.0.0
+    Import-DscResource -ModuleName SqlServerDsc -ModuleVersion 15.2.0
 
     switch ($SqlVersion)
     {
@@ -293,14 +293,12 @@ Configuration xSccmSqlSetup
         UpdateEnabled       = $UpdateEnabled
     }
 
-    SqlServerNetwork EnableTcpIp
+    SqlProtocolTcpIp SetTcpIpPort
     {
-        InstanceName   = $SqlInstanceName
-        ProtocolName   = 'Tcp'
-        IsEnabled      = $true
-        TcpPort        = $SqlPort
-        RestartService = $true
-        DependsOn      = '[SqlSetup]InstallSql'
+        InstanceName    = $SqlInstanceName
+        IpAddressGroup = 'IPAll'
+        TcpPort               = $SqlPort
+        DependsOn        = '[SqlSetup]InstallSql'
     }
 
     if ($InstallManagementStudio)
@@ -318,7 +316,7 @@ Configuration xSccmSqlSetup
             Name      = $SqlManagementStudioName
             Arguments = '/install /quiet /norestart'
             ProductId = $SqlManagemenStudioProductId
-            DependsOn = '[SqlServerNetwork]EnableTcpIp'
+            DependsOn = '[SqlProtocolTcpIp]SetTcpIpPort'
         }
     }
 }
