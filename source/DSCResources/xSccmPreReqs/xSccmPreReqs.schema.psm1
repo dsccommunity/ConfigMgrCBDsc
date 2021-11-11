@@ -35,18 +35,6 @@
     .PARAMETER SccmRole
         Specify the SCCM Roles that will be on the server.
 
-    .PARAMETER AddWindowsFirewallRule
-        Specify whether to add the Windows Firewall Rules needed for the install.
-
-    .PARAMETER FirewallProfile
-        Specify the Windows Firewall profile for the rules to be added.
-
-    .PARAMETER FirewallTcpLocalPort
-        Specify the TCP ports to be added to the windows firewall as allowed.
-
-    .PARAMETER FirewallUdpLocalPort
-        Specify the UDP ports to be added to the windows firewall as allowed.
-
     .PARAMETER LocalAdministrators
         Specifies the accounts and/or groups you want to add to the local administrators group.
 
@@ -132,22 +120,6 @@ Configuration xSCCMPreReqs
         $SccmRole = 'CASorSiteServer',
 
         [Parameter()]
-        [Boolean]
-        $AddWindowsFirewallRule = $false,
-
-        [Parameter()]
-        [System.String[]]
-        $FirewallProfile,
-
-        [Parameter()]
-        [System.String[]]
-        $FirewallTcpLocalPort = @('1433','1434','4022','445','135','139','49154-49157'),
-
-        [Parameter()]
-        [System.String[]]
-        $FirewallUdpLocalPort = @('137-138','1434','5355'),
-
-        [Parameter()]
         [System.String[]]
         $LocalAdministrators,
 
@@ -193,7 +165,6 @@ Configuration xSCCMPreReqs
     )
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
-    Import-DscResource -ModuleName NetworkingDsc -ModuleVersion 8.2.0
 
     $features = @()
     foreach ($role in $SccmRole)
@@ -254,40 +225,6 @@ Configuration xSCCMPreReqs
             Name   = $uniqueFeatures
             Ensure = 'Present'
             Source = $WindowsFeatureSource
-        }
-    }
-
-    if ($AddWindowsFirewallRule)
-    {
-        if ($null -eq $FirewallProfile)
-        {
-            throw 'When specifying AddWindowsFirewallRule you need to provide FirewallProfile, FirewallTcpLocalPort, and FirewallUdpLocalPort.'
-        }
-
-        Firewall AddSccmTCPFirewallRule
-        {
-            Name        = 'SCCMServerTCP'
-            DisplayName = 'SCCM to SCCM communication - TCP'
-            Ensure      = 'Present'
-            Enabled     = 'True'
-            Profile     = $FirewallProfile
-            Direction   = 'Inbound'
-            LocalPort   = $FirewallTcpLocalPort
-            Protocol    = 'TCP'
-            Description = 'Firewall Rule SCCM to SCCM communication - TCP'
-        }
-
-        Firewall AddSccmUdpFirewallRule
-        {
-            Name        = 'SCCMServerUDP'
-            DisplayName = 'SCCM to SCCM communication - UDP'
-            Ensure      = 'Present'
-            Enabled     = 'True'
-            Profile     = $FirewallProfile
-            Direction   = 'Inbound'
-            LocalPort   = $FirewallUdpLocalPort
-            Protocol    = 'UDP'
-            Description = 'Firewall Rule SCCM to SCCM communication - UDP'
         }
     }
 

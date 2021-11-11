@@ -40,6 +40,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added support for VPN and IPv6Prefix boundaries to the CMBoundaries resource.
 - Updated module versions for SqlServerDsc, NetworkingDsc, ComputerManagementDsc
+- Removed firewall configurations from the xSccmPreReqs resource. See
+    (Source\Examples\PrimaryInstall.ps1) for an example of firewall configurations.
+
+### Removed
+
+- Removed xSccmSql resource in favor of using the SQLSetup resource. See
+    (Source\Examples\PrimaryInstall.ps1) for an example of a SQL install configuration.
 
 ## [1.0.2] - 2021-05-12
 

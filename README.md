@@ -37,6 +37,10 @@ is Import-ConfigMgrPowerShellModule.
 
 This project has adopted this [Code of Conduct](CODE_OF_CONDUCT.md).
 
+## Change Log
+
+A full list of changes in each version can be found in the [Change Log](CHANGELOG.md).
+
 ## Releases
 
 For each merge to the branch `master` a preview release will be
@@ -53,7 +57,6 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
 - **xSccmPreReqs**: Provides a composite resource to install ADK, ADK WinPE, MDT,
   required Windows Features, modify Local Administrators group, and create the
   no_sms_on_drive files.
-- **xSccmSqlSetup**: Provides a composite resource to install SQL for SCCM.
 - **xSccmInstall**: Provides a composite resource to install SCCM.
 - **ClientSettings**: Provides a resource to perform configuration of client settings.
 - **CMAccounts**: Provides a resource to manage Configuration Manager accounts.
@@ -189,20 +192,9 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
     EnrollmentPoint | EnrollmentProxyPoint | FallbackServicePoint |
     ManagementPoint | ReportingServicesPoint | ServiceConnectionPoint |
     StateMigrationPoint | SoftwareUpdatePoint}
-- **[Boolean] AddWindowsFirewallRule** : Specifies whether to add the Windows
-  Firewall Rules needed for the install.
-  Default Value: $false
 - **[String] WindowsFeatureSource** : Specifies the source that will be used
   to install windows features if the files are not present in the local
   side-by-side store.
-- **[String[]] FirewallProfile** : Specifies the Windows Firewall profile for
-  the rules to be added.
-- **[String[]] FirewallTcpLocalPort** : Specifies the TCP ports to be added to
-  the windows firewall as allowed.
-  Default Value: @('1433','1434','4022','445','135','139','49154-49157')
-- **[String[]] FirewallUdpLocalPort** : Specifies the UDP ports to be added to
-  the windows firewall as allowed.
-  Default Value: @('137-138','1434','5355')
 - **[String] LocalAdministrators** : Specifies the accounts and/or groups you
   want to add to the local administrators group.
 - **[String] NoSmsOnDrives** : Specifies the drive letters of the drive you
@@ -253,76 +245,6 @@ you are using apply and auto correct.
 #### xSccmInstall Examples
 
 - [SccmInstall](Source\Examples\Resources\xSccmInstall\SccmInstall.ps1)
-
-### xSccmSqlSetup
-
-- **[String] SqlVersion** _(Required)_: Specify the version of SQL to be installed.
-  - Values: { 2008 | 2008R2 | 2012 | 2014 | 2016 | 2017 | 2019 }
-- **[String] SqlInstallPath** _(Required)_: Specifies the path to the setup.exe
-  file for SQL.
-- **[String] SqlInstanceName** _(Required)_: Specifies a SQL Server instance name.
-- **[PSCredential] SqlServiceCredential** _(Required)_: Specifies the credential
-  for the service account used to run the SQL Service.
-- **[PSCredential] SqlAgentServiceCredential** _(Required)_: Specifies the
-  credential for the service account used to run the SQL Agent Service.
-- **[String] SqlSysAdminAccounts** _(Required)_: Use this parameter to provision
-  logins to be members of the sysadmin role.
-- **[String]** : SQL features to install.
-  Default Value: 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS'
-- **[String] InstallSharedDir** : Specifies the installation directory for
-  64-bit shared components.
-  Default Value: 'C:\Program Files\Microsoft SQL Server'
-- **[String] InstallSharedWowDir** : Specifies the installation directory for
-  32-bit shared components. Supported only on a 64-bit system.
-  Default Value: 'C:\Program Files (x86)\Microsoft SQL Server'
-- **[String] InstanceDir** : Specifies the installation path for SQL Server
-  instance files.
-  Default Value: 'C:\Program Files\Microsoft SQL Server'
-- **[String] RSSvcStartupType** : Specifies the startup mode for Reporting Services.
-  Default Value: 'Automatic'
-- **[String] AgtSvcStartupType** : Specifies the startup mode for the SQL Server
-  Agent service.
-  Default Value: 'Automatic'
-- **[String] RSInstallMode** : Specifies the Install mode for Reporting Services.
-  Default Value: 'DefaultNativeMode'
-- **[String] SqlCollation** : Specifies the collation settings for SQL Server.
-  Default Value: 'SQL_Latin1_General_CP1_CI_AS'
-- **[String] InstallSqlDataDir** : Specifies the data directory for SQL Server
-  data files.
-  Default Value: 'C:\'
-- **[String] SqlUserDBDir** : Specifies the directory for the data
-  files for user databases.
-  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
-- **[String] SqlUserDBLogDir** : Specifies the directory for the log
-  files for user databases.
-  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
-- **[String] SqlTempDBDir** : Specifies the directory for the data
-  files for tempdb.
-  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
-- **[String] SqlTempDBLogDir** : Specifies the directory for the log
-  files for tempdb.
-  Default Value: '<InstallSQLDataDir>\<SQLInstanceID>\MSSQL\Data'
-- **[String] UpdateEnabled** : Specify whether SQL Server setup should discover
-  and include product updates.
-  Default Value: $false
-- **[String] SqlPort** : Specifies the port SQL listens on.
-  Default Value: 1433
-- **[String] InstallManagementStudio** : Specify whether to install SQL
-  Management Studio.
-  Default Value: $false
-- **[String] SqlManagementStudioExePath** : Specify that path and filename to
-  the exe for Management Studio instal.
-- **[String] SqlManagementStudioName** : Specify the name of SQL Server
-  Management Studio.
-  Default Value: 'SQL Server Management Studio'
-- **[String] SqlManagementStudioProductId** : Specify the product if of the SQL
-  Management Studio install being performed.
-  Default Value: 'E3FD687D-6757-474B-8D83-5AA944B02C58'
-
-#### xSccmSqlSetup Examples
-
-- [SccmSqlSetup](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetup.ps1)
-- [SccmSqlSetupandManagemenStudio](Source\Examples\Resources\xSccmSqlSetup\SccmSqlSetupAndManagementStudio.ps1)
 
 ### CMAccounts
 

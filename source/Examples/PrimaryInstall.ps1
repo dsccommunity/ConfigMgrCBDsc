@@ -121,8 +121,6 @@ Configuration PrimaryInstall
             InstallWindowsFeatures = $true
             WindowsFeatureSource   = 'C:\Windows\WinSxS'
             SccmRole               = 'CASorSiteServer','ManagementPoint','DistributionPoint','SoftwareUpdatePoint'
-            AddWindowsFirewallRule = $true
-            FirewallProfile        = 'Domain','Private'
             LocalAdministrators    = @('contoso\SCCM-Servers','contoso\SCCM-CMInstall','contoso\Admin')
             DomainCredential       = $DomainCredential
             AdkInstallPath         = 'C:\Apps\ADK'
@@ -133,29 +131,66 @@ Configuration PrimaryInstall
             AdkWinPeProductID      = $winPeProductID
         }
 
-        xSccmSqlSetup SCCMSqlInstall
+        Firewall AddSccmTCPFirewallRule
         {
-            SqlVersion                = '2014'
-            Features                  = 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS'
-            InstallSharedDir          = 'C:\Apps\Microsoft SQL Server'
-            InstallSharedWowDir       = 'C:\Apps (x86)\Microsoft SQL Server'
-            InstanceDir               = 'C:\Apps\Microsoft SQL Server'
-            SqlInstanceName           = $dbInstanceName
-            SqlServiceCredential      = $SqlServiceCredential
-            SqlAgentServiceCredential = $SqlAgentServiceCredential
-            RSInstallMode             = 'DefaultNativeMode'
-            RSSVCStartUpType          = 'Automatic'
-            AgtSvcStartupType         = 'Automatic'
-            SQLCollation              = 'SQL_Latin1_General_CP1_CI_AS'
-            SQLSysAdminAccounts       = @('contoso\SCCM-Servers','contoso\Admin','contoso\SCCM-CMInstall')
-            InstallSQLDataDir         = "C:"
-            SQLUserDBDir              = "C:\MSSQL12.$dbInstanceName\MSSQL\Data\App"
-            SQLUserDBLogDir           = "C:\MSSQL12.$dbInstanceName\MSSQL\Log\App"
-            SQLTempDBDir              = "C:\MSSQL12.$dbInstanceName\MSSQL\Data\System"
-            SQLTempDBLogDir           = "C:\MSSQL12.$dbInstanceName\MSSQL\Log\System"
-            SqlInstallPath            = 'C:\temp\SQL\MSSQL2014wSP3'
-            UpdateEnabled             = $false
-            DependsOn                 = '[xSccmPreReqs]SCCMPreReqs'
+            Name        = 'SCCMServerTCP'
+            DisplayName = 'SCCM to SCCM communication - TCP'
+            Ensure      = 'Present'
+            Enabled     = 'True'
+            Profile     = 'Domain','Private'
+            Direction   = 'Inbound'
+            LocalPort   = '1433','1434','4022','445','135','139','49154-49157'
+            Protocol    = 'TCP'
+            Description = 'Firewall Rule SCCM to SCCM communication - TCP'
+            DependsOn   = '[xSccmPreReqs]SCCMPreReqs'
+        }
+
+        Firewall AddSccmUdpFirewallRule
+        {
+            Name        = 'SCCMServerUDP'
+            DisplayName = 'SCCM to SCCM communication - UDP'
+            Ensure      = 'Present'
+            Enabled     = 'True'
+            Profile     = 'Domain','Private'
+            Direction   = 'Inbound'
+            LocalPort   = '137-138','1434','5355'
+            Protocol    = 'UDP'
+            Description = 'Firewall Rule SCCM to SCCM communication - UDP'
+            DependsOn   = '[Firewall]AddSccmTCPFirewallRule'
+        }
+
+        SQLSetup SCCMSqlInstall
+        {
+            Features            = 'SQLENGINE,RS,CONN,BC,SSMS,ADV_SSMS'
+            InstallSharedDir    = 'C:\Apps\Microsoft SQL Server'
+            InstallSharedWowDir = 'C:\Apps (x86)\Microsoft SQL Server'
+            InstanceDir         = 'C:\Apps\Microsoft SQL Server'
+            InstanceName        = $dbInstanceName
+            SQLSvcAccount       = $SqlServiceCredential
+            AgtSvcAccount       = $SqlAgentServiceCredential
+            RSInstallMode       = 'DefaultNativeMode'
+            RSSVCStartUpType    = 'Automatic'
+            AgtSvcStartupType   = 'Automatic'
+            SQLCollation        = 'SQL_Latin1_General_CP1_CI_AS'
+            SQLSysAdminAccounts = @('contoso\SCCM-Servers','contoso\Admin','contoso\SCCM-CMInstall')
+            InstallSQLDataDir   = 'C:'
+            SQLUserDBDir        = "C:\MSSQL12.$dbInstanceName\MSSQL\Data\App"
+            SQLUserDBLogDir     = "C:\MSSQL12.$dbInstanceName\MSSQL\Log\App"
+            SQLTempDBDir        = "C:\MSSQL12.$dbInstanceName\MSSQL\Data\System"
+            SQLTempDBLogDir     = "C:\MSSQL12.$dbInstanceName\MSSQL\Log\System"
+            SourcePath          = 'C:\temp\SQL\MSSQL2014wSP3'
+            UpdateEnabled       = $false
+            DependsOn           = '[Firewall]AddSccmUdpFirewallRule'
+        }
+
+        SqlServerNetwork EnableTcpIp
+        {
+            InstanceName   = $dbInstanceName
+            ProtocolName   = 'Tcp'
+            IsEnabled      = $true
+            TcpPort        = 1433
+            RestartService = $true
+            DependsOn      = '[SqlSetup]SCCMSqlInstall'
         }
 
         # WSUS registry value to fix issues with WSUS self-signed certificates
@@ -184,7 +219,7 @@ Configuration PrimaryInstall
             Classifications   = '*'
             UpstreamServerSSL = $false
             Synchronize       = $false
-            DependsOn         = '[File]WSUSUpdates','[xSccmPreReqs]SCCMPreReqs','[Registry]EnableWSUSSelfSignedCert'
+            DependsOn         = '[File]WSUSUpdates','[Firewall]AddSccmUdpFirewallRule','[Registry]EnableWSUSSelfSignedCert'
         }
 
         File CreateIniFolder
@@ -192,7 +227,7 @@ Configuration PrimaryInstall
             Ensure          = 'Present'
             Type            = 'Directory'
             DestinationPath = 'C:\SetupFiles'
-            DependsOn       = '[xSccmSqlSetup]SCCMSqlInstall'
+            DependsOn       = '[SQLSetup]SCCMSqlInstall'
         }
 
         CMIniFile CreateSCCMIniFile
