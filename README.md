@@ -37,6 +37,10 @@ is Import-ConfigMgrPowerShellModule.
 
 This project has adopted this [Code of Conduct](CODE_OF_CONDUCT.md).
 
+## Change Log
+
+A full list of changes in each version can be found in the [Change Log](CHANGELOG.md).
+
 ## Releases
 
 For each merge to the branch `master` a preview release will be
