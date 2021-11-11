@@ -316,7 +316,7 @@ Configuration xSccmSqlSetup
             Name      = $SqlManagementStudioName
             Arguments = '/install /quiet /norestart'
             ProductId = $SqlManagemenStudioProductId
-            DependsOn = '[SqlProtocolTcpIp]EnableTcpIp'
+            DependsOn = '[SqlProtocolTcpIp]SetTcpIpPort'
         }
     }
 }
