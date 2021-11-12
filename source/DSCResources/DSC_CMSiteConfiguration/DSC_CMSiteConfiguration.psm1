@@ -593,7 +593,12 @@ function Set-TargetResource
         if ($state.SiteType -eq 'Primary')
         {
             $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
-                'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert')
+            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','WakeOnLanTransmissionMethodType',
+            'RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
+            'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec',
+            'ThreadNumberOfSendingWakeupPacket','SendingWakeupPacketTransmissionOffsetMins','ClientCertificateCustomStoreName',
+            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType',
+            'ClientCertificateSelectionCriteriaValue')
 
             if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
                 $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
@@ -626,6 +631,7 @@ function Set-TargetResource
                     }
                 }
             }
+            #Other Throws/Warns Here
         }
         elseif ($state.SiteType -eq 'Cas')
         {
@@ -979,7 +985,12 @@ function Test-TargetResource
     if ($state.SiteType -eq 'Primary')
     {
         $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
-            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert')
+            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','WakeOnLanTransmissionMethodType',
+            'RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
+            'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec',
+            'ThreadNumberOfSendingWakeupPacket','SendingWakeupPacketTransmissionOffsetMins','ClientCertificateCustomStoreName',
+            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType',
+            'ClientCertificateSelectionCriteriaValue')
 
         if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
             $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
@@ -1014,6 +1025,7 @@ function Test-TargetResource
                 }
             }
         }
+        #Other Warns Here.
     }
     elseif ($state.SiteType -eq 'Cas')
     {
