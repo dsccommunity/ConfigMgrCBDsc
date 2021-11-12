@@ -8,4 +8,8 @@ ConvertFrom-StringData @'
     AlertErrorMsg        = FreeSpaceThresholdCritical is greater than or equal to FreeSpaceThresholdWarning.  Warning should be greater than Critical.
     TestState            = Test-TargetResource compliance check returned: {0}.
     SettingValue         = Setting value: {0} to {1}.
+    WakeFalse            = When EnableWakeOnLan is disabled the {0} parameter will be ignored.
+    IgnoreCertValue      = When ClientCertificateSelectionCriteriaType is set to ClientAuthentication, the ClientCertificateSelectionCriteriaValue is ignored.
+    MissingCertValue     = When ClientCertificateSelectionCriteriaType is specified as {0}, ClientCertificateSelectionCriteriaValue is required.
+    MissingCertType      = When ClientCertificateSelectionCriteriaValue is specified, ClientCertificateSelectionCriteriaType is required.
 '@

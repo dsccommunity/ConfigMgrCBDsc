@@ -593,12 +593,8 @@ function Set-TargetResource
         if ($state.SiteType -eq 'Primary')
         {
             $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
-            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','WakeOnLanTransmissionMethodType',
-            'RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
-            'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec',
-            'ThreadNumberOfSendingWakeupPacket','SendingWakeupPacketTransmissionOffsetMins','ClientCertificateCustomStoreName',
-            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType',
-            'ClientCertificateSelectionCriteriaValue')
+            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName',
+            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType')
 
             if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
                 $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
@@ -631,7 +627,52 @@ function Set-TargetResource
                     }
                 }
             }
-            #Other Throws/Warns Here
+
+            $wolParams = @('WakeOnLanTransmissionMethodType','RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
+            'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec','ThreadNumberOfSendingWakeupPacket',
+            'SendingWakeupPacketTransmissionOffsetMins')
+
+            foreach ($param in $wolParams)
+            {
+                if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan')))
+                    -and ($PSBoundParameters.ContainsKey($prarm)))
+                {
+                    Write-Warning -Message ($script:localizedData.WakeFalse -f $param)
+                }
+                else
+                {
+                    $defaultValues += $param
+                }
+            }
+
+            if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaType')
+            {
+                if ($ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                {
+                    if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
+                    {
+                        Write-Warning -Message $script:localizedData.IgnoreCertValue
+                    }
+                }
+                else
+                {
+                    if (-not $PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
+                    {
+                        throw ($script:localizedData.MissingCertValue -f $ClientCertificateSelectionCriteriaType)
+                        $badInput = $true
+                    }
+                    else
+                    {
+                        $defaultValues += @('ClientCertificateSelectionCriteriaValue')
+                    }
+                }
+            }
+            elseif ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue')
+            {
+                throw $script:localizedData.MissingCertType
+                $badInput = $true
+            }
+            # Other Warns Here
         }
         elseif ($state.SiteType -eq 'Cas')
         {
@@ -985,12 +1026,8 @@ function Test-TargetResource
     if ($state.SiteType -eq 'Primary')
     {
         $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
-            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','WakeOnLanTransmissionMethodType',
-            'RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
-            'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec',
-            'ThreadNumberOfSendingWakeupPacket','SendingWakeupPacketTransmissionOffsetMins','ClientCertificateCustomStoreName',
-            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType',
-            'ClientCertificateSelectionCriteriaValue')
+            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName',
+            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType')
 
         if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
             $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
@@ -1025,7 +1062,52 @@ function Test-TargetResource
                 }
             }
         }
-        #Other Warns Here.
+
+        $wolParams = @('WakeOnLanTransmissionMethodType','RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
+        'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec','ThreadNumberOfSendingWakeupPacket',
+        'SendingWakeupPacketTransmissionOffsetMins')
+
+        foreach ($param in $wolParams)
+        {
+            if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan')))
+                -and ($PSBoundParameters.ContainsKey($prarm)))
+            {
+                Write-Warning -Message ($script:localizedData.WakeFalse -f $param)
+            }
+            else
+            {
+                $defaultValues += $param
+            }
+        }
+
+        if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaType')
+        {
+            if ($ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+            {
+                if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
+                {
+                    Write-Warning -Message $script:localizedData.IgnoreCertValue
+                }
+            }
+            else
+            {
+                if (-not $PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
+                {
+                    Write-Warning -Message ($script:localizedData.MissingCertValue -f $ClientCertificateSelectionCriteriaType)
+                    $badInput = $true
+                }
+                else
+                {
+                    $defaultValues += @('ClientCertificateSelectionCriteriaValue')
+                }
+            }
+        }
+        elseif ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue')
+        {
+            Write-Warning -Message $script:localizedData.MissingCertType
+            $badInput = $true
+        }
+        # Other Warns Here
     }
     elseif ($state.SiteType -eq 'Cas')
     {
