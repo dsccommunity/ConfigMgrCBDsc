@@ -10,7 +10,7 @@ Configuration Example
     {
         CMSiteConfiguration ExampleConfig
         {
-            SiteCode                                          = 'Lab'
+            SiteCode                                          = 'PRI'
             Comment                                           = 'Lab Site Primary'
             MaximumConcurrentSendingForAllSite                = 5
             MaximumConcurrentSendingForPerSite                = 3
@@ -29,6 +29,17 @@ Configuration Example
             RequireSha256                                     = $true
             RequireSigning                                    = $true
             UseEncryption                                     = $true
+            EnableWakeOnLan                                   = $true
+            WakeOnLanTransmissionMethodType                   = 'Unicast'
+            RetryNumberOfSendingWakeupPacketTransmission      = 3
+            SendingWakeupPacketTransmissionDelayMins          = 1
+            MaximumNumberOfSendingWakeupPacketBeforePausing   = 10
+            SendingWakeupPacketBeforePausingWaitSec           = 10000
+            ThreadNumberOfSendingWakeupPacket                 = 3
+            SendingWakeupPacketTransmissionOffsetMins         = 0
+            ClientCertificateCustomStoreName                  = 'Personal'
+            TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
+            ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
         }
     }
 }

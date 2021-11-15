@@ -12,4 +12,5 @@ ConvertFrom-StringData @'
     IgnoreCertValue      = When ClientCertificateSelectionCriteriaType is set to ClientAuthentication, the ClientCertificateSelectionCriteriaValue is ignored.
     MissingCertValue     = When ClientCertificateSelectionCriteriaType is specified as {0}, ClientCertificateSelectionCriteriaValue is required.
     MissingCertType      = When ClientCertificateSelectionCriteriaValue is specified, ClientCertificateSelectionCriteriaType is required.
+    NullCertStore        = ClientCertificateCustomStoreName cannot be specified as empty. The default value of Personal will be used.
 '@

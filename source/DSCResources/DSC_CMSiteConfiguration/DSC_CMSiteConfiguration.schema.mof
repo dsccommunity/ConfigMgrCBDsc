@@ -3,7 +3,7 @@ class DSC_CMSiteConfiguration: OMI_BaseResource
 {
     [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
     [Write, Description("Specifies the site comment.")] String Comment;
-    [Write, Description("Specifies the communication method for the site systems that use IIS. To use HTTPS, the servers need a valid PKI web server certificate for server authentication."), ValueMap{"HttpsOnly","Offline"}, Values{"HttpsOnly","Offline"}] String ClientComputerCommunicationType;
+    [Write, Description("Specifies the communication method for the site systems that use IIS. To use HTTPS, the servers need a valid PKI web server certificate for server authentication."), ValueMap{"HttpsOnly","HttpsOrHttp"}, Values{"HttpsOnly","HttpsOrHttp"}] String ClientComputerCommunicationType;
     [Write, Description("Indicates whether clients check the Certificate Revocation List (CRL) for site systems.")] Boolean ClientCheckCertificateRevocationListForSiteSystem;
     [Write, Description("Indicates whether to use a PKI client certificate for client authentication when available.")] Boolean UsePkiClientCertificate;
     [Write, Description("Use this parameter to enable or disable the site property to Use Configuration Manager-generated certificates for HTTP site systems.")] Boolean UseSmsGeneratedCert;

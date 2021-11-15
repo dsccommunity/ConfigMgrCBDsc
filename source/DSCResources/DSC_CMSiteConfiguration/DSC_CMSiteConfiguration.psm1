@@ -166,8 +166,8 @@ function Get-TargetResource
         $sType = 'Primary'
 
         # Alerts
-        $dbAlert = (Get-CMAlert | Where-Object -FilterScript {$_.Name -eq '$DatabaseFreeSpaceWarningName'}).PropertyList.ParameterValues[-1]
-        if ($dbAlert -ne '>')
+        $dbAlert = (Get-CMAlert | Where-Object -FilterScript {$_.Name -eq '$DatabaseFreeSpaceWarningName'}).PropertyList.ParameterValues
+        if ($dbAlert)
         {
             $dbAlertXml = [xml]$dbAlert
             $freeSpaceAlert = $true
@@ -374,22 +374,6 @@ function Get-TargetResource
 
     .PARAMETER ClientCertificateSelectionCriteriaValue
         Specifies a value for the ClientCertificateSelectionCriteriaType parameter.
-
-    <#
-    EnableWakeOnLan                                   = $wolEnabled #bool (pri only)
-    WakeOnLanTransmissionMethodType                   = $sendMode #validate Unicast, SubnetDirectedBroadcasts (pri only)
-    RetryNumberOfSendingWakeupPacketTransmission      = $sendRetryMax #1 to 5 (pri only)
-    SendingWakeupPacketTransmissionDelayMins          = $sendRetryInterval #1 to 5 (pri only)
-    MaximumNumberOfSendingWakeupPacketBeforePausing   = $sendThrottleMax #1000 to 300000 (pri only)
-    SendingWakeupPacketBeforePausingWaitSec           = $sendThrottleInterval #0 to 100 (pri only)
-    ThreadNumberOfSendingWakeupPacket                 = $maxThreads #1 to 9 (pri only)
-    SendingWakeupPacketTransmissionOffsetMins         = $scheduleOffset #0 to 60 (pri only)
-
-    ClientCertificateCustomStoreName                  = $customStore # string (pri only)
-    TakeActionForMultipleCertificateMatchCriteria     = $certSel #validate 'FailSelectionAndSendErrorMessage','SelectCertificateWithLongestValidityPeriod' (pri only)
-    ClientCertificateSelectionCriteriaType            = $criteriaType #validate 'ClientAuthentication','CertificateSubjectContainsString','CertificateSubjectOrSanIncludesAttributes' (pri only)
-    ClientCertificateSelectionCriteriaValue           = $criteriaValue # string (pri only)
-    #>
 #>
 function Set-TargetResource
 {
@@ -634,8 +618,8 @@ function Set-TargetResource
 
             foreach ($param in $wolParams)
             {
-                if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan')))
-                    -and ($PSBoundParameters.ContainsKey($prarm)))
+                if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan'))) -and
+                    ($PSBoundParameters.ContainsKey($prarm)))
                 {
                     Write-Warning -Message ($script:localizedData.WakeFalse -f $param)
                 }
@@ -645,7 +629,7 @@ function Set-TargetResource
                 }
             }
 
-            if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaType')
+            if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaType'))
             {
                 if ($ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
                 {
@@ -667,12 +651,16 @@ function Set-TargetResource
                     }
                 }
             }
-            elseif ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue')
+            elseif ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
             {
                 throw $script:localizedData.MissingCertType
                 $badInput = $true
             }
-            # Other Warns Here
+            if ($PSBoundParameters.ContainsKey('ClientCertificateCustomStoreName') -and [string]::IsNullOrEmpty($ClientCertificateCustomStoreName))
+            {
+                $PSBoundParameters.ClientCertificateCustomStoreName = 'Personal'
+                Write-Warning -Message $script:localizedData.NullCertStore
+            }
         }
         elseif ($state.SiteType -eq 'Cas')
         {
@@ -1069,8 +1057,8 @@ function Test-TargetResource
 
         foreach ($param in $wolParams)
         {
-            if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan')))
-                -and ($PSBoundParameters.ContainsKey($prarm)))
+            if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan'))) -and
+                ($PSBoundParameters.ContainsKey($prarm)))
             {
                 Write-Warning -Message ($script:localizedData.WakeFalse -f $param)
             }
@@ -1080,7 +1068,7 @@ function Test-TargetResource
             }
         }
 
-        if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaType')
+        if ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaType'))
         {
             if ($ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
             {
@@ -1102,12 +1090,16 @@ function Test-TargetResource
                 }
             }
         }
-        elseif ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue')
+        elseif ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
         {
             Write-Warning -Message $script:localizedData.MissingCertType
             $badInput = $true
         }
-        # Other Warns Here
+        if ($PSBoundParameters.ContainsKey('ClientCertificateCustomStoreName') -and [string]::IsNullOrEmpty($ClientCertificateCustomStoreName))
+        {
+            $PSBoundParameters.ClientCertificateCustomStoreName = 'Personal'
+            Write-Warning -Message $script:localizedData.NullCertStore
+        }
     }
     elseif ($state.SiteType -eq 'Cas')
     {
