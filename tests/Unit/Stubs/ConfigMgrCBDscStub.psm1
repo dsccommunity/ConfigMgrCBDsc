@@ -35811,6 +35811,9 @@ function Set-CMClientSettingClientPolicy
         [bool]
         ${EnableUserPolicyOnInternet},
 
+        [bool]
+        ${EnableUserPolicyOnTS},
+
         [Parameter(ParameterSetName='SetDefaultSetting', Mandatory=$true)]
         [switch]
         ${DefaultSetting},
@@ -35888,7 +35891,6 @@ function Set-CMClientSettingComplianceSetting
     (
         [Parameter(ParameterSetName='SetDefaultSetting')]
         [Alias('EvaluationSchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -36288,7 +36290,6 @@ function Set-CMClientSettingHardwareInventory
         ${Enable},
 
         [Alias('InventorySchedule','HardwareInventorySchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -36401,6 +36402,9 @@ function Set-CMClientSettingPowerManagement
 
         [bool]
         ${EnableWakeupProxy},
+
+        [string]
+        ${NetworkWakeupOption},
 
         [ValidateRange(1, 65535)]
         [int]
@@ -36545,7 +36549,7 @@ function Set-CMClientSettingSoftwareCenter
         [string]
         ${CompanyName},
 
-        [System.Drawing.Color]
+        [string]
         ${ColorScheme},
 
         [string]
@@ -36619,7 +36623,6 @@ function Set-CMClientSettingSoftwareDeployment
     param
     (
         [Alias('EvaluationSchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -36661,7 +36664,6 @@ function Set-CMClientSettingSoftwareInventory
         ${Enable},
 
         [Alias('InventorySchedule','SoftwareInventorySchedule')]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${Schedule},
 
@@ -36798,12 +36800,10 @@ function Set-CMClientSettingSoftwareUpdate
         ${Enable},
 
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${ScanSchedule},
 
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_ScheduleToken')]
         [System.Object]
         ${DeploymentEvaluationSchedule},
 
@@ -36815,6 +36815,15 @@ function Set-CMClientSettingSoftwareUpdate
 
         [System.Nullable[bool]]
         ${Office365ManagementType},
+
+        [System.Nullable[bool]]
+        ${EnableDeltaDownload},
+
+        [int]
+        ${DeltaDownloadPort},
+
+        [System.Nullable[bool]]
+        ${EnableThirdPartyUpdates},
 
         [Parameter(ParameterSetName='SetDefaultSetting', Mandatory=$true)]
         [switch]

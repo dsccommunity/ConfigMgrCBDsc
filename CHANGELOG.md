@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added CMEmailNotificationComponent
 - Added CMGroupDiscovery Resource
 - Added CMSoftwareUpdatePointComponent resource
+- Added CMClientSettings resource
+- Added CMClientSettingsBits resource
+- Added CMClientSettingsClientCache resource
+- Added CMClientSettingsClientPolicy resource
+- Added CMClientSettingsCloudService resource
+- Added CMClientSettingsCompliance resource
+- Added CMClientSettingsComputerAgent resource
+- Added CMClientSettingsDelivery resource
+- Added CMClientSettingsHardware resource
+- Added CMClientSettingsMetered resource
+- Added CMClientSettingsPower resource
+- Added CMClientSettingsRemoteTools resource
+- Added CMClientSettingsSoftwareCenter resource
+- Added CMClientSettingsSoftwareDeployment resource
+- Added CMClientSettingsSoftwareInventory resource
+- Added CMClientSettingsSoftwareMetering resource
+- Added CMClientSettingsSoftwareUpdate resource
+- Added CMClientSettingsStateMessaging resource
+- Added CMClientSettingsUserDeviceAffinity resource
 
 ### Fixed
 
@@ -20,6 +39,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Added support for VPN and IPv6Prefix boundaries to the CMBoundaries resource.
+- Updated module versions for SqlServerDsc, NetworkingDsc, ComputerManagementDsc
+- Removed firewall configurations from the xSccmPreReqs resource. See
+    (Source\Examples\PrimaryInstall.ps1) for an example of firewall configurations.
+
+### Removed
+
+- Removed xSccmSql resource in favor of using the SQLSetup resource. See
+    (Source\Examples\PrimaryInstall.ps1) for an example of a SQL install configuration.
 
 ## [1.0.2] - 2021-05-12
 

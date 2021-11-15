@@ -1,0 +1,17 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsClientCache")]
+class DSC_CMClientSettingsClientCache : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies if configure branch cache policy is enabled or disabled.")] Boolean ConfigureBranchCache;
+    [Write, Description("Specifies if branch cache is enabled or disabled.")] Boolean EnableBranchCache;
+    [Write, Description("Specifies the percentage of disk size maximum branch cache size.")] UInt32 MaxBranchCacheSizePercent;
+    [Write, Description("Specifies if client cache size is enabled or disabled.")] Boolean ConfigureCacheSize;
+    [Write, Description("Specifies the maximum cache size by MB.")] UInt32 MaxCacheSize;
+    [Write, Description("Specifies the maximum cache size percentage.")] UInt32 MaxCacheSizePercent;
+    [Write, Description("Specifies is peer cache source is enabled or disabled.")] Boolean EnableSuperPeer;
+    [Write, Description("Specifies the port for initial network broadcast.")] UInt32 BroadcastPort;
+    [Write, Description("Specifies the port for content download from peers.")] UInt32 DownloadPort;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+};
