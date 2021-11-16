@@ -19,8 +19,6 @@ Configuration Example
             ThresholdOfSelectCollectionByDefault     = 100
             ThresholdOfSelectCollectionMax           = 0
             SiteSystemCollectionBehavior             = 'Block'
-            ClientComputerCommunicationType          = 'HttpsOrHttp'
-            UseSmsGeneratedCert                      = $true
         }
     }
 }

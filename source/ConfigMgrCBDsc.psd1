@@ -44,7 +44,6 @@
     DscResourcesToExport = @(
         'CMAccounts'
         'SccmIniFile'
-        'XSccmInstall'
         'xSccmPreReqs'
         'xSccmSqlSetup'
         'CMIniFile'
@@ -115,10 +114,10 @@
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','SCCMPreReqs',
-            'SccmSqlSetup','SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups',
-            'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
-            'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint',
-            'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
+            'SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups','ManagementPoint',
+            'AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery','ServiceConnectionPoint',
+            'NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint','SiteMaintenance',
+            'AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
             'DistributionPointGroupMembers','SecurityScopes','UserDiscovery','SecurityRoles','ClientPushSettings','SoftwareDistributionComponent',
             'MaintenanceWindows','FileReplication','EmailNotificationComponent','CMGroupDiscovery','SoftwareUpdatePointComponent','ClientSettings',
             'ClientSettingsBits','ClientSettingsClientCache','ClientSettingsClientPolicy','ClientSettingsCompliance','ClientSettingsComputerAgent',

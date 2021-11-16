@@ -33,8 +33,8 @@ Configuration Example
             WakeOnLanTransmissionMethodType                   = 'Unicast'
             RetryNumberOfSendingWakeupPacketTransmission      = 3
             SendingWakeupPacketTransmissionDelayMins          = 1
-            MaximumNumberOfSendingWakeupPacketBeforePausing   = 10
-            SendingWakeupPacketBeforePausingWaitSec           = 10000
+            MaximumNumberOfSendingWakeupPacketBeforePausing   = 10000
+            SendingWakeupPacketBeforePausingWaitSec           = 10
             ThreadNumberOfSendingWakeupPacket                 = 3
             SendingWakeupPacketTransmissionOffsetMins         = 0
             ClientCertificateCustomStoreName                  = 'Personal'

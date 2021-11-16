@@ -280,26 +280,40 @@ function Get-TargetResource
         Specifies the communication method for the site systems that use IIS. To use HTTPS,
         the servers need a valid PKI web server certificate for server authentication.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER ClientCheckCertificateRevocationListForSiteSystem
         Indicates whether clients check the Certificate Revocation List (CRL) for site systems.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER UsePkiClientCertificate
         Indicates whether to use a PKI client certificate for client authentication when available.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER UseSmsGeneratedCert
         Use this parameter to enable or disable the site property to Use Configuration Manager-generated
         certificates for HTTP site systems.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER RequireSigning
         This option requires that clients sign data when they send to management points.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER RequireSha256
         Specifies if the clients sign data and communicate with site systems by using HTTP, this option requires the
         clients to use SHA-256 to sign the data. This option applies to clients that don't use PKI certificates.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER UseEncryption
         Specifies to use 3DES to encrypt the client inventory data and state messages that are sent to the
         management point.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER MaximumConcurrentSendingForAllSite
         Specifies the maximum number of simultaneous communications to all sites.
@@ -316,13 +330,19 @@ function Get-TargetResource
     .PARAMETER EnableLowFreeSpaceAlert
         Specifies if an alert is created when the free disk space on the site database server is low.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER FreeSpaceThresholdWarningGB
         Specifies disk space warning alert when the free disk space on the
         site database server falls below the specified threshold.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER FreeSpaceThresholdCriticalGB
         Specifies disk space critical alert when the free disk space on the
         site database server falls below the specified threshold.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ThresholdOfSelectCollectionByDefault
         Specifies select collection window hides collections with membership that
@@ -333,47 +353,71 @@ function Get-TargetResource
         than this maximum value.
 
     .PARAMETER SiteSystemCollectionBehavior
-        Specify the behavior to take when the selected collection includes computers that
+        Specifies the behavior to take when the selected collection includes computers that
         host site systems roles.
 
     .PARAMETER EnableWakeOnLan
         Indicates whether to send Wake On LAN packets for scheduled activities such as deployments
         of software updates.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER WakeOnLanTransmissionMethodType
         Specifies the type of transmission method to use for Wake On LAN transmissions.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER RetryNumberOfSendingWakeupPacketTransmission
         Specifies the number of times a wake up packet is sent to a target computer.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER SendingWakeupPacketTransmissionDelayMins
         Specifies the number of minutes to delay between wake up retries.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER MaximumNumberOfSendingWakeupPacketBeforePausing
         Specifies the maximum number of wake up packets transmitted by this site server before pausing.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER SendingWakeupPacketBeforePausingWaitSec
         Specifies the number of seconds to wait between sending wake up packets to a target computer.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ThreadNumberOfSendingWakeupPacket
         Specifies the number of threads to use when sending wake up packets.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER SendingWakeupPacketTransmissionOffsetMins
         Specifies when wake up packets should be sent prior to a scheduled activity.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ClientCertificateCustomStoreName
         Specifies the store name where the client certificate is located in the Computer store when
         you don't use the default store of Personal.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER TakeActionForMultipleCertificateMatchCriteria
         Specifies the action to take if multiple certificates match criteria.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ClientCertificateSelectionCriteriaType
         Specifies the criteria type to match in a client certificate when more than one
         certificate is available.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER ClientCertificateSelectionCriteriaValue
         Specifies a value for the ClientCertificateSelectionCriteriaType parameter.
+
+        This parameter is only valid on a Primary Site.
 #>
 function Set-TargetResource
 {
@@ -531,22 +575,10 @@ function Set-TargetResource
     try
     {
         $defaultValues = @(
-            'SiteCode','Comment','ClientComputerCommunicationType','MaximumConcurrentSendingForAllSite',
-            'MaximumConcurrentSendingForPerSite','RetryNumberForConcurrentSending',
-            'ConcurrentSendingDelayBeforeRetryingMins','ThresholdOfSelectCollectionByDefault',
+            'SiteCode','Comment','MaximumConcurrentSendingForAllSite','MaximumConcurrentSendingForPerSite',
+            'RetryNumberForConcurrentSending','ConcurrentSendingDelayBeforeRetryingMins','ThresholdOfSelectCollectionByDefault',
             'ThresholdOfSelectCollectionMax','SiteSystemCollectionBehavior'
         )
-
-        if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
-            (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
-            ([string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $state.ClientComputerCommunicationType -eq 'HttpsOnly'))
-        {
-            Write-Warning -Message $script:localizedData.IgnoreSMSCert
-        }
-        else
-        {
-            $defaultValues += @('UseSmsGeneratedCert')
-        }
 
         if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionByDefault') -or $PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionMax'))
         {
@@ -578,7 +610,18 @@ function Set-TargetResource
         {
             $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
             'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName',
-            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType')
+            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType','ClientComputerCommunicationType')
+
+            if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
+                (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
+                ([string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $state.ClientComputerCommunicationType -eq 'HttpsOnly'))
+            {
+                Write-Warning -Message $script:localizedData.IgnoreSMSCert
+            }
+            else
+            {
+                $defaultValues += @('UseSmsGeneratedCert')
+            }
 
             if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
                 $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
@@ -666,7 +709,7 @@ function Set-TargetResource
         {
             foreach ($param in $PSBoundParameters.GetEnumerator())
             {
-                if ($defaultValues -notcontains $param.Key)
+                if (($defaultValues -notcontains $param.Key) -and ($param.Key -ne 'verbose'))
                 {
                     Write-Warning -Message ($script:localizedData.IgnorePrimarySetting -f $param.Key)
                 }
@@ -704,7 +747,7 @@ function Set-TargetResource
 
 <#
     .SYNOPSIS
-        This will test the desired state.
+        This will set the desired state.
 
     .PARAMETER SiteCode
         Specifies a site code for the Configuration Manager site.
@@ -716,26 +759,40 @@ function Set-TargetResource
         Specifies the communication method for the site systems that use IIS. To use HTTPS,
         the servers need a valid PKI web server certificate for server authentication.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER ClientCheckCertificateRevocationListForSiteSystem
         Indicates whether clients check the Certificate Revocation List (CRL) for site systems.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER UsePkiClientCertificate
         Indicates whether to use a PKI client certificate for client authentication when available.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER UseSmsGeneratedCert
         Use this parameter to enable or disable the site property to Use Configuration Manager-generated
         certificates for HTTP site systems.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER RequireSigning
         This option requires that clients sign data when they send to management points.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER RequireSha256
         Specifies if the clients sign data and communicate with site systems by using HTTP, this option requires the
         clients to use SHA-256 to sign the data. This option applies to clients that don't use PKI certificates.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER UseEncryption
         Specifies to use 3DES to encrypt the client inventory data and state messages that are sent to the
         management point.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER MaximumConcurrentSendingForAllSite
         Specifies the maximum number of simultaneous communications to all sites.
@@ -752,13 +809,19 @@ function Set-TargetResource
     .PARAMETER EnableLowFreeSpaceAlert
         Specifies if an alert is created when the free disk space on the site database server is low.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER FreeSpaceThresholdWarningGB
         Specifies disk space warning alert when the free disk space on the
         site database server falls below the specified threshold.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER FreeSpaceThresholdCriticalGB
         Specifies disk space critical alert when the free disk space on the
         site database server falls below the specified threshold.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ThresholdOfSelectCollectionByDefault
         Specifies select collection window hides collections with membership that
@@ -769,47 +832,71 @@ function Set-TargetResource
         than this maximum value.
 
     .PARAMETER SiteSystemCollectionBehavior
-        Specify the behavior to take when the selected collection includes computers that
+        Specifies the behavior to take when the selected collection includes computers that
         host site systems roles.
 
     .PARAMETER EnableWakeOnLan
         Indicates whether to send Wake On LAN packets for scheduled activities such as deployments
         of software updates.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER WakeOnLanTransmissionMethodType
         Specifies the type of transmission method to use for Wake On LAN transmissions.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER RetryNumberOfSendingWakeupPacketTransmission
         Specifies the number of times a wake up packet is sent to a target computer.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER SendingWakeupPacketTransmissionDelayMins
         Specifies the number of minutes to delay between wake up retries.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER MaximumNumberOfSendingWakeupPacketBeforePausing
         Specifies the maximum number of wake up packets transmitted by this site server before pausing.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER SendingWakeupPacketBeforePausingWaitSec
         Specifies the number of seconds to wait between sending wake up packets to a target computer.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ThreadNumberOfSendingWakeupPacket
         Specifies the number of threads to use when sending wake up packets.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER SendingWakeupPacketTransmissionOffsetMins
         Specifies when wake up packets should be sent prior to a scheduled activity.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ClientCertificateCustomStoreName
         Specifies the store name where the client certificate is located in the Computer store when
         you don't use the default store of Personal.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER TakeActionForMultipleCertificateMatchCriteria
         Specifies the action to take if multiple certificates match criteria.
+
+        This parameter is only valid on a Primary Site.
 
     .PARAMETER ClientCertificateSelectionCriteriaType
         Specifies the criteria type to match in a client certificate when more than one
         certificate is available.
 
+        This parameter is only valid on a Primary Site.
+
     .PARAMETER ClientCertificateSelectionCriteriaValue
         Specifies a value for the ClientCertificateSelectionCriteriaType parameter.
+
+        This parameter is only valid on a Primary Site.
 #>
 function Test-TargetResource
 {
@@ -968,22 +1055,10 @@ function Test-TargetResource
     $badInput = $false
 
     $defaultValues = @(
-        'SiteCode','Comment','ClientComputerCommunicationType','MaximumConcurrentSendingForAllSite',
-        'MaximumConcurrentSendingForPerSite','RetryNumberForConcurrentSending',
-        'ConcurrentSendingDelayBeforeRetryingMins','ThresholdOfSelectCollectionByDefault',
+        'SiteCode','Comment','MaximumConcurrentSendingForAllSite','MaximumConcurrentSendingForPerSite',
+        'RetryNumberForConcurrentSending','ConcurrentSendingDelayBeforeRetryingMins','ThresholdOfSelectCollectionByDefault',
         'ThresholdOfSelectCollectionMax','SiteSystemCollectionBehavior'
     )
-
-    if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
-        (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
-        ([string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $state.ClientComputerCommunicationType -eq 'HttpsOnly'))
-    {
-        Write-Warning -Message $script:localizedData.IgnoreSMSCert
-    }
-    else
-    {
-        $defaultValues += @('UseSmsGeneratedCert')
-    }
 
     if ($PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionByDefault') -or $PSBoundParameters.ContainsKey('ThresholdOfSelectCollectionMax'))
     {
@@ -1015,7 +1090,18 @@ function Test-TargetResource
     {
         $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
             'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName',
-            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType')
+            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType','ClientComputerCommunicationType')
+
+        if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
+            (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
+            ([string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $state.ClientComputerCommunicationType -eq 'HttpsOnly'))
+        {
+            Write-Warning -Message $script:localizedData.IgnoreSMSCert
+        }
+        else
+        {
+            $defaultValues += @('UseSmsGeneratedCert')
+        }
 
         if ($PSBoundParameters.ContainsKey('EnableLowFreeSpaceAlert') -or $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
             $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
@@ -1025,7 +1111,7 @@ function Test-TargetResource
                 if (-not $PSBoundParameters.ContainsKey('FreeSpaceThresholdWarningGB') -or
                     -not $PSBoundParameters.ContainsKey('FreeSpaceThresholdCriticalGB'))
                 {
-                    Write-Warning -Message $script:localizedData.AlertErrorMsg
+                    Write-Warning -Message $script:localizedData.AlertMissing
                     $badInput = $true
                 }
                 else
@@ -1058,7 +1144,7 @@ function Test-TargetResource
         foreach ($param in $wolParams)
         {
             if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan'))) -and
-                ($PSBoundParameters.ContainsKey($prarm)))
+                ($PSBoundParameters.ContainsKey($param)))
             {
                 Write-Warning -Message ($script:localizedData.WakeFalse -f $param)
             }
@@ -1105,7 +1191,7 @@ function Test-TargetResource
     {
         foreach ($param in $PSBoundParameters.GetEnumerator())
         {
-            if ($defaultValues -notcontains $param.Key)
+            if (($defaultValues -notcontains $param.Key) -and ($param.Key -ne 'verbose'))
             {
                 Write-Warning -Message ($script:localizedData.IgnorePrimarySetting -f $param.Key)
             }

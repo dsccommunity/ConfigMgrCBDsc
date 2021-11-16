@@ -292,7 +292,7 @@ function Set-OutFile
 
     if ($ResourceName -eq 'CMPullDistributionPoint')
     {
-        $sourceDP = 'SourceDistirbutionPoint'
+        $sourceDP = 'SourceDistributionPoint'
 
         $tester += "`t`t$($sourceDP.PadRight($updatedCount)) = @(`r`n"
         foreach ($item in $cPush.SourceDistributionPoint)
@@ -4286,7 +4286,7 @@ Configuration ConfigureSccm
             foreach (`$pull in `$CMPullDistributionPoint)
             {
                 `$pullRankings = @()
-                foreach (`$value in `$pull.SourceDP)
+                foreach (`$value in `$pull.SourceDistributionPoint)
                 {
                     `$pullRankings += DSC_CMPullDistributionPointSourceDP
                     {
