@@ -152,6 +152,18 @@ try
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
                         }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = ''
+                        }
                     )
                 }
 
@@ -168,6 +180,18 @@ try
                         @{
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
+                        }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectStr:Test'
                         }
                     )
                 }
@@ -186,6 +210,18 @@ try
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
                         }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectAttr:Test'
+                        }
                     )
                 }
 
@@ -202,6 +238,18 @@ try
                         @{
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
+                        }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectAttr:Test'
                         }
                     )
                 }
@@ -220,6 +268,18 @@ try
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
                         }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectAttr:Test'
+                        }
                     )
                 }
 
@@ -236,6 +296,18 @@ try
                         @{
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
+                        }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectAttr:Test'
                         }
                     )
                 }
@@ -254,6 +326,18 @@ try
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
                         }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectAttr:Test'
+                        }
                     )
                 }
 
@@ -270,6 +354,18 @@ try
                         @{
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
+                        }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectAttr:Test'
                         }
                     )
                 }
@@ -288,6 +384,18 @@ try
                             PropertyName = 'Enforce Message Signing'
                             Value        = 1
                         }
+                        @{
+                            PropertyName = 'Certificate Store'
+                            Value1       = 'SMSStore'
+                        }
+                        @{
+                            PropertyName = 'Select First Certificate'
+                            Value        = 0
+                        }
+                        @{
+                            PropertyName = 'Certificate Selection Criteria'
+                            Value1       = 'SubjectAttr:Test'
+                        }
                     )
                 }
 
@@ -296,18 +404,8 @@ try
                         Name         = '$DatabaseFreeSpaceWarningName'
                         PropertyList = @{
                             ParameterValues = @(
-                                '<Parameters><Parameter index="1" isUserParameter="0" type="int"/><Parameter index="2" isUserParameter="0" type="int">33</Parameter><Parameter index="3" isUserParameter="1" type="int">10</Parameter><Parameter index="4" isUserParameter="1" type="int">5</Parameter></Parameters>'
                                 '<Parameters><Parameter index="1" isUserParameter="0" type="int"/><Parameter index="2" isUserParameter="0" type="int"/><Parameter index="3" isUserParameter="1" type="int">5</Parameter><Parameter index="4" isUserParameter="1" type="int">1</Parameter></Parameters>'
                             )
-                        }
-                    }
-                )
-
-                $getCMAlertDisabled = @(
-                    @{
-                        Name = '$DatabaseFreeSpaceWarningName'
-                        PropertyList = @{
-                            ParameterValues = '<Parameters><Parameter index="1" isUserParameter="0" type="int"/><Parameter index="2" isUserParameter="0" type="int">33</Parameter><Parameter index="3" isUserParameter="1" type="int">10</Parameter><Parameter index="4" isUserParameter="1" type="int">5</Parameter></Parameters>'
                         }
                     }
                 )
@@ -317,6 +415,81 @@ try
                         @{
                             PropertyName = 'Use Encryption'
                             Value        = 1
+                        }
+                    )
+                }
+
+                $wolDisabled = @{
+                    Flag  = 1
+                }
+
+                $wolUnicast = @{
+                    Flag  = 6
+                    Props = @(
+                        @{
+                            PropertyName = 'SendRetryMax'
+                            Value        = 3
+                        }
+                        @{
+                            PropertyName = 'SendRetryInterval'
+                            Value        = 60
+                        }
+                        @{
+                            PropertyName = 'SendThrottleMax'
+                            Value        = 10000
+                        }
+                        @{
+                            PropertyName = 'SendThrottleInterval'
+                            Value        = 10
+                        }
+                        @{
+                            PropertyName = 'MaxThreads'
+                            Value        = 3
+                        }
+                        @{
+                            PropertyName = 'SendMode'
+                            Value        = 1
+                        }
+                    )
+
+                }
+
+                $wolBroadcast = @{
+                    Flag  = 6
+                    Props = @(
+                        @{
+                            PropertyName = 'SendRetryMax'
+                            Value        = 3
+                        }
+                        @{
+                            PropertyName = 'SendRetryInterval'
+                            Value        = 60
+                        }
+                        @{
+                            PropertyName = 'SendThrottleMax'
+                            Value        = 10000
+                        }
+                        @{
+                            PropertyName = 'SendThrottleInterval'
+                            Value        = 10
+                        }
+                        @{
+                            PropertyName = 'MaxThreads'
+                            Value        = 3
+                        }
+                        @{
+                            PropertyName = 'SendMode'
+                            Value        = 2
+                        }
+                    )
+
+                }
+
+                $wolComponent = @{
+                    Props = @(
+                        @{
+                            PropertyName = 'ScheduleOffset'
+                            Value        = 600
                         }
                     )
                 }
@@ -359,9 +532,11 @@ try
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS Only and blocked Primary' {
-                    Mock -CommandName Get-CMAlert -MockWith { $getCMAlertDisabled }
+                    Mock -CommandName Get-CMAlert -MockWith { $null }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefBlockReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager31Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager31Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolDisabled } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $null } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -385,12 +560,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Block'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $false
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue $null
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue $null
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue $null
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue $null
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue $null
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue $null
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 0
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'ClientAuthentication'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue ''
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS Only with CRL and warn' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager63Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager63Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolBroadcast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -414,12 +603,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'SubnetDirectedBroadcasts'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectContainsString'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS\HTTP only' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager192Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager192Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolUnicast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -443,12 +646,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'Unicast'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS\HTTP and CRL' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager224Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager224Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolUnicast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -472,12 +689,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'Unicast'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS\HTTP and PKI' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager448Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager448Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolUnicast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -501,12 +732,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'Unicast'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS\HTTP and PKI and CRL' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager480Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager480Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolUnicast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -530,12 +775,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'Unicast'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS\HTTP and SCCM Cert' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager1216Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager1216Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolUnicast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -559,12 +818,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'Unicast'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS\HTTP and SCCM Cert and CRL' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager1248Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager1248Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolUnicast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -588,12 +861,26 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'Unicast'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
 
                 It 'Should return desired result when site configuration settings are HTTPS\HTTP and SCCM Cert and PKI and CRL' {
                     Mock -CommandName Get-CMAlert -MockWith { $getCMAlertEnabled }
                     Mock -CommandName Get-CMSiteDefinition -MockWith { $getSiteDefWarnReturn }
-                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager1504Return } -ParameterFilter {$ComponentName -match 'SMS_Site_Component_Manager'}
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $getSiteCompManager1504Return } -ParameterFilter { $ComponentName -match 'SMS_Site_Component_Manager' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolUnicast } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' }
+                    Mock -CommandName Get-CMSiteComponent -MockWith { $wolComponent } -ParameterFilter { $ComponentName -match 'SMS_WAKEONLAN_MANAGER' }
 
                     $result = Get-TargetResource @getInput
                     $result                                                   | Should -BeOfType System.Collections.HashTable
@@ -617,6 +904,18 @@ try
                     $result.ThresholdOfSelectCollectionMax                    | Should -Be -ExpectedValue 200
                     $result.SiteSystemCollectionBehavior                      | Should -Be -ExpectedValue 'Warn'
                     $result.SiteType                                          | Should -Be -ExpectedValue 'Primary'
+                    $result.EnableWakeOnLan                                   | Should -Be -ExpectedValue $true
+                    $result.WakeOnLanTransmissionMethodType                   | Should -Be -ExpectedValue 'Unicast'
+                    $result.RetryNumberOfSendingWakeupPacketTransmission      | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionDelayMins          | Should -Be -ExpectedValue 1
+                    $result.MaximumNumberOfSendingWakeupPacketBeforePausing   | Should -Be -ExpectedValue 10000
+                    $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
+                    $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
+                    $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
+                    $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
+                    $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
                 }
             }
         }
@@ -644,6 +943,18 @@ try
                     ThresholdOfSelectCollectionMax                    = 1000
                     SiteSystemCollectionBehavior                      = 'Warn'
                     SiteType                                          = 'Primary'
+                    EnableWakeOnLan                                   = $true
+                    WakeOnLanTransmissionMethodType                   = 'Unicast'
+                    RetryNumberOfSendingWakeupPacketTransmission      = 1
+                    SendingWakeupPacketTransmissionDelayMins          = 10000
+                    MaximumNumberOfSendingWakeupPacketBeforePausing   = 10
+                    SendingWakeupPacketBeforePausingWaitSec           = 3
+                    ThreadNumberOfSendingWakeupPacket                 = 10
+                    SendingWakeupPacketTransmissionOffsetMins         = 10
+                    ClientCertificateCustomStoreName                  = 'SMSStore'
+                    TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
+                    ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
+                    ClientCertificateSelectionCriteriaValue           = ''
                 }
 
                 Mock -CommandName Import-ConfigMgrPowerShellModule
@@ -695,11 +1006,10 @@ try
                         FreeSpaceThresholdCriticalGB = 10
                     }
 
-                    $inputSmsCertWithHttpsOnly = @{
-                        SiteCode                        = 'Lab'
-                        Comment                         = 'Site Lab'
-                        ClientComputerCommunicationType = 'HttpsOnly'
-                        UseSmsGeneratedCert             = $true
+                    $inputDefaultThresholdMismatch = @{
+                        SiteCode                             = 'Lab'
+                        Comment                              = 'Site Lab'
+                        ThresholdOfSelectCollectionByDefault = 101
                     }
 
                     $collectionDefault = @{
@@ -717,12 +1027,42 @@ try
                         FreeSpaceThresholdWarningGB  = 20
                         FreeSpaceThresholdCriticalGB = 10
                     }
+
+                    $ignoreSMSCert = @{
+                        SiteCode                        = 'Lab'
+                        UseSmsGeneratedCert             = $true
+                        ClientComputerCommunicationType = 'HttpsOnly'
+
+                    }
+
+                    $inputWakeFalse = @{
+                        SiteCode                                     = 'Lab'
+                        EnableWakeOnLan                              = $false
+                        RetryNumberOfSendingWakeupPacketTransmission = 3
+                    }
+
+                    $inputBadAuth = @{
+                        SiteCode                                = 'Lab'
+                        ClientCertificateSelectionCriteriaType  = 'ClientAuthentication'
+                        ClientCertificateSelectionCriteriaValue = 'Test'
+                    }
+
+                    $inputAuthString = @{
+                        SiteCode                                = 'Lab'
+                        ClientCertificateSelectionCriteriaType  = 'CertificateSubjectContainsString'
+                        ClientCertificateSelectionCriteriaValue = 'Test'
+                    }
+
+                    $inputNullCert = @{
+                        SiteCode                         = 'Lab'
+                        ClientCertificateCustomStoreName = ''
+                    }
                 }
 
                 It 'Should call expected commands for when changing settings for Primary' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
 
-                    Set-TargetResource @inputSmsCertWithHttpsOnly
+                    Set-TargetResource @inputDefaultThresholdMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -732,7 +1072,7 @@ try
                 It 'Should call expected commands for when changing settings for Cas' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnCas }
 
-                    Set-TargetResource @inputSmsCertWithHttpsOnly
+                    Set-TargetResource @inputDefaultThresholdMismatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -769,6 +1109,16 @@ try
                     Assert-MockCalled Set-CMSite -Exactly -Times 0 -Scope It
                 }
 
+                It 'Should call expected commands when specifying UseSmsGeneratedCert and setting ClientComputerCommunicationType to HttpsOnly' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    Set-TargetResource @ignoreSMSCert
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSite -Exactly -Times 1 -Scope It
+                }
+
                 It 'Should call expected commands for when changing settings for Cas and specifying Primary only settings' {
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnCas }
 
@@ -793,6 +1143,46 @@ try
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnCas }
 
                     Set-TargetResource @collectionMax
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSite -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands Wake On Lan false is specified along with additional Wake On Lan parameters' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    Set-TargetResource @inputWakeFalse
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSite -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when ClientCertificateSelectionCriteriaType is erroniously specified' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    Set-TargetResource @inputBadAuth
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSite -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when ClientCertificateSelectionCriteriaType is changed' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    Set-TargetResource @inputAuthString
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSite -Exactly -Times 1 -Scope It
+                }
+
+                It 'Should call expected commands when changing the certificate store with a null string input' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    Set-TargetResource @inputNullCert
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
@@ -823,9 +1213,21 @@ try
                         FreeSpaceThresholdCriticalGB = 10
                     }
 
-                    $collectionError = 'ThresholdOfSelectCollectionByDefault of: 9 must be greater than ThresholdOfSelectCollectionMax: 1.'
+                    $inputMissingValue = @{
+                        SiteCode                                = 'Lab'
+                        ClientCertificateSelectionCriteriaType  = 'CertificateSubjectContainsString'
+                    }
+
+                    $inputMissingType = @{
+                        SiteCode                                = 'Lab'
+                        ClientCertificateSelectionCriteriaValue = 'Test'
+                    }
+
+                    $collectionError = 'ThresholdOfSelectCollectionByDefault of: 9 must be less than ThresholdOfSelectCollectionMax: 1.'
                     $alertMissing = 'When setting EnableLowFreeSpaceAlert to true, FreeSpaceThreshold warning and critical must be specified.'
                     $alertErrorMsg = 'FreeSpaceThresholdCritical is greater than or equal to FreeSpaceThresholdWarning.  Warning should be greater than Critical.'
+                    $certValueError = 'When ClientCertificateSelectionCriteriaType is specified as CertificateSubjectContainsString, ClientCertificateSelectionCriteriaValue is required.'
+                    $missingCertType = 'When ClientCertificateSelectionCriteriaValue is specified, ClientCertificateSelectionCriteriaType is required.'
                 }
 
                 It 'Should call expected commands and throw when collection default is greater than collection max' {
@@ -857,6 +1259,26 @@ try
                     Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
                     Assert-MockCalled Set-CMSite -Exactly -Times 0 -Scope It
                 }
+
+                It 'Should call expected commands and throw when ClientCertificateSelectionCriteriaValue is required but omitted' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @inputMissingValue } | Should -Throw -ExpectedMessage $certValueError
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSite -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands and throw when ClientCertificateSelectionCriteriaType is required but omitted' {
+                    Mock -CommandName Get-TargetResource -MockWith { $getReturnAll }
+
+                    { Set-TargetResource @inputMissingType } | Should -Throw -ExpectedMessage $missingCertType
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-CMSite -Exactly -Times 0 -Scope It
+                }
             }
         }
 
@@ -883,6 +1305,18 @@ try
                     ThresholdOfSelectCollectionMax                    = 1000
                     SiteSystemCollectionBehavior                      = 'Warn'
                     SiteType                                          = 'Primary'
+                    EnableWakeOnLan                                   = $true
+                    WakeOnLanTransmissionMethodType                   = 'Unicast'
+                    RetryNumberOfSendingWakeupPacketTransmission      = 1
+                    SendingWakeupPacketTransmissionDelayMins          = 10000
+                    MaximumNumberOfSendingWakeupPacketBeforePausing   = 10
+                    SendingWakeupPacketBeforePausingWaitSec           = 3
+                    ThreadNumberOfSendingWakeupPacket                 = 10
+                    SendingWakeupPacketTransmissionOffsetMins         = 10
+                    ClientCertificateCustomStoreName                  = 'SMSStore'
+                    TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
+                    ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
+                    ClientCertificateSelectionCriteriaValue           = ''
                 }
 
                 $getReturnCas = @{
@@ -929,6 +1363,18 @@ try
                     ThresholdOfSelectCollectionMax                    = 1000
                     SiteSystemCollectionBehavior                      = 'Warn'
                     SiteType                                          = 'Primary'
+                    EnableWakeOnLan                                   = $true
+                    WakeOnLanTransmissionMethodType                   = 'Unicast'
+                    RetryNumberOfSendingWakeupPacketTransmission      = 1
+                    SendingWakeupPacketTransmissionDelayMins          = 10000
+                    MaximumNumberOfSendingWakeupPacketBeforePausing   = 10
+                    SendingWakeupPacketBeforePausingWaitSec           = 3
+                    ThreadNumberOfSendingWakeupPacket                 = 10
+                    SendingWakeupPacketTransmissionOffsetMins         = 10
+                    ClientCertificateCustomStoreName                  = 'SMSStore'
+                    TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
+                    ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
+                    ClientCertificateSelectionCriteriaValue           = ''
                 }
 
                 $inputMatch = @{
@@ -1011,6 +1457,39 @@ try
                     ThresholdOfSelectCollectionMax       = 1
                 }
 
+                $inputWakeFalse = @{
+                    SiteCode                                     = 'Lab'
+                    EnableWakeOnLan                              = $false
+                    RetryNumberOfSendingWakeupPacketTransmission = 3
+                }
+
+                $inputBadAuth = @{
+                    SiteCode                                = 'Lab'
+                    ClientCertificateSelectionCriteriaType  = 'ClientAuthentication'
+                    ClientCertificateSelectionCriteriaValue = 'Test'
+                }
+
+                $inputMissingValue = @{
+                    SiteCode                                = 'Lab'
+                    ClientCertificateSelectionCriteriaType  = 'CertificateSubjectContainsString'
+                }
+
+                $inputMissingType = @{
+                    SiteCode                                = 'Lab'
+                    ClientCertificateSelectionCriteriaValue = 'Test'
+                }
+
+                $inputAuthString = @{
+                    SiteCode                                = 'Lab'
+                    ClientCertificateSelectionCriteriaType  = 'CertificateSubjectContainsString'
+                    ClientCertificateSelectionCriteriaValue = 'Test'
+                }
+
+                $inputNullCert = @{
+                    SiteCode                         = 'Lab'
+                    ClientCertificateCustomStoreName = ''
+                }
+
                 Mock -CommandName Import-ConfigMgrPowerShellModule
                 Mock -CommandName Set-Location
             }
@@ -1063,6 +1542,36 @@ try
                 It 'Should return desired result false when specifying alert settings and settings alerts to disabled' {
 
                     Test-TargetResource @inputDisableAlertCrit | Should -Be $false
+                }
+
+                It 'Should return desired result false when WOL is specified false and warn for bad params' {
+
+                    Test-TargetResource @inputWakeFalse | Should -Be $false
+                }
+
+                It 'Should return desired result true fpr Cert Selection type and warn for bad params' {
+
+                    Test-TargetResource @inputBadAuth | Should -Be $true
+                }
+
+                It 'Should return desired result false when ClientCertificateSelectionCriteriaValue is missing' {
+
+                    Test-TargetResource @inputMissingValue | Should -Be $false
+                }
+
+                It 'Should return desired result false when ClientCertificateSelectionCriteriaType is missing' {
+
+                    Test-TargetResource @inputMissingType | Should -Be $false
+                }
+
+                It 'Should return desired result false when ClientCertificateSelectionCriteriaType is mismatched' {
+
+                    Test-TargetResource @inputAuthString | Should -Be $false
+                }
+
+                It 'Should return desired result false when Certificate Store mismatched and warn when null' {
+
+                    Test-TargetResource @inputNullCert | Should -Be $false
                 }
             }
 

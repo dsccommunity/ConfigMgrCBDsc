@@ -187,7 +187,7 @@ function Get-TargetResource
         [boolean]$threeDes = ($siteSecurity | Where-Object -FilterScript {$_.PropertyName -eq 'Use Encryption'}).Value
 
         # Wake On LAN
-        $wol = Get-CMSiteComponent -ComponentName 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' -sitecode $SiteCode
+        $wol = Get-CMSiteComponent -ComponentName 'SMS_WAKEONLAN_COMMUNICATION_MANAGER' -SiteCode $SiteCode
 
         if ($wol.Flag -eq 6)
         {
@@ -662,7 +662,7 @@ function Set-TargetResource
             foreach ($param in $wolParams)
             {
                 if (($EnableWakeOnLan -eq $false) -or ($State.EnableWakeOnLan -eq $false -and (-not $PSBoundParameters.ContainsKey('EnableWakeOnLan'))) -and
-                    ($PSBoundParameters.ContainsKey($prarm)))
+                    ($PSBoundParameters.ContainsKey($param)))
                 {
                     Write-Warning -Message ($script:localizedData.WakeFalse -f $param)
                 }
@@ -686,7 +686,6 @@ function Set-TargetResource
                     if (-not $PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
                     {
                         throw ($script:localizedData.MissingCertValue -f $ClientCertificateSelectionCriteriaType)
-                        $badInput = $true
                     }
                     else
                     {
@@ -697,8 +696,8 @@ function Set-TargetResource
             elseif ($PSBoundParameters.ContainsKey('ClientCertificateSelectionCriteriaValue'))
             {
                 throw $script:localizedData.MissingCertType
-                $badInput = $true
             }
+
             if ($PSBoundParameters.ContainsKey('ClientCertificateCustomStoreName') -and [string]::IsNullOrEmpty($ClientCertificateCustomStoreName))
             {
                 $PSBoundParameters.ClientCertificateCustomStoreName = 'Personal'
@@ -1181,6 +1180,7 @@ function Test-TargetResource
             Write-Warning -Message $script:localizedData.MissingCertType
             $badInput = $true
         }
+
         if ($PSBoundParameters.ContainsKey('ClientCertificateCustomStoreName') -and [string]::IsNullOrEmpty($ClientCertificateCustomStoreName))
         {
             $PSBoundParameters.ClientCertificateCustomStoreName = 'Personal'
