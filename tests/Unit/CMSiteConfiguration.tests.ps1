@@ -1316,7 +1316,7 @@ try
                     ClientCertificateCustomStoreName                  = 'SMSStore'
                     TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
                     ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
-                    ClientCertificateSelectionCriteriaValue           = ''
+                    ClientCertificateSelectionCriteriaValue           = 'Personal'
                 }
 
                 $getReturnCas = @{
@@ -1374,7 +1374,7 @@ try
                     ClientCertificateCustomStoreName                  = 'SMSStore'
                     TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
                     ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
-                    ClientCertificateSelectionCriteriaValue           = ''
+                    ClientCertificateSelectionCriteriaValue           = 'Personal'
                 }
 
                 $inputMatch = @{

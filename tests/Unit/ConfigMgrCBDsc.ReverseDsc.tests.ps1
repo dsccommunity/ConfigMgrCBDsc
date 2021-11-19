@@ -6118,7 +6118,42 @@ InModuleScope $script:subModuleName {
                 Include  = 'SiteConfiguration'
             }
 
-            $invokeSiteConfiguration = @{
+            $invokeSiteConfigurationPri = @{
+                SiteCode                                          = 'Lab'
+                Comment                                           = 'Site Lab'
+                ClientComputerCommunicationType                   = 'HttpsOrHttp'
+                ClientCheckCertificateRevocationListForSiteSystem = $true
+                UsePkiClientCertificate                           = $false
+                UseSmsGeneratedCert                               = $true
+                RequireSigning                                    = $true
+                RequireSha256                                     = $false
+                UseEncryption                                     = $false
+                MaximumConcurrentSendingForAllSite                = 6
+                MaximumConcurrentSendingForPerSite                = 3
+                RetryNumberForConcurrentSending                   = 2
+                ConcurrentSendingDelayBeforeRetryingMins          = 10
+                EnableLowFreeSpaceAlert                           = $true
+                FreeSpaceThresholdWarningGB                       = 10
+                FreeSpaceThresholdCriticalGB                      = 5
+                ThresholdOfSelectCollectionByDefault              = 100
+                ThresholdOfSelectCollectionMax                    = 1000
+                SiteSystemCollectionBehavior                      = 'Warn'
+                SiteType                                          = 'Primary'
+                EnableWakeOnLan                                   = $true
+                WakeOnLanTransmissionMethodType                   = 'Unicast'
+                RetryNumberOfSendingWakeupPacketTransmission      = 1
+                SendingWakeupPacketTransmissionDelayMins          = 10000
+                MaximumNumberOfSendingWakeupPacketBeforePausing   = 10
+                SendingWakeupPacketBeforePausingWaitSec           = 3
+                ThreadNumberOfSendingWakeupPacket                 = 10
+                SendingWakeupPacketTransmissionOffsetMins         = 10
+                ClientCertificateCustomStoreName                  = 'SMSStore'
+                TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
+                ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
+                ClientCertificateSelectionCriteriaValue           = 'Personal'
+            }
+
+            $invokeSiteConfigurationCas = @{
                 ConfigurationName                        = $null
                 DependsOn                                = $null
                 ModuleName                               = 'ConfigMgrCBDsc'
@@ -6234,7 +6269,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsUpdate } -ParameterFilter { $Name -eq 'CMClientSettingsSoftwareUpdate' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsStateMessaging } -ParameterFilter { $Name -eq 'CMClientSettingsStateMessaging' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsUserDeviceAffinity } -ParameterFilter { $Name -eq 'CMClientSettingsUserDeviceAffinity' }
-                Mock -CommandName Invoke-DscResource -MockWith { $invokeSiteConfiguration } -ParameterFilter { $Name -eq 'CMSiteConfiguration' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSiteConfigurationCas } -ParameterFilter { $Name -eq 'CMSiteConfiguration' }
 
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
@@ -6253,7 +6288,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSecurityScope -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSite -Exactly -Times 1 -Scope It
@@ -6649,6 +6684,40 @@ InModuleScope $script:subModuleName {
                 $result | Should -Match "CMSiteMaintenance"
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
+                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
+            }
+
+            It 'Should return expected results and call expected commands for Site Configuration Primary' {
+                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSiteConfigurationPri }
+                Mock -CommandName Get-CMSiteDefinition -MockWith { $getCMDefinitionPrimary }
+
+                $result = Set-ConfigMgrCBDscReverse @siteConfig
+                $result | Should -BeOfType System.String
+                $result | Should -Match "CMSiteConfiguration"
+                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
