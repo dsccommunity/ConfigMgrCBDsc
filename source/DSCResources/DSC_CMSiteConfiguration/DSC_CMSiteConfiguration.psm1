@@ -135,7 +135,16 @@ function Get-TargetResource
     {
         switch ($item.PropertyName)
         {
-            'Certificate Store'              { $customStore = $item.Value1 }
+            'Certificate Store'              { if ([string]::IsNullOrEmpty($item.Value1))
+                                               {
+                                                    $customStore = 'Personal'
+                                               }
+                                               else
+                                               {
+                                                    $customStore = $item.Value1
+                                               }
+                                             }
+
             'Select First Certificate'       { $certSel = @('FailSelectionAndSendErrorMessage','SelectCertificateWithLongestValidityPeriod')[($item.Value)] }
             'Certificate Selection Criteria' {
                                                 $criteria = $item.Value1

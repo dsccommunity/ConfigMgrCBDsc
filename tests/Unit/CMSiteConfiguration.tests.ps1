@@ -386,7 +386,7 @@ try
                         }
                         @{
                             PropertyName = 'Certificate Store'
-                            Value1       = 'SMSStore'
+                            Value1       = ''
                         }
                         @{
                             PropertyName = 'Select First Certificate'
@@ -912,7 +912,7 @@ try
                     $result.SendingWakeupPacketBeforePausingWaitSec           | Should -Be -ExpectedValue 10
                     $result.ThreadNumberOfSendingWakeupPacket                 | Should -Be -ExpectedValue 3
                     $result.SendingWakeupPacketTransmissionOffsetMins         | Should -Be -ExpectedValue 10
-                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'SMSStore'
+                    $result.ClientCertificateCustomStoreName                  | Should -Be -ExpectedValue 'Personal'
                     $result.TakeActionForMultipleCertificateMatchCriteria     | Should -Be -ExpectedValue 'FailSelectionAndSendErrorMessage'
                     $result.ClientCertificateSelectionCriteriaType            | Should -Be -ExpectedValue 'CertificateSubjectOrSanIncludesAtrributes'
                     $result.ClientCertificateSelectionCriteriaValue           | Should -Be -ExpectedValue 'Test'
