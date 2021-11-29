@@ -135,14 +135,15 @@ function Get-TargetResource
     {
         switch ($item.PropertyName)
         {
-            'Certificate Store'              { if ([string]::IsNullOrEmpty($item.Value1))
-                                               {
+            'Certificate Store'              {
+                                                if ([string]::IsNullOrEmpty($item.Value1))
+                                                {
                                                     $customStore = 'Personal'
-                                               }
-                                               else
-                                               {
+                                                }
+                                                else
+                                                {
                                                     $customStore = $item.Value1
-                                               }
+                                                }
                                              }
 
             'Select First Certificate'       { $certSel = @('FailSelectionAndSendErrorMessage','SelectCertificateWithLongestValidityPeriod')[($item.Value)] }
@@ -617,9 +618,11 @@ function Set-TargetResource
 
         if ($state.SiteType -eq 'Primary')
         {
-            $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
-            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName',
-            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType','ClientComputerCommunicationType')
+            $defaultValues += @(
+                'ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate','RequireSigning','UseEncryption',
+                'EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName','TakeActionForMultipleCertificateMatchCriteria',
+                'ClientCertificateSelectionCriteriaType','ClientComputerCommunicationType'
+            )
 
             if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
                 (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
@@ -664,9 +667,11 @@ function Set-TargetResource
                 }
             }
 
-            $wolParams = @('WakeOnLanTransmissionMethodType','RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
-            'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec','ThreadNumberOfSendingWakeupPacket',
-            'SendingWakeupPacketTransmissionOffsetMins')
+            $wolParams = @(
+                'WakeOnLanTransmissionMethodType','RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
+                'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec','ThreadNumberOfSendingWakeupPacket',
+                'SendingWakeupPacketTransmissionOffsetMins'
+            )
 
             foreach ($param in $wolParams)
             {
@@ -1096,9 +1101,11 @@ function Test-TargetResource
 
     if ($state.SiteType -eq 'Primary')
     {
-        $defaultValues += @('ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate',
-            'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName',
-            'TakeActionForMultipleCertificateMatchCriteria','ClientCertificateSelectionCriteriaType','ClientComputerCommunicationType')
+        $defaultValues += @(
+            'ClientCheckCertificateRevocationListForSiteSystem','UsePkiClientCertificate','RequireSigning','UseEncryption',
+            'EnableLowFreeSpaceAlert','EnableWakeOnLan','ClientCertificateCustomStoreName','TakeActionForMultipleCertificateMatchCriteria',
+            'ClientCertificateSelectionCriteriaType','ClientComputerCommunicationType'
+        )
 
         if (($PSBoundParameters.ContainsKey('UseSmsGeneratedCert')) -and
             (-not [string]::IsNullOrEmpty($ClientComputerCommunicationType) -and $ClientComputerCommunicationType -eq 'HttpsOnly') -or
@@ -1145,9 +1152,11 @@ function Test-TargetResource
             }
         }
 
-        $wolParams = @('WakeOnLanTransmissionMethodType','RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
-        'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec','ThreadNumberOfSendingWakeupPacket',
-        'SendingWakeupPacketTransmissionOffsetMins')
+        $wolParams = @(
+            'WakeOnLanTransmissionMethodType','RetryNumberOfSendingWakeupPacketTransmission','SendingWakeupPacketTransmissionDelayMins',
+            'MaximumNumberOfSendingWakeupPacketBeforePausing','SendingWakeupPacketBeforePausingWaitSec','ThreadNumberOfSendingWakeupPacket',
+            'SendingWakeupPacketTransmissionOffsetMins'
+        )
 
         foreach ($param in $wolParams)
         {

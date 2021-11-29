@@ -36,7 +36,7 @@ Invoke-TestSetup
 try
 {
     InModuleScope $script:dscResourceName {
-        Describe 'ConfigMgrCBDsc - DSC_CMSiteConfiguration\Get-TargetResource' -Tag 'Get'{
+        Describe 'ConfigMgrCBDsc - DSC_CMSiteConfiguration\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
                 $getInput = @{
                     SiteCode = 'Lab'
@@ -451,7 +451,6 @@ try
                             Value        = 1
                         }
                     )
-
                 }
 
                 $wolBroadcast = @{
@@ -482,7 +481,6 @@ try
                             Value        = 2
                         }
                     )
-
                 }
 
                 $wolComponent = @{
@@ -920,7 +918,7 @@ try
             }
         }
 
-        Describe 'ConfigMgrCBDsc - DSC_CMSiteConfiguration\Set-TargetResource' -Tag 'Set'{
+        Describe 'ConfigMgrCBDsc - DSC_CMSiteConfiguration\Set-TargetResource' -Tag 'Set' {
             BeforeAll {
                 $getReturnAll = @{
                     SiteCode                                          = 'Lab'
@@ -1032,7 +1030,6 @@ try
                         SiteCode                        = 'Lab'
                         UseSmsGeneratedCert             = $true
                         ClientComputerCommunicationType = 'HttpsOnly'
-
                     }
 
                     $inputWakeFalse = @{
@@ -1282,7 +1279,7 @@ try
             }
         }
 
-        Describe 'ConfigMgrCBDsc - DSC_CMSiteConfiguration\Test-TargetResource' -Tag 'Test'{
+        Describe 'ConfigMgrCBDsc - DSC_CMSiteConfiguration\Test-TargetResource' -Tag 'Test' {
             BeforeAll {
                 $getReturnAll = @{
                     SiteCode                                          = 'Lab'

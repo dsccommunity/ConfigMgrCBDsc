@@ -6119,6 +6119,13 @@ InModuleScope $script:subModuleName {
             }
 
             $invokeSiteConfigurationPri = @{
+                ConfigurationName                                 = $null
+                DependsOn                                         = $null
+                ModuleName                                        = 'ConfigMgrCBDsc'
+                ModuleVersion                                     = 1.0.1
+                PsDscRunAsCredential                              = $null
+                ResourceId                                        = $null
+                SourceInfo                                        = $null
                 SiteCode                                          = 'Lab'
                 Comment                                           = 'Site Lab'
                 ClientComputerCommunicationType                   = 'HttpsOrHttp'
@@ -6151,6 +6158,7 @@ InModuleScope $script:subModuleName {
                 TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
                 ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
                 ClientCertificateSelectionCriteriaValue           = 'Personal'
+                PSComputerName                                    = 'localhost'
             }
 
             $invokeSiteConfigurationCas = @{
