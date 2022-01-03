@@ -3113,6 +3113,206 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
+                    Name          = 'CMSiteConfiguration'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'Comment'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientComputerCommunicationType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{HttpsOnly,HttpsOrHttp}'
+                        }
+                        @{
+                            Name         = 'ClientCheckCertificateRevocationListForSiteSystem'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UsePkiClientCertificate'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UseSmsGeneratedCert'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RequireSigning'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RequireSha256'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UseEncryption'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaximumConcurrentSendingForAllSite'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaximumConcurrentSendingForPerSite'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'RetryNumberForConcurrentSending'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ConcurrentSendingDelayBeforeRetryingMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableLowFreeSpaceAlert'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FreeSpaceThresholdWarningGB'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FreeSpaceThresholdCriticalGB'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ThresholdOfSelectCollectionByDefault'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ThresholdOfSelectCollectionMax'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SiteSystemCollectionBehavior'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{Warn,Block}'
+                        }
+                        @{
+                            Name         = 'EnableWakeOnLan'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'WakeOnLanTransmissionMethodType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{Unicast,SubnetDirectedBroadcasts}'
+                        }
+                        @{
+                            Name         = 'RetryNumberOfSendingWakeupPacketTransmission'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SendingWakeupPacketTransmissionDelayMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'MaximumNumberOfSendingWakeupPacketBeforePausing'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SendingWakeupPacketBeforePausingWaitSec'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ThreadNumberOfSendingWakeupPacket'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'SendingWakeupPacketTransmissionOffsetMins'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientCertificateCustomStoreName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'TakeActionForMultipleCertificateMatchCriteria'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{FailSelectionAndSendErrorMessage,SelectCertificateWithLongestValidityPeriod}'
+                        }
+                        @{
+                            Name         = 'ClientCertificateSelectionCriteriaType'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{ClientAuthentication,CertificateSubjectContainsString,CertificateSubjectOrSanIncludesAttributes}'
+                        }
+                        @{
+                            Name         = 'ClientCertificateSelectionCriteriaValue'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
                     Name          = 'CMSiteMaintenance'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
@@ -5912,6 +6112,74 @@ InModuleScope $script:subModuleName {
                 SiteCode             = 'Lab'
                 PSComputerName       = 'localhost'
             }
+
+            $siteConfig = @{
+                SiteCode = 'Lab'
+                Include  = 'SiteConfiguration'
+            }
+
+            $invokeSiteConfigurationPri = @{
+                ConfigurationName                                 = $null
+                DependsOn                                         = $null
+                ModuleName                                        = 'ConfigMgrCBDsc'
+                ModuleVersion                                     = 1.0.1
+                PsDscRunAsCredential                              = $null
+                ResourceId                                        = $null
+                SourceInfo                                        = $null
+                SiteCode                                          = 'Lab'
+                Comment                                           = 'Site Lab'
+                ClientComputerCommunicationType                   = 'HttpsOrHttp'
+                ClientCheckCertificateRevocationListForSiteSystem = $true
+                UsePkiClientCertificate                           = $false
+                UseSmsGeneratedCert                               = $true
+                RequireSigning                                    = $true
+                RequireSha256                                     = $false
+                UseEncryption                                     = $false
+                MaximumConcurrentSendingForAllSite                = 6
+                MaximumConcurrentSendingForPerSite                = 3
+                RetryNumberForConcurrentSending                   = 2
+                ConcurrentSendingDelayBeforeRetryingMins          = 10
+                EnableLowFreeSpaceAlert                           = $true
+                FreeSpaceThresholdWarningGB                       = 10
+                FreeSpaceThresholdCriticalGB                      = 5
+                ThresholdOfSelectCollectionByDefault              = 100
+                ThresholdOfSelectCollectionMax                    = 1000
+                SiteSystemCollectionBehavior                      = 'Warn'
+                SiteType                                          = 'Primary'
+                EnableWakeOnLan                                   = $true
+                WakeOnLanTransmissionMethodType                   = 'Unicast'
+                RetryNumberOfSendingWakeupPacketTransmission      = 1
+                SendingWakeupPacketTransmissionDelayMins          = 10000
+                MaximumNumberOfSendingWakeupPacketBeforePausing   = 10
+                SendingWakeupPacketBeforePausingWaitSec           = 3
+                ThreadNumberOfSendingWakeupPacket                 = 10
+                SendingWakeupPacketTransmissionOffsetMins         = 10
+                ClientCertificateCustomStoreName                  = 'SMSStore'
+                TakeActionForMultipleCertificateMatchCriteria     = 'SelectCertificateWithLongestValidityPeriod'
+                ClientCertificateSelectionCriteriaType            = 'ClientAuthentication'
+                ClientCertificateSelectionCriteriaValue           = 'Personal'
+                PSComputerName                                    = 'localhost'
+            }
+
+            $invokeSiteConfigurationCas = @{
+                ConfigurationName                        = $null
+                DependsOn                                = $null
+                ModuleName                               = 'ConfigMgrCBDsc'
+                ModuleVersion                            = 1.0.1
+                PsDscRunAsCredential                     = $null
+                ResourceId                               = $null
+                SourceInfo                               = $null
+                SiteCode                                 = 'Lab'
+                Comment                                  = 'Lab Site CAS'
+                MaximumConcurrentSendingForAllSite       = 5
+                MaximumConcurrentSendingForPerSite       = 3
+                RetryNumberForConcurrentSending          = 10
+                ConcurrentSendingDelayBeforeRetryingMins = 5
+                ThresholdOfSelectCollectionByDefault     = 100
+                ThresholdOfSelectCollectionMax           = 0
+                SiteSystemCollectionBehavior             = 'Block'
+                PSComputerName                           = 'localhost'
+            }
         }
 
         Context 'When running the Set-ConfigMgrCBDscReverse' {
@@ -6009,11 +6277,12 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsUpdate } -ParameterFilter { $Name -eq 'CMClientSettingsSoftwareUpdate' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsStateMessaging } -ParameterFilter { $Name -eq 'CMClientSettingsStateMessaging' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsUserDeviceAffinity } -ParameterFilter { $Name -eq 'CMClientSettingsUserDeviceAffinity' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSiteConfigurationCas } -ParameterFilter { $Name -eq 'CMSiteConfiguration' }
 
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 46 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 47 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMClientSetting -Exactly -Times 19 -Scope It
@@ -6027,7 +6296,7 @@ InModuleScope $script:subModuleName {
                 Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSecurityScope -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMSite -Exactly -Times 1 -Scope It
@@ -6423,6 +6692,40 @@ InModuleScope $script:subModuleName {
                 $result | Should -Match "CMSiteMaintenance"
                 Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
                 Assert-MockCalled Invoke-DscResource -Exactly -Times 43 -Scope It
+                Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMFallbackStatusPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDiscoveryMethod -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMManagementPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMDistributionPointInfo -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMReportingServicePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMServiceConnectionPoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSiteDefinition -Exactly -Times 1 -Scope It
+                Assert-MockCalled Get-CMSiteSystemServer -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMSoftwareUpdatePoint -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMMaintenanceWindow -Exactly -Times 0 -Scope It
+                Assert-MockCalled Get-CMBoundaryGroup -Exactly -Times 0 -Scope It
+                Assert-MockCalled Test-Path -Exactly -Times 0 -Scope It
+                Assert-MockCalled Remove-Item -Exactly -Times 0 -Scope It
+                Assert-MockCalled Add-Content -Exactly -Times 0 -Scope It
+                Assert-MockCalled New-Configuration -Exactly -Times 0 -Scope It
+            }
+
+            It 'Should return expected results and call expected commands for Site Configuration Primary' {
+                Mock -CommandName Get-DscResource -MockWith { $getDscResourceReturn }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeSiteConfigurationPri }
+                Mock -CommandName Get-CMSiteDefinition -MockWith { $getCMDefinitionPrimary }
+
+                $result = Set-ConfigMgrCBDscReverse @siteConfig
+                $result | Should -BeOfType System.String
+                $result | Should -Match "CMSiteConfiguration"
+                Assert-MockCalled Get-CMAccount -Exactly -Times 0 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 0 -Scope It
                 Assert-MockCalled Get-CMClientSetting -Exactly -Times 0 -Scope It

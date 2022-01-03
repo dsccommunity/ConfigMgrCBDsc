@@ -171,6 +171,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   client policy settings for State Messaging settings.
 - **CMClientSettingsUserDeviceAffinity**: Provides a resource for modifying the
   client policy settings for User Device Affinity settings.
+- **CMSiteConfiguration**: Provides a resource for modifying the
+  site settings.
 
 ### xSccmPreReqs
 
@@ -2069,6 +2071,111 @@ you are using apply and auto correct.
 
 - [CMClientSettingsUserDeviceAffinity](Source\Examples\Resources\CMClientSettingsUserDeviceAffinity\CMClientSettingsUserDeviceAffinity.ps1)
 
+### CMSiteConfiguration
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] Comment** _(Write)_: Specifies the site comments.
+- **[String] ClientComputerCommunicationType** _(Write)_: Specifies the communication
+  method for the site systems that use IIS. To use HTTPS, the servers need a valid
+  PKI web server certificate for server authentication.
+  This parameter is only valid on a Primary Site.
+  - Values include: { HttpsOnly | HttpsOrHttp }
+- **[Boolean] ClientCheckCertificateRevocationListForSiteSystem** _(Write)_: Indicates
+  whether clients check the Certificate Revocation List (CRL) for site systems.
+  This parameter is only valid on a Primary Site.
+- **[Boolean] UsePkiClientCertificate** _(Write)_: Indicates whether to use a PKI
+  client certificate for client authentication when available.
+  This parameter is only valid on a Primary Site.
+- **[Boolean] UseSmsGeneratedCert** _(Write)_: Use this parameter to enable or disable
+  the site property to Use Configuration Manager-generated certificates for HTTP
+  site systems.
+  This parameter is only valid on a Primary Site.
+- **[Boolean] RequireSigning** _(Write)_: This option requires that clients sign
+  data when they send to management points.
+  This parameter is only valid on a Primary Site.
+- **[Boolean] RequireSha256** _(Write)_: Specifies if the clients sign data and
+  communicate with site systems by using HTTP, this option requires the clients
+  to use SHA-256 to sign the data. This option applies to clients that don't use
+  PKI certificates.
+  This parameter is only valid on a Primary Site.
+- **[Boolean] UseEncryption** _(Write)_: Specifies to use 3DES to encrypt the client
+  inventory data and state messages that are sent to the management point.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] MaximumConcurrentSendingForAllSite** _(Write)_: Specifies the maximum
+  number of simultaneous communications to all sites.
+- **[UInt32] MaximumConcurrentSendingForPerSite** _(Write)_: Specifies the maximum
+  number of simultaneous communications to any single site.
+- **[UInt32] RetryNumberForConcurrentSending** _(Write)_: Specifies the number of
+  times to retry a failed communication.
+- **[UInt32] ConcurrentSendingDelayBeforeRetryingMins** _(Write)_: Specifies the
+  number of minutes to delay before it retries.
+- **[Boolean] EnableLowFreeSpaceAlert** _(Write)_: Specifies if an alert is created
+  when the free disk space on the site database server is low.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] FreeSpaceThresholdWarningGB** _(Write)_: Specifies disk space warning
+  alert when the free disk space on the site database server falls below the specified
+  threshold.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] FreeSpaceThresholdCriticalGB** _(Write)_: Specifies disk space critical
+  alert when the free disk space on the site database server falls below the specified
+  threshold.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] ThresholdOfSelectCollectionByDefault** _(Write)_: Specifies select collection
+  window hides collections with membership that exceeds this value.
+- **[UInt32] ThresholdOfSelectCollectionMax** _(Write)_: Specifies select collection
+  window always hides collections that have more members than this maximum value.
+- **[String] SiteSystemCollectionBehavior** _(Write)_: Specifies the behavior to
+  take when the selected collection includes computers that host site systems roles.
+  - Values include: { Warn | Block }
+- **[Boolean] EnableWakeOnLan** _(Write)_: Indicates whether to send Wake On LAN
+  packets for scheduled activities such as deployments of software updates.
+  This parameter is only valid on a Primary Site.
+- **[String] WakeOnLanTransmissionMethodType** _(Write)_: Specifies the type of
+  transmission method to use for Wake On LAN transmissions.
+  This parameter is only valid on a Primary Site.
+  - Values include: { Unicast | SubnetDirectedBroadcasts }
+- **[UInt32] RetryNumberOfSendingWakeupPacketTransmission** _(Write)_: Specifies
+  the number of times a wake up packet is sent to a target computer.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] SendingWakeupPacketTransmissionDelayMins** _(Write)_: Specifies the
+  number of minutes to delay between wake up retries.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] MaximumNumberOfSendingWakeupPacketBeforePausing** _(Write)_: Specifies
+  the maximum number of wake up packets transmitted by this site server before pausing.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] SendingWakeupPacketBeforePausingWaitSec** _(Write)_: Specifies the number
+  of seconds to wait between sending wake up packets to a target computer.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] ThreadNumberOfSendingWakeupPacket** _(Write)_: Specifies the number
+  of threads to use when sending wake up packets.
+  This parameter is only valid on a Primary Site.
+- **[UInt32] SendingWakeupPacketTransmissionOffsetMins** _(Write)_: Specifies when
+  wake up packets should be sent prior to a scheduled activity.
+  This parameter is only valid on a Primary Site.
+- **[String] ClientCertificateCustomStoreName** _(Write)_: Specifies the store
+  name where the client certificate is located in the Computer store when you don't
+  use the default store of Personal.
+  This parameter is only valid on a Primary Site.
+- **[String] TakeActionForMultipleCertificateMatchCriteria** _(Write)_: Specifies
+  the action to take if multiple certificates match criteria.
+  This parameter is only valid on a Primary Site.
+  - Values include: { FailSelectionAndSendErrorMessage |
+  SelectCertificateWithLongestValidityPeriod }
+- **[String] ClientCertificateSelectionCriteriaType** _(Write)_: Specifies the criteria
+  type to match in a client certificate when more than one certificate is available.
+  This parameter is only valid on a Primary Site.
+  - Values include: { ClientAuthentication | CertificateSubjectContainsString |
+  CertificateSubjectOrSanIncludesAttributes }
+- **[String] ClientCertificateSelectionCriteriaValue** _(Write)_: Specifies a value
+  for the ClientCertificateSelectionCriteriaType parameter.
+  This parameter is only valid on a Primary Site.
+
+#### CMSiteConfiguration Examples
+
+- [CMSiteConfiguration_Cas](Source\Examples\Resources\CMSiteConfiguration\CMSiteConfiguration_Cas.ps1)
+- [CMSiteConfiguration_Primary](Source\Examples\Resources\CMSiteConfiguration\CMSiteConfiguration_Primary.ps1)
+
 ## ReverseDsc
 
 Most organizations using this module already have an existing Configuration Manager
@@ -2156,6 +2263,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMSecurityRoles: Not Supported
 - DSC_CMSecurityScopes: Fully Supported
 - DSC_CMServiceConnectionPoint: Fully Supported
+- DSC_CMSiteConfiguration: Fully Supported
 - DSC_CMSiteMaintenance: Fully Supported
 - DSC_CMSiteSystemServer: Fully Supported
 - DSC_CMSoftwareDistributionComponent: Fully Supported
@@ -2192,7 +2300,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
-  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
+  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteConfiguration|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|SoftwareupdatePointComponent|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ConfigFileOnly|ClientSettings|
   ClientSettingsBits|ClientSettingsClientCache|ClientSettingsClientPolicy|ClientSettingsCloudService|
@@ -2200,7 +2308,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientSettingsMetered|ClientSettingsPower|ClientSettingsRemoteTools|ClientSettingsSoftwareCenter|
   ClientSettingsSoftwareDeployment|ClientSettingsSoftwareInventory|ClientSettingsSoftwareMetering|
   ClientSettingsSoftwareUpdate|ClientSettingsStateMessaging|
-  ClientSettingsUserDeviceAffinity }
+  ClientSettingsUserDeviceAffinity|SiteConfiguration }
 - **[String] Exclude** _(Write)_: Specifies which resources will be excluded from
   being evaluated. Only evaluated when Include = 'All'
   - Values include: { Accounts|AdministrativeUser|AssetIntelligencePoint|BoundaryGroups|
@@ -2208,7 +2316,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   DistributionGroups|DistributionPoint|DistributionPointGroupMembers|EmailNotificationComponent|
   FallbackPoints|ForestDiscovery|HeartbeatDiscovery|MaintenanceWindow|ManagementPoint|
   NetworkDiscovery|PullDistributionPoint|PxeDistributionPoint|GroupDiscovery|
-  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteMaintenance|
+  ReportingServicesPoint|SecurityScopes|ServiceConnection|SiteConfiguration|SiteMaintenance|
   SiteSystemServer|SoftwareDistributionComponent|SoftwareUpdatePoint|SoftwareupdatePointComponent|
   StatusReportingComponent|SystemDiscovery|UserDiscovery|ClientSettings|
   ClientSettingsBits|ClientSettingsClientCache|ClientSettingsClientPolicy|ClientSettingsCloudService|
@@ -2216,7 +2324,7 @@ After importing the module, Set-ConfigMgrCBDscReverse will be available.
   ClientSettingsMetered|ClientSettingsPower|ClientSettingsRemoteTools|ClientSettingsSoftwareCenter|
   ClientSettingsSoftwareDeployment|ClientSettingsSoftwareInventory|ClientSettingsSoftwareMetering|
   ClientSettingsSoftwareUpdate|ClientSettingsStateMessaging|
-  ClientSettingsUserDeviceAffinity }
+  ClientSettingsUserDeviceAffinity|SiteConfiguration }
 - **[String] DataFile** _(Write)_: Specifies where the data file will be saved.
   Filename must end with .psd1. Not specifying DataFile the output will be displayed
   in the output screen only if Include does not equal ConfigFileOnly.

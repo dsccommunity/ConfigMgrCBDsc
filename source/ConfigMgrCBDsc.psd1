@@ -44,7 +44,6 @@
     DscResourcesToExport = @(
         'CMAccounts'
         'SccmIniFile'
-        'XSccmInstall'
         'xSccmPreReqs'
         'xSccmSqlSetup'
         'CMIniFile'
@@ -101,6 +100,7 @@
         'CMClientSettingsSoftwareUpdate'
         'CMClientSettingsStateMessaging'
         'CMClientSettingsUserDeviceAffinity'
+        'CMSiteConfiguration'
     )
 
     <#
@@ -114,16 +114,16 @@
 
             # Tags applied to this module. These help with module discovery in online galleries.
             Tags = @('DesiredStateConfiguration', 'DSC', 'DSCResourceKit', 'DSCResource', 'ConfigMgrCBDsc','CMAccounts','SCCMPreReqs',
-            'SccmSqlSetup','SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups',
-            'ManagementPoint','AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery',
-            'ServiceConnectionPoint','NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint',
-            'SiteMaintenance','AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
+            'SCCMInstall','CMIniFile','Collections','Boundaries','ForestDiscovery','ClientStatusSettings','BoundaryGroups','ManagementPoint',
+            'AssetIntelligencePoint','FallbackStatusPoint','SoftwareUpdatePoint','DistrubtionPoint','HeartbeatDiscovery','ServiceConnectionPoint',
+            'NetworkDiscovery','ReportingServicePoint','SystemDiscovery','PXEDistributionPoint','PullDistributionPoint','SiteMaintenance',
+            'AdministrativeUser','DistributionGroup','SiteSystemServer','StatusReportingComponent','CollectionMembershipEvaluationComponent',
             'DistributionPointGroupMembers','SecurityScopes','UserDiscovery','SecurityRoles','ClientPushSettings','SoftwareDistributionComponent',
             'MaintenanceWindows','FileReplication','EmailNotificationComponent','CMGroupDiscovery','SoftwareUpdatePointComponent','ClientSettings',
             'ClientSettingsBits','ClientSettingsClientCache','ClientSettingsClientPolicy','ClientSettingsCompliance','ClientSettingsComputerAgent',
             'ClientSettingsDelivery','ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower','ClientSettingsRemoteTools',
             'ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment','ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering',
-            'ClientSettingsSoftwareUpdate','ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')
+            'ClientSettingsSoftwareUpdate','ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity','SiteConfiguration')
 
             # A URL to the license for this module.
             LicenseUri   = 'https://github.com/dsccommunity/ConfigMgrCBDsc/blob/master/LICENSE'

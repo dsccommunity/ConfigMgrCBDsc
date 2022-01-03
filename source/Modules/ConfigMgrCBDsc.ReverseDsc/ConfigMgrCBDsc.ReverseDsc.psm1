@@ -292,7 +292,7 @@ function Set-OutFile
 
     if ($ResourceName -eq 'CMPullDistributionPoint')
     {
-        $sourceDP = 'SourceDistirbutionPoint'
+        $sourceDP = 'SourceDistributionPoint'
 
         $tester += "`t`t$($sourceDP.PadRight($updatedCount)) = @(`r`n"
         foreach ($item in $cPush.SourceDistributionPoint)
@@ -644,6 +644,10 @@ Configuration ConfigureSccm
         [Parameter()]
         [HashTable]
         `$CMServiceConnectionPoint,
+
+        [Parameter()]
+        [HashTable]
+        `$CMSiteConfiguration,
 
         [Parameter()]
         [HashTable[]]
@@ -3685,6 +3689,554 @@ Configuration ConfigureSccm
             }
         }
 
+        if (`$CMSiteConfiguration)
+        {
+            if (`$CMSiteConfiguration.EnableWakeOnLan -eq `$null)
+            {
+                CMSiteConfiguration CMSiteConfiguration
+                {
+                    SiteCode                                 = `$SiteCode
+                    Comment                                  = `$CMSiteConfiguration.Comment
+                    MaximumConcurrentSendingForAllSite       = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                    MaximumConcurrentSendingForPerSite       = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                    RetryNumberForConcurrentSending          = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                    ConcurrentSendingDelayBeforeRetryingMins = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                    ThresholdOfSelectCollectionByDefault     = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                    ThresholdOfSelectCollectionMax           = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                    SiteSystemCollectionBehavior             = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                }
+            }
+            else
+            {
+                if (`$CMSiteConfiguration.EnableWakeOnLan -eq `$false)
+                {
+                    if(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                }
+                else
+                {
+                    if(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOnly' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$true -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            FreeSpaceThresholdWarningGB                       = `$CMSiteConfiguration.FreeSpaceThresholdWarningGB
+                            FreeSpaceThresholdCriticalGB                      = `$CMSiteConfiguration.FreeSpaceThresholdCriticalGB
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -eq 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                        }
+                    }
+                    elseif(`$CMSiteConfiguration.ClientComputerCommunicationType -eq 'HttpsOrHttp' -and `$CMSiteConfiguration.EnableLowFreeSpaceAlert -eq `$false -and
+                    `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType -ne 'ClientAuthentication')
+                    {
+                        CMSiteConfiguration CMSiteConfiguration
+                        {
+                            SiteCode                                          = `$SiteCode
+                            Comment                                           = `$CMSiteConfiguration.Comment
+                            MaximumConcurrentSendingForAllSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForAllSite
+                            MaximumConcurrentSendingForPerSite                = `$CMSiteConfiguration.MaximumConcurrentSendingForPerSite
+                            RetryNumberForConcurrentSending                   = `$CMSiteConfiguration.RetryNumberForConcurrentSending
+                            ConcurrentSendingDelayBeforeRetryingMins          = `$CMSiteConfiguration.ConcurrentSendingDelayBeforeRetryingMins
+                            ThresholdOfSelectCollectionByDefault              = `$CMSiteConfiguration.ThresholdOfSelectCollectionByDefault
+                            ThresholdOfSelectCollectionMax                    = `$CMSiteConfiguration.ThresholdOfSelectCollectionMax
+                            SiteSystemCollectionBehavior                      = `$CMSiteConfiguration.SiteSystemCollectionBehavior
+                            EnableLowFreeSpaceAlert                           = `$CMSiteConfiguration.EnableLowFreeSpaceAlert
+                            ClientComputerCommunicationType                   = `$CMSiteConfiguration.ClientComputerCommunicationType
+                            ClientCheckCertificateRevocationListForSiteSystem = `$CMSiteConfiguration.ClientCheckCertificateRevocationListForSiteSystem
+                            UsePkiClientCertificate                           = `$CMSiteConfiguration.UsePkiClientCertificate
+                            UseSmsGeneratedCert                               = `$CMSiteConfiguration.UseSmsGeneratedCert
+                            RequireSha256                                     = `$CMSiteConfiguration.RequireSha256
+                            RequireSigning                                    = `$CMSiteConfiguration.RequireSigning
+                            UseEncryption                                     = `$CMSiteConfiguration.UseEncryption
+                            EnableWakeOnLan                                   = `$CMSiteConfiguration.EnableWakeOnLan
+                            WakeOnLanTransmissionMethodType                   = `$CMSiteConfiguration.WakeOnLanTransmissionMethodType
+                            RetryNumberOfSendingWakeupPacketTransmission      = `$CMSiteConfiguration.RetryNumberOfSendingWakeupPacketTransmission
+                            SendingWakeupPacketTransmissionDelayMins          = `$CMSiteConfiguration.SendingWakeupPacketTransmissionDelayMins
+                            MaximumNumberOfSendingWakeupPacketBeforePausing   = `$CMSiteConfiguration.MaximumNumberOfSendingWakeupPacketBeforePausing
+                            SendingWakeupPacketBeforePausingWaitSec           = `$CMSiteConfiguration.SendingWakeupPacketBeforePausingWaitSec
+                            ThreadNumberOfSendingWakeupPacket                 = `$CMSiteConfiguration.ThreadNumberOfSendingWakeupPacket
+                            SendingWakeupPacketTransmissionOffsetMins         = `$CMSiteConfiguration.SendingWakeupPacketTransmissionOffsetMins
+                            ClientCertificateCustomStoreName                  = `$CMSiteConfiguration.ClientCertificateCustomStoreName
+                            TakeActionForMultipleCertificateMatchCriteria     = `$CMSiteConfiguration.TakeActionForMultipleCertificateMatchCriteria
+                            ClientCertificateSelectionCriteriaType            = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaType
+                            ClientCertificateSelectionCriteriaValue           = `$CMSiteConfiguration.ClientCertificateSelectionCriteriaValue
+                        }
+                    }
+                }
+            }
+        }
+
         if (`$CMSiteSystemServer)
         {
             foreach (`$item in `$CMSiteSystemServer)
@@ -4286,7 +4838,7 @@ Configuration ConfigureSccm
             foreach (`$pull in `$CMPullDistributionPoint)
             {
                 `$pullRankings = @()
-                foreach (`$value in `$pull.SourceDP)
+                foreach (`$value in `$pull.SourceDistributionPoint)
                 {
                     `$pullRankings += DSC_CMPullDistributionPointSourceDP
                     {
@@ -10618,7 +11170,7 @@ function Set-ConfigMgrCBDscReverse
             'ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower',
             'ClientSettingsRemoteTools','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
             'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsSoftwareUpdate',
-            'ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')]
+            'ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity','SiteConfiguration')]
         [String[]]
         $Include = 'All',
 
@@ -10637,7 +11189,7 @@ function Set-ConfigMgrCBDscReverse
             'ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower',
             'ClientSettingsRemoteTools','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
             'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsSoftwareUpdate',
-            'ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity')]
+            'ClientSettingsStateMessaging','ClientSettingsUserDeviceAffinity','SiteConfiguration')]
         [String[]]
         $Exclude,
 
@@ -12179,6 +12731,38 @@ function Set-ConfigMgrCBDscReverse
             $wsvcConnection += "$testThing"
             $fileOut += "$wsvcConnection`r`n"
         }
+    }
+
+    if (($Include -eq 'All' -and $Exclude -notcontains 'SiteConfiguration') -or ($Include -contains 'SiteConfiguration'))
+    {
+        $resourceName = 'CMSiteConfiguration'
+        Write-Verbose -Message ($script:localizedData.SingleOutput -f $resourceName) -Verbose
+        $wSiteConfiguration = "$resourceName = @{`r`n"
+        $siteType = Get-CMSiteDefinition -SiteCode $SiteCode
+
+        if ($siteType.SiteType -eq 2)
+        {
+            $excluded = @('SiteCode','SiteType')
+        }
+        else
+        {
+            $excluded = @('SiteCode','ClientCheckCertificateRevocationListForSiteSystem', 'ClientComputerCommunicationType'
+            'UsePkiClientCertificate', 'RequireSigning','UseEncryption','EnableLowFreeSpaceAlert',
+            'FreeSpaceThresholdCriticalGB','FreeSpaceThresholdWarningGB','SiteType','UseSmsGeneratedCert')
+        }
+
+        $params = @{
+            ResourceName = $resourceName
+            SiteCode     = $SiteCode
+            Indent       = 1
+            MultiEntry   = $false
+            Resources    = $resources
+            ExcludeList  = $excluded
+        }
+
+        $testThing = Set-OutFile @params
+        $wSiteConfiguration += "$testThing"
+        $fileOut += "$wSiteConfiguration`r`n"
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'SiteMaintenance') -or ($Include -contains 'SiteMaintenance'))
