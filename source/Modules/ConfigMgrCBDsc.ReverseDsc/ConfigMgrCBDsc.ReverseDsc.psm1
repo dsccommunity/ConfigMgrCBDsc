@@ -314,7 +314,7 @@ function Set-OutFile
         {
             $tester += "`t`t`t@{`r`n"
             $tester += "`t`t`t`tRuleName        = '$($item.RuleName)'`r`n"
-            $tester += "`t`t`t`tQueryExpression = '$($item.QueryExpression)'`r`n"
+            $tester += "`t`t`t`tQueryExpression = '$($item.QueryExpression.Replace("'","''"))'`r`n"
             $tester += "`t`t`t}`r`n"
         }
         $tester += "`t`t)`r`n"

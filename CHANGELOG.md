@@ -5,6 +5,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Fixed issue in Reverse DSC that affected collection query capture
+when collection queries have quotes.
+
 ## [3.0.0] - 2022-01-03
 
 ### Added
