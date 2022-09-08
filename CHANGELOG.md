@@ -39,6 +39,7 @@ version of DSCResource.Common
 - Added CMClientSettingsStateMessaging resource
 - Added CMClientSettingsUserDeviceAffinity resource
 - Added CMSiteConfiguration resource
+- Added CMClientSettingsComputerRestart resource
 
 ### Fixed
 

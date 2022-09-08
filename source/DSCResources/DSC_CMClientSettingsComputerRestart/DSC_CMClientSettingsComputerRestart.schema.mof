@@ -1,0 +1,12 @@
+[ClassVersion("1.0.0"), FriendlyName("CMClientSettingsComputerRestart")]
+class DSC_CMClientSettingsComputerRestart : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Key, Description("Specifies which client settings policy to modify.")] String ClientSettingName;
+    [Write, Description("Specifies countdown, in minutes, for restart to take place.")] UInt32 CountdownMins;
+    [Write, Description("Specifies the time window a restart has to take place in.")] UInt32 FinalWindowMins;
+    [Write, Description("Specifies if toast notifications are replaced with dialog windows.")] Boolean ReplaceToastNotificationWithDialog;
+    [Write, Description("Specifies if reboots are not enforced.")] Boolean NoRebootEnforcement;
+    [Read, Description("Specifies if the client settings policy exists.")] String ClientSettingStatus;
+    [Read, Description("Specifies the type of client policy setting.")] String ClientType;
+};

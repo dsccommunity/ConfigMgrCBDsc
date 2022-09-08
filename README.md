@@ -147,6 +147,8 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   client policy settings for Compliance settings.
 - **CMClientSettingsComputerAgent**: Provides a resource for modifying the
   client policy settings for Computer Agent settings.
+- **CMClientSettingsComputerRestart**: Provides a resource for modifying the
+  client policy settings for Computer Restart settings.
 - **CMClientSettingsDelivery**: Provides a resource for modifying the
   client policy settings for Delivery settings.
 - **CMClientSettingsHardware**: Provides a resource for modifying the
@@ -1684,6 +1686,29 @@ you are using apply and auto correct.
 #### CMClientSettingsComputerAgent Examples
 
 - [CMClientSettingsComputerAgent](Source\Examples\Resources\CMClientSettingsComputerAgent\CMClientSettingsComputerAgent.ps1)
+
+### CMClientSettingsComputerRestart
+
+- **[String] SiteCode** _(Key)_: Specifies the Site Code for the Configuration
+  Manager site.
+- **[String] ClientSettingName** _(Key)_: Specifies which client settings policy
+  to modify.
+- **[UInt32] CountdownMins** _(Write)_: Specifies countdown, in minutes,
+  for restart to take place..
+  - Values Range: 1 - 1440
+- **[UInt32] FinalWindowMins** _(Write)_: Specifies the time window a restart
+  has to take place in.
+  - Values Range: 1 - 1440
+- **[Boolean] ReplaceToastNotificationWithDialog** _(Write)_: Specifies if toast
+  notifications are replaced with dialog windows.
+- **[Boolean] NoRebootEnforcement** _(Write)_: Specifies if reboots are not enforced.
+- **[String] ClientSettingStatus** _(Read)_: Specifies if the client settings policy
+  exists.
+- **[String] ClientType** _(Read)_: Specifies the type of client policy setting.
+
+#### CMClientSettingsComputerRestart Examples
+
+- [CMClientSettingsComputerRestart](Source\Examples\Resources\CMClientSettingsComputerRestart\CMClientSettingsComputerRestart.ps1)
 
 ### CMClientSettingsDelivery
 
