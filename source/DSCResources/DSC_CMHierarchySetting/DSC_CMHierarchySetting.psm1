@@ -30,9 +30,9 @@ function Get-TargetResource
 
     $currentSetting = Get-CMHierarchySetting
     $preprodSetting = $currentSetting | Where-Object PropertyNames -contains TargetCollectionID
-    $upgradeSetting = Get-CMHierarchySetting | Where-Object PropertyNames -contains AdvertisementDuration
+    $upgradeSetting = $currentSetting | Where-Object PropertyNames -contains AdvertisementDuration
     $allProperties = Get-CimInstance -Namespace "ROOT\SMS\Site_$SiteCode" -ClassName SMS_SCI_SCProperty
-    [string] $excludeCollectionId = $currentSetting.ExcludedCollectionID
+    [string] $excludeCollectionId = $upgradeSetting.ExcludedCollectionID
     [string] $targetCollectionId = $preprodSetting.TargetCollectionID
 
     if (-not [string]::IsNullOrWhiteSpace($excludeCollectionId))
@@ -53,15 +53,15 @@ function Get-TargetResource
         EnableAutoClientUpgrade            = $upgradeSetting.IsProgramEnabled
         EnableExclusionCollection          = $upgradeSetting.IsUpgradeExclusionEnabled
         EnablePreProduction                = $preprodSetting.IsAccepted -and $preprodSetting.IsEnabled
-        EnablePrereleaseFeature            = $currentSetting.Props.Where({ $_.PropertyName -eq 'AcceptedBeta' }).Value -as [bool]
+        EnablePrereleaseFeature            = $allProperties.Where({ $_.PropertyName -eq 'AcceptedBeta' }).Value -as [bool]
         ExcludeServer                      = $upgradeSetting.ExcludeServers
-        PreferBoundaryGroupManagementPoint = $currentSetting.Props.Where({ $_.PropertyName -eq 'PreferMPInBoundaryWithFastNetwork' }).Value -as [bool]
+        PreferBoundaryGroupManagementPoint = $allProperties.Where({ $_.PropertyName -eq 'PreferMPInBoundaryWithFastNetwork' }).Value -as [bool]
         UseFallbackSite                    = -not [string]::IsNullOrWhiteSpace($allProperties.Where({ $_.PropertyName -eq 'SiteAssignmentSiteCode' }).Value1)
         AutoUpgradeDays                    = $upgradeSetting.AdvertisementDuration
         ExclusionCollectionName            = $excludeCollectionName
         FallbackSiteCode                   = $allProperties.Where({ $_.PropertyName -eq 'SiteAssignmentSiteCode' }).Value1
         TargetCollectionName               = $targetCollectionName
-        TelemetryLevel                     = @("Basic", "Enhanced", "Full")[$currentSetting.Props.Where({ $_.PropertyName -eq 'TelemetryLevel' }).Value - 1]
+        TelemetryLevel                     = @("Basic", "Enhanced", "Full")[$allProperties.Where({ $_.PropertyName -eq 'TelemetryLevel' }).Value - 1]
     }
 }
 
@@ -180,17 +180,17 @@ function Set-TargetResource
 
     try
     {
-        if ($UseFallbackSite -xor $FallbackSiteCode)
+        if ($UseFallbackSite -xor -not [string]::IsNullOrWhiteSpace($FallbackSiteCode))
         {
             throw ($script:localizedData.SettingPairMismatch -f 'UseFallbackSite', 'FallbackSiteCode')
         }
 
-        if ($EnablePreProduction -xor $TargetCollectionName)
+        if ($EnablePreProduction -xor -not [string]::IsNullOrWhiteSpace( $TargetCollectionName))
         {
             throw ($script:localizedData.SettingPairMismatch -f 'EnablePreProduction', 'TargetCollectionName')
         }
 
-        if ($EnableExclusionCollection -xor $ExclusionCollectionName)
+        if ($EnableExclusionCollection -xor -not [string]::IsNullOrWhiteSpace($ExclusionCollectionName))
         {
             throw ($script:localizedData.SettingPairMismatch -f 'EnableExclusionCollection', 'ExclusionCollectionName')
         }
