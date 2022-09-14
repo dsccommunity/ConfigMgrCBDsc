@@ -21,6 +21,7 @@ Configuration Example
             DistributionGroup  = 'DistroGroup2'
             DistributionPoints = 'DP01.contoso.com','DP02.contoso.com'
             SecurityScopes     = 'Scope1','Scope2'
+            Collections        = 'Collection 1', 'Collection 2'
             Ensure             = 'Present'
         }
 
@@ -30,6 +31,7 @@ Configuration Example
             DistributionGroup           = 'DistroGroup3'
             DistributionPointsToInclude = 'DP01.contoso.com','DP02.contoso.com'
             SecurityScopesToInclude     = 'Scope1','Scope2'
+            CollectionsToInclude        = 'Collection 1', 'Collection 2'
             Ensure                      = 'Present'
         }
 
@@ -39,6 +41,7 @@ Configuration Example
             DistributionGroup           = 'DistroGroup4'
             DistributionPointsToExclude = 'DP01.contoso.com'
             SecurityScopesToExclude     = 'Scope1'
+            CollectionsToExclude        = 'Collection 1', 'Collection 2'
             Ensure                      = 'Present'
         }
     }

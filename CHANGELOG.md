@@ -55,6 +55,7 @@ version of DSCResource.Common
 - Updated module versions for SqlServerDsc, NetworkingDsc, ComputerManagementDsc
 - Removed firewall configurations from the xSccmPreReqs resource. See
     (Source\Examples\PrimaryInstall.ps1) for an example of firewall configurations.
+- CMDistributionGroup added properties to configure collection membership in Distribution Point Group
 
 ### Removed
 

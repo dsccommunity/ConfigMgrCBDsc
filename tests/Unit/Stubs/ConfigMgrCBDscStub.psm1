@@ -3811,7 +3811,8 @@ function Add-CMObjectSecurityScope
         ${Id},
 
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [Hashtable[]]
+        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        [object[]]
         ${InputObject},
 
         [Parameter(ParameterSetName='ByName', Mandatory=$true, Position=0)]
@@ -10898,7 +10899,7 @@ function Get-CMObjectSecurityScope
     param
     (
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [Hashtable]
+        [Object]
         ${InputObject},
 
         [Parameter(ParameterSetName='FilterByName')]
@@ -30424,7 +30425,8 @@ function Remove-CMObjectSecurityScope
         ${Id},
 
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [Hashtable[]]
+        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        [object[]]
         ${InputObject},
 
         [Parameter(ParameterSetName='ByName', Mandatory=$true, Position=0)]

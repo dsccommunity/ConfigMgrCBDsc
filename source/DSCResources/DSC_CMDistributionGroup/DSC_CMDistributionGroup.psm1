@@ -41,6 +41,8 @@ function Get-TargetResource
     {
         $dplist = Get-CMDistributionPoint -DistributionPointGroupName $DistributionGroup
         $dpMembers = @()
+        $scopes = @()
+        $collections = @()
 
         foreach ($dp in $dplist)
         {
@@ -51,7 +53,13 @@ function Get-TargetResource
 
         foreach ($item in $scopeObject)
         {
-            [array]$scopes += $item.CategoryName
+            $scopes += $item.CategoryName
+        }
+
+        $collectionObject = Get-CMCollection -DistributionPointGroup $groupStatus
+        foreach ($collection in $collectionObject)
+        {
+            $collections += $collection.Name
         }
 
         $group = 'Present'
@@ -66,6 +74,7 @@ function Get-TargetResource
         DistributionGroup  = $DistributionGroup
         DistributionPoints = $dpMembers
         SecurityScopes     = $scopes
+        Collections        = $collections
         Ensure             = $group
     }
 }
@@ -97,6 +106,15 @@ function Get-TargetResource
 
     .PARAMETER SecurityScopesToExclude
         Specifies an array of Security Scopes to remove from the Distribution Group.
+
+    .PARAMETER Collections
+        Specifies an array of Collection names to match to the Distribution Group.
+
+    .PARAMETER CollectionsToInclude
+        Specifies an array of Collection names to add to the Distribution Group.
+
+    .PARAMETER CollectionsToExclude
+        Specifies an array of Collection names to remove from the Distribution Group.
 
     .PARAMETER Ensure
         Specifies if the Distribution Group is to be present or absent.
@@ -139,6 +157,18 @@ function Set-TargetResource
         $SecurityScopesToExclude,
 
         [Parameter()]
+        [string[]]
+        $Collections,
+
+        [Parameter()]
+        [String[]]
+        $CollectionsToInclude,
+
+        [Parameter()]
+        [String[]]
+        $CollectionsToExclude,
+
+        [Parameter()]
         [ValidateSet('Present','Absent')]
         [String]
         $Ensure = 'Present'
@@ -175,6 +205,19 @@ function Set-TargetResource
                     if ($SecurityScopesToExclude -contains $item)
                     {
                         throw ($script:localizedData.ScopeInEx -f $item)
+                    }
+                }
+            }
+
+            if (-not $PSBoundParameters.ContainsKey('Collections') -and
+                $PSBoundParameters.ContainsKey('CollectionsToInclude') -and
+                $PSBoundParameters.ContainsKey('CollectionsToExclude'))
+            {
+                foreach ($item in $CollectionsToInclude)
+                {
+                    if ($CollectionsToExclude -contains $item)
+                    {
+                        throw ($script:localizedData.CollectionInEx -f $item)
                     }
                 }
             }
@@ -273,6 +316,47 @@ function Set-TargetResource
                     }
                 }
             }
+
+            if ($Collections -or $CollectionsToInclude -or $CollectionsToExclude)
+            {
+                $dgObject = Get-CMDistributionPointGroup -Name $DistributionGroup
+
+                $collectionsArray = @{
+                    Match        = $Collections
+                    Include      = $CollectionsToInclude
+                    Exclude      = $CollectionsToExclude
+                    CurrentState = $state.Collections
+                }
+
+                $collectionsCompare = Compare-MultipleCompares @collectionsArray
+
+                if ($collectionsCompare.Missing)
+                {
+                    $collectionError = 'Collections'
+
+                    foreach ($add in $collectionsCompare.Missing)
+                    {
+                        if (Get-CMCollection -Name $add)
+                        {
+                            Write-Verbose -Message ($script:localizedData.AddCollection -f $add, $DistributionGroup)
+                            Add-CMCollectionToDistributionPointGroup -CollectionName $add -DistributionPointGroup $dgObject
+                        }
+                        else
+                        {
+                            $errorMsg += ($script:localizedData.ErrorGroup -f $collectionError, $add)
+                        }
+                    }
+                }
+
+                if ($collectionsCompare.Remove)
+                {
+                    foreach ($remove in $collectionsCompare.Remove)
+                    {
+                        Write-Verbose -Message ($script:localizedData.RemoveCollection -f $remove, $DistributionGroup)
+                        Remove-CMCollectionFromDistributionPointGroup -CollectionName $remove -InputObject $dgObject
+                    }
+                }
+            }
         }
         elseif ($state.Ensure -eq 'Present')
         {
@@ -323,6 +407,15 @@ function Set-TargetResource
     .PARAMETER SecurityScopesToExclude
         Specifies an array of Security Scopes to remove from the Distribution Group.
 
+    .PARAMETER Collections
+        Specifies an array of Collection names to match to the Distribution Group.
+
+    .PARAMETER CollectionsToInclude
+        Specifies an array of Collection names to add to the Distribution Group.
+
+    .PARAMETER CollectionsToExclude
+        Specifies an array of Collection names to remove from the Distribution Group.
+
     .PARAMETER Ensure
         Specifies if the Distribution Group is to be present or absent.
 #>
@@ -363,6 +456,18 @@ function Test-TargetResource
         [Parameter()]
         [String[]]
         $SecurityScopesToExclude,
+
+        [Parameter()]
+        [string[]]
+        $Collections,
+
+        [Parameter()]
+        [String[]]
+        $CollectionsToInclude,
+
+        [Parameter()]
+        [String[]]
+        $CollectionsToExclude,
 
         [Parameter()]
         [ValidateSet('Present','Absent')]
@@ -415,7 +520,29 @@ function Test-TargetResource
             {
                 if ($SecurityScopesToExclude -contains $item)
                 {
-                    Write-Warning -Message ($script:localizedData.DistroInEx -f $item)
+                    Write-Warning -Message ($script:localizedData.ScopeInEx -f $item)
+                    $result = $false
+                }
+            }
+        }
+
+        if ($PSBoundParameters.ContainsKey('Collections'))
+        {
+            if ($PSBoundParameters.ContainsKey('CollectionsToInclude') -or
+                $PSBoundParameters.ContainsKey('CollectionsToExclude'))
+            {
+                Write-Warning -Message $script:localizedData.ParamIgnoreCollections
+            }
+        }
+        elseif (-not $PSBoundParameters.ContainsKey('Collections') -and
+            $PSBoundParameters.ContainsKey('CollectionsToInclude') -and
+            $PSBoundParameters.ContainsKey('CollectionsToExclude'))
+        {
+            foreach ($item in $CollectionsToInclude)
+            {
+                if ($CollectionssToExclude -contains $item)
+                {
+                    Write-Warning -Message ($script:localizedData.CollectionInEx -f $item)
                     $result = $false
                 }
             }
@@ -472,6 +599,30 @@ function Test-TargetResource
                 if ($scopeCompare.Remove)
                 {
                     Write-Verbose -Message ($script:localizedData.ScopeRemove -f ($scopeCompare.Remove | Out-String))
+                    $result = $false
+                }
+            }
+
+            if ($Collections -or $CollectionsToInclude -or $CollectionsToExclude)
+            {
+                $collectionArray = @{
+                    Match        = $Collections
+                    Include      = $CollectionsToInclude
+                    Exclude      = $CollectionsToExclude
+                    CurrentState = $state.Collections
+                }
+
+                $collectionCompare = Compare-MultipleCompares @collectionArray
+
+                if ($collectionCompare.Missing)
+                {
+                    Write-Verbose -Message ($script:localizedData.CollectionMissing -f ($collectionCompare.Missing | Out-String))
+                    $result = $false
+                }
+
+                if ($collectionCompare.Remove)
+                {
+                    Write-Verbose -Message ($script:localizedData.CollectionRemove -f ($collectionCompare.Remove | Out-String))
                     $result = $false
                 }
             }
