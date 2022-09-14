@@ -32,6 +32,7 @@ ConvertFrom-StringData @'
     ClientCloud        = Processing CMClientSettingsCloud for client policy: {0}.
     ClientCompliance   = Processing CMClientSettingsCompliance for client policy: {0}.
     ClientCompAgent    = Processing CMClientSettingsComputerAgent for client policy: {0}.
+    ClientCompRestart  = Processing CMClientSettingsComputerRestart for client policy: {0}.
     ClientDelivery     = Processing CMClientSettingsDelivery for client policy: {0}.
     ClientMetered      = Processing CMClientSettingsMetered for client policy: {0}.
     ClientHardware     = Processing CMClientSettingsHardware for client policy: {0}.

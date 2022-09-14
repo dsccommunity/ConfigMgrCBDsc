@@ -941,6 +941,62 @@ InModuleScope $script:subModuleName {
                 }
                 @{
                     ImplementedAs = 'PowerShell'
+                    Name          = 'CMClientSettingsComputerRestart'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties    = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ClientSettingName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'CountdownMins'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FinalWindowMins'
+                            PropertyType = '[uint32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ReplaceToastNotificationWithDialog'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'NoRebootEnforcement'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
+                @{
+                    ImplementedAs = 'PowerShell'
                     Name          = 'CMClientSettingsDelivery'
                     ModuleName    = 'ConfigMgrCBDsc'
                     Version       = '1.0.1'
@@ -5800,6 +5856,23 @@ InModuleScope $script:subModuleName {
                 PSComputerName                 = 'localhost'
             }
 
+            $invokeCMClientSettingsComputerRestart = @{
+                ConfigurationName                  = $null
+                DependsOn                          = $null
+                ModuleName                         = 'ConfigMgrCBDsc'
+                ModuleVersion                      = 1.0.1
+                PsDscRunAsCredential               = $null
+                ResourceId                         = $null
+                SourceInfo                         = $null
+                ClientSettingName                  = 'Default Client Agent Settings'
+                CountdownMins                      = 30
+                FinalWindowMins                    = 10
+                ReplaceToastNotificationWithDialog = $true
+                NoRebootEnforcement                = $false
+                SiteCode                           = 'Lab'
+                PSComputerName                     = 'localhost'
+            }
+
             $invokeCMClientSettingsDelivery = @{
                 ConfigurationName    = $null
                 DependsOn            = $null
@@ -6263,6 +6336,7 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsCloudService } -ParameterFilter { $Name -eq 'CMClientSettingsCloudService' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsCompliance } -ParameterFilter { $Name -eq 'CMClientSettingsCompliance' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsComputerAgent } -ParameterFilter { $Name -eq 'CMClientSettingsComputerAgent' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsComputerRestart } -ParameterFilter { $Name -eq 'CMClientSettingsComputerRestart' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsDelivery } -ParameterFilter { $Name -eq 'CMClientSettingsDelivery' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsHardwareDefault } -ParameterFilter { $Name -eq 'CMClientSettingsHardware' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsMetered } -ParameterFilter { $Name -eq 'CMClientSettingsMetered' }
@@ -6282,10 +6356,10 @@ InModuleScope $script:subModuleName {
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 47 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 48 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
-                Assert-MockCalled Get-CMClientSetting -Exactly -Times 19 -Scope It
+                Assert-MockCalled Get-CMClientSetting -Exactly -Times 20 -Scope It
                 Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                 Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
