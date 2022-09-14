@@ -4902,6 +4902,29 @@ Configuration ConfigureSccm
             }
         }
 
+        if (`$CMHierarchySetting)
+        {
+            CMHierarchySetting `$SiteCode
+            {
+                SiteCode                           = `$SiteCode
+                AllowPrestage                      = `$CMHierarchySetting.AllowPrestage
+                ApprovalMethod                     = `$CMHierarchySetting.ApprovalMethod
+                AutoResolveClientConflict          = `$CMHierarchySetting.AutoResolveClientConflict
+                EnableAutoClientUpgrade            = `$CMHierarchySetting.EnableAutoClientUpgrade
+                EnableExclusionCollection          = `$CMHierarchySetting.EnableExclusionCollection
+                EnablePreProduction                = `$CMHierarchySetting.EnablePreProduction
+                EnablePrereleaseFeature            = `$CMHierarchySetting.EnablePrereleaseFeature
+                ExcludeServer                      = `$CMHierarchySetting.ExcludeServer
+                PreferBoundaryGroupManagementPoint = `$CMHierarchySetting.PreferBoundaryGroupManagementPoint
+                UseFallbackSite                    = `$CMHierarchySetting.UseFallbackSite
+                AutoUpgradeDays                    = `$CMHierarchySetting.AutoUpgradeDays
+                ExclusionCollectionName            = `$CMHierarchySetting.ExclusionCollectionName
+                FallbackSiteCode                   = `$CMHierarchySetting.FallbackSiteCode
+                TargetCollectionName               = `$CMHierarchySetting.TargetCollectionName
+                TelemetryLevel                     = `$CMHierarchySetting.TelemetryLevel
+            }
+        }
+
         if (`$CMServiceConnectionPoint)
         {
             CMServiceConnectionPoint `$(`$CMServiceConnectionPoint.SiteServerName)
@@ -11161,7 +11184,7 @@ function Set-ConfigMgrCBDscReverse
             'DistributionGroups','DistributionPoint','DistributionPointGroupMembers',
             'EmailNotificationComponent','FallbackPoints','ForestDiscovery','HeartbeatDiscovery',
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
-            'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
+            'PxeDistributionPoint','ReportingServicesPoint','HierarchySetting','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
             'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly','GroupDiscovery',
             'SoftwareUpdatePointComponent','ClientSettings','ClientSettingsBits',
@@ -11180,7 +11203,7 @@ function Set-ConfigMgrCBDscReverse
             'DistributionGroups','DistributionPoint','DistributionPointGroupMembers',
             'EmailNotificationComponent','FallbackPoints','ForestDiscovery','HeartbeatDiscovery',
             'MaintenanceWindow','ManagementPoint','NetworkDiscovery','PullDistributionPoint',
-            'PxeDistributionPoint','ReportingServicesPoint','SecurityScopes','ServiceConnection',
+            'PxeDistributionPoint','ReportingServicesPoint', 'HierarchySetting','SecurityScopes','ServiceConnection',
             'SiteMaintenance','SiteSystemServer','SoftwareDistributionComponent','SoftwareupdatePoint',
             'StatusReportingComponent','SystemDiscovery','UserDiscovery','GroupDiscovery',
             'SoftwareUpdatePointComponent','ClientSettings','ClientSettingsBits',
@@ -12673,6 +12696,24 @@ function Set-ConfigMgrCBDscReverse
             $wRptServer += ")"
             $fileOut += "$wRptServer`r`n"
         }
+    }
+
+    if (($Include -eq 'All' -and $Exclude -notcontains 'HierarchySetting') -or ($Include -contains 'HierarchySetting'))
+    {
+        $resourceName = 'CMHierarchySetting'
+        Write-Verbose -Message $script:localizedData.Hierarchy -Verbose
+        $params = @{
+            ResourceName = $resourceName
+            SiteCode     = $SiteCode
+            Indent       = 2
+            MultiEntry   = $false
+            Resources    = $resources
+        }
+
+        $hierarchySettings = "$resourceName = @{`r`n"
+        $testThing = Set-OutFile @params
+        $hierarchySettings += "$testThing"
+        $fileOut += "$hierarchySettings`r`n"
     }
 
     if (($Include -eq 'All' -and $Exclude -notcontains 'SecurityScopes') -or ($Include -contains 'SecurityScopes'))
