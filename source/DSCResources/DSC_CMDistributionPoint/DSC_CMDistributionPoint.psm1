@@ -592,7 +592,7 @@ function Test-TargetResource
                                 'EnableBranchCache','EnableLedbat')
             }
 
-            $result = Test-DscParameterState @testParams -Verbose
+            $result = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
 
             if ($BoundaryGroups)
             {

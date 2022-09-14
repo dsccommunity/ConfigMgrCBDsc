@@ -454,7 +454,7 @@ function Test-TargetResource
                 ValuesToCheck = @('PublicFqdn','FdmOperation','UseSiteServerAccount','AccountName')
             }
 
-            $result = Test-DscParameterState @testParams -Verbose
+            $result = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
 
             $proxyCheck = @('EnableProxy','ProxyServerName','ProxyServerPort','ProxyAccessAccount')
 

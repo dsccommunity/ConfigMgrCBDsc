@@ -321,7 +321,7 @@ function Test-TargetResource
                 ValuesToCheck = ('DatabaseName','DatabaseServerName','Username','FolderName','ReportServerInstance')
             }
 
-            $result = Test-DscParameterState @testParams -Verbose
+            $result = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
 
             if ($FolderName -or $ReportServerInstance)
             {

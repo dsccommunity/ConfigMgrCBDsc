@@ -331,7 +331,7 @@ function Test-TargetResource
                 'PxeServerResponseDelaySec','UserDeviceAffinity')
         }
 
-        $returnValue = Test-DscParameterState @testParams -Verbose
+        $returnValue = Test-DscParameterState @testParams -Verbose -TurnOffTypeChecking
 
         if ((-not [string]::IsNullOrEmpty($PxePassword)) -and ([string]::IsNullOrEmpty($state.PxePassword)))
         {
