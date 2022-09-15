@@ -540,7 +540,7 @@ function Test-TargetResource
         {
             foreach ($item in $CollectionsToInclude)
             {
-                if ($CollectionssToExclude -contains $item)
+                if ($CollectionsToExclude -contains $item)
                 {
                     Write-Warning -Message ($script:localizedData.CollectionInEx -f $item)
                     $result = $false

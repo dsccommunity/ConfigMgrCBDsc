@@ -3811,7 +3811,6 @@ function Add-CMObjectSecurityScope
         ${Id},
 
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [object[]]
         ${InputObject},
 
@@ -30425,7 +30424,6 @@ function Remove-CMObjectSecurityScope
         ${Id},
 
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [object[]]
         ${InputObject},
 

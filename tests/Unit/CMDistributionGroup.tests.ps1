@@ -519,7 +519,7 @@ try
             }
         }
 
-        Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Test-TargetResource' -Tag 'Test' {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Test-TargetResource' -Tag 'TestDG' {
             BeforeAll {
                 $groupAbsent = @{
                     SiteCode          = 'Lab'
@@ -625,6 +625,8 @@ try
                         DistributionPointsToInclude = 'DP02.contoso.com'
                         SecurityScopesToInclude     = 'Scope1'
                         SecurityScopesToExclude     = 'Scope1'
+                        CollectionsToInclude        = 'Collection 1'
+                        CollectionsToExclude        = 'Collection 1'
                         Ensure                      = 'Present'
                     }
 
@@ -679,7 +681,7 @@ try
                     Test-TargetResource @groupAbsent | Should -Be $false
                 }
 
-                It 'Shoud return desired result false when DistributionPoint and Scope ToInclude and ToExclude contain the same members' {
+                It 'Shoud return desired result false when DistributionPoint, Collections and Scope ToInclude and ToExclude contain the same members' {
                     Test-TargetResource @includeExclude | Should -Be $false
                 }
             }
