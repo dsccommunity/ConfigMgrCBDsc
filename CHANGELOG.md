@@ -15,6 +15,8 @@ version of DSCResource.Common
 
 - Added CMHierarchySetting resource
 
+- CMDistributionGroup added properties to configure collection membership in Distribution Point Group
+
 ## [3.0.0] - 2022-01-03
 
 ### Added
@@ -55,7 +57,6 @@ version of DSCResource.Common
 - Updated module versions for SqlServerDsc, NetworkingDsc, ComputerManagementDsc
 - Removed firewall configurations from the xSccmPreReqs resource. See
     (Source\Examples\PrimaryInstall.ps1) for an example of firewall configurations.
-- CMDistributionGroup added properties to configure collection membership in Distribution Point Group
 
 ### Removed
 
