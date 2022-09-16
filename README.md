@@ -2255,6 +2255,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMClientSettingsCloudService : Fully Supported
 - DSC_CMClientSettingsCompliance : Fully Supported
 - DSC_CMClientSettingsComputerAgent : Fully Supported
+- DSC_CMClientSettingsComputerRestart : Fully Supported
 - DSC_CMClientSettingsDelivery : Fully Supported
 - DSC_CMClientSettingsHardware : Fully Supported
 - DSC_CMClientSettingsMetered : Fully Supported

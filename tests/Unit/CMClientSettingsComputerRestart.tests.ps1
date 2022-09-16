@@ -67,30 +67,30 @@ try
                     Mock -CommandName Get-CMClientSetting -MockWith { $clientReturn } -ParameterFilter { $Setting -eq 'ComputerRestart' }
 
                     $result = Get-TargetResource @getInput
-                    $result                                           | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                                  | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName                         | Should -Be -ExpectedValue 'ClientTest'
-                    $result.NoRebootEnforcement                       | Should -Be -ExpectedValue $false
-                    $result.CountdownMins                             | Should -Be -ExpectedValue 30
-                    $result.FinalWindowMins                      | Should -Be -ExpectedValue 10
-                    $result.ReplaceToastNotificationWithDialog                 | Should -Be -ExpectedValue $true
-                    $result.ClientSettingStatus                       | Should -Be -ExpectedValue 'Present'
-                    $result.ClientType                                | Should -Be -ExpectedValue 'Device'
+                    $result                                    | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode                           | Should -Be -ExpectedValue 'Lab'
+                    $result.ClientSettingName                  | Should -Be -ExpectedValue 'ClientTest'
+                    $result.NoRebootEnforcement                | Should -Be -ExpectedValue $false
+                    $result.CountdownMins                      | Should -Be -ExpectedValue 30
+                    $result.FinalWindowMins                    | Should -Be -ExpectedValue 10
+                    $result.ReplaceToastNotificationWithDialog | Should -Be -ExpectedValue $true
+                    $result.ClientSettingStatus                | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                         | Should -Be -ExpectedValue 'Device'
                 }
 
                 It 'Should return desired result when client setting policy does not exist' {
                     Mock -CommandName Get-CMClientSetting
 
                     $result = Get-TargetResource @getInput
-                    $result                                           | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                                  | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName                         | Should -Be -ExpectedValue 'ClientTest'
-                    $result.NoRebootEnforcement                             | Should -Be -ExpectedValue $null
-                    $result.CountdownMins | Should -Be -ExpectedValue $null
-                    $result.FinalWindowMins       | Should -Be -ExpectedValue $null
-                    $result.ReplaceToastNotificationWithDialog                 | Should -Be -ExpectedValue $null
-                    $result.ClientSettingStatus                       | Should -Be -ExpectedValue 'Absent'
-                    $result.ClientType                                | Should -Be -ExpectedValue $null
+                    $result                                    | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode                           | Should -Be -ExpectedValue 'Lab'
+                    $result.ClientSettingName                  | Should -Be -ExpectedValue 'ClientTest'
+                    $result.NoRebootEnforcement                | Should -Be -ExpectedValue $null
+                    $result.CountdownMins                      | Should -Be -ExpectedValue $null
+                    $result.FinalWindowMins                    | Should -Be -ExpectedValue $null
+                    $result.ReplaceToastNotificationWithDialog | Should -Be -ExpectedValue $null
+                    $result.ClientSettingStatus                | Should -Be -ExpectedValue 'Absent'
+                    $result.ClientType                         | Should -Be -ExpectedValue $null
                 }
 
                 It 'Should return desired result when client setting policy exist but Computer Restart is not configured' {
@@ -98,15 +98,15 @@ try
                     Mock -CommandName Get-CMClientSetting -MockWith { $null } -ParameterFilter { $Setting -eq 'ComputerRestart' }
 
                     $result = Get-TargetResource @getInput
-                    $result                                           | Should -BeOfType System.Collections.HashTable
-                    $result.SiteCode                                  | Should -Be -ExpectedValue 'Lab'
-                    $result.ClientSettingName                         | Should -Be -ExpectedValue 'ClientTest'
-                    $result.NoRebootEnforcement                             | Should -Be -ExpectedValue $null
-                    $result.CountdownMins | Should -Be -ExpectedValue $null
-                    $result.FinalWindowMins       | Should -Be -ExpectedValue $null
-                    $result.ReplaceToastNotificationWithDialog                 | Should -Be -ExpectedValue $null
-                    $result.ClientSettingStatus                       | Should -Be -ExpectedValue 'Present'
-                    $result.ClientType                                | Should -Be -ExpectedValue 'Device'
+                    $result                                    | Should -BeOfType System.Collections.HashTable
+                    $result.SiteCode                           | Should -Be -ExpectedValue 'Lab'
+                    $result.ClientSettingName                  | Should -Be -ExpectedValue 'ClientTest'
+                    $result.NoRebootEnforcement                | Should -Be -ExpectedValue $null
+                    $result.CountdownMins                      | Should -Be -ExpectedValue $null
+                    $result.FinalWindowMins                    | Should -Be -ExpectedValue $null
+                    $result.ReplaceToastNotificationWithDialog | Should -Be -ExpectedValue $null
+                    $result.ClientSettingStatus                | Should -Be -ExpectedValue 'Present'
+                    $result.ClientType                         | Should -Be -ExpectedValue 'Device'
                 }
             }
         }
