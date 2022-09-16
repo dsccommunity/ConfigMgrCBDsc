@@ -2306,6 +2306,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMForestDiscovery: Fully Supported
 - DSC_CMGroupDiscovery: Fully Supported
 - DSC_CMHeartbeatDiscovery: Fully Supported
+- DSC_CMHierarchySetting: Fully Supported
 - DSC_CMIniFile: Not Supported
 - DSC_CMMaintenanceWindows: Fully Supported
 - DSC_CMManagementPoint: Fully Supported

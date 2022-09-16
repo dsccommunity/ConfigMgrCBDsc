@@ -13,6 +13,8 @@ version of DSCResource.Common
 
 - Added CMClientSettingsComputerRestart resource
 
+- Added CMHierarchySetting resource
+
 ## [3.0.0] - 2022-01-03
 
 ### Added
@@ -41,7 +43,6 @@ version of DSCResource.Common
 - Added CMClientSettingsStateMessaging resource
 - Added CMClientSettingsUserDeviceAffinity resource
 - Added CMSiteConfiguration resource
-- Added CMHierarchySetting resource
 
 ### Fixed
 
