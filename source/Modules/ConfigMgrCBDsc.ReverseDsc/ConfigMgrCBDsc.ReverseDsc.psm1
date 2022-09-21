@@ -531,6 +531,10 @@ Configuration ConfigureSccm
 
         [Parameter()]
         [HashTable[]]
+        `$CMClientSettingsComputerRestart,
+
+        [Parameter()]
+        [HashTable[]]
         `$CMClientSettingsDelivery,
 
         [Parameter()]
@@ -7873,6 +7877,23 @@ Configuration ConfigureSccm
             }
         }
 
+        if (`$CMClientSettingsComputerRestart)
+        {
+            foreach (`$restart in `$CMClientSettingsComputerRestart)
+            {
+                CMClientSettingsComputerRestart `$restart.ClientSettingName
+                {
+                    SiteCode                           = `$SiteCode
+                    ClientSettingName                  = `$restart.ClientSettingName
+                    CountdownMins                      = `$restart.CountdownMins
+                    FinalWindowMins                    = `$restart.FinalWindowMins
+                    ReplaceToastNotificationWithDialog = `$restart.ReplaceToastNotificationWithDialog
+                    NoRebootEnforcement                = `$restart.NoRebootEnforcement
+                    DependsOn                          = `$cmClientSettingsDependsOn
+                }
+            }
+        }
+
         if (`$CMClientSettingsDelivery)
         {
             foreach (`$settingsDelivery in `$CMClientSettingsDelivery)
@@ -11166,7 +11187,7 @@ function Set-ConfigMgrCBDscReverse
             'StatusReportingComponent','SystemDiscovery','UserDiscovery','ConfigFileOnly','GroupDiscovery',
             'SoftwareUpdatePointComponent','ClientSettings','ClientSettingsBits',
             'ClientSettingsClientCache','ClientSettingsClientPolicy','ClientSettingsCloudService',
-            'ClientSettingsCompliance','ClientSettingsComputerAgent','ClientSettingsDelivery',
+            'ClientSettingsCompliance','ClientSettingsComputerAgent','ClientSettingsComputerRestart','ClientSettingsDelivery',
             'ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower',
             'ClientSettingsRemoteTools','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
             'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsSoftwareUpdate',
@@ -11185,7 +11206,7 @@ function Set-ConfigMgrCBDscReverse
             'StatusReportingComponent','SystemDiscovery','UserDiscovery','GroupDiscovery',
             'SoftwareUpdatePointComponent','ClientSettings','ClientSettingsBits',
             'ClientSettingsClientCache','ClientSettingsClientPolicy','ClientSettingsCloudService',
-            'ClientSettingsCompliance','ClientSettingsComputerAgent','ClientSettingsDelivery',
+            'ClientSettingsCompliance','ClientSettingsComputerAgent','ClientSettingsComputerRestart','ClientSettingsDelivery',
             'ClientSettingsHardware','ClientSettingsMetered','ClientSettingsPower',
             'ClientSettingsRemoteTools','ClientSettingsSoftwareCenter','ClientSettingsSoftwareDeployment',
             'ClientSettingsSoftwareInventory','ClientSettingsSoftwareMetering','ClientSettingsSoftwareUpdate',
@@ -11652,6 +11673,42 @@ function Set-ConfigMgrCBDscReverse
             {
                 $wCSCompAgent += ")"
                 $fileOut += "$wCSCompAgent`r`n"
+            }
+        }
+
+        if (($Include -eq 'All' -and $Exclude -notcontains 'ClientSettingsComputerRestart') -or
+            ($Include -contains 'ClientSettingsComputerRestart'))
+        {
+            foreach ($item in $clientSettings)
+            {
+                if (Get-CMClientSetting -Setting ComputerRestart -Name $item.Name)
+                {
+                    if ([string]::IsNullOrEmpty($wCSCompRestart))
+                    {
+                        $resourceName = 'CMClientSettingsComputerRestart'
+                        $wCSCompRestart = "$resourceName = @(`r`n"
+                    }
+
+                    Write-Verbose -Message ($script:localizedData.ClientCompRestart -f $item.Name) -Verbose
+
+                    $params = @{
+                        ResourceName = $resourceName
+                        SiteCode     = $SiteCode
+                        Indent       = 2
+                        MultiEntry   = $true
+                        Resources    = $resources
+                        StringValue  = $item.Name
+                    }
+
+                    $testThing = Set-OutFile @params
+                    $wCSCompRestart += "$testThing"
+                }
+            }
+
+            if ($wCSCompRestart)
+            {
+                $wCSCompRestart += ")"
+                $fileOut += "$wCSCompRestart`r`n"
             }
         }
 

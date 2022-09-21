@@ -11,6 +11,8 @@ when collection queries have quotes.
 - Fixed an issue causing some tests to unexpectedly fail with a newer
 version of DSCResource.Common
 
+- Added CMClientSettingsComputerRestart resource
+
 ## [3.0.0] - 2022-01-03
 
 ### Added

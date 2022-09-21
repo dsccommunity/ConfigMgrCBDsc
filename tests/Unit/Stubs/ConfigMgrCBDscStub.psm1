@@ -36051,6 +36051,9 @@ function Set-CMClientSettingComputerRestart
         [bool]
         ${ReplaceToastNotificationWithDialog},
 
+        [bool]
+        ${NoRebootEnforcement},
+
         [Parameter(ParameterSetName='SetDefaultSetting', Mandatory=$true)]
         [switch]
         ${DefaultSetting},
