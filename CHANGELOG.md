@@ -13,6 +13,8 @@ version of DSCResource.Common
 
 - Added CMClientSettingsComputerRestart resource
 
+- Added CMHierarchySetting resource
+
 ## [3.0.0] - 2022-01-03
 
 ### Added

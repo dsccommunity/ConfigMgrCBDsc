@@ -1,0 +1,21 @@
+[ClassVersion("1.0.0.0"), FriendlyName("CMHierarchySetting")]
+class DSC_CMHierarchySetting : OMI_BaseResource
+{
+    [Key, Description("Specifies the SiteCode for the Configuration Manager site.")] String SiteCode;
+    [Write, Description("Indicates that prestaging should be allowed.")] Boolean AllowPrestage;
+    [Write, Description("Approval method to use."), ValueMap{"AutomaticallyApproveComputersInTrustedDomains","ManuallyApproveEachComputer","AutomaticallyApproveAllComputers"}, Values{"AutomaticallyApproveComputersInTrustedDomains","ManuallyApproveEachComputer","AutomaticallyApproveAllComputers"}] String ApprovalMethod;
+    [Write, Description("Indicates that client conflicts should automatically be resolved.")] Boolean AutoResolveClientConflict;
+    [Write, Description("Indicates that automatic client upgrades should be enabled.")] Boolean EnableAutoClientUpgrade;
+    [Write, Description("Indicates that an exclusion collection should be enabled. Requires use of ExclusionCollectionName parameter.")] Boolean EnableExclusionCollection;
+    [Write, Description("Indicates that a preproduction collection should be enabled. Requires use of TargetCollectionName parameter.")] Boolean EnablePreProduction;
+    [Write, Description("Indicates that pre-release features should be enabled. This is an operation that cannot be reverted.")] Boolean EnablePrereleaseFeature;
+    [Write, Description("Indicates that servers are excluded from auto upgrade. Skipped if EnableAutoClientUpgrade is not used.")] Boolean ExcludeServer;
+    [Write, Description("Indicates that the boundary group management point should be preferred.")] Boolean PreferBoundaryGroupManagementPoint;
+    [Write, Description("Indicates that fallback site should be used. Requires use of FallbackSiteCode parameter.")] Boolean UseFallbackSite;
+    [Write, Description("Days for Auto-Upgrade advertisement")] Uint32 AutoUpgradeDays;
+    [Write, Description("Exclusion collection name. Requires use of EnableExclusionCollection parameter.")] String ExclusionCollectionName;
+    [Write, Description("Site code of fallback site. Requires use of UseFallbackSite parameter.")] String FallbackSiteCode;
+    [Write, Description("Target preproduction collection name. Requires use of EnablePreProduction parameter.")] String TargetCollectionName;
+    [Write, Description("Level of telemetry to send."), ValueMap{"Basic","Enhanced","Full"}, Values{"Basic","Enhanced","Full"}] String TelemetryLevel;
+};
+

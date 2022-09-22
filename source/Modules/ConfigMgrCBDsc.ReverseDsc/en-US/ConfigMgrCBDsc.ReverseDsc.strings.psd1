@@ -45,4 +45,5 @@ ConvertFrom-StringData @'
     ClientSoftUp       = Processing CMClientSettingsSoftwareUpdate for client policy: {0}.
     ClientStateMessage = Processing CMClientSettingsStateMessaging for client policy: {0}.
     ClientAffinity     = Processing CMClientSettingsUserDeviceAffinity for client policy: {0}.
+    Hierarchy          = Processing CMHierarchySetting.
 '@

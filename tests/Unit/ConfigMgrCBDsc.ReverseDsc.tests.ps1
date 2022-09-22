@@ -4291,6 +4291,122 @@ InModuleScope $script:subModuleName {
                         }
                     )
                 }
+                @{
+                    ImplementedAs = 'PowerShell'
+                    Name          = 'CMHierarchySetting'
+                    ModuleName    = 'ConfigMgrCBDsc'
+                    Version       = '1.0.1'
+                    Properties = @(
+                        @{
+                            Name         = 'SiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $true
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AllowPrestage'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ApprovalMethod'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AutoResolveClientConflict'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableAutoClientUpgrade'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnableExclusionCollection'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnablePreProduction'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'EnablePrereleaseFeature'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ExcludeServer'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PreferBoundaryGroupManagementPoint'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'UseFallbackSite'
+                            PropertyType = '[bool]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'AutoUpgradeDays'
+                            PropertyType = '[UInt32]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'ExclusionCollectionName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'FallbackSiteCode'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'TargetCollectionName'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'TelemetryLevel'
+                            PropertyType = '[string]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'DependsOn'
+                            PropertyType = '[string[]]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                        @{
+                            Name         = 'PsDscRunAsCredential'
+                            PropertyType = '[PSCredential]'
+                            IsMandatory  = $false
+                            Values       = '{}'
+                        }
+                    )
+                }
             )
 
             $invokeCMAccounts = @{
@@ -6253,6 +6369,33 @@ InModuleScope $script:subModuleName {
                 SiteSystemCollectionBehavior             = 'Block'
                 PSComputerName                           = 'localhost'
             }
+
+            $invokeHierarchySetting = @{
+                ConfigurationName                  = $null
+                DependsOn                          = $null
+                ModuleName                         = 'ConfigMgrCBDsc'
+                ModuleVersion                      = 1.0.1
+                PsDscRunAsCredential               = $null
+                ResourceId                         = $null
+                SourceInfo                         = $null
+                AllowPrestage                      = $true
+                ApprovalMethod                     = 'AutomaticallyApproveComputersInTrustedDomains'
+                AutoResolveClientConflict          = $true
+                EnableAutoClientUpgrade            = $true
+                EnableExclusionCollection          = $true
+                EnablePreProduction                = $true
+                EnablePrereleaseFeature            = $true
+                ExcludeServer                      = $true
+                PreferBoundaryGroupManagementPoint = $true
+                UseFallbackSite                    = $true
+                AutoUpgradeDays                    = 10
+                ExclusionCollectionName            = 'Exclusions'
+                FallbackSiteCode                   = 'FB1'
+                TargetCollectionName               = 'Preprod'
+                TelemetryLevel                     = 'Enhanced'
+                SiteCode                           = 'LAB'
+                PSComputerName                     = 'localhost'
+            }
         }
 
         Context 'When running the Set-ConfigMgrCBDscReverse' {
@@ -6352,11 +6495,12 @@ InModuleScope $script:subModuleName {
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsStateMessaging } -ParameterFilter { $Name -eq 'CMClientSettingsStateMessaging' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeCMClientSettingsUserDeviceAffinity } -ParameterFilter { $Name -eq 'CMClientSettingsUserDeviceAffinity' }
                 Mock -CommandName Invoke-DscResource -MockWith { $invokeSiteConfigurationCas } -ParameterFilter { $Name -eq 'CMSiteConfiguration' }
+                Mock -CommandName Invoke-DscResource -MockWith { $invokeHierarchySetting } -ParameterFilter { $Name -eq 'CMHierarchySetting' }
 
                 $result = Set-ConfigMgrCBDscReverse @testAll
                 $result | Should -BeOfType System.String
                 Assert-MockCalled Get-CMAccount -Exactly -Times 1 -Scope It
-                Assert-MockCalled Invoke-DscResource -Exactly -Times 48 -Scope It
+                Assert-MockCalled Invoke-DscResource -Exactly -Times 49 -Scope It
                 Assert-MockCalled Get-CMAdministrativeUser -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMAssetIntelligenceSynchronizationPoint -Exactly -Times 1 -Scope It
                 Assert-MockCalled Get-CMClientSetting -Exactly -Times 20 -Scope It

@@ -175,6 +175,7 @@ Please check out common DSC Community [contributing guidelines](https://dsccommu
   client policy settings for User Device Affinity settings.
 - **CMSiteConfiguration**: Provides a resource for modifying the
   site settings.
+- **CMHierarchySetting**: Provides a resource to modify hierarchy settings for a site.
 
 ### xSccmPreReqs
 
@@ -2201,6 +2202,32 @@ you are using apply and auto correct.
 - [CMSiteConfiguration_Cas](Source\Examples\Resources\CMSiteConfiguration\CMSiteConfiguration_Cas.ps1)
 - [CMSiteConfiguration_Primary](Source\Examples\Resources\CMSiteConfiguration\CMSiteConfiguration_Primary.ps1)
 
+### CMHierarchySetting
+
+- **[string] SiteCode** _(Key)_: Specifies the SiteCode for the Configuration Manager site.
+- **[boolean] AllowPrestage** _(Write)_: Indicates that prestaging should be allowed.
+- **[string] ApprovalMethod** _(Write)_: Approval method to use.
+  - Values include: {ManuallyApproveEachComputer | AutomaticallyApproveComputersInTrustedDomains | AutomaticallyApproveAllComputers}
+- **[boolean] AutoResolveClientConflict** _(Write)_: Indicates that client conflicts should automatically be resolved.
+- **[boolean] EnableAutoClientUpgrade** _(Write)_: Indicates that automatic client upgrades should be enabled.
+- **[boolean] EnableExclusionCollection** _(Write)_: Indicates that an exclusion collection should be enabled. Requires use of ExclusionCollectionName parameter.
+- **[boolean] EnablePreProduction** _(Write)_: Indicates that a preproduction collection should be enabled. Requires use of TargetCollectionName parameter.
+- **[boolean] EnablePrereleaseFeature** _(Write)_: Indicates that pre-release features should be enabled. This is an operation that cannot be reverted.
+- **[boolean] ExcludeServer** _(Write)_: Indicates that servers are excluded from auto upgrade. Skipped if EnableAutoClientUpgrade is not used.
+- **[boolean] PreferBoundaryGroupManagementPoint** _(Write)_: Indicates that the boundary group management point should be preferred.
+- **[boolean] UseFallbackSite** _(Write)_: Indicates that fallback site should be used. Requires use of FallbackSiteCode parameter.
+- **[type] AutoUpgradeDays** _(Write)_: Days for Auto Upgrade advertisement.
+- **[string] ExclusionCollectionName** _(Write)_: Exclusion collection name. Requires use of EnableExclusionCollection parameter.
+- **[string] FallbackSiteCode** _(Write)_: Site code of fallback site. Requires use of UseFallbackSite parameter.
+- **[string] TargetCollectionName** _(Write)_: Target preproduction collection name. Requires use of EnablePreProduction parameter.
+- **[string] TelemetryLevel** _(Write)_: Level of telemetry to send.
+  - Values include: { Basic | Enhanced | Full }
+
+### CMHierarchySetting Examples
+
+- [CMHierarchySettingAutoUpgrade](source\Examples\Resources\CMHierarchySetting\CMHierarchySettingAutoUpgrade.ps1)
+- [CMHierarchySettingFallbackSite](source\Examples\Resources\CMHierarchySetting\CMHierarchySettingFallbackSite.ps1)
+
 ## ReverseDsc
 
 Most organizations using this module already have an existing Configuration Manager
@@ -2279,6 +2306,7 @@ all of the modules and specify if it is currently supported by ReverseDSC.
 - DSC_CMForestDiscovery: Fully Supported
 - DSC_CMGroupDiscovery: Fully Supported
 - DSC_CMHeartbeatDiscovery: Fully Supported
+- DSC_CMHierarchySetting: Fully Supported
 - DSC_CMIniFile: Not Supported
 - DSC_CMMaintenanceWindows: Fully Supported
 - DSC_CMManagementPoint: Fully Supported
