@@ -35,8 +35,7 @@ try
     InModuleScope $script:dscResourceName {
         Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Get-TargetResource' -Tag 'Get' {
             BeforeAll {
-                $distributionPointGroup = [pscustomobject]@{
-                    PSTypeName  = 'IResultObject#SMS_DistributionPointGroup'
+                $distributionPointGroup = @{
                     MemberCount = 0
                     Name        = 'Group1'
                     SourceSite  = 'LAB'
@@ -181,8 +180,7 @@ try
                     CollectionsToInclude    = 'Collection 3','Collection 4'
                 }
 
-                $distributionPointGroup = [pscustomobject]@{
-                    PSTypeName  = 'IResultObject#SMS_DistributionPointGroup'
+                $distributionPointGroup = @{
                     MemberCount = 0
                     Name        = 'Group1'
                     SourceSite  = 'LAB'
