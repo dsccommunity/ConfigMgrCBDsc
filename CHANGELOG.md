@@ -17,6 +17,8 @@ version of DSCResource.Common
 
 - CMDistributionGroup added properties to configure collection membership in Distribution Point Group
 
+- Pin old version of ChangeLogManagement module to ensure module build.
+
 ## [3.0.0] - 2022-01-03
 
 ### Added
