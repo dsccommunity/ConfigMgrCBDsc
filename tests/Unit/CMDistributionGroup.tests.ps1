@@ -65,6 +65,15 @@ try
                     }
                 )
 
+                $collectionObjectsReturn = @(
+                    @{
+                        Name = 'Collection 1'
+                    }
+                    @{
+                        Name = 'Collection 2'
+                    }
+                )
+
                 $getInput = @{
                     SiteCode          = 'Lab'
                     DistributionGroup = 'Group1'
@@ -80,6 +89,7 @@ try
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $distributionPoint }
                     Mock -CommandName Get-CMObjectSecurityScope -MockWith { $cmObjectsReturn }
+                    Mock -CommandName Get-CMCollection -MockWith { $collectionObjectsReturn }
 
                     $result = Get-TargetResource @getInput
                     $result                    | Should -BeOfType System.Collections.HashTable
@@ -87,6 +97,7 @@ try
                     $result.DistributionGroup  | Should -Be -ExpectedValue 'Group1'
                     $result.DistributionPoints | Should -Be -ExpectedValue 'DP01.contoso.com','DP02.contoso.com'
                     $result.SecurityScopes     | Should -Be -ExpectedValue 'Scope1','Scope2'
+                    $result.Collections        | Should -Be -ExpectedValue 'Collection 1','Collection 2'
                     $result.Ensure             | Should -Be -ExpectedValue 'Present'
                 }
 
@@ -94,6 +105,7 @@ try
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $null }
                     Mock -CommandName Get-CMObjectSecurityScope -MockWith { $null }
+                    Mock -CommandName Get-CMCollection -MockWith { $null }
 
                     $result = Get-TargetResource @getInput
                     $result                    | Should -BeOfType System.Collections.HashTable
@@ -101,6 +113,7 @@ try
                     $result.DistributionGroup  | Should -Be -ExpectedValue 'Group1'
                     $result.DistributionPoints | Should -Be -ExpectedValue $null
                     $result.SecurityScopes     | Should -Be -ExpectedValue $null
+                    $result.Collections        | Should -Be -ExpectedValue $null
                     $result.Ensure             | Should -Be -ExpectedValue 'Present'
                 }
 
@@ -108,6 +121,7 @@ try
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $null }
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $null }
                     Mock -CommandName Get-CMObjectSecurityScope -MockWith { $null }
+                    Mock -CommandName Get-CMCollection -MockWith { $null }
 
                     $result = Get-TargetResource @getInput
                     $result                    | Should -BeOfType System.Collections.HashTable
@@ -115,6 +129,7 @@ try
                     $result.DistributionGroup  | Should -Be -ExpectedValue 'Group1'
                     $result.DistributionPoints | Should -Be -ExpectedValue $null
                     $result.SecurityScopes     | Should -Be -ExpectedValue $null
+                    $result.Collections        | Should -Be -ExpectedValue $null
                     $result.Ensure             | Should -Be -ExpectedValue 'Absent'
                 }
             }
@@ -127,6 +142,7 @@ try
                     DistributionGroup  = 'Group1'
                     DistributionPoints = @('DP01.contoso.com','DP02.contoso.com')
                     SecurityScopes     = @('Scope1','Scope2')
+                    Collections        = @('Collection 1', 'Collection 2')
                     Ensure             = 'Present'
                 }
 
@@ -135,6 +151,7 @@ try
                     DistributionGroup  = 'Group1'
                     DistributionPoints = 'DP03.contoso.com'
                     SecurityScopes     = 'Scope3'
+                    Collections        = 'Collection 3'
                 }
 
                 $groupPresent = @{
@@ -148,12 +165,19 @@ try
                     DistributionGroup           = 'Group1'
                     DistributionPointsToInclude = 'DP03.contoso.com','DP04.contoso.com'
                     SecurityScopesToInclude     = 'Scope3','Scope4'
+                    CollectionsToInclude        = 'Collection 3','Collection 4'
                 }
 
                 $scopesAddMultiple = @{
                     SiteCode                = 'Lab'
                     DistributionGroup       = 'Group1'
                     SecurityScopesToInclude = 'Scope3','Scope4'
+                }
+
+                $collectionsAddMultiple = @{
+                    SiteCode                = 'Lab'
+                    DistributionGroup       = 'Group1'
+                    CollectionsToInclude    = 'Collection 3','Collection 4'
                 }
 
                 $distributionPointGroup = @{
@@ -170,6 +194,8 @@ try
                 Mock -CommandName Remove-CMDistributionPointGroup
                 Mock -CommandName Add-CMObjectSecurityScope
                 Mock -CommandName Remove-CMObjectSecurityScope
+                Mock -CommandName Add-CMCollectionToDistributionPointGroup
+                Mock -CommandName Remove-CMCollectionFromDistributionPointGroup
             }
 
             Context 'When Set-TargetResource runs successfully when get returns absent' {
@@ -188,6 +214,7 @@ try
                     Mock -CommandName Get-CMDistributionPoint
                     Mock -CommandName Get-CMDistributionPointGroup
                     Mock -CommandName Get-CMSecurityScope
+                    Mock -CommandName Get-CMCollection
 
                     Set-TargetResource @groupPresent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -199,15 +226,19 @@ try
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands when adding a Distribution Point Group and Distribution Points' {
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $true }
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
                     Mock -CommandName Get-CMSecurityScope -MockWith { $true }
+                    Mock -CommandName Get-CMCollection -MockWith { $true }
 
                     Set-TargetResource @groupPresentMatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -217,11 +248,14 @@ try
                     Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
                 }
             }
 
@@ -240,6 +274,7 @@ try
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $true }
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
                     Mock -CommandName Get-CMSecurityScope -MockWith { $true }
+                    Mock -CommandName Get-CMCollection -MockWith { $true }
 
                     Set-TargetResource @groupPresentMatch
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -249,17 +284,21 @@ try
                     Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 2 -Scope It
-                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 1 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 2 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 2 -Scope It
                 }
 
                 It 'Should call expected commands when removing Distribution Point Group' {
                     Mock -CommandName Get-CMDistributionPoint
                     Mock -CommandName Get-CMDistributionPointGroup
                     Mock -CommandName Get-CMSecurityScope
+                    Mock -CommandName Get-CMCollection
 
                     Set-TargetResource @groupAbsent
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -271,15 +310,19 @@ try
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands when adding multiple Distribution Points and Scopes to the group' {
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $true }
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
                     Mock -CommandName Get-CMSecurityScope -MockWith { $true }
+                    Mock -CommandName Get-CMCollection -MockWith { $true }
 
                     Set-TargetResource @groupPresentAddMultiple
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -289,11 +332,14 @@ try
                     Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
                     Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 2 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 2 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
                 }
             }
 
@@ -314,8 +360,16 @@ try
                         SecurityScopesToExclude = 'Scope3'
                     }
 
+                    $collectionsIncludeExclude = @{
+                        SiteCode                = 'Lab'
+                        DistributionGroup       = 'Group1'
+                        CollectionsToInclude = 'Collection 3'
+                        CollectionsToExclude = 'Collection 3'
+                    }
+
                     $distroInEx = 'DistributionPointsToInclude and DistributionPointsToExclude contain to same entry DP02.contoso.com, remove from one of the arrays.'
                     $scopeInEx = 'SecurityScopesToInclude and SecurityScopesToExclude contain to same entry Scope3, remove from one of the arrays'
+                    $collectionInEx = 'SecurityScopesToInclude and SecurityScopesToExclude contain to same entry Scope3, remove from one of the arrays'
                     Mock -CommandName Get-TargetResource -MockWith { $getReturnPresent }
                 }
 
@@ -324,6 +378,7 @@ try
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $null } -ParameterFilter { $Name -eq 'DP04.Contoso.com' }
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
                     Mock -CommandName Get-CMSecurityScope -MockWith { $true }
+                    Mock -CommandName Get-CMCollection -MockWith { $true }
 
                     { Set-TargetResource @groupPresentAddMultiple } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -333,15 +388,20 @@ try
                     Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
                     Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 2 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 2 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                 }
 
                 It 'Should call expected commands when DistributionPointInclude and Exclude have the same Distribution Point' {
                     Mock -CommandName Get-CMDistributionPoint
+                    Mock -CommandName Get-CMSecurityScope
+                    Mock -CommandName Get-CMCollection
 
                     { Set-TargetResource @includeExclude } | Should -Throw -ExpectedMessage $distroInEx
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -356,13 +416,17 @@ try
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
                 }
 
                 It 'Should call expected commands when Set-CMDistributionPoint throws with an invalid Scope' {
                     Mock -CommandName Get-CMDistributionPoint -MockWith { $true }
                     Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
-                    Mock -CommandName Get-CMSecurityScope -MockWith { $true }  -ParameterFilter { $Name -eq 'Scope3' }
+                    Mock -CommandName Get-CMSecurityScope -MockWith { $true } -ParameterFilter { $Name -eq 'Scope3' }
                     Mock -CommandName Get-CMSecurityScope -MockWith { $null } -ParameterFilter { $Name -eq 'Scope4' }
+                    Mock -CommandName Get-CMCollection -MockWith { $true }
 
                     { Set-TargetResource @groupPresentAddMultiple } | Should -Throw
                     Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
@@ -372,11 +436,39 @@ try
                     Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
                     Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
-                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 2 -Scope It
                     Assert-MockCalled Get-CMSecurityScope -Exactly -Times 2 -Scope It
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 1 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
+                }
+
+                It 'Should call expected commands when Set-CMDistributionPoint throws with an invalid Collection' {
+                    Mock -CommandName Get-CMDistributionPoint -MockWith { $true }
+                    Mock -CommandName Get-CMDistributionPointGroup -MockWith { $distributionPointGroup }
+                    Mock -CommandName Get-CMSecurityScope -MockWith { $true } -ParameterFilter { $Name -in 'Scope3', 'Scope4' }
+                    Mock -CommandName Get-CMCollection -MockWith { $true } -ParameterFilter { $Name -eq 'Collection 3' }
+                    Mock -CommandName Get-CMCollection -MockWith { $null } -ParameterFilter { $Name -eq 'Collection 4' }
+
+                    { Set-TargetResource @groupPresentAddMultiple } | Should -Throw
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-CMSecurityScope -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 2 -Scope It
                 }
 
                 It 'Should call expected commands when SecurityScopesToInclude and SecurityScopesTo have the same entry' {
@@ -397,11 +489,35 @@ try
                     Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
                     Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
+                }
+
+                It 'Should call expected commands when CollectionsToInclude and CollectionsToExclude have the same entry' {
+                    Mock -CommandName Get-CMDistributionPoint
+                    Mock -CommandName Get-CMDistributionPointGroup
+                    Mock -CommandName Get-CMCollection
+
+                    { Set-TargetResource @collectionsIncludeExclude } | Should -Throw -ExpectedMessage $collectionsInEx
+                    Assert-MockCalled Import-ConfigMgrPowerShellModule -Exactly -Times 1 -Scope It
+                    Assert-MockCalled Set-Location -Exactly -Times 2 -Scope It
+                    Assert-MockCalled Get-TargetResource -Exactly -Times 1 -Scope It
+                    Assert-MockCalled New-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMDistributionPoint -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMDistributionPointToGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPointFromGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Get-CMCollection -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMObjectSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMObjectSecurityScope -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Add-CMCollectionToDistributionPointGroup -Exactly -Times 0 -Scope It
+                    Assert-MockCalled Remove-CMCollectionFromDistributionPointGroup -Exactly -Times 0 -Scope It
                 }
             }
         }
 
-        Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Test-TargetResource' -Tag 'Test' {
+        Describe 'ConfigMgrCBDsc - DSC_CMDistributionGroup\Test-TargetResource' -Tag 'TestDG' {
             BeforeAll {
                 $groupAbsent = @{
                     SiteCode          = 'Lab'
@@ -426,6 +542,7 @@ try
                         DistributionGroup  = 'Group1'
                         DistributionPoints = @('DP01.contoso.com','DP02.contoso.com')
                         SecurityScopes     = @('Scope1','Scope2')
+                        Collections        = @('Collection 1', 'Collection 2')
                         Ensure             = 'Present'
                     }
 
@@ -469,9 +586,28 @@ try
 
                     $groupPresentScopeWarningMatch = @{
                         SiteCode                = 'Lab'
-                        DistributionGroup        = 'Group1'
+                        DistributionGroup       = 'Group1'
                         SecurityScopes          = 'Scope3'
                         SecurityScopesToInclude = 'Scope2'
+                    }
+
+                    $groupPresentCollectionInclude = @{
+                        SiteCode             = 'Lab'
+                        DistributionGroup    = 'Group1'
+                        CollectionsToInclude = 'Collection 3'
+                    }
+
+                    $groupPresentCollectionExclude = @{
+                        SiteCode             = 'Lab'
+                        DistributionGroup    = 'Group1'
+                        CollectionsToExclude = 'Collection 1'
+                    }
+
+                    $groupPresentCollectionWarningMatch = @{
+                        SiteCode            = 'Lab'
+                        DistributionGroup    = 'Group1'
+                        Collections          = 'Collection 3'
+                        CollectionsToInclude = 'Collection 2'
                     }
 
                     $groupPresent = @{
@@ -487,6 +623,8 @@ try
                         DistributionPointsToInclude = 'DP02.contoso.com'
                         SecurityScopesToInclude     = 'Scope1'
                         SecurityScopesToExclude     = 'Scope1'
+                        CollectionsToInclude        = 'Collection 1'
+                        CollectionsToExclude        = 'Collection 1'
                         Ensure                      = 'Present'
                     }
 
@@ -525,11 +663,23 @@ try
                     Test-TargetResource @groupPresentScopeWarningMatch | Should -Be $false
                 }
 
+                It 'Should return desired result false when CollectionsToInclude does not match get' {
+                    Test-TargetResource @groupPresentCollectionInclude | Should -Be $false
+                }
+
+                It 'Should return desired result false when CollectionsToExclude has a match with get' {
+                    Test-TargetResource @groupPresentCollectionExclude | Should -Be $false
+                }
+
+                It 'Should return desired result false when CollectionsToInclude and Collections does not match get' {
+                    Test-TargetResource @groupPresentCollectionWarningMatch | Should -Be $false
+                }
+
                 It 'Should return desired result false when get returns present and expected absent' {
                     Test-TargetResource @groupAbsent | Should -Be $false
                 }
 
-                It 'Shoud return desired result false when DistributionPoint and Scope ToInclude and ToExclude contain the same members' {
+                It 'Shoud return desired result false when DistributionPoint, Collections and Scope ToInclude and ToExclude contain the same members' {
                     Test-TargetResource @includeExclude | Should -Be $false
                 }
             }

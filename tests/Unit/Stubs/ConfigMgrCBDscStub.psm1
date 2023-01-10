@@ -725,7 +725,7 @@ function Add-CMCollectionToDistributionPointGroup
         [Parameter(ParameterSetName='AddById_Object', Mandatory=$true, ValueFromPipeline=$true)]
         [Parameter(ParameterSetName='AddByName_Object', Mandatory=$true, ValueFromPipeline=$true)]
         [Parameter(ParameterSetName='AddByObject_Object', Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${DistributionPointGroup},
 
@@ -2682,7 +2682,7 @@ function Add-CMDistributionPointToGroup
         [Parameter(ParameterSetName='AddDistributionPointToGroupById_Object', Mandatory=$true, ValueFromPipeline=$true)]
         [Parameter(ParameterSetName='AddDistributionPointToGroupByName_Object', Mandatory=$true, ValueFromPipeline=$true)]
         [Parameter(ParameterSetName='AddDistributionPointToGroupByObject_Object', Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${DistributionPointGroup},
 
@@ -3811,7 +3811,7 @@ function Add-CMObjectSecurityScope
         ${Id},
 
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [Hashtable[]]
+        [hashtable[]]
         ${InputObject},
 
         [Parameter(ParameterSetName='ByName', Mandatory=$true, Position=0)]
@@ -8453,7 +8453,7 @@ function Get-CMCloudDistributionPoint
         ${DistributionPointGroupId},
 
         [Parameter(ParameterSetName='SearchByGroup', Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${DistributionPointGroup},
 
@@ -8554,7 +8554,7 @@ function Get-CMCollection
         ${DistributionPointGroupId},
 
         [Parameter(ParameterSetName='ByDPGroup', Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${DistributionPointGroup},
 
@@ -9879,7 +9879,7 @@ function Get-CMDistributionPoint
         ${DistributionPointGroupId},
 
         [Parameter(ParameterSetName='SearchByGroup', Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${DistributionPointGroup},
 
@@ -10898,7 +10898,7 @@ function Get-CMObjectSecurityScope
     param
     (
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [Hashtable]
+        [hashtable]
         ${InputObject},
 
         [Parameter(ParameterSetName='FilterByName')]
@@ -28812,7 +28812,7 @@ function Remove-CMCollectionFromDistributionPointGroup
 
         [Parameter(ParameterSetName='SearchByValueMandatory', Mandatory=$true, ValueFromPipeline=$true)]
         [Alias('DeviceCollection','UserCollection')]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${InputObject},
 
@@ -29759,7 +29759,7 @@ function Remove-CMDistributionPointFromGroup
         [Parameter(ParameterSetName='RemoveDistributionPointFromGroupByName_Object', Mandatory=$true, ValueFromPipeline=$true)]
         [Parameter(ParameterSetName='RemoveDistributionPointFromGroupByObject_Object', Mandatory=$true, ValueFromPipeline=$true)]
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${DistributionPointGroup},
 
@@ -29792,7 +29792,7 @@ function Remove-CMDistributionPointGroup
 
         [Parameter(ParameterSetName='SearchByValueMandatory', Mandatory=$true, ValueFromPipeline=$true)]
         [ValidateNotNullOrEmpty()]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${InputObject},
 
@@ -30424,7 +30424,7 @@ function Remove-CMObjectSecurityScope
         ${Id},
 
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
-        [Hashtable[]]
+        [hashtable[]]
         ${InputObject},
 
         [Parameter(ParameterSetName='ByName', Mandatory=$true, Position=0)]
@@ -40369,7 +40369,7 @@ function Set-CMDistributionPointGroup
         ${Name},
 
         [Parameter(ParameterSetName='SetByValueMandatory', Mandatory=$true, ValueFromPipeline=$true)]
-        [PSTypeName('IResultObject#SMS_DistributionPointGroup')]
+        #[PSTypeName('IResultObject#SMS_DistributionPointGroup')]
         [System.Object]
         ${InputObject},
 

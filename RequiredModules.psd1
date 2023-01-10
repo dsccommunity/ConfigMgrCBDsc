@@ -12,7 +12,7 @@
     Pester                      = '4.10.1'
     Plaster                     = 'latest'
     ModuleBuilder               = 'latest'
-    ChangelogManagement         = 'latest'
+    ChangelogManagement         = '2.1.4'
     Sampler                     = 'latest'
     'Sampler.GitHubTasks'       = 'latest'
     MarkdownLinkCheck           = 'latest'

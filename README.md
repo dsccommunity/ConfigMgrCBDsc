@@ -973,6 +973,12 @@ you are using apply and auto correct.
   Security Scopes to add to the Distribution Group.
 - **[String] SecurityScopesToExclude[]** _(Write)_: Specifies an array of
   Security Scopes to remove from the Distribution Group.
+- **[String] Collections[]** _(Write)_: Specifies an array of Collections
+  to match to the Distribution Group.
+- **[String] CollectionsToInclude[]** _(Write)_: Specifies an array of
+  Collections to add to the Distribution Group.
+- **[String] CollectionsToExclude[]** _(Write)_: Specifies an array of
+  Collections to remove from the Distribution Group.
 - **[String] Ensure** _(Write)_: Specifies whether the Distribution Group
   is present or absent.
   - Values include: { Present | Absent }
