@@ -13,7 +13,7 @@
     Plaster                     = 'latest'
     ModuleBuilder               = 'latest'
     ChangelogManagement         = '2.1.4'
-    Sampler                     = 'latest'
+    Sampler                     = '0.116.0'
     'Sampler.GitHubTasks'       = 'latest'
     MarkdownLinkCheck           = 'latest'
     'DscResource.Test'          = 'latest'

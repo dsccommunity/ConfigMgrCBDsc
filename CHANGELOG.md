@@ -19,6 +19,8 @@ version of DSCResource.Common
 
 - Pin old version of ChangeLogManagement module to ensure module build.
 
+- Restricted Sampler to 0.116.0 in required modules.
+
 ## [3.0.0] - 2022-01-03
 
 ### Added
