@@ -19,6 +19,8 @@ version of DSCResource.Common
 
 - Pin old version of ChangeLogManagement module to ensure module build.
 
+- Changed build to phase to Windows Latest.
+
 ## [3.0.0] - 2022-01-03
 
 ### Added
