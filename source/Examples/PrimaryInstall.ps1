@@ -106,8 +106,8 @@ Configuration PrimaryInstall
         }
         else
         {
-            $adkProductID = '9346016b-6620-4841-8ea4-ad91d3ea02b5'
-            $winPeProductID = '353df250-4ecc-4656-a950-4df93078a5fd'
+            $adkProductID = '665ec413-9c69-4696-b6d8-55d44bf46ac3'
+            $winPeProductID = '6775d5ee-c051-497c-aba6-344bbc5c896a'
         }
 
         # SCCM PreReqs

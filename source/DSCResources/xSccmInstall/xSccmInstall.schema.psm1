@@ -40,7 +40,7 @@ Configuration xSCCMInstall
         $SccmInstallAccount,
 
         [Parameter(Mandatory = $true)]
-        [ValidateSet('1902', '1906', '1910', '2002', '2006', '2010')]
+        [ValidateSet('1902', '1906', '1910', '2002', '2006', '2010', '2309', '2403')]
         [UInt32]
         $Version
     )

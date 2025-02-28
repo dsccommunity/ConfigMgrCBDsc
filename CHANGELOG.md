@@ -3,7 +3,8 @@
 The format is based on and uses the types of changes according to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [4.0.1] - 2025-02-28
+- Fixed the xSccmInstall module to be able to install the latest 2 supported releases of Microsoft Configuration Manager Version 2403 and Version 2309
 
 ## [4.0.0] - 2023-01-13
 
